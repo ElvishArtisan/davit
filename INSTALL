@@ -1,0 +1,44 @@
+This is the installation file for the Davit package.
+
+PREREQUISITES
+You will need the following installed and configured properly on your 
+system before building Call Commander:
+
+X11 Window System
+Needed for building on Un*x-type systems, including Linux.  Virtually 
+all Linux distros should include this.
+
+Qt Toolkit, v3.2 or better
+Most modern Linux distros include this.  It's typically installed as part
+of the KDE Desktop Environment, although KDE is by no means required.
+It can also be downloaded directly from TrollTech (ftp://ftp.trolltech.com/).
+
+On Windows, you will need to purchase a Qt/Windows license from
+TrollTech (http://www.trolltech.com/).
+
+To enable a VNC login for Davit, add a section like the following to
+'/usr/share/config/kdm/kdmrc':
+
+[X-<X-display>-Core]
+ServerCmd=/usr/bin/Xvnc
+ServerVT=-1
+ServerArgsLocal=-SecurityTypes=VncAuth -rfbauth=<path-to-vnc-passwd> -rfbport=<vnc-port>
+AllowRootLogin=false
+AllowShutdown=None
+AutoLoginEnable=true
+AutoLoginAgain=true
+AutoLoginUser=<username>
+AutoReLogin=true
+
+See 'kdmrc-example' for a working example.
+
+
+CONFIGURE INVOCATIONS
+OpenSuSE:
+	./configure --prefix=/usr --libexecdir=/srv/www/dvt-bin
+
+CentOS 5:
+	./configure --prefix=/usr --libexecdir=/var/httpd/dvt-bin
+
+CentOS 6:
+	./configure --prefix=/usr --libexecdir=/var/www/dvt-bin

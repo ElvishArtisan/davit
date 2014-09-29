@@ -1,0 +1,8 @@
+[mySQL]
+Hostname=localhost
+Loginname=dvtuser
+Database=Davit
+ServerType=QMYSQL3
+
+[Site]
+ContactAddress=affiliates@radioamerica.org

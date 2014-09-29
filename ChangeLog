@@ -1,0 +1,673 @@
+2007-03-15 Fred Gleason <fredg@paravelsystems.com>
+	* Initial package creation
+2007-03-15 Fred Gleason <fredg@paravelsystems.com>
+	* Created a 'docs/' directory.
+	* Created a 'docs/tables.txt' file.
+2007-03-16 Fred Gleason <fredg@paravelsystems.com>
+	* Stubbed out Davit in the 'davit/' directory.
+	* Added a 'lib/' diretory.
+2007-03-16 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented the 'Manage Users' and 'Manage Affiliates' sections
+	of davit(1).
+2007-03-19 Fred Gleason <fredg@paravelsystems.com>
+	* Completed implementation of the 'Manage Providers' section.
+2007-03-21 Fred Gleason <fredg@paravelsystems.com>
+	* Completed the 'Manage Programs' seciton.
+2007-03-21 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'Programs' button in the Edit Provider dialog in
+	'davit/edit_provider.cpp'.
+2007-03-28 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'davit.conf-sample' file.
+2007-03-28 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'davit.spec.in' file.
+	* Fixed various typos that caused the 'make rpm' rule to break.
+2007-03-30 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented a Program Airings list in the Edit Affiliate dialog.
+2007-11-19 Fred Gleason <fredg@paravelsystems.com>
+	* Imported 'RProfile', 'RProfileSection' and 'RProfileLine'
+	classes from LibRadio as 'DvtProfile', 'DvtProfileSection' and
+	'DvtProfileLine' respectively.
+	* Imported 'rdconf.cpp' and 'rdconf.h' from LibRadio into
+	'lib/dvtconf.cpp' and 'lib/dvtconf.h'.
+	* Imported 'RLabel' from LibRadio as 'DvtLabel'.
+	* Added an 'acinclude.m4' file.
+	* Added a 'get_target.sh' file.
+	* Added 'BNV_HAVE_QT' and 'AR_GCC_TARGET' macros in
+	'acinclude.m4'.
+2007-12-28 Fred Gleason <fredg@paravelsystems.com>
+	* Added fields to the 'AFFILIATES' table to conform with original
+	RA Database schema.
+	* Added a 'NETWORKS' table to the database.
+	* Incremented the database version to 2.
+2008-01-25 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'WEB_CONNECTIONS' table to the database.
+	* Incremented the database version to 4.
+	* Implemented an affiliate playout filing system in 'web/davit/'.
+	* Added the 'AR_GET_DISTRO()' macro in 'acinclude.m4'.
+	* Added the 'get_target.sh' and 'get_distro.sh' files.
+2008-01-28 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/list_programs.cpp' that was causing the
+	'Provider' column to display incorrect data after updating an
+	entry.
+2008-01-29 Fred Gleason <fredg@paravelsystems.com>
+	* Added an importer tool in 'utils/dvt_import/'.
+	* Implemented the 'Add' function in 'davit/list_affiliates.cpp'.
+2008-01-31 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/list_affiliates.cpp' that was causing
+	entries that shared a common set of call letters to only display a
+	single entry.
+	* Implemented the 'Second Network' field in
+	'davit/edit_affiliate.cpp'.
+2008-02-01 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'AIRINGS.AIR_LENGTH', 'AIRED.AIR_LENGTH' and
+	'AFFILIATES.AFFADAVIT_CONTACT' fields to the database.
+	* Incremented the database version to 5.
+2008-02-01 Fred Gleason <fredg@paravelsystems.com>
+	* Disabled the 'Import BIA Data' button in 'davit/davit.cpp'.
+	* Added an 'ORIGIN_DATETIME.AIRED' field to the database.
+	* Incremented the database version to 6.
+	* Added a 'Generate Affidavit' button in
+	'davit/list_affiliates.cpp'.
+	* Added a 'Generate Affidavit' dialog in
+	'davit/generate_affidavit.cpp'.
+2008-02-05 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'importers' subpackage in 'davit.spec.in'.
+2008-02-05 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/edit_affiliate.cpp' that was causing a
+	changed password to affect both all records with the same base
+	call letters.
+2008-02-05 Fred Gleason <fredg@paravelsystems.com>
+	* Modified the affiliate importation code in
+	'utils/dvt_import/dvt_import.cpp' so as to set the web password
+	for each affiliate automatically.
+2008-02-05 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'davit.ini' file.
+	* Added a 'helpers/' directory.
+	* Added 'helpers/win32_frag1.txt' and 'helpers/win32_frag2.txt'
+	files.
+	* Added a 'build_win32.bat' file.
+	* Added a 'PACKAGE_VERSION' file.
+	* Modified 'configure.in' to get the package version from
+	'PACKAGE_VERSION'.
+	* Populated 'lib/lib.pro' and 'davit/davit.pro' to make the
+	Windows build work.
+2008-02-05 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/generate_affadavit.cpp' that was causing
+	the affidavit report to fail to find the affiliate signatue if the
+	program list section was not selected.
+	* Added sanity checks in 'davit/gnerate_affadavit.cpp' to ensure
+	that the start date value is always equal to or earlier than the
+	end date.
+	* Added a 'Market' column in 'davit/list_affiliates'.
+	* Fixed a bug in 'davit/list_affiliates.cpp' that was failing to
+	update column data after editing an entry.
+2008-02-05 Fred Gleason <fredg@paravelsystems.com>
+	* Added an icon in 'icons/davit.ico'.
+	* Renamed 'davit.ini' to 'davit-sample.ini'.
+2008-02-05 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0.
+2008-03-07 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit.spec.in' that was causing RPM builds on
+	x86_64 archtecture to fail.
+2008-03-07 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.1.
+2008-03-10 Fred Gleason <fredg@paravelsystems.com>
+	* Added code to generate blank spaces in the generated affidavit
+	when the name and/or title of the signing party is not listed in
+	the database.
+	* Corrected the spelling of 'affidavit' in
+	'davit/generate_affadavit.cpp' and 'davit/list_affiliates.cpp'.
+	* Added lanaguage to the gnerated affidavits to indicate that all
+	spots were run within the indicated programs.
+	* Added a date/time signature to the generated affidavits in
+	'davit/genreate_affadavit.cpp'.
+	* Added a 'Length' column to the program listing in the genrated
+	affidavits in 'davit/generate_affadavit.cpp'.
+2008-03-10 Fred Gleason <fredg@paravelsystems.com>
+	* Added a call to ldconfig(8) in the post-install rule in
+	'davit.spec.in'.
+	* Added a 'Call Filter' control in 'davit/list_affiliates.cpp'.
+2008-03-10 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'utils/dvt_import/dvt_import.cpp' that was
+	failing to import the Second Network data correctly.
+2008-03-10 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/edit_affiliate.cpp' that was failing to
+	display contact e-mail addresses over 20 characters long
+	correctly.
+	* Fixed a bug in 'davit/edit_affiliate.cpp' that was failing to
+	consistently display station power values.
+2008-03-14 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'web/davit/davit.cpp' that was causing NULL
+	entries to appear in the affidavit program list.
+2008-03-14 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.2.
+2008-03-14 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.3.
+2008-03-14 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.1.1.
+2008-03-14 Fred Gleason <fredg@paravelsystems.com>
+	* Changed 'davit/generate_affadavit.cpp' so that the station call
+	letters are used in the Affidavit certification if no valid
+	contact is listed in the database.
+2008-03-14 Fred Gleason <fredg@paravelsystems.com>
+	* Updated the package version to 1.1.2.
+2008-03-28 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'web/davit/davit.cpp' that was causing submission
+	of affiliate data via the web interface to generate a 'Missing
+	CORRECT_0' error.
+2008-03-28 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.1.3.
+2008-06-30 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'web/davit/davit.cpp' that was causing multiple
+	instances of the same program on the same affiliate to be
+	correctly processed.
+2008-06-30 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'web/davit/davit.cpp' that was causing the
+	detailed exception data to fail to be generated properly.
+2008-06-30 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/davit.cpp' that resulted in the
+	'EXCEPTIONS' section of affidavits not being generated unless the
+	program list was enabled.
+2008-07-01 Fred Gleason <fredg@paravelsystems.com>
+	* Added the ability for affiliates to specify which month to
+	submit data for in 'web/davit/davit.cpp'.
+2008-07-01 Fred Gleason <fredg@paravelsystems.com>
+	* Added the ability to generate affidavits on a per-program basis.
+2008-07-01 Fred Gleason <fredg@paravelsystems.com>
+	* Added the ability to filter affiliates by online update status.
+2008-07-02 Fred Gleason <fredg@paravelsystems.com>
+	* Changed the entry page for affiliates so as to allow a choice of
+	months for which to enter data.
+2008-07-02 Fred Gleason <fredg@paravelsystems.com>
+	* Updated the package version to 1.2.0.
+2008-07-02 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'web/davit/davit.cpp' that was causing submission
+	of affiliate data to fail with a 'Missing CORRECT_<n>' error.
+2008-07-02 Fred Gleason <fredg@paravelsystems.com>
+	* Updated the package version to 1.2.1.
+2008-07-02 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed bugs in 'davit/edit_airing.cpp' and 'davit/edit_feed.cpp'
+	that caused time entry controls to truncate the value when used in
+	twelve-hour mode.
+	* Fixed a bug in 'davit/affiliate_report.cpp' that was causing
+	phantom programs and exceptions to appear in affidavit reports.
+2008-07-02 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.2.2.
+2008-12-12 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'AFFILIATE_REMARKS' table to the database.
+	* Incremented the database version to 7.
+	* Added a 'Remarks' control to the Edit Affiliate dialog in
+	'davit/edit_affiliate.cpp' and 'davit/edit_affiliate.h'.
+	* Added an 'Add Remark' dialog in 'davit/add_remark.cpp' and
+	'davit/add_remark.h'.
+2008-12-15 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'List Reports' dialog in 'davit/list_reports.cpp' and
+	'davit/list_reports.h'
+	* Added a parameter selector dialog in 'davit/pick_fields.cpp and
+	'davit/pick_fields.h'.
+	* Implemented an 'Arbitron' report in 'davit/arbitron_report.cpp'.
+2008-12-15 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented an 'Affiliates By Program' report in
+	'davit/affiliatesbyprogram_report.cpp'.
+2008-12-15 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/davit.pro' that broke the build under
+	Windows.
+2008-12-16 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'RadioAmerica Affiliates' report in
+	'davit/raaffiliates.cpp'.
+2008-12-16 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'Affiliate' control in 'davit/pick_fields.cpp' and
+	'davit/pick_fields.h'.
+2008-12-16 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'AFFILIATE_REMARKS.EVENT_TYPE' and
+	'AFFILIATE_REMARKS.PROGRAM_ID' fields to the database.
+	* Incremented the database version to 8.
+	* Added 'Added Programs' and 'Deleted Programs' reports in
+	'davit/addedprograms_report.cpp'.
+2008-12-18 Fred Gleason <fredg@paravelsystems.com>
+	* Removed extraneous columns from the 'Affiliate by Program'
+	report in 'davit/affiliatebyprogram_report.cpp'.
+2008-12-18 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'Sort By' control to the Pick Fields dialog in
+	'davit/pick_fields.cpp'.
+2008-12-18 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'Affiliate Activity' report in
+	'davit/activity_report.cpp'.
+2008-12-19 Fred Gleason <fredg@paravelsystems.com>
+	* Added a List Selector widget from Rivendell in
+	'lib/dvtlistselector.cpp' and 'lib/dvtlistselector.h'.
+	* Added a 'Migrate Affiliates' dialog in
+	'davit/migrate_affiliates.cpp' and 'davit/migrate_affiliates.h'.
+2008-12-19 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'Add All' and 'Remove All' buttons to the
+	'DvtListSelector' widget in 'lib/dvtlistselector.cpp' and
+	'lib/dvtlistselector.h'.
+2008-12-26 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'USERS.AFFILIATE_VIEW_PRIV', 'USERS.AFFILIATE_EDIT_PRIV',
+	'USERS.AFFILIATE_SCHEDULE_PRIV', 'USERS.AFFILIATE_REMARKS_PRIV',
+	'USERS.PROVIDER_VIEW_PRIV', 'USERS.PROVIDER_EDIT_PRIV',
+	'USERS.PROGRAM_VIEW_PRIV', 'USERS.PROGRAM_EDIT_PRIV' and
+	'USERS.REPORTS_VIEW_PRIV' fields to the database.
+	* Incremented the database version to 9.
+	* Implemented the security privileges scheme.
+2009-01-12 Fred Gleason <fredg@paravelsystems.com>
+	* Modified 'davit/arbitron_report.cpp' to place each station entry
+	in a single cell.
+2009-02-17 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.3.0.
+2009-11-03 Fred Gleason <fredg@paravelsystems.com>
+	* Added include statements in 'web/davit/davit.cpp' and
+	'lib/dvtcmdswtich.cpp' to fix broken build on OpenSuSE 11.1.
+2010-03-08 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.3.1.
+2010-07-22 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'Affidavit Contacts' report in
+	'davit/affidavit_report.cpp'.
+2010-07-22 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'Missing Affidavits' report in
+	'davit/missingaffidavit_report.cpp'.
+2010-07-22 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.4.0.
+2010-07-27 Fred Gleason <fredg@paravelsystems.com>
+	* Modified 'davit/edit_affiliate.cpp' and
+	'davit/list_affiliates.cpp' to allow the station call letter field
+	to be modified.
+2010-07-27 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.4.1.
+2010-08-26 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/missingaffidavit_report.cpp' that caused
+	non-affiliated stations to show up in the report.
+2010-09-03 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.4.2.
+2010-09-23 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/affidavit_report.cpp' that caused
+	non-affiliate stations to appear in the 'Affidavit Contacts'
+	report.
+2010-09-23 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/affidavit_report.cpp' that caused
+	some affiliate stations to fail to appear in the 'Affidavit Contacts'
+	report.
+2010-09-23 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a but in 'davit/missingaffidavit_report.cpp' that caused
+	all affiliates to appear in the 'Missing Affidavit' report.
+2010-09-23 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.4.3.
+2010-10-15 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'AFFILIATES.AFFIDAVIT_ACTIVE' field to the database.
+	* Incremented the database version to 10.
+	* Modified 'davit/list_affiliates.cpp' to utilize the
+	'AFFILIATES.AFFIDAVIT_ACTIVE' field.
+	* Modified 'davit/edit_affiliate.cpp' to utilize the
+	'AFFILIATES.AFFIDAVIT_ACTIVE' field.
+	* Fixed a race in 'davit/list_affiliates.cpp' and
+	'davit/list_providers.cpp'.
+2010-10-21 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'affiliate_report.cpp' that caused generation of
+	affidavit reports to show 'no data entered' falsely when the aired
+	time of the program was different from the feed time.
+	* Added a 'CONTACTS' table to the database.
+	* Added a 'USERS.EMAIL field to the database.
+	* Modified the affiliate web password handling in
+	'davit/edit_affiliate.cpp' and 'davit/edit_affiliate.h' so that
+	the user can view the station's password.
+	* Changed the semantics of the 'AFFILIATES.USER_PASSWORD' field so
+	as to contain a cleartext password.
+	* Incremented the database version to 12.
+2010-10-21 Fred Gleason <fredg@paravelsystems.com>
+	* Added a check for sendmail(1) at program startup in
+	'davit'davit.cpp'.
+2010-10-22 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed various problems that broke the build under Windows.
+2010-10-22 Fred Gleason <fredg@paravelsystems.com>
+	* Added the ability to e-mail contacts in the Edit Affiliate
+	dialog.
+2010-10-22 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/davit.pro' that broke the build under
+	Windows.
+2010-10-29 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/davit.cpp' that made it impossible to edit
+	user configurations.
+2010-11-02 Fred Gleason <fredg@paravelsystems.com>
+	* Changed the 'Affiliates by Program' report to place the program
+	days fo the week and times in separate columns.
+2010-11-02 Fred Gleason <fredg@paravelsystems.com>
+	* Modified the 'RadioAmerica Affiliates' report so as to move the
+	Program information directly beneath each affiliate record.
+2010-11-04 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'CONTACTS.PROGRAM_DIRECTOR' field to the database.
+	* Incremented the database version to 13.
+2010-11-04 Fred Gleason <fredg@paravelsystems.com>
+	* Modified the 'Added Programs' report so as to move the
+	Program information directly beneath each affiliate record.
+2010-11-04 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'arbitron_report.cpp' that caused corrupt output
+	in the 'Arbitron' report.
+2010-11-04 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'edit_affiliate.cpp' that caused the day of week
+	values for airings to be off by when when read from the database.
+2010-11-04 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'All Affiliates' and 'Affiliates by Network' reports in
+	'davit/affiliatesbyprogram_report.cpp'.
+2010-11-05 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'Affiliates by Daypart' report in
+	'davit/affiliatesbyprogram_report.cpp'.
+	* Added a Select Daypart dialog in 'davit/pick_daypart.cpp' and
+	'davit/pick_daypart.h'.
+	* Added a 'DayPicker' widget in 'davit/daypicker.cpp' and
+	'davit/daypicker.h'.
+2010-11-05 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'CONTACTS.LOCKED' field to the database.
+	* Incremented the database version to 14.
+	* Added a 'Locked' column to the Show Contacts widget in
+	'davit/show_contacts.cpp' and 'davit/show_contacts.h'.
+	* Added a 'Lock This Contact Against External Updates' checkbox to
+	the Edit Contact dialog in 'davit/edit_contact.cpp' and
+	'davit/edit_contact.h'.
+2010-11-08 Fred Gleason <fredg@paravelsystems.com>
+	* Added an index for importing external affiliate data source for
+	the 'AFFILIATES' table in 'davit/createdb.cpp'.
+	* Added ability to import PrecisionTrak data in
+	'davit/precisiontrak.cpp'.
+2010-11-08 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.5.0.
+2010-11-16 Fred Gleason <fredg@paravelsystems.com>
+	* Moved the 'MARKET' field to replace the 'ZIPCODE' field in the
+	Added Program and Delete Programs reports in
+	'davit/addedprograms_report.cpp'.
+2010-11-16 Fred Gleason <fredg@paravelsystems.com>
+	* Moved the 'MARKET' field to replace the 'ZIPCODE' field in the
+	RadioAmerica Affiliate report in 'davit/raaffiliate_report.cpp'.
+	* Added Affidavit Name and E-Mail fields to the RadioAmerica
+	Affiliate report in 'davit/raaffiliate_report.cpp'.
+2010-11-16 Fred Gleason <fredg@paravelsystems.com>
+	* Modified the field format of the Arbitron report in
+	'davit/arbitron_report.cpp'.
+2010-11-16 Fred Gleason <fredg@paravelsystems.com>
+	* Reversed the order of the months in the ShowAffidavits widget
+	in 'davit/showaffidavits.cpp'.
+2010-11-16 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'Affiliates/Contacts by Program' report in
+	'davit/affiliatesbyprogram_report.cpp'.
+2010-11-16 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.5.1.
+2010-11-22 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'utils/vnc/davit.xinitrc.in' and
+	'utils/vnc/start_davit.sh.in'.
+2010-11-22 Fred Gleason <fredg@paravelsystems.com>
+	* Adjusted the layout of the Login dialog to improve appearance on
+	CentOS 5.5.
+2010-11-22 Fred Gleason <fredg@paravelsystems.com>
+	* Added support for RedHat to the AR_GET_DISTRO() macro in
+	'get_distro.sh'.
+2010-11-22 Fred Gleason <fredg@paravelsystems.com>
+	* Removed debugging entry from 'utils/vnc/davit.xinitrc.in'.
+2010-11-22 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.5.2.
+2010-11-22 Fred Gleason <fredg@paravelsystems.com>
+	* Switched the VNC configuration to use fvwm(1).
+2010-11-22 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.5.3.
+2010-11-30 Fred Gleason <fredg@paravelsystems.com>
+	* Added a <desktop-num> parameter to 'utils/vnc/start_davit.sh'.
+2010-11-30 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/showaffidavits.cpp' that put too many
+	months on the histogram.
+2010-11-30 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.5.4.
+2011-01-06 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'scripts/add_mysql_user.sh'.
+2011-01-06 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'utils/vnc/Makefile.am' that broke the 'make install'
+	target.
+2011-01-06 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/affiliate_report.cpp' that broke generation
+	of affiliate affidavits.
+2011-01-06 Fred Gleason <fredg@paravelsystems.com>
+	* Modified the 'Show Affiliates Missing' control in the
+	Affiliates dialog in 'davit/list_affiliates.cpp' so as to show the
+	previous month by default.
+2011-01-07 Fred Gleason <fredg@paravelsystems.com>
+	* Removed debugging statement from 'lib/dvtconf.cpp'.
+2011-01-07 Fred Gleason <fredg@paravelsystems.com>
+	* Added affiliate ID value to the title bar of the Edit Affiliate
+	dialog in 'davit/edit_affiliate.cpp'.
+	* Fixed bugs in 'davit/affidavit_report.cpp' that caused invalid
+	results to be produced in the "Affidavit Contacts' report.
+	* Renamed the 'Missing Affidavit Contacts' report to 'Missing
+	Affidavit Data Contacts'.
+	* Fixed bugs in 'davit/missingaffidavit_report.cpp' that caused invalid
+	results to be produced in the "Missing Affidavit Data Contacts' report.
+2011-01-07 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.5.5.
+2011-01-07 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a typo in 'utils/vnc/start_davit.sh' that broke remote
+	desktop startup.
+2011-01-14 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'DAVIT_WEB_LOGIN_HACK' code block in 'web/davit/davit.cgi'
+	to allow users to login in with 'broken' usernames --i.e. those
+	with no hyphen between the call letters and station type.
+2011-01-14 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.5.6.
+2011-01-14 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/list_affidavits.cpp' that caused the station
+	call letters and type to be displayed without a separating hyphen
+	when evaluating the '%S' wildcard.
+2011-01-28 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'DvtStationCallString()' function in 'lib/dvtconf.cpp'
+	and 'lib/dvtconf.h'.
+	* Refactored the 'List Contacts widget to be a modeless dialog
+	in 'davit/list_contacts.cpp' and 'davit/list_contacts.h'.
+	* Added a 'ListAirings' dialog in 'davit/list_airings.cpp' and
+	'davit/list_airings.h'.
+	* Added a 'ListRemarks' dialog in 'davit/list_remarks.cpp' and
+	'davit/list_remarks.h'.
+2011-01-31 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'Geometry' class in 'davit/geometry.cpp' and
+	'davit/geometry.h'.
+2011-01-31 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'lib/dvtconf.cpp' that caused an invalid path
+	for a temporary directory to be generated under Windows.
+2011-02-02 Fred Gleason <fredg@paravelsystems.com>
+	* Modified e-mail address verification routines to achieve better
+	compliance with RFC-2822.
+2011-02-02 Fred Gleason <fredg@paravelsystems.com>
+	* Modified 'davit/maildialog.cpp' to place multiple addresses
+	on separate lines by default.
+2011-02-02 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'lib/dvtconf.cpp' that caused e-mail addresses
+	to be malformatted under Windows.
+2011-02-02 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'lib/dvtconf.cpp' that caused invalid temporary
+	file names to be generated under Windows.
+2011-02-02 Fred Gleason <fredg@paravelsystems.com>
+	* Added a progress dialog when sending a mass affidavit reminder
+	message in 'davit/list_affiliates.cpp'.
+2011-02-03 Fred Gleason <fredg@paravelsystems.com>
+	* Added a dependency on 'VMime'.
+	* Added 'SYSTEM.SMTP_HOSTNAME' and 'SYSTEM.SMTP_PORT' fields to
+	the database.
+	* Incremented the database version to 16.
+	* Added an 'SMTP Server Settings' section to the Edit System
+	dialog box in 'davit/edit_system.cpp' and 'davit/edit_system.h'.
+2011-02-16 Fred Gleason <fredg@paravelsystems.com>
+	* Reverted e-mail subsystem to use sendmail(8) on Windows.
+2011-02-16 Fred Gleason <fredg@paravelsystems.com>
+	* Updated 'davit.ism'.
+2011-02-16 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package verson to 1.6.0.
+2011-02-21 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'AFFILIATES.DMA_NAME' field to the database.
+	* Added 'MSA_MARKET' and 'DMA_MARKET' tables to the database.
+	* Incremented the database version to 17.
+	* Added the 'Nielson DMA' field to the PrecisionTrak import in
+	'davit/precisiontrak.cpp'.
+	* Added 'Programs by MSA Market' and 'Programs by DMA Market' reports
+	in 'davit/programsbymarket_report.cpp'.
+2011-02-21 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.7.0.
+2011-02-28 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored the Generate Affidavit dialog in
+	'davit/generate_affadavit.cpp' and 'davit/generate_affadavit.h' to
+	specify dates on whole month boundaries.
+2011-02-28 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/affiliate_report.cpp' that caused invalid
+	contact data to be included on affidavits.
+2011-02-28 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'web/davit/davit.cpp' that failed to capture
+	contact information when processing clearance data.
+2011-02-28 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.7.1.
+2011-03-14 Fred Gleason <fredg@paravelsystems.com>
+	* Added a dvtstamp(1) utility in 'utils/dvtstamp/'.
+	* Added an 'AFFILIATES.IS_AFFILIATE' field to the database.
+	* Added an 'AIRED.STAMP_DATETIME' field to the database.
+	* Incremented the database version to 18
+2011-03-22 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'AIRED.STATE' field to the database.
+	* Added a 'SYSTEM.ALERT_EMAIL' field to the database.
+	* Incremented the database version to 19.
+	* Added an 'Alert E-Mail' control to the Edit Systems dialog in
+	'davit/edit_systems.cpp' and 'davit/edit_systems.h'.
+	* Refactored the affidavit generation system to output direct
+	to printers.
+2011-03-22 Fred Gleason <fredg@paravelsystems.com>
+	* Increased the value of DAVIT_POST_SIZE to 32768 in
+	'lib/dvtweb.h' to accomodate posts with many programs.
+2011-03-22 Fred Gleason <fredg@paravelsystems.com>
+	* Added a '--for-affiliate-id' switch to dvtstamp(1) in
+	'utils/dvtstamp/dvtstamp.cpp' and 'utils/dvtstamp/dvtstamp.h'.
+	* Added the ability to generate an entire month's worth of
+	records with a single invocation of dvtstamp(1) in
+	'utils/dvtstamp/dvtstamp.cpp' and 'utils/dvtstamp/dvtstamp.h'.
+2011-03-24 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'web/davit/davit.cpp' that broke the web home page.
+2011-03-24 Fred Gleason <fredg@paravelsystems.com>
+	* Added code for DB update 19 to synthesize scheduled affidavit
+	events.
+2011-03-29 Fred Gleason <fredg@paravelsystems.com>
+	* Added support for multiple pages when printing affidavits.
+	* Added an 'Exception' section to affidavits.
+2011-03-29 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/showaffidavits.cpp' that caused the current
+	month to be displayed in the Show Affidavits widget.
+2011-03-29 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'IS_AFFILIATE_IDX' index to the AFFILIATES' table in
+	'davit/createdb.cpp'.
+	* Added an 'AFFIDAVIT_ACTIVE_IDX' index to the AFFILIATES' table in
+	'davit/createdb.cpp'.
+	* Modified the Affidavit Contact and Missing Affidavit reports to
+	work with the new affidavit tracking schema.
+2011-03-29 Fred Gleason <fredg@paravelsystems.com>
+	* Modified Affiliate Activity report to use new contact schema.
+2011-03-29 Fred Gleason <fredg@paravelsystems.com>
+	* Removed dead BIA data import from 'davit/davit.cpp'.
+2011-03-29 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the contact information fields from the Affiliate List
+	in 'davit/list_affiliates.cpp'.
+2011-03-29 Fred Gleason <fredg@paravelsystems.com>
+	* Removed dead SQL code from 'davit/program_report.cpp'.
+2011-03-29 Fred Gleason <fredg@paravelsystems.com>
+	* Removed 'AFFILIATES.CONTACT_FIRST_NAME',
+	'AFFILIATES.CONTACT_LAST_NAME','AFFILIATES.CONTACT_PHONE',
+	'AFFILIATES.CONTACT_FAX','AFFILIATES.CONTACT_EMAIL' fields from the
+	database.
+	* Incremented the database version to 20.
+2011-03-29 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'lib/dvtmail_win32.cpp' that broke the build under
+	Windows.
+2011-03-29 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 2.0.0.
+2011-04-01 Fred Gleason <fredg@paravelsystems.com>
+	* Moved install location of dvtstamp(8) from $prefix/bin to
+	$prefix/sbin.
+2011-04-01 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 2.0.1.
+2011-04-01 Fred Gleason <fredg@paravelsystems.com>
+	* Modified 'davit/precisiontrak.cpp' to work with the Davit-v2
+	template.
+2011-04-21 Fred Gleason <fredg@paravelsystems.com>
+	* Increased the value of 'DAVIT_POST_SIZE' to 1000000 in
+	'web/davit/davit.h'.
+2011-04-21 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 2.0.2.
+2011-04-22 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'DMA_MARKET.RANK' and 'MSA_MARKET.RANK' fields to the
+	database.
+	* Incremented the database version to 21.
+	* Added 'MSA RANK', 'DMA MARKET' and 'DMA RANK' columns to the
+	'Affiliates by Program',Affiliates by Daypart, 'Affiliates by Network',
+	'All Affiliates' and 'Affiliate Contacts by Program' reports in
+	'davit/affiliatebyprogram.cpp'.
+2011-04-29 Fred Gleason <fredg@paravelsystems.com>
+	* Added a dvtdbcheck(8) utility in 'utils/dvtdbcheck/'.
+2011-04-29 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'MSA RANK', 'DMA MARKET' and 'DMA RANK' columns to the
+	'RadioAmerica Affiliate' report in 'davit/raaffiliate_report.cpp'.
+2011-04-29 Fred Gleason <fredg@paravelsystems.com>
+	* Added logic in 'davit/show_affidavits.cpp' and
+	'davit/show_affidavits.h' to suppress 'OK' indications for
+	non-affiliated stations.
+2011-04-29 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 2.0.3.
+2011-05-02 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit.spec.in' that broke the 'make rpm' target.
+2011-05-02 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 2.0.4.
+2011-06-14 Fred Gleason <fredg@paravelsystems.com>
+	* Added the ability to add and delete network entries in
+	'davit/list_networks.cpp'.
+2011-06-14 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 2.0.5.
+2011-07-20 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'davit.ini'.
+2011-07-20 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 2.0.6.
+2011-08-04 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'web/davit/davit.cpp' that threw an online
+	error when submitting partial affidavits.
+2011-08-04 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 2.0.7.
+2011-08-19 Fred Gleason <fredg@paravelsystems.com>
+	* Added a counter to show number of stations being displayed to the
+	List Affiliates dialog in 'davit/list_affiliates.cpp' and
+	'davit/list_affiliates.h'.
+2011-09-27 Fred Gleason <fredg@paravelsystems.com>
+	* Modified the RadioAmerica affiliate report in
+	'davit/raafilliate.cpp' to sort results by State and City.
+2011-09-27 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 2.0.8.
+2012-02-09 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'CONTACTS.GENERAL_MANAGER' field to the database.
+	* Incremented the database version to 22.
+	* Added a 'Gen Mgr' column to the 'Contacts' dialog in
+	'davit/list_contacts.cpp'.
+	* Added a 'Receives General Manager E-Mail' checkbox to the
+	'Edit Contact' dialog in 'davit/edit_contact.cpp' and
+	'davit/edit_contact.h'.
+	* Added an 'All Affiliate Contact' report in
+	'davit/affiliatesbyprogram_report.cpp'.
+2012-02-09 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 2.1.0.
+2013-02-26 Fred Gleason <fredg@paravelsystems.com>
+	* Added the AM_SILENT_RULES macro in 'configure.in'.
+	* Cleaned up compiler warnings in 'lib/dvtweb.cpp', 'lib/dvtweb.h',
+	'davit/list_providers.cpp', 'lib/list_programs.cpp',
+	'davit/affiliate_report.cpp', 'davit/affiliatesbymarket_report.cpp',
+	'davit/maildialog.cpp', 'lib/dvtcmdswitch.cpp' and
+	'lib/dvtcmdswitch.h'.
+2013-03-11 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'kdmrc-example'.
+	* Documented kdm(8) configuration in 'INSTALL'.
+2014-01-02 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'CONTACT NAME' and 'CONTACT PHONE' to the Affidavit Contact
+	report in 'davit/affidavit_report.cpp', 'davit/list_reports.cpp'
+	and 'davit/list_reports.h'.
+2014-05-13 Fred Gleason <fredg@paravelsystems.com>
+	* Modified 'davit.spec.in' and 'Makefile.am' for CentOS.
+2014-05-13 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 2.1.1.
+2014-05-13 Fred Gleason <fredg@paravelsystems.com>
+	* Changed installation location of 'dvt-bin.conf' from
+	'/etc/apache2/conf.d/' to '/etc/httpd.conf.d/'.
+2014-05-13 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 2.1.2.

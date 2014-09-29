@@ -1,0 +1,246 @@
+Database structure notes for the Davit system.
+
+***************************************************************************
+AFFILIATES Table
+FIELD NAME                       TYPE      REMARKS
+--------------------------------------------------------------------------
+ID                          int(11)        Primary key, auto incrementing
+BIA_CODE                    char(10)       Unique
+STATION_CALL                char(10)       Unique
+STATION_PREV_CALL           char(10)
+STATION_TYPE                char(2)        'AM', 'FM', 'IN'
+STATION_POWER               int(11)        Watts
+STATION_NIGHT_POWER         int(11)        Watts
+STATION_FREQUENCY           real
+STATION_FORMAT              char(64)
+LICENSE_CITY                char(64)
+LICENSE_STATE               char(2)
+LICENSE_COUNTRY             char(2)
+BUSINESS_NAME               char(64)
+ADDRESS1                    char(64)
+ADDRESS2                    char(64)
+CITY                        char(64)
+STATE                       char(2)
+ZIPCODE                     char(10)
+COUNTRY                     char(2)
+PHONE                       char(20)
+FAX                         char(20)
+EMAIL_ADDR                  char(64)
+WEB_URL                     char(64)
+MARKET_NAME                 char(64)
+MARKET_RANK                 int(11)
+DMA_NAME                    char(64)
+DMA_RANK                    int(11)
+TIME_ZONE                   char(8)
+IS_AFFILIATE                enum('N','Y')
+AFFIDAVIT_ACTIVE            enum('N','Y')
+SECOND_NETWORK_ID           int(11)        From NETWORKS.ID
+AFFADAVIT_CONTACT           int            Pointer to contact
+USER_PASSWORD               char(41)       Hashed value
+***************************************************************************
+
+***************************************************************************
+PROVIDERS Table
+FIELD NAME                       TYPE      REMARKS
+--------------------------------------------------------------------------
+ID                          int(11)        Primary key, auto incrementing
+BUSINESS_NAME               char(64)
+ADDRESS1                    char(64)
+ADDRESS2                    char(64)
+CITY                        char(64)
+STATE                       char(2)
+ZIPCODE                     char(10)
+COUNTRY                     char(2)
+CONTACT_NAME                char(64)
+CONTACT_PHONE               char(20)
+CONTACT_FAX                 char(20)
+CONTACT_EMAIL               char(64)
+***************************************************************************
+
+
+***************************************************************************
+PROGRAMS Table
+FIELD NAME                       TYPE      REMARKS
+--------------------------------------------------------------------------
+ID                          int(11)        Primary key, auto incrementing
+PROVIDER_ID                 int(11)        From PROVIDERS.ID
+PROGRAM_NAME                char(64)       Unique
+AIR_LENGTH                  int(11)
+CONTACT_NAME                char(64)
+CONTACT_PHONE               char(20)
+CONTACT_FAX                 char(20)
+CONTACT_EMAIL               char(64)
+PRIMARY_ISDN_NUMBER         char(20)
+PRIMARY_ISDN_TX_ALGO        char(1)        G=G.722, 2=MPEG L2, 3=MPEG L3,
+                                           A=AAC
+PRIMARY_ISDN_RX_ALGO        char(1)        G=G.722, 2=MPEG L2, 3=MPEG L3,
+                                           A=AAC
+PRIMARY_ISDN_BITRATE        int(11)
+PRIMARY_ISDN_SAMPLERATE     int(11)
+PRIMARY_ISDN_CHANNELS       int(11)
+SECONDARY_ISDN_NUMBER       char(20)
+SECONDARY_ISDN_TX_ALGO      char(1)        G=G.722, 2=MPEG L2, 3=MPEG L3,
+                                           A=AAC
+SECONDARY_ISDN_RX_ALGO      char(1)        G=G.722, 2=MPEG L2, 3=MPEG L3,
+                                           A=AAC
+SECONDARY_ISDN_BITRATE      int(11)
+SECONDARY_ISDN_SAMPLERATE   int(11)
+SECONDARY_ISDN_CHANNELS     int(11)
+REMARKS                     char(255)
+***************************************************************************
+
+
+***************************************************************************
+FEEDS Table
+FIELD NAME                       TYPE      REMARKS
+--------------------------------------------------------------------------
+ID                          int(11)        Primary key, auto incrementing
+PROGRAM_ID                  int(11)        From PROGRAMS.ID
+AIR_SUN                     enum('N','Y')
+AIR_MON                     enum('N','Y')
+AIR_TUE                     enum('N','Y')
+AIR_WED                     enum('N','Y')
+AIR_THU                     enum('N','Y')
+AIR_FRI                     enum('N','Y')
+AIR_SAT                     enum('N','Y')
+AIR_TIME                    time
+***************************************************************************
+
+
+***************************************************************************
+AIRINGS Table
+FIELD NAME                       TYPE      REMARKS
+--------------------------------------------------------------------------
+ID                          int(11)        Primary key, auto incrementing
+PROGRAM_ID                  int(11)        From PROGRAMS.ID
+AFFILIATE_ID                int(11)        From AFFILIATES.ID
+AIR_SUN                     enum('N','Y')
+AIR_MON                     enum('N','Y')
+AIR_TUE                     enum('N','Y')
+AIR_WED                     enum('N','Y')
+AIR_THU                     enum('N','Y')
+AIR_FRI                     enum('N','Y')
+AIR_SAT                     enum('N','Y')
+AIR_TIME                    time
+AIR_LENGTH                  int(11)
+***************************************************************************
+
+
+***************************************************************************
+AIRED Table
+FIELD NAME                       TYPE      REMARKS
+--------------------------------------------------------------------------
+ID                          int(11)        Primary key, auto incrementing
+PROGRAM_ID                  int(11)        From PROGRAMS.ID
+AFFILIATE_ID                int(11)        From AFFILIATES.ID
+AIR_DATETIME                datetime       Actual aired datestamp
+STATE                       int(11)        0=Unknown, 1=Scheduled,
+                                           2=Confirmed, 3=Denied, 4=Modified
+AIR_LENGTH                  int(11)
+ORIGIN_DATETIME             datetime       Time of affidavit completion
+CONTACT_NAME                char(64)
+CONTACT_PHONE               char(20)
+CONTACT_FAX                 char(20)
+CONTACT_EMAIL               char(64)
+STAMP_DATETIME              datetime       Time of creation of record by
+                                           dvtstamp(1).
+***************************************************************************
+
+
+***************************************************************************
+USERS Table
+FIELD NAME                       TYPE      REMARKS
+--------------------------------------------------------------------------
+USER_NAME                        char(40)  Primary key
+USER_PASSWORD                    char(41)
+FULL_NAME                        char(64)
+DESCRIPTION                      char(64)
+PHONE_NUMBER                     char(20)
+ADMIN_PRIV                       enum('N','Y')
+AFFILIATE_VIEW_PRIV              enum('N','Y')
+AFFILIATE_EDIT_PRIV              enum('N','Y')
+AFFILIATE_SCHEDULE_PRIV          enum('N','Y')
+AFFILIATE_REMARK_PRIV            enum('N','Y')
+PROVIDER_VIEW_PRIV               enum('N','Y')
+PROVIDER_EDIT_PRIV               enum('N','Y')
+PROGRAM_VIEW_PRIV                enum('N','Y')
+PROGRAM_EDIT_PRIV                enum('N','Y')
+REPORT_VIEW_PRIV                 enum('N','Y')
+***************************************************************************
+
+
+***************************************************************************
+NETWORKS Table
+FIELD NAME                       TYPE      REMARKS
+--------------------------------------------------------------------------
+ID                               int(11)  Primary key, auto increment
+NAME                             char(64)
+***************************************************************************
+
+
+***************************************************************************
+WEB_CONNECTIONS Table
+FIELD NAME                       TYPE      REMARKS
+--------------------------------------------------------------------------
+SESSION_ID                       int(11)  Primary key, auto increment
+AFFILIATE_ID                     int(11)  From AFFILIATES.ID
+IP_ADDRESS                       char(16)
+TIME_STAMP                       datetime
+***************************************************************************
+
+
+***************************************************************************
+VERSION Table
+FIELD NAME                       TYPE      REMARKS
+--------------------------------------------------------------------------
+DB                               int(11)
+***************************************************************************
+
+
+***************************************************************************
+AFFILIATE_REMARKS Table
+FIELD NAME                       TYPE      REMARKS
+--------------------------------------------------------------------------
+ID                               int(11)   Primary key, auto increment
+EVENT_TYPE                       int(11)   0=Remark, 1=Program Add,
+                                           2=Program Delete
+AFFILIATE_ID                     int(11)   From AFFILIATES.ID
+PROGRAM_ID                       int(11)   From PROGRAMS.ID
+REMARK_DATETIME                  datetime
+USER_NAME                        char(40)  From USERS.USER_NAME
+REMARK                           text
+***************************************************************************
+
+
+***************************************************************************
+SYSTEMS Table
+FIELD NAME                       TYPE      REMARKS
+--------------------------------------------------------------------------
+ID                               int(11)   Primary key, auto increment
+SMTP_HOSTNAME                    char(255)
+SMTP_PORT                        int(11);
+ORIGIN_EMAIL                     char(64)
+ALERT_EMAIL                      char(64)
+AFFIDAVIT_EMAIL_SUBJECT          char(64)
+AFFIDAVIT_EMAIL_TEMPLATE         text
+***************************************************************************
+
+
+***************************************************************************
+MSA_MARKETS Table
+FIELD NAME                       TYPE      REMARKS
+--------------------------------------------------------------------------
+ID                               int(11)   Primary key, auto increment
+NAME                             char(64)
+RANK                             int(11)
+***************************************************************************
+
+
+***************************************************************************
+DMA_MARKETS Table
+FIELD NAME                       TYPE      REMARKS
+--------------------------------------------------------------------------
+ID                               int(11)   Primary key, auto increment
+NAME                             char(64)
+RANK                             int(11)
+***************************************************************************

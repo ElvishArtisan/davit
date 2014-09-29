@@ -1,0 +1,133 @@
+## davit.spec.in
+##
+##    Copyright (C) 2007-2014  Fred Gleason <fredg@paravelsystems.com>
+##
+##    This program is free software; you can redistribute it and/or modify
+##    it under the terms of version 2 of the GNU General Public License as
+##    published by the Free Software Foundation;
+##
+##    This program is distributed in the hope that it will be useful,
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##    GNU General Public License for more details.
+##
+##    You should have received a copy of the GNU General Public License
+##    along with this program; if not, write to the Free Software
+##    Foundation, Inc., 59 Temple Place, Suite 330, 
+##    Boston, MA  02111-1307  USA
+##
+
+Summary: Affiliate relations system for radio networks.
+Name: davit
+Version: @VERSION@
+Release: @RPM_RELEASE@%{?dist}
+License: GPL
+Group: Productivity/Office/Other
+Source: davit-@VERSION@.tar.gz
+BuildRoot: /var/tmp/davit-@VERSION@
+
+%package web
+Summary: Web components for the Davit Affiliate Relations System
+Group: Productivity/Office/Other
+Requires: davit httpd
+
+%package importers
+Summary: Importer components for the Davit Affiliate Relations System
+Group: Productivity/Office/Other
+Requires: davit
+
+%description
+Davit is an affiliate relations system for radio network environments.
+
+%description web
+The web components for the affiliate data submission system.
+
+%description importers
+The importer components for the affiliate data submission system.
+
+%prep
+%setup
+./configure --prefix=@LOCAL_PREFIX@ --libexecdir=/var/www/dvt-bin
+
+%build
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT@LOCAL_PREFIX@/@DAVIT_LIB_PATH@
+cp lib/.libs/libdvt-@VERSION@.so $RPM_BUILD_ROOT@LOCAL_PREFIX@/@DAVIT_LIB_PATH@/
+ln -s @LOCAL_PREFIX@/@DAVIT_LIB_PATH@/libdvt-@VERSION@.so $RPM_BUILD_ROOT@LOCAL_PREFIX@/@DAVIT_LIB_PATH@/libdvt.so
+cp lib/.libs/libdvt.la $RPM_BUILD_ROOT@LOCAL_PREFIX@/@DAVIT_LIB_PATH@/
+mkdir -p $RPM_BUILD_ROOT@LOCAL_PREFIX@/bin
+cp davit/.libs/davit $RPM_BUILD_ROOT@LOCAL_PREFIX@/bin/
+cp utils/dvt_import/.libs/dvt_import $RPM_BUILD_ROOT@LOCAL_PREFIX@/bin/
+cp utils/vnc/davit.xinitrc $RPM_BUILD_ROOT@LOCAL_PREFIX@/bin/
+cp utils/vnc/start_davit.sh $RPM_BUILD_ROOT@LOCAL_PREFIX@/bin/
+mkdir -p $RPM_BUILD_ROOT@LOCAL_PREFIX@/sbin
+cp utils/dvtstamp/.libs/dvtstamp $RPM_BUILD_ROOT@LOCAL_PREFIX@/sbin/
+cp utils/dvtdbcheck/.libs/dvtdbcheck $RPM_BUILD_ROOT@LOCAL_PREFIX@/sbin/
+mkdir -p $RPM_BUILD_ROOT/var/www/dvt-bin
+cp web/davit/.libs/davit.cgi $RPM_BUILD_ROOT/var/www/dvt-bin/
+mkdir -p $RPM_BUILD_ROOT/etc
+cp davit.conf-sample $RPM_BUILD_ROOT/etc/davit.conf
+mkdir -p $RPM_BUILD_ROOT/etc/httpd/conf.d
+cp dvt-bin.conf $RPM_BUILD_ROOT/etc/httpd/conf.d/
+mkdir -p $RPM_BUILD_ROOT/@LOCAL_PREFIX@/share/fvwm
+cp utils/vnc/davit-config $RPM_BUILD_ROOT@LOCAL_PREFIX@/share/fvwm/
+
+%post
+ldconfig
+service httpd restart
+
+%postun
+service httpd restart
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root)
+@LOCAL_PREFIX@/@DAVIT_LIB_PATH@/libdvt-@VERSION@.so
+@LOCAL_PREFIX@/@DAVIT_LIB_PATH@/libdvt.so
+@LOCAL_PREFIX@/@DAVIT_LIB_PATH@/libdvt.la
+@LOCAL_PREFIX@/bin/davit
+@LOCAL_PREFIX@/bin/davit.xinitrc
+@LOCAL_PREFIX@/bin/start_davit.sh
+@LOCAL_PREFIX@/sbin/dvtstamp
+@LOCAL_PREFIX@/sbin/dvtdbcheck
+@LOCAL_PREFIX@/share/fvwm/davit-config
+%config /etc/davit.conf
+%doc README
+%doc INSTALL
+%doc ChangeLog
+%doc scripts/add_mysql_user.sh
+
+%files web
+/var/www/dvt-bin/davit.cgi
+/etc/httpd/conf.d/dvt-bin.conf
+
+%files importers
+@LOCAL_PREFIX@/bin/dvt_import
+
+%changelog
+* Tue May 13 2014 Fred Gleason <fgleason@radioamerica.org>
+-- Modified for CentOS 6.
+* Fri Apr 29 2011 Fred Gleason <fgleason@radioamerica.org>
+-- Added dvtdbcheck(8).
+* Fri Apr 01 2011 Fred Gleason <fgleason@radioamerica.org>
+-- Added dvtstamp(8).
+* Thu Jan 06 2011 Fred Gleason <fgleason@radioamerica.org>
+-- Added 'add_mysql_user.sh'.
+* Mon Nov 22 2010 Fred Gleason <fgleason@radioamerica.org>
+-- Added 'davit.xinitrc' and 'start_davit.sh' scripts.
+* Mon Mar 10 2008 Fred Gleason <fgleason@radioamerica.org>
+-- Added 'ldconfig' to the post-install rules.
+* Fri Mar 07 2008 Fred Gleason <fgleason@radioamerica.org>
+-- Fixed a bug with the library installation path when building for x86_64 
+architecture.
+* Tue Feb 05 2008 Fred Gleason <fgleason@radioamerica.org>
+-- Added the 'importers' subpackage [dvt_import].
+* Wed Jan 23 2008 Fred Gleason <fgleason@radioamerica.org>
+-- Added dynamic library and web subpackage support.
+* Wed Mar 28 2007 Fred Gleason <fgleason@radioamerica.org>
+-- Initial RPM creation.

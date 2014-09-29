@@ -1,0 +1,33 @@
+# rdfeed.conf
+#
+# This is the Apache Web Server configuration for Davit's web
+# module.
+#
+#   (C) Copyright 2008 Fred Gleason <fredg@paravelsystems.com>
+#
+#      $Id: dvt-bin.conf.in,v 1.1 2008/01/25 12:27:12 fredg Exp $
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License version 2 as
+#   published by the Free Software Foundation.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public
+#   License along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+
+<Directory "@libexecdir@">
+  Options ExecCGI
+  AllowOverride None
+  Order allow,deny
+  Allow from all
+  <Files *.cgi>
+    SetHandler cgi-script
+  </Files>
+</Directory>
+ScriptAlias /dvt-bin/ "@libexecdir@/"
