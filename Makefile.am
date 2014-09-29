@@ -30,12 +30,12 @@ maintainer-clean-local:
 	rm -rf m4
 
 rpm:	dist
-	cp davit-$(VERSION).tar.gz $(RPM_ROOT)/SOURCES/
+	cp davit-$(VERSION).tar.gz $(HOME)/rpmbuild/SOURCES/
 	$(RPMBUILD) -ba davit.spec
-	mv $(RPM_ROOT)/RPMS/$(ARCH)/davit-*.rpm $(top_srcdir)/
-	mv $(RPM_ROOT)/SRPMS/davit-*.src.rpm $(top_srcdir)/
-	rm $(RPM_ROOT)/SOURCES/davit-$(VERSION).tar.gz
-	rm -rf $(RPM_ROOT)/BUILD/davit-$(VERSION)
+	mv $(HOME)/rpmbuild/RPMS/$(ARCH)/davit-*.rpm $(top_srcdir)/
+	mv $(HOME)/rpmbuild/SRPMS/davit-*.src.rpm $(top_srcdir)/
+	rm $(HOME)/rpmbuild/SOURCES/davit-$(VERSION).tar.gz
+	rm -rf $(HOME)/rpmbuild/BUILD/davit-$(VERSION)
 
 EXTRA_DIST = davit.spec.in davit.pro autogen.sh davit.conf-sample\
              get_target.sh dvt-bin.conf.in get_target.sh get_distro.sh\
