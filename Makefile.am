@@ -24,6 +24,11 @@
 
 SUBDIRS = helpers scripts docs icons lib davit web utils
 
+ACLOCAL_AMFLAGS = -I m4
+
+maintainer-clean-local:	
+	rm -rf m4
+
 rpm:	dist
 	cp davit-$(VERSION).tar.gz $(RPM_ROOT)/SOURCES/
 	$(RPMBUILD) -ba davit.spec

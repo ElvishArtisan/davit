@@ -21,10 +21,11 @@ dnl   License along with this program; if not, write to the Free Software
 dnl   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl
 dnl Use autoconf to process this into a configure script
-AC_INIT(davit,`cat PACKAGE_VERSION`,fredg@paravelsystems.com)
-AM_INIT_AUTOMAKE(davit,`cat PACKAGE_VERSION`)
+AC_INIT(davit,m4_esyscmd(cat PACKAGE_VERSION))
+AM_INIT_AUTOMAKE
 AC_SUBST(RPM_RELEASE,1)
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
+AC_CONFIG_MACRO_DIR([m4])
 
 #
 # Some Fully Resolved Install Paths

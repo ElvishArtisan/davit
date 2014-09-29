@@ -671,3 +671,7 @@
 	'/etc/apache2/conf.d/' to '/etc/httpd.conf.d/'.
 2014-05-13 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 2.1.2.
+2014-09-29 Fred Gleason <fredg@paravelsystems.com>
+	* Moved 'configure.in' to 'configure.ac'.
+	* Modernized AC_INIT() and AM_INIT() invocations in
+	'configure.ac'.
