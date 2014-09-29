@@ -675,3 +675,6 @@
 	* Moved 'configure.in' to 'configure.ac'.
 	* Modernized AC_INIT() and AM_INIT() invocations in
 	'configure.ac'.
+2014-09-29 Fred Gleason <fredg@paravelsystems.com>
+	* Modified the 'make rpm' target to use in-home RPM build
+	directories.
