@@ -408,7 +408,7 @@ QString MainWidget::GetNextLine(FILE *f)
 	istate=1;
       }
       else {
-	if(iscntrl(c)!=0) {
+	if((c>=0)&&(c<32)) {
 	  c=' ';
 	}
 	ret+=c;

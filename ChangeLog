@@ -681,3 +681,7 @@
 2014-10-07 Fred Gleason <fredg@paravelsystems.com>
 	* Updated 'davit/precisiontrak.cpp' to use the 'Davit-v3' template
 	in PrecisionTrak.
+2014-10-07 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored to eliminate the isctrl() call in
+	'davit/precisiontrak.cpp' so as to allow compilation under
+	Windows.
