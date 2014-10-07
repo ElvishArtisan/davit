@@ -685,3 +685,5 @@
 	* Refactored to eliminate the isctrl() call in
 	'davit/precisiontrak.cpp' so as to allow compilation under
 	Windows.
+2014-10-07 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 2.1.3.
