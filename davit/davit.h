@@ -56,6 +56,9 @@ class MainWidget : public QWidget
   void ProcessMarketRecord(const QString &table,QString &name,int rank);
   int GetMarketRank(const QString &table,const QString &name,int rank);
   void ImportPrecisionTrakRecord(const QStringList &cols);
+  void VerifyPrecisionTrakRecord(const QString &str1,const QString &str2,
+				 QStringList &errs);
+  QString GetNextLine(FILE *f);
 };
 
 

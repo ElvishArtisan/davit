@@ -678,3 +678,6 @@
 2014-09-29 Fred Gleason <fredg@paravelsystems.com>
 	* Modified the 'make rpm' target to use in-home RPM build
 	directories.
+2014-10-07 Fred Gleason <fredg@paravelsystems.com>
+	* Updated 'davit/precisiontrak.cpp' to use the 'Davit-v3' template
+	in PrecisionTrak.
