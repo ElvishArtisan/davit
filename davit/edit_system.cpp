@@ -26,6 +26,7 @@
 
 #include <dvtconf.h>
 
+#include <globals.h>
 #include <edit_system.h>
 
 EditSystem::EditSystem(QWidget *parent,const char *name)
@@ -111,6 +112,13 @@ EditSystem::EditSystem(QWidget *parent,const char *name)
   edit_key_label=new QLabel("%S - Station Call Letters\n%U - Web Login Username\n%P - Web Login Password",this);
 
   //
+  // Test Button
+  //
+  edit_test_button=new QPushButton(tr("Send Test"),this);
+  edit_test_button->setFont(label_font);
+  connect(edit_test_button,SIGNAL(clicked()),this,SLOT(testData()));
+
+  //
   // Ok Button
   //
   edit_ok_button=new QPushButton(tr("OK"),this);
@@ -153,6 +161,14 @@ QSize EditSystem::sizeHint() const
 QSizePolicy EditSystem::sizePolicy() const
 {
   return QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+}
+
+
+void EditSystem::testData()
+{
+  mail_dialog->exec("","","",edit_origin_email_edit->text(),
+		    edit_origin_email_edit->text(),"Test message",
+		    "This is a test!");
 }
 
 
@@ -226,6 +242,7 @@ void EditSystem::resizeEvent(QResizeEvent *e)
   edit_affidavit_template_edit->
     setGeometry(10,210,size().width()-20,size().height()-272);
   edit_key_label->setGeometry(25,size().height()-60,size().width()-145,60);
+  edit_test_button->setGeometry(size().width()-250,size().height()-35,80,30);
   edit_ok_button->setGeometry(size().width()-120,size().height()-35,50,30);
   edit_cancel_button->setGeometry(size().width()-60,size().height()-35,50,30);
 }

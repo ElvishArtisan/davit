@@ -687,3 +687,7 @@
 	Windows.
 2014-10-07 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 2.1.3.
+2014-11-17 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'Send Test E-Mail' button to the 'Edit System Settings'
+	dialog in 'davit/edit_system.cpp' and 'davit/edit_system.h'.
+	* Removed duplicate catch clause in 'lib/dvtmail.cpp'.

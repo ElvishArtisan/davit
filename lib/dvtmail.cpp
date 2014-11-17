@@ -102,7 +102,6 @@ bool DvtSendMail(const QStringList &to_addrs,const QStringList &cc_addrs,
 	return false;
       }
       if(q->value(0).toString().isEmpty()) {
-	DvtCgiError("HERE2");
 	__MailError("Missing SMTP server configuration!",parent);
 	delete q;
 	return false;
@@ -128,13 +127,6 @@ bool DvtSendMail(const QStringList &to_addrs,const QStringList &cc_addrs,
     }
     ret=false;
   }
-  catch(std::exception &e) {
-    if(batch_transport==NULL) {
-	__MailError(e.what(),parent);
-    }
-    ret=false;
-  }
-
   return ret;
 }
 

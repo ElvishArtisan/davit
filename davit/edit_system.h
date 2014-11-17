@@ -42,6 +42,7 @@ class EditSystem : public QDialog
   QSizePolicy sizePolicy() const;
 
  private slots:
+  void testData();
   void okData();
   void cancelData();
 
@@ -63,6 +64,7 @@ class EditSystem : public QDialog
   QLineEdit *edit_affidavit_subject_edit;
   QLabel *edit_affidavit_template_label;
   QTextEdit *edit_affidavit_template_edit;
+  QPushButton *edit_test_button;
   QPushButton *edit_ok_button;
   QPushButton *edit_cancel_button;
   QLabel *edit_key_label;
