@@ -189,7 +189,7 @@ void ListReports::runData()
     AffidavitReport();
   }
   if(item->text(0)==tr("Missing Affidavit Data Contacts")) {
-    MissingAffidavitReport();
+    MissingAffidavitContactReport();
   }
   if(item->text(0)==tr("Affiliates by Program/DMA Market")) {
     AffiliatesByMarketReport(PickFields::DmaMarket);

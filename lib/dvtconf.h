@@ -24,6 +24,8 @@
 #define DVTCONF_H
 
 #define MAX_RETRIES 10
+#include <vector>
+
 #include <qstring.h>
 #include <qdatetime.h>
 #include <qfont.h>
@@ -104,6 +106,8 @@ int DvtCreateNewAffiliateRecord();
 QString DvtStationCallString(const QString &call,const QString &type);
 QString DvtStationCallString(int affiliate_id);
 bool DvtAffidavitNeeded(int affiliate_id,const QDate &date);
+bool DvtAffidavitNeeded(std::vector<int> *ids,
+			const QDate &start_date,const QDate &end_date);
 void DvtUpdateIsAffiliateField();
 
 #endif   // DVTCONF_H

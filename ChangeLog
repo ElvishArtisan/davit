@@ -693,3 +693,6 @@
 	* Removed duplicate catch clause in 'lib/dvtmail.cpp'.
 2014-11-17 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 2.1.4.
+2014-12-09 Fred Gleason <fredg@paravelsystems.com>
+	* Renamed 'davit/missingaffidavit_report.cpp' to
+	'davit/missingaffidavitcontact_report.cpp'.

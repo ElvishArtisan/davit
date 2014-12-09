@@ -72,7 +72,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      list_users.cpp list_users.h\
                      maildialog.cpp maildialog.h\
                      migrate_affiliates.cpp migrate_affiliates.h\
-                     missingaffidavit_report.cpp\
+                     missingaffidavitcontact_report.cpp\
                      mysql_login.cpp mysql_login.h\
                      opendb.cpp opendb.h\
                      pick_daypart.cpp pick_daypart.h\

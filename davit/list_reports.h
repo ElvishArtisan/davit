@@ -61,7 +61,11 @@ class ListReports : public QDialog
   void ActivityReport();
   void AddedProgramsReport(Dvt::RemarkType type);
   void AffidavitReport();
-  void MissingAffidavitReport();
+
+  //
+  // missingaffidavitcontact_report.cpp
+  //
+  void MissingAffidavitContactReport();
 
   //
   // affiliatesbyprogram.cpp

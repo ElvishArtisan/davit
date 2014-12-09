@@ -1277,6 +1277,32 @@ bool DvtAffidavitNeeded(int affiliate_id,const QDate &date)
 }
 
 
+bool DvtAffidavitNeeded(std::vector<int> *ids,
+			const QDate &start_date,const QDate &end_date)
+{
+  QString sql;
+  QSqlQuery *q;
+  int current_id=-1;
+
+  ids->clear();
+  sql=QString("select ID from AIRED where ")+
+    QString().sprintf("(STATE=%d)&&",Dvt::AiredStateScheduled)+
+    "(AIR_DATETIME>=\""+start_date.toString("yyyy-MM")+"-01 00:00:00)&&"+
+    "(AIR_DATETIME<\""+end_date.addDays(1).toString("yyyy-MM")+"-01 00:00:00) "+
+    "order by ID";
+  q=new QSqlQuery(sql);
+  while(q->next()) {
+    if(q->value(0).toInt()!=current_id) {
+      ids->push_back(q->value(0).toInt());
+      current_id=q->value(0).toInt();
+    }
+  }
+  delete q;
+
+  return ids->size()!=0;
+}
+
+
 void DvtUpdateIsAffiliateField()
 {
   QString sql;
