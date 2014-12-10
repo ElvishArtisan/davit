@@ -3,9 +3,7 @@
 // 
 // Adopted from conflib
 //
-//   (C) Copyright 1996-2003 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtconf.cpp,v 1.15 2013/02/26 19:06:17 pcvs Exp $
+//   (C) Copyright 1996-2014 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -1278,21 +1276,32 @@ bool DvtAffidavitNeeded(int affiliate_id,const QDate &date)
 
 
 bool DvtAffidavitNeeded(std::vector<int> *ids,
-			const QDate &start_date,const QDate &end_date)
+			const QDate &start_date,const QDate &end_date,
+			Dvt::AffidavitStationFilter filter,int program_id)
 {
   QString sql;
   QSqlQuery *q;
   int current_id=-1;
 
   ids->clear();
-  sql=QString("select ID from AIRED where ")+
+  sql=QString("select AFFILIATE_ID,AIR_DATETIME from AIRED where ")+
     QString().sprintf("(STATE=%d)&&",Dvt::AiredStateScheduled)+
-    "(AIR_DATETIME>=\""+start_date.toString("yyyy-MM")+"-01 00:00:00)&&"+
-    "(AIR_DATETIME<\""+end_date.addDays(1).toString("yyyy-MM")+"-01 00:00:00) "+
-    "order by ID";
+    "(AIR_DATETIME>=\""+start_date.toString("yyyy-MM")+"-01 00:00:00\")&&"+
+    "(AIR_DATETIME<\""+end_date.addDays(1).
+    toString("yyyy-MM")+"-01 00:00:00\")&&";
+  if(filter==Dvt::Program) {
+    sql+=QString().sprintf("(PROGRAM_ID=%d)&&",program_id);
+  }
+  sql=sql.left(sql.length()-2);
+  sql+=" order by AFFILIATE_ID";
   q=new QSqlQuery(sql);
   while(q->next()) {
-    if(q->value(0).toInt()!=current_id) {
+    int dow=q->value(1).toDateTime().date().dayOfWeek();
+    if((q->value(0).toInt()!=current_id)&&
+       ((filter==Dvt::All)||
+	(filter==Dvt::Program)||
+	((filter==Dvt::Weekday)&&(dow>=1)&&(dow<=5))||
+	((filter==Dvt::Weekend)&&(dow>=6)&&(dow<=7)))) {
       ids->push_back(q->value(0).toInt());
       current_id=q->value(0).toInt();
     }
@@ -1300,6 +1309,37 @@ bool DvtAffidavitNeeded(std::vector<int> *ids,
   delete q;
 
   return ids->size()!=0;
+}
+
+
+bool DvtAffidavitNeededDates(std::vector<QDate> *dates,int affiliate_id,
+			     const QDate &start_date,const QDate &end_date)
+{
+  QString sql;
+  QSqlQuery *q;
+  int current_month=-1;
+  int current_year=-1;
+
+  dates->clear();
+  sql=QString("select AIR_DATETIME from AIRED where ")+
+    QString().sprintf("(AFFILIATE_ID=%d)&&",affiliate_id)+
+    QString().sprintf("(STATE=%d)&&",Dvt::AiredStateScheduled)+
+    "(AIR_DATETIME>=\""+start_date.toString("yyyy-MM")+"-01 00:00:00\")&&"+
+    "(AIR_DATETIME<\""+end_date.addDays(1).
+    toString("yyyy-MM")+"-01 00:00:00\") "+
+    "order by AIR_DATETIME";
+  q=new QSqlQuery(sql);
+  while(q->next()) {
+    if((q->value(0).toDateTime().date().month()!=current_month)&&
+       (q->value(0).toDateTime().date().year()!=current_year)) {
+      current_month=q->value(0).toDateTime().date().month();
+      current_year=q->value(0).toDateTime().date().month();
+      dates->push_back(q->value(0).toDateTime().date());
+    }
+  }
+  delete q;  
+
+  return dates->size()!=0;
 }
 
 

@@ -63,6 +63,11 @@ class ListReports : public QDialog
   void AffidavitReport();
 
   //
+  // missingaffidavit_report.cpp
+  //
+  void MissingAffidavitReport();
+
+  //
   // missingaffidavitcontact_report.cpp
   //
   void MissingAffidavitContactReport();

@@ -82,6 +82,8 @@ class Dvt
   enum AiredState {AiredStateUnknown=0, AiredStateScheduled=1,
 		   AiredStateConfirmed=2,AiredStateDenied=3,
 		   AiredStateModified=4};
+  enum AffidavitStationFilter {All=0,Weekday=1,Weekend=2,Program=3};
+  enum AffidavitSortType {ByState=0,ByCount=1};
 };
 
 #endif  // DVT_H

@@ -2,9 +2,7 @@
 //
 // The header file for the dvtconf package
 //
-//   (C) Copyright 1996-2004 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtconf.h,v 1.10 2011/04/29 21:04:59 pcvs Exp $
+//   (C) Copyright 1996-2014 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -34,6 +32,8 @@
 #include <qvariant.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+#include <dvt.h>
 
 /* Function Prototypes */
 int DvtGetPrivateProfileBool(const char *,const char *,const char *,bool);
@@ -107,7 +107,10 @@ QString DvtStationCallString(const QString &call,const QString &type);
 QString DvtStationCallString(int affiliate_id);
 bool DvtAffidavitNeeded(int affiliate_id,const QDate &date);
 bool DvtAffidavitNeeded(std::vector<int> *ids,
-			const QDate &start_date,const QDate &end_date);
+			const QDate &start_date,const QDate &end_date,
+			Dvt::AffidavitStationFilter filter,int program_id);
+bool DvtAffidavitNeededDates(std::vector<QDate> *dates,int affiliate_id,
+			     const QDate &start_date,const QDate &end_date);
 void DvtUpdateIsAffiliateField();
 
 #endif   // DVTCONF_H

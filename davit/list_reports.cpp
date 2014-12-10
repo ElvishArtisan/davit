@@ -83,6 +83,8 @@ ListReports::ListReports(QWidget *parent,const char *name)
   item=new QListViewItem(list_reports_list);
   item->setText(0,tr("Missing Affidavit Data Contacts"));
   item=new QListViewItem(list_reports_list);
+  item->setText(0,tr("Missing Affidavit Submissions"));
+  item=new QListViewItem(list_reports_list);
   item->setText(0,tr("All Affiliates"));
   item=new QListViewItem(list_reports_list);
   item->setText(0,tr("All Affiliate Contacts"));
@@ -187,6 +189,9 @@ void ListReports::runData()
   }
   if(item->text(0)==tr("Affidavit Contacts")) {
     AffidavitReport();
+  }
+  if(item->text(0)==tr("Missing Affidavit Submissions")) {
+    MissingAffidavitReport();
   }
   if(item->text(0)==tr("Missing Affidavit Data Contacts")) {
     MissingAffidavitContactReport();

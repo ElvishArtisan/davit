@@ -39,6 +39,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      add_remark.cpp add_remark.h\
                      add_user.cpp add_user.h\
                      addedprograms_report.cpp\
+                     affidavit_picker.cpp\
                      affidavit_report.cpp\
                      affiliate_report.cpp\
                      affiliatesbymarket_report.cpp\
@@ -72,6 +73,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      list_users.cpp list_users.h\
                      maildialog.cpp maildialog.h\
                      migrate_affiliates.cpp migrate_affiliates.h\
+                     missingaffidavit_report.cpp\
                      missingaffidavitcontact_report.cpp\
                      mysql_login.cpp mysql_login.h\
                      opendb.cpp opendb.h\
@@ -89,6 +91,7 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_add_provider.cpp\
                        moc_add_remark.cpp\
                        moc_add_user.cpp\
+                       moc_affidavit_picker.cpp\
                        moc_contactlistview.cpp\
                        moc_davit.cpp\
                        moc_daypicker.cpp\
