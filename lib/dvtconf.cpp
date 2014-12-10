@@ -1100,6 +1100,22 @@ QString DvtEscapeString(const QString &str)
 }
 
 
+QString DvtFormatCityState(const QString &city,const QString &state)
+{
+  QString ret=city+", "+state.upper();
+  if(city.isEmpty()) {
+    ret=state.upper();
+  }
+  if(state.isEmpty()) {
+    ret=city;
+  }
+  if(city.isEmpty()&&state.isEmpty()) {
+    ret="";
+  }
+  return ret;
+}
+
+
 bool DvtNormalizeAddresses(QString str,QStringList *list)
 {
   str.replace("\n",";");
@@ -1275,7 +1291,7 @@ bool DvtAffidavitNeeded(int affiliate_id,const QDate &date)
 }
 
 
-bool DvtAffidavitNeeded(std::vector<int> *ids,
+bool DvtAffidavitNeeded(std::vector<int> *ids,std::map<int,int> *counts,
 			const QDate &start_date,const QDate &end_date,
 			Dvt::AffidavitStationFilter filter,int program_id)
 {
@@ -1284,6 +1300,7 @@ bool DvtAffidavitNeeded(std::vector<int> *ids,
   int current_id=-1;
 
   ids->clear();
+  counts->clear();
   sql=QString("select AFFILIATE_ID,AIR_DATETIME from AIRED where ")+
     QString().sprintf("(STATE=%d)&&",Dvt::AiredStateScheduled)+
     "(AIR_DATETIME>=\""+start_date.toString("yyyy-MM")+"-01 00:00:00\")&&"+
@@ -1297,13 +1314,15 @@ bool DvtAffidavitNeeded(std::vector<int> *ids,
   q=new QSqlQuery(sql);
   while(q->next()) {
     int dow=q->value(1).toDateTime().date().dayOfWeek();
-    if((q->value(0).toInt()!=current_id)&&
-       ((filter==Dvt::All)||
+    if(((filter==Dvt::All)||
 	(filter==Dvt::Program)||
 	((filter==Dvt::Weekday)&&(dow>=1)&&(dow<=5))||
 	((filter==Dvt::Weekend)&&(dow>=6)&&(dow<=7)))) {
-      ids->push_back(q->value(0).toInt());
-      current_id=q->value(0).toInt();
+      if(q->value(0).toInt()!=current_id) {
+	ids->push_back(q->value(0).toInt());
+	current_id=q->value(0).toInt();
+      }
+      (*counts)[q->value(0).toInt()]++;
     }
   }
   delete q;
@@ -1312,8 +1331,8 @@ bool DvtAffidavitNeeded(std::vector<int> *ids,
 }
 
 
-bool DvtAffidavitNeededDates(std::vector<QDate> *dates,int affiliate_id,
-			     const QDate &start_date,const QDate &end_date)
+unsigned DvtAffidavitNeededDates(std::vector<QDate> *dates,int affiliate_id,
+				 const QDate &start_date,const QDate &end_date)
 {
   QString sql;
   QSqlQuery *q;
@@ -1339,7 +1358,7 @@ bool DvtAffidavitNeededDates(std::vector<QDate> *dates,int affiliate_id,
   }
   delete q;  
 
-  return dates->size()!=0;
+  return dates->size();
 }
 
 

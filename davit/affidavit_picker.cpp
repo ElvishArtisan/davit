@@ -76,7 +76,7 @@ AffidavitPicker::AffidavitPicker(Dvt::AffidavitStationFilter *stations,
   //
   report_sort_box=new QComboBox(this);
   report_sort_box->insertItem(tr("By State"));
-  report_sort_box->insertItem(tr("By Severity"));
+  report_sort_box->insertItem(tr("By Worst Offenders"));
   report_sort_label=new QLabel(report_sort_box,tr("Sort By")+":",this);
   report_sort_label->setFont(label_font);
   report_sort_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);

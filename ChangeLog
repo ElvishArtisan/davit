@@ -699,3 +699,7 @@
 2014-12-09 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented a 'Missing Affidavit Submissions' report in
 	'davit/missingaffidavit_report.cpp'.
+2014-12-10 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented sorting by Worst Offenders and State in the
+	'Missing Affidavit Submissions' report in
+	'davit/missingaffidavit_report.cpp'.

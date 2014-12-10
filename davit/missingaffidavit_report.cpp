@@ -18,6 +18,7 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <map>
 #include <vector>
 
 #include <qfile.h>
@@ -36,10 +37,12 @@ void ListReports::MissingAffidavitReport()
   QString s;
   QString sql;
   QSqlQuery *q=NULL;
+  QSqlQuery *q1=NULL;
   QString where;
   QString outfile;
   FILE *f=NULL;
   std::vector<int> affiliate_ids;
+  std::map<int,int> affiliate_counts;
   Dvt::AffidavitStationFilter filter=Dvt::All;
   Dvt::AffidavitSortType sort_type=Dvt::ByCount;
   int program_id=-1;
@@ -99,39 +102,104 @@ void ListReports::MissingAffidavitReport()
   fprintf(f,"C;X3;Y5;K\"PHONE\"\n");
   fprintf(f,"C;X4;Y5;K\"E-MAIL\"\n");
   fprintf(f,"C;X5;Y5;K\"MISSING\"\n");
+  fprintf(f,"C;X6;Y5;K\"STATE\"\n");
+  fprintf(f,"C;X7;Y5;K\"DMA MARKET\"\n");
+  fprintf(f,"C;X8;Y5;K\"MSA MARKET\"\n");
   int row=6;
 
-  DvtAffidavitNeeded(&affiliate_ids,start_date,end_date,filter,program_id);
+  DvtAffidavitNeeded(&affiliate_ids,&affiliate_counts,
+		     start_date,end_date,filter,program_id);
   sql=QString("select AFFILIATES.ID,AFFILIATES.STATION_CALL,")+
-    "AFFILIATES.STATION_TYPE,CONTACTS.NAME,CONTACTS.PHONE,CONTACTS.EMAIL "+
-    "from AFFILIATES left join CONTACTS "+
-    "on AFFILIATES.ID=CONTACTS.AFFILIATE_ID "+
-    "where (CONTACTS.AFFIDAVIT=\"Y\")&&(";
+    "AFFILIATES.STATION_TYPE,"+
+    "AFFILIATES.LICENSE_STATE,AFFILIATES.DMA_NAME,AFFILIATES.MARKET_NAME "+
+    "from AFFILIATES "+
+    "where ";
   for(unsigned i=0;i<affiliate_ids.size();i++) {
     sql+=QString().sprintf("(AFFILIATES.ID=%d)||",affiliate_ids[i]);
   }
-  sql=sql.left(sql.length()-2)+")";
+  sql=sql.left(sql.length()-2)+" order by LICENSE_STATE";
   q=new QSqlQuery(sql);
-  while(q->next()) {
+  std::vector<int> index;
+  for(int i=0;i<q->size();i++) {
+    index.push_back(i);
+  }
+
+  if(sort_type==Dvt::ByCount) {
+    //
+    // Build Offender Counts
+    //
+    std::vector<unsigned> offenders;
+    for(int i=0;i<q->size();i++) {
+      std::vector<QDate> dates;
+      q->seek(index[i]);
+      offenders.push_back(DvtAffidavitNeededDates(&dates,q->value(0).toInt(),
+					       start_date,end_date));
+    }
+
+    //
+    // Bubble Sort
+    //
+    bool modified=true;
+    while(modified) {
+      modified=false;
+      for(int i=1;i<q->size();i++) {
+	if(offenders[index[i-1]]<offenders[index[i]]) {
+	  int val=index[i-1];
+	  index[i-1]=index[i];
+	  index[i]=val;
+	  modified=true;
+	}
+      }
+    }
+  }
+
+  for(int i=0;i<q->size();i++) {
+    q->seek(index[i]);
     // Call Letters
     fprintf(f,"C;X1;Y%d;K\"",row);
     fprintf(f,"%s",(const char *)DvtStationCallString(q->value(1).toString(),
 						      q->value(2).toString()));
     fprintf(f,"\"\n");
 
+    //
+    // Contact Info
+    //
+    QString name=" ";
+    QString phone=" ";
+    QString email=" ";
+    sql=QString("select NAME,PHONE,EMAIL from CONTACTS where ")+
+      QString().sprintf("(AFFILIATE_ID=%d)&&",q->value(0).toInt())+
+      "(AFFIDAVIT=\"Y\")";
+    q1=new QSqlQuery(sql);
+    while(q1->next()) {
+      if(!q1->value(0).toString().isEmpty()) {
+	name+=q1->value(0).toString()+", ";
+      }
+      if(!q1->value(1).toString().isEmpty()) {
+	phone+=DvtFormatPhoneNumber(q1->value(1).toString())+", ";
+      }
+      if(!q1->value(2).toString().isEmpty()) {
+	email+=q1->value(2).toString()+", ";
+      }
+    }
+    delete q1;
+    name=name.left(name.length()-2);
+    phone=phone.left(phone.length()-2);
+    email=email.left(email.length()-2);
+
     // Contact Name
     fprintf(f,"C;X2;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)q->value(3).toString());
+    fprintf(f,"%s",(const char *)name.stripWhiteSpace());
     fprintf(f,"\"\n");
 
     // Contact Phone
     fprintf(f,"C;X3;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)DvtFormatPhoneNumber(q->value(4).toString()));
+    fprintf(f,"%s",(const char *)phone.stripWhiteSpace());
     fprintf(f,"\"\n");
 
     // Contact E-Mail Address
     fprintf(f,"C;X4;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)q->value(5).toString());
+    fprintf(f,"%s",(const char *)email.stripWhiteSpace());
     fprintf(f,"\"\n");
 
     // Missing Months
@@ -146,6 +214,21 @@ void ListReports::MissingAffidavitReport()
     }
     fprintf(f,"C;X5;Y%d;K\"",row);
     fprintf(f,"%s",(const char *)date_str);
+    fprintf(f,"\"\n");
+
+    // State of License
+    fprintf(f,"C;X6;Y%d;K\"",row);
+    fprintf(f,"%s",(const char *)q->value(3).toString().upper());
+    fprintf(f,"\"\n");
+
+    // DMA Market
+    fprintf(f,"C;X7;Y%d;K\"",row);
+    fprintf(f,"%s",(const char *)q->value(4).toString());
+    fprintf(f,"\"\n");
+
+    // MSA Market
+    fprintf(f,"C;X8;Y%d;K\"",row);
+    fprintf(f,"%s",(const char *)q->value(5).toString());
     fprintf(f,"\"\n");
 
     row++;

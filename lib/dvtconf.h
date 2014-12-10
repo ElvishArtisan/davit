@@ -22,6 +22,8 @@
 #define DVTCONF_H
 
 #define MAX_RETRIES 10
+
+#include <map>
 #include <vector>
 
 #include <qstring.h>
@@ -96,6 +98,7 @@ QString DvtTempDir();
 FILE *DvtTempFile(QString *filename,const char *mode);
 int DvtDeleteFile(const QString &filename);
 QString DvtEscapeString(const QString &str);
+QString DvtFormatCityState(const QString &city,const QString &state);
 bool DvtNormalizeAddresses(QString str,QStringList *list);
 bool DvtIsFullEmailAddress(QString str);
 bool DvtIsEmailAddress(const QString &str);
@@ -106,11 +109,11 @@ int DvtCreateNewAffiliateRecord();
 QString DvtStationCallString(const QString &call,const QString &type);
 QString DvtStationCallString(int affiliate_id);
 bool DvtAffidavitNeeded(int affiliate_id,const QDate &date);
-bool DvtAffidavitNeeded(std::vector<int> *ids,
+bool DvtAffidavitNeeded(std::vector<int> *ids,std::map<int,int> *counts,
 			const QDate &start_date,const QDate &end_date,
 			Dvt::AffidavitStationFilter filter,int program_id);
-bool DvtAffidavitNeededDates(std::vector<QDate> *dates,int affiliate_id,
-			     const QDate &start_date,const QDate &end_date);
+unsigned DvtAffidavitNeededDates(std::vector<QDate> *dates,int affiliate_id,
+				 const QDate &start_date,const QDate &end_date);
 void DvtUpdateIsAffiliateField();
 
 #endif   // DVTCONF_H
