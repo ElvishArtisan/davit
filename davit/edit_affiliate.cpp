@@ -580,7 +580,6 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   if(q->first()) {
     edit_station_call_edit->setText(q->value(23).toString());
     edit_license_city_edit->setText(q->value(2).toString());
-    printf("STATE: %s\n",(const char *)q->value(3).toString());
     edit_license_state_box->setCurrentStateCode(q->value(3).toString());
     if(q->value(0).toString().lower()=="a") {
       edit_station_type_box->setCurrentItem(0);

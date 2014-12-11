@@ -283,7 +283,7 @@ QString AbbreviationToState(const QString &str)
     return "Maryland";
   }
   if(state=="ma") {
-    return "Massaschusetts";
+    return "Massachusetts";
   }
   if(state=="mi") {
     return "Michigan";

@@ -642,13 +642,13 @@ void ListAffiliates::RefreshList()
 	}
       }
       item->setText(1,q->value(1).toString()+suffix);
-      item->setText(2,QString().sprintf("%s, %s",
-					(const char *)q->value(2).toString(),
-					(const char *)q->value(3).
-					toString().upper()));
+      item->setText(2,DvtFormatCityState(q->value(2).toString(),
+					 q->value(3).toString()));
+      /*
       if(q->value(4).toString().lower()!="us") {
 	item->setText(2,item->text(2)+", "+q->value(4).toString());
       }
+      */
       if(q->value(7).toString().isEmpty()) {
 	item->setText(4,"[none]");
       }
@@ -689,12 +689,13 @@ void ListAffiliates::UpdateItem(DvtListViewItem *item)
     else {
       item->setPixmap(0,*list_whiteball_map);
     }
-    item->setText(2,QString().sprintf("%s, %s",
-				(const char *)q->value(0).toString(),
-				(const char *)q->value(1).toString().upper()));
+    item->setText(2,DvtFormatCityState(q->value(0).toString(),
+				       q->value(1).toString()));
+    /*
     if(q->value(2).toString().lower()!="us") {
       item->setText(2,item->text(1)+", "+q->value(2).toString());
     }
+    */
     if(q->value(4).toString().lower()=="a") {
       item->setText(3,tr("AM"));
       suffix="-AM";

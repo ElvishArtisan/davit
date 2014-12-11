@@ -706,3 +706,7 @@
 2014-12-10 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a typo in the spelling of 'massachusetts' in
 	'lib/statecombobox.cpp' and 'lib/state_conv.cpp'.
+2014-12-10 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/list_affiliates.cpp' that caused incorrect
+	values to appear in the 'License City/State' column after editing
+	an affiliate record.
