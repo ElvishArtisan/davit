@@ -75,14 +75,14 @@ void ListReports::AffidavitReport()
     fprintf(f,"\"\n");
 
     // E-Mail Address
-    fprintf(f,"C;X2;Y%d;K\"",row++);
+    fprintf(f,"C;X2;Y%d;K\"",row);
     fprintf(f,"%s",
 	    (const char *)GetEmailContactList(q->value(0).toInt(),true,false));
     fprintf(f,"\"\n");
 
 
     // Name
-    fprintf(f,"C;X3;Y%d;K\"",row++);
+    fprintf(f,"C;X3;Y%d;K\"",row);
     str=GetNameContactList(q->value(0).toInt(),true,false);
     if(!str.isEmpty()) {
       fprintf(f,"%s",(const char *)str);

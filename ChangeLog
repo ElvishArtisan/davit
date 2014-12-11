@@ -710,3 +710,6 @@
 	* Fixed a bug in 'davit/list_affiliates.cpp' that caused incorrect
 	values to appear in the 'License City/State' column after editing
 	an affiliate record.
+2014-12-10 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/affidavit_report.cpp' that caused lines
+	to be triple space in the 'Affidavit Contacts' report.
