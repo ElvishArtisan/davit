@@ -100,7 +100,9 @@ void StateComboBox::setCurrentStateCode(const QString &state_code)
 {
   QString state=AbbreviationToState(state_code);
   for(int i=0;i<count();i++) {
+    printf("|%s| : |%s|\n",(const char *)AbbreviationToState(state_code),(const char *)text(i));
     if(state==text(i)) {
+      printf("  MATCH!\n");
       setCurrentItem(i);
       return;
     }

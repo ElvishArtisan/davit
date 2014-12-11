@@ -703,3 +703,6 @@
 	* Implemented sorting by Worst Offenders and State in the
 	'Missing Affidavit Submissions' report in
 	'davit/missingaffidavit_report.cpp'.
+2014-12-10 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a typo in the spelling of 'massachusetts' in
+	'lib/statecombobox.cpp' and 'lib/state_conv.cpp'.
