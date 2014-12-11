@@ -713,3 +713,5 @@
 2014-12-10 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'davit/affidavit_report.cpp' that caused lines
 	to be triple space in the 'Affidavit Contacts' report.
+2014-12-10 Fred Gleason <fredg@paravelsystems.com>
+	* Changed '-calc' switch for soffice(1) to '--calc'.

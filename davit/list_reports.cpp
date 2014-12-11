@@ -411,13 +411,13 @@ void ListReports::ForkViewer(const QString &filename)
 #ifdef WIN32
   QProcess proc;
   proc.addArgument(openoffice_path);
-  proc.addArgument("-calc");
+  proc.addArgument("--calc");
   proc.addArgument("-view");
   proc.addArgument(filename);
   bool ret=proc.launch("");
 #else
   if(fork()==0) {
-    execlp("soffice","soffice","-calc","-view",(const char *)filename,
+    execlp("soffice","soffice","--calc","-view",(const char *)filename,
 	   (char *)0);
     exit(0);
   }
