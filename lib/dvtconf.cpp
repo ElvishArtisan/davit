@@ -1386,3 +1386,87 @@ void DvtUpdateIsAffiliateField()
   }
   delete q;
 }
+
+
+unsigned DvtContactInfo(QString *name,QString *title,QString *email,
+			QString *phone,QString *fax,
+			int affiliate_id,Dvt::ContactType type)
+{
+  QString sql;
+  QSqlQuery *q;
+  unsigned ret=0;
+
+  if(name!=NULL) {
+    *name=" ";
+  }
+  if(phone!=NULL) {
+    *phone=" ";
+  }
+  if(email!=NULL) {
+    *email=" ";
+  }
+  if(fax!=NULL) {
+    *fax=" ";
+  }
+  sql=QString("select NAME,TITLE,EMAIL,PHONE,FAX from CONTACTS where ")+
+    QString().sprintf("(AFFILIATE_ID=%d)&&",affiliate_id);
+  switch(type) {
+  case Dvt::AffidavitContact:
+    sql+="(AFFIDAVIT=\"Y\")";
+    break;
+
+  case Dvt::ProgramDirectorContact:
+    sql+="(PROGRAM_DIRECTOR=\"Y\")";
+    break;
+
+  case Dvt::GeneralManagerContact:
+    sql+="(GENERAL_MANAGER=\"Y\")";
+    break;
+  }
+  q=new QSqlQuery(sql);
+  while(q->next()) {
+    if(name!=NULL) {
+      if(!q->value(0).toString().isEmpty()) {
+	(*name)+=q->value(0).toString()+", ";
+      }
+    }
+    if(title!=NULL) {
+      if(!q->value(1).toString().isEmpty()) {
+	(*title)+=q->value(1).toString()+", ";
+      }
+    }
+    if(email!=NULL) {
+      if(!q->value(2).toString().isEmpty()) {
+	(*email)+=q->value(2).toString()+", ";
+      }
+    }
+    if(phone!=NULL) {
+      if(!q->value(3).toString().isEmpty()) {
+	(*phone)+=DvtFormatPhoneNumber(q->value(3).toString())+", ";
+      }
+    }
+    if(fax!=NULL) {
+      if(!q->value(4).toString().isEmpty()) {
+	(*fax)+=DvtFormatPhoneNumber(q->value(4).toString())+", ";
+      }
+    }
+  }
+  delete q;
+  if(name!=NULL) {
+    *name=(*name).left((*name).length()-2).stripWhiteSpace();
+  }
+  if(title!=NULL) {
+    *title=(*name).left((*title).length()-2).stripWhiteSpace();
+  }
+  if(phone!=NULL) {
+    *phone=(*phone).left((*phone).length()-2).stripWhiteSpace();
+  }
+  if(email!=NULL) {
+    *email=(*email).left((*email).length()-2).stripWhiteSpace();
+  }
+  if(fax!=NULL) {
+    *fax=(*fax).left((*fax).length()-2).stripWhiteSpace();
+  }
+
+  return ret;
+}

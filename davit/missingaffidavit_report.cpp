@@ -37,7 +37,6 @@ void ListReports::MissingAffidavitReport()
   QString s;
   QString sql;
   QSqlQuery *q=NULL;
-  QSqlQuery *q1=NULL;
   QString where;
   QString outfile;
   FILE *f=NULL;
@@ -164,42 +163,26 @@ void ListReports::MissingAffidavitReport()
     //
     // Contact Info
     //
-    QString name=" ";
-    QString phone=" ";
-    QString email=" ";
-    sql=QString("select NAME,PHONE,EMAIL from CONTACTS where ")+
-      QString().sprintf("(AFFILIATE_ID=%d)&&",q->value(0).toInt())+
-      "(AFFIDAVIT=\"Y\")";
-    q1=new QSqlQuery(sql);
-    while(q1->next()) {
-      if(!q1->value(0).toString().isEmpty()) {
-	name+=q1->value(0).toString()+", ";
-      }
-      if(!q1->value(1).toString().isEmpty()) {
-	phone+=DvtFormatPhoneNumber(q1->value(1).toString())+", ";
-      }
-      if(!q1->value(2).toString().isEmpty()) {
-	email+=q1->value(2).toString()+", ";
-      }
-    }
-    delete q1;
-    name=name.left(name.length()-2);
-    phone=phone.left(phone.length()-2);
-    email=email.left(email.length()-2);
+    QString name;
+    QString phone;
+    QString email;
+
+    DvtContactInfo(&name,NULL,&email,&phone,NULL,q->value(0).toInt(),
+		   Dvt::AffidavitContact);
 
     // Contact Name
     fprintf(f,"C;X2;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)name.stripWhiteSpace());
+    fprintf(f,"%s",(const char *)name);
     fprintf(f,"\"\n");
 
     // Contact Phone
     fprintf(f,"C;X3;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)phone.stripWhiteSpace());
+    fprintf(f,"%s",(const char *)phone);
     fprintf(f,"\"\n");
 
     // Contact E-Mail Address
     fprintf(f,"C;X4;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)email.stripWhiteSpace());
+    fprintf(f,"%s",(const char *)email);
     fprintf(f,"\"\n");
 
     // Missing Months

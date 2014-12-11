@@ -115,5 +115,8 @@ bool DvtAffidavitNeeded(std::vector<int> *ids,std::map<int,int> *counts,
 unsigned DvtAffidavitNeededDates(std::vector<QDate> *dates,int affiliate_id,
 				 const QDate &start_date,const QDate &end_date);
 void DvtUpdateIsAffiliateField();
+unsigned DvtContactInfo(QString *name,QString *title,QString *email,
+			QString *phone,QString *fax,
+			int affiliate_id,Dvt::ContactType type);
 
 #endif   // DVTCONF_H

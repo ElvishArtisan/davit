@@ -715,3 +715,6 @@
 	to be triple space in the 'Affidavit Contacts' report.
 2014-12-10 Fred Gleason <fredg@paravelsystems.com>
 	* Changed '-calc' switch for soffice(1) to '--calc'.
+2014-12-11 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored 'Missing Affidavit Contacts' report to show Station
+	Call and Phone Number.

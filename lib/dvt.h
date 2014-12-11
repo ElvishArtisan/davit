@@ -84,6 +84,8 @@ class Dvt
 		   AiredStateModified=4};
   enum AffidavitStationFilter {All=0,Weekday=1,Weekend=2,Program=3};
   enum AffidavitSortType {ByState=0,ByCount=1};
+  enum ContactType {AffidavitContact=0,ProgramDirectorContact=1,
+		    GeneralManagerContact=2};
 };
 
 #endif  // DVT_H

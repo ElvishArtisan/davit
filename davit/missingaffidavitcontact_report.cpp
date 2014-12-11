@@ -36,28 +36,11 @@ void ListReports::MissingAffidavitContactReport()
   QString s;
   QString sql;
   QSqlQuery *q=NULL;
-  QDate date;
+  QSqlQuery *q1=NULL;
   QString where;
   QString outfile;
   FILE *f=NULL;
   int row=4;
-  std::vector<int> affiliate_ids;
-
-  //
-  // Get Date
-  //
-  date=QDate::currentDate();
-  date.setYMD(date.year(),date.addMonths(-1).month(),1);
-  PickFields *d=
-    new PickFields(&date,NULL,NULL,false,NULL,false,NULL,false,NULL,
-		   PickFields::NoMarket,this);
-  if(d->exec()!=0) {
-    delete d;
-    return;
-  }
-  delete d;
-  date.setYMD(date.year(),date.month(),1);
-
 
   //
   // Generate Report
@@ -66,45 +49,39 @@ void ListReports::MissingAffidavitContactReport()
     return;
   }
   fprintf(f,"ID;PSCALC3\n");
-  fprintf(f,"C;X1;Y1;K\"Affiliates Missing Affidavits for %s\"\n",
-	  (const char *)date.toString("MMMM, yyyy"));
+  fprintf(f,"C;X1;Y1;K\"Missing Affidavit Contacts\n");
   fprintf(f,"C;X2;Y1;K\"Report Date: %s\"\n",
 	  (const char *)QDate::currentDate().toString("MMMM dd, yyyy"));
   fprintf(f,"C;X1;Y3;K\"CALL LETTERS\"\n");
-  fprintf(f,"C;X2;Y3;K\"AFFIDAVIT CONTACT E-MAIL\"\n");
-
-  
-  affiliate_ids.push_back(0);
-  sql=QString().sprintf("select AFFILIATE_ID from AIRED \
-                         where (STATE=%d)&&\
-                         (AIR_DATETIME>=\"%s-01 00:00:00\")&&\
-                         (AIR_DATETIME<\"%s-01 00:00:00\") \
-                         order by AFFILIATE_ID",
-			Dvt::AiredStateScheduled,
-			(const char *)date.toString("yyyy-MM"),
-			(const char *)date.addMonths(1).
-			toString("yyyy-MM"));
+  fprintf(f,"C;X2;Y3;K\"STATION PHONE\"\n");
+  sql=QString("select ID,STATION_CALL,STATION_TYPE,PHONE from AFFILIATES ")+
+    "where IS_AFFILIATE=\"Y\"";
   q=new QSqlQuery(sql);
   while(q->next()) {
-    if(q->value(0).toInt()!=affiliate_ids.back()) {
-      affiliate_ids.push_back(q->value(0).toInt());
+    sql=QString("select ID from CONTACTS where ")+
+      QString().sprintf("(AFFILIATE_ID=%d)&&",q->value(0).toInt())+
+      "(CONTACTS.AFFIDAVIT=\"Y\")&&"+
+      "((CONTACTS.EMAIL!=\"\")&&(CONTACTS.EMAIL is not null))||"+
+      "((CONTACTS.PHONE!=\"\")&&(CONTACTS.PHONE is null))";
+    q1=new QSqlQuery(sql);
+    if(!q1->first()) {
+      // Call Letters
+      fprintf(f,"C;X1;Y%d;K\"",row);
+      fprintf(f,"%s",(const char *)DvtStationCallString(q->value(1).toString(),
+						      q->value(2).toString()));
+      fprintf(f,"\"\n");
+    
+      // Phone
+      fprintf(f,"C;X2;Y%d;K\"",row);
+      fprintf(f,"%s",
+	      (const char *)DvtFormatPhoneNumber(q->value(3).toString()));
+      fprintf(f,"\"\n");
+
+      row++;
     }
+    delete q1;
   }
   delete q;
-  affiliate_ids.erase(affiliate_ids.begin());
-
-  for(unsigned i=0;i<affiliate_ids.size();i++) {
-    // Call Letters
-    fprintf(f,"C;X1;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)DvtStationCallString(affiliate_ids[i]));
-    fprintf(f,"\"\n");
-    
-    // E-Mail Address
-    fprintf(f,"C;X2;Y%d;K\"",row++);
-    fprintf(f,"%s",(const char *)GetEmailContactList(affiliate_ids[i],
-						     true,false));
-    fprintf(f,"\"\n");
-  }
   fprintf(f,"E\n");
   fclose(f);
   ForkViewer(outfile);
