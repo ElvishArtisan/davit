@@ -26,6 +26,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <qhostaddress.h>
+#include <qobject.h>
 #include <qvariant.h>
 #include <qmessagebox.h>
 #include <qdir.h>
@@ -1189,6 +1190,20 @@ QString DvtFormatPhoneNumber(const QString &str)
       pnum.mid(3,3)+QString("-")+pnum.right(4);
   }
   return pnum;
+}
+
+
+QString DvtFormatFrequency(double freq)
+{
+  QString ret="["+QObject::tr("unknown")+"]";
+
+  if(freq>=530.0) {
+    ret=QString().sprintf("%d kHz",(int)freq);
+  }
+  if(freq<108.0) {
+    ret=QString().sprintf("%5.1lf MHz",freq);
+  }
+  return ret;
 }
 
 

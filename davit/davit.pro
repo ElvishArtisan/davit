@@ -63,6 +63,7 @@ SOURCES += pick_daypart.cpp
 SOURCES += pick_fields.cpp
 SOURCES += precisiontrak.cpp
 SOURCES += program_report.cpp
+SOURCES += programbymarket_report.cpp
 SOURCES += activity_report.cpp
 SOURCES += addedprograms_report.cpp
 SOURCES += arbitron_report.cpp

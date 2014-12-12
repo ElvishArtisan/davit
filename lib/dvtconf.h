@@ -104,6 +104,7 @@ bool DvtIsFullEmailAddress(QString str);
 bool DvtIsEmailAddress(const QString &str);
 QString DvtFormatEmailAddress(const QString &name,const QString &addr);
 QString DvtFormatPhoneNumber(const QString &str);
+QString DvtFormatFrequency(double freq);
 QString DvtNormalizePhoneNumber(const QString &str,bool *ok=NULL);
 int DvtCreateNewAffiliateRecord();
 QString DvtStationCallString(const QString &call,const QString &type);

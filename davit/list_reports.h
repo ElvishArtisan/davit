@@ -95,6 +95,11 @@ class ListReports : public QDialog
   void AffiliatesByMarketReport(PickFields::MarketType type);
 
   //
+  // programbymarket_report.cpp
+  //
+  void ProgramByMarketReport(PickFields::MarketType type);
+
+  //
   // raaffiliate_report.cpp
   //
   void RAAffiliateReport();

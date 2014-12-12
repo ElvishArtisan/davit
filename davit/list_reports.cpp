@@ -110,6 +110,12 @@ ListReports::ListReports(QWidget *parent,const char *name)
   item->setText(0,tr("Affiliates by Program/DMA Market"));
   item=new QListViewItem(list_reports_list);
   item->setText(0,tr("Affiliates by Program/MSA Market"));
+  item=new QListViewItem(list_reports_list);
+  item->setText(0,tr("Programs by DMA Market"));
+  item=new QListViewItem(list_reports_list);
+  item->setText(0,tr("Programs by MSA Market"));
+  item=new QListViewItem(list_reports_list);
+  item->setText(0,tr("Programs by City/State"));
 
   //
   //  Run Button
@@ -201,6 +207,15 @@ void ListReports::runData()
   }
   if(item->text(0)==tr("Affiliates by Program/MSA Market")) {
     AffiliatesByMarketReport(PickFields::MsaMarket);
+  }
+  if(item->text(0)==tr("Programs by DMA Market")) {
+    ProgramByMarketReport(PickFields::DmaMarket);
+  }
+  if(item->text(0)==tr("Programs by MSA Market")) {
+    ProgramByMarketReport(PickFields::MsaMarket);
+  }
+  if(item->text(0)==tr("Programs by City/State")) {
+    ProgramByMarketReport(PickFields::NoMarket);
   }
 }
 

@@ -28,8 +28,11 @@
 #include <qdialog.h>
 #include <qcombobox.h>
 #include <qdatetimeedit.h>
+#include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
+
+#include <statecombobox.h>
 
 class PickFields : public QDialog
 {
@@ -48,6 +51,8 @@ class PickFields : public QDialog
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
   QString selectedMarket() const;
+  QString selectedCity() const;
+  QString selectedStateCode() const;
 
  private slots:
   void selectStartDateData();
@@ -60,6 +65,10 @@ class PickFields : public QDialog
   QComboBox *report_program_box;
   QLabel *report_market_label;
   QComboBox *report_market_box;
+  QLabel *report_city_label;
+  QLineEdit *report_city_edit;
+  QLabel *report_state_label;
+  StateComboBox *report_state_box;
   QLabel *report_affiliate_label;
   QComboBox *report_affiliate_box;
   QLabel *report_network_label;

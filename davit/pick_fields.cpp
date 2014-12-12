@@ -234,13 +234,36 @@ PickFields::PickFields(QDate *start_date,QDate *end_date,
   //
   // Market
   //
+  report_market_label=NULL;
   report_market_box=NULL;
-  if(market!=PickFields::NoMarket) {
-    report_market_box=new QComboBox(this,"report_market_box");
+  report_city_label=NULL;
+  report_city_edit=NULL;
+  report_state_label=NULL;
+  report_state_box=NULL;
+  if(market==PickFields::NoMarket) {
+    report_city_edit=new QLineEdit(this);
+    report_city_edit->setGeometry(110,report_ypos,sizeHint().width()-120,20);
+    report_city_edit->setFont(font);
+    report_city_label=new QLabel(report_city_edit,tr("City:"),this);
+    report_city_label->setGeometry(10,report_ypos,95,20);
+    report_city_label->setFont(label_font);
+    report_city_label->setAlignment(AlignVCenter|AlignRight);
+    report_ypos+=22;
+
+    report_state_box=new StateComboBox(this);
+    report_state_box->setGeometry(110,report_ypos,sizeHint().width()-120,20);
+    report_state_box->setFont(font);
+    report_state_label=new QLabel(report_state_box,tr("State:"),this);
+    report_state_label->setGeometry(10,report_ypos,95,20);
+    report_state_label->setFont(label_font);
+    report_state_label->setAlignment(AlignVCenter|AlignRight);
+    report_ypos+=22;
+  }
+  else {
+    report_market_box=new QComboBox(this);
     report_market_box->setGeometry(110,report_ypos,sizeHint().width()-120,20);
     report_market_box->setFont(font);
-    report_market_label=new QLabel(report_market_box,tr("Market:"),
-				      this,"report_market_label");
+    report_market_label=new QLabel(report_market_box,tr("Market:"),this);
     report_market_label->setGeometry(10,report_ypos,95,20);
     report_market_label->setFont(label_font);
     report_market_label->setAlignment(AlignVCenter|AlignRight);
@@ -256,15 +279,15 @@ PickFields::PickFields(QDate *start_date,QDate *end_date,
       break;
 
     case PickFields::NoMarket:
-      QMessageBox::warning(this,tr("Davit - Internal Error"),
-			   tr("Invalid Market Type"));
       break;
     }
     sql=QString().sprintf("select NAME from %s order by NAME",
 			  (const char *)market_table);
     q=new QSqlQuery(sql);
     while(q->next()) {
+      if(!q->value(0).toString().isEmpty()) {
       report_market_box->insertItem(q->value(0).toString());
+      }
     }
     delete q;
   }
@@ -320,6 +343,24 @@ QString PickFields::selectedMarket() const
     return QString("");
   }
   return report_market_box->currentText();
+}
+
+
+QString PickFields::selectedCity() const
+{
+  if(report_city_edit==NULL) {
+    return QString("");
+  }
+  return report_city_edit->text();
+}
+
+
+QString PickFields::selectedStateCode() const
+{
+  if(report_state_box==NULL) {
+    return QString("");
+  }
+  return report_state_box->currentStateCode();
 }
 
 

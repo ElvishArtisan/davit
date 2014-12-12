@@ -27,7 +27,6 @@
 StateComboBox::StateComboBox(QWidget *parent,const char *name)
   : QComboBox(parent,name)
 {
-  insertItem("");
   insertItem(tr("Alabama"));
   insertItem(tr("Alaska"));
   insertItem(tr("America Samoa"));

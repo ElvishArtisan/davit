@@ -82,6 +82,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      precisiontrak.cpp\
                      preview.cpp preview.h\
                      program_report.cpp\
+                     programbymarket_report.cpp\
                      raaffiliate_report.cpp\
                      showaffidavits.cpp showaffidavits.h
 
