@@ -22,11 +22,13 @@
 #include <vector>
 
 #include <qfile.h>
+#include <qfontmetrics.h>
 #include <qsqldatabase.h>
 #include <qmessagebox.h>
 
 #include <dvttextfile.h>
 #include <dvtconf.h>
+#include <spread_sheet.h>
 
 #include <affidavit_picker.h>
 #include <list_reports.h>
@@ -45,6 +47,7 @@ void ListReports::MissingAffidavitReport()
   Dvt::AffidavitStationFilter filter=Dvt::All;
   Dvt::AffidavitSortType sort_type=Dvt::ByCount;
   int program_id=-1;
+  SpreadSheet *sheet;
 
   //
   // Get Parameters
@@ -60,27 +63,34 @@ void ListReports::MissingAffidavitReport()
   delete d;
 
   //
+  // Fonts
+  //
+  QFont base_font("arial",10,QFont::Normal);
+  QFontMetrics *fm=new QFontMetrics(base_font);
+
+  //
   // Generate Report
   //
-
   if((f=GetTempFile(&outfile))==NULL) {
     return;
   }
-  fprintf(f,"ID;PSCALC3\n");
-  fprintf(f,"C;X1;Y1;K\"Affiliates Missing Affidavits\n");
-  fprintf(f,"C;X1;Y2;K\"Report Date: %s\"\n",
-	  (const char *)QDate::currentDate().toString("MMMM dd, yyyy"));
+  sheet=new SpreadSheet();
+  SpreadTab *tab=sheet->addTab(1);
+  tab->addCell(1,1)->setText(tr("Affiliates Missing Affidavits"),fm);
+  tab->cell(1,1)->setWidth(120.0);
+  tab->addCell(1,2)->setText(tr("Report Date")+":"+
+			     QDate::currentDate().toString("MMMM dd, yyyy"),fm);
   switch(filter) {
   case Dvt::All:
-    fprintf(f,"C;X1;Y3;K\"All Programs\"\n");
+    tab->addCell(1,3)->setText(tr("All Programs"),fm);
     break;
 
   case Dvt::Weekday:
-    fprintf(f,"C;X1;Y3;K\"All Weekday Programs\"\n");
+    tab->addCell(1,3)->setText(tr("All Weekday Programs"),fm);
     break;
 
   case Dvt::Weekend:
-    fprintf(f,"C;X1;Y3;K\"All Weekend Programs\"\n");
+    tab->addCell(1,3)->setText(tr("All Weekend Programs"),fm);
     break;
 
   case Dvt::Program:
@@ -88,22 +98,22 @@ void ListReports::MissingAffidavitReport()
       QString().sprintf("where ID=%d",program_id);
     q=new QSqlQuery(sql);
     if(q->first()) {
-      fprintf(f,"C;X1;Y3;K\"%s\"\n",(const char *)q->value(0).toString());
+      tab->addCell(1,3)->setText(q->value(0).toString(),fm);
     }
     else {
-      fprintf(f,"C;X1;Y3;K\"INTERNAL ERROR!\"\n");
+      tab->addCell(1,3)->setText(tr("INTERNAL ERROR!"),fm);
     }
     delete q;
     break;
   }
-  fprintf(f,"C;X1;Y5;K\"CALL LETTERS\"\n");
-  fprintf(f,"C;X2;Y5;K\"NAME\"\n");
-  fprintf(f,"C;X3;Y5;K\"PHONE\"\n");
-  fprintf(f,"C;X4;Y5;K\"E-MAIL\"\n");
-  fprintf(f,"C;X5;Y5;K\"MISSING\"\n");
-  fprintf(f,"C;X6;Y5;K\"STATE\"\n");
-  fprintf(f,"C;X7;Y5;K\"DMA MARKET\"\n");
-  fprintf(f,"C;X8;Y5;K\"MSA MARKET\"\n");
+  tab->addCell(1,5)->setText(tr("CALL LETTERS"),fm);
+  tab->addCell(2,5)->setText(tr("NAME"),fm);
+  tab->addCell(3,5)->setText(tr("PHONE"),fm);
+  tab->addCell(4,5)->setText(tr("E-MAIL"),fm);
+  tab->addCell(5,5)->setText(tr("MISSING"),fm);
+  tab->addCell(6,5)->setText(tr("STATE"),fm);
+  tab->addCell(7,5)->setText(tr("DMA MARKET"),fm);
+  tab->addCell(8,5)->setText(tr("MSA MARKET"),fm);
   int row=6;
 
   DvtAffidavitNeeded(&affiliate_ids,&affiliate_counts,
@@ -132,7 +142,7 @@ void ListReports::MissingAffidavitReport()
       std::vector<QDate> dates;
       q->seek(index[i]);
       offenders.push_back(DvtAffidavitNeededDates(&dates,q->value(0).toInt(),
-					       start_date,end_date));
+						  start_date,end_date));
     }
 
     //
@@ -155,10 +165,9 @@ void ListReports::MissingAffidavitReport()
   for(int i=0;i<q->size();i++) {
     q->seek(index[i]);
     // Call Letters
-    fprintf(f,"C;X1;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)DvtStationCallString(q->value(1).toString(),
-						      q->value(2).toString()));
-    fprintf(f,"\"\n");
+    tab->addCell(1,row)->
+      setText(DvtStationCallString(q->value(1).toString(),
+				   q->value(2).toString()),fm);
 
     //
     // Contact Info
@@ -169,21 +178,9 @@ void ListReports::MissingAffidavitReport()
 
     DvtContactInfo(&name,NULL,&email,&phone,NULL,q->value(0).toInt(),
 		   Dvt::AffidavitContact);
-
-    // Contact Name
-    fprintf(f,"C;X2;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)name);
-    fprintf(f,"\"\n");
-
-    // Contact Phone
-    fprintf(f,"C;X3;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)phone);
-    fprintf(f,"\"\n");
-
-    // Contact E-Mail Address
-    fprintf(f,"C;X4;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)email);
-    fprintf(f,"\"\n");
+    tab->addCell(2,row)->setText(name,fm);  // Contact Name
+    tab->addCell(3,row)->setText(DvtFormatPhoneNumber(phone),fm);  // Contact Phone
+    tab->addCell(4,row)->setText(email,fm);    // Contact E-Mail Address
 
     // Missing Months
     std::vector<QDate> dates;
@@ -195,29 +192,15 @@ void ListReports::MissingAffidavitReport()
       }
       date_str=date_str.left(date_str.length()-2);
     }
-    fprintf(f,"C;X5;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)date_str);
-    fprintf(f,"\"\n");
-
-    // State of License
-    fprintf(f,"C;X6;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)q->value(3).toString().upper());
-    fprintf(f,"\"\n");
-
-    // DMA Market
-    fprintf(f,"C;X7;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)q->value(4).toString());
-    fprintf(f,"\"\n");
-
-    // MSA Market
-    fprintf(f,"C;X8;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)q->value(5).toString());
-    fprintf(f,"\"\n");
+    tab->addCell(5,row)->setText(date_str,fm);
+    tab->addCell(6,row)->setText(q->value(3).toString().upper(),fm);  // State of License
+    tab->addCell(7,row)->setText(q->value(4).toString(),fm);    // DMA Market
+    tab->addCell(8,row)->setText(q->value(5).toString(),fm);    // MSA Market
 
     row++;
   }
   delete q;
-  fprintf(f,"E\n");
   fclose(f);
-  ForkViewer(outfile);
+  printf("OUT: %s\n",(const char *)outfile);
+  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

@@ -721,3 +721,5 @@
 2014-12-11 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'Program by Market' report in
 	'davit/programbymarket_report.cpp'.
+2014-12-16 Fred Gleason <fredg@paravelsystems.com>
+	* Added a spreadsheet rendering system in 'lib/spread_*.

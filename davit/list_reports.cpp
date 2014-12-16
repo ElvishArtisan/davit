@@ -25,6 +25,7 @@
 #endif  // PATH_MAX
 
 #include <stdlib.h>
+#include <errno.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -421,8 +422,21 @@ QString ListReports::GetTempDir()
 }
 
 
-void ListReports::ForkViewer(const QString &filename)
+void ListReports::ForkViewer(const QString &filename,const QString &data)
 {
+  if(!data.isEmpty()) {
+    FILE *f=NULL;
+
+    if((f=fopen(filename,"w"))==NULL) {
+      QMessageBox::warning(this,"Davit - "+tr("Report Error"),
+			   tr("Unable to create temporary file")+" \""+
+			   filename+"\" ["+strerror(errno)+"].");
+      return;
+    }
+    fprintf(f,"%s",(const char *)data.utf8());
+    fclose(f);
+  }
+
 #ifdef WIN32
   QProcess proc;
   proc.addArgument(openoffice_path);

@@ -109,7 +109,7 @@ class ListReports : public QDialog
 				    bool progdir);
   FILE *GetTempFile(QString *filename);
   QString GetTempDir();
-  void ForkViewer(const QString &filename);
+  void ForkViewer(const QString &filename,const QString &data="");
   QString StringField(const QVariant &v);
   QString PhoneField(const QVariant &v);
   QString PhoneString(const QString &pnum);
