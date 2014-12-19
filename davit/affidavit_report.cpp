@@ -2,9 +2,7 @@
 //
 // Generate an Affiliate Affidavit Contact List Report
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: affidavit_report.cpp,v 1.7 2014/01/02 19:49:12 pcvs Exp $
+//   (C) Copyright 2010-2014 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,11 +21,13 @@
 #include <vector>
 
 #include <qfile.h>
+#include <qfontmetrics.h>
 #include <qsqldatabase.h>
 #include <qmessagebox.h>
 
 #include <dvttextfile.h>
 #include <dvtconf.h>
+#include <spread_sheet.h>
 
 #include <list_reports.h>
 
@@ -44,62 +44,45 @@ void ListReports::AffidavitReport()
   QString str;
 
   //
+  // Generate Fonts
+  //
+  QFont main_font("arial",10,QFont::Normal);
+  QFontMetrics *fm=new QFontMetrics(main_font);
+
+  //
   // Generate Report
   //
   if((f=GetTempFile(&outfile))==NULL) {
     return;
   }
-  fprintf(f,"ID;PSCALC3\n");
-  fprintf(f,"C;X1;Y1;K\"Affiliate Affidavit Contacts\"\n");
-  fprintf(f,"C;X2;Y1;K\"Report Date: %s\"\n",
-	  (const char *)QDate::currentDate().toString("MMMM dd, yyyy"));
-  fprintf(f,"C;X1;Y3;K\"CALL LETTERS\"\n");
-  fprintf(f,"C;X2;Y3;K\"AFFIDAVIT CONTACT E-MAIL\"\n");
-  fprintf(f,"C;X3;Y3;K\"AFFIDAVIT CONTACT NAME\"\n");
-  fprintf(f,"C;X4;Y3;K\"AFFIDAVIT CONTACT PHONE\"\n");
+  fclose(f);
+  SpreadSheet *sheet=new SpreadSheet();
+  SpreadTab *tab=sheet->addTab(1);
+  tab->setName(tr("Affidavit Contacts"));
+
+  tab->addCell(1,1)->setText(tr("Affiliate Affidavit Contacts"),fm);
+  tab->addCell(1,2)->setText(tr("Report Date")+": "+
+			     QDate::currentDate().toString("MM/dd/yyyy"),fm);
+  tab->addCell(1,3)->setText(tr("CALL LETTERS"),fm);
+  tab->addCell(2,3)->setText(tr("AFFIDAVIT CONTACT NAME"),fm);
+  tab->addCell(3,3)->setText(tr("AFFIDAVIT CONTACT PHONE"),fm);
+  tab->addCell(4,3)->setText(tr("AFFIDAVIT CONTACT E-MAIL"),fm);
   sql="select ID,STATION_CALL,STATION_TYPE from AFFILIATES \
        where (AFFIDAVIT_ACTIVE=\"Y\") order by STATION_CALL desc";
   q=new QSqlQuery(sql);
   while(q->next()) {
     // Call Letters
-    fprintf(f,"C;X1;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)q->value(1).toString());
-    if(q->value(2).toString().lower()=="a") {
-      fprintf(f,"%s","-AM");
-    }
-    else {
-      if(q->value(2).toString().lower()=="f") {
-	fprintf(f,"%s","-FM");
-      }
-    }
-    fprintf(f,"\"\n");
-
-    // E-Mail Address
-    fprintf(f,"C;X2;Y%d;K\"",row);
-    fprintf(f,"%s",
-	    (const char *)GetEmailContactList(q->value(0).toInt(),true,false));
-    fprintf(f,"\"\n");
-
-
-    // Name
-    fprintf(f,"C;X3;Y%d;K\"",row);
-    str=GetNameContactList(q->value(0).toInt(),true,false);
-    if(!str.isEmpty()) {
-      fprintf(f,"%s",(const char *)str);
-    }
-    fprintf(f,"\"\n");
-
-
-    // Phone Number
-    fprintf(f,"C;X4;Y%d;K\"",row++);
-    str=GetPhoneNumberContactList(q->value(0).toInt(),true,false);
-    if(!str.isEmpty()) {
-      fprintf(f,"%s",(const char *)str);
-    }
-    fprintf(f,"\"\n");
+    tab->addCell(1,row)->
+      setText(DvtStationCallString(q->value(1).toString(),
+				   q->value(2).toString()),fm);
+    ContactFields(q->value(0).toInt(),
+		  ListReports::AffidavitContact,
+		  ListReports::FieldEmail|
+		  ListReports::FieldName|
+		  ListReports::FieldPhone,tab,2,row,fm);
+    row++;
   }
   delete q;
-  fprintf(f,"E\n");
-  fclose(f);
-  ForkViewer(outfile);
+  delete fm;
+  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }
