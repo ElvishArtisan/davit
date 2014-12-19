@@ -21,6 +21,7 @@
 //
 
 #include <qdatetime.h>
+#include <qfontmetrics.h>
 #include <qsqldatabase.h>
 
 #include <dvt.h>
@@ -40,6 +41,7 @@ void ListReports::ActivityReport()
   FILE *f=NULL;
   QString outfile;
   QString dow;
+  int row=5;
   QDateTime dt=QDateTime(QDate::currentDate(),QTime::currentTime());
 
   PickFields *r=new PickFields(&start_date,&end_date,NULL,true,
@@ -54,10 +56,26 @@ void ListReports::ActivityReport()
   if((f=GetTempFile(&outfile))==NULL) {
     return;
   }
-  fprintf(f,"\"Affiliate Activity Report\"\n");
-  fprintf(f,"\"Report Date: %s\"\n",(const char *)dt.toString("MM/dd/yyyy hh:mm:ss"));
-  fprintf(f,"\n");
-  fprintf(f,"\"CALL\",\"PROGRAM DIRECTOR\",\"PHONE\",\"DATE\",\"USER NAME\",\"REMARKS\"\n");
+  fclose(f);
+
+  //
+  // Generate Fonts
+  //
+  QFont main_font("arial",10,QFont::Normal);
+  QFontMetrics *fm=new QFontMetrics(main_font);
+
+  SpreadSheet *sheet=new SpreadSheet();
+  SpreadTab *tab=sheet->addTab(1);
+  tab->setName(tr("Affiliate Activity"));
+  tab->addCell(1,1)->setText(tr("Affiliate Activity Report"),fm);
+  tab->addCell(1,2)->setText(tr("Report Date")+": "+
+			     dt.toString("MM/dd/yyyy hh:mm:ss"),fm);
+  tab->addCell(1,4)->setText(tr("CALL"),fm);
+  tab->addCell(2,4)->setText(tr("PROGRAM DIRECTOR"),fm);
+  tab->addCell(3,4)->setText(tr("PHONE"),fm);
+  tab->addCell(4,4)->setText(tr("DATE"),fm);
+  tab->addCell(5,4)->setText(tr("USER NAME"),fm);
+  tab->addCell(6,4)->setText(tr("REMARKS"),fm);
   sql="select AFFILIATES.ID,AFFILIATES.STATION_CALL,AFFILIATES.STATION_TYPE,\
        CONTACTS.NAME,CONTACTS.PHONE \
        from AFFILIATES left join CONTACTS \
@@ -84,34 +102,27 @@ void ListReports::ActivityReport()
     sql+=" order by AFFILIATE_REMARKS.REMARK_DATETIME";
     q1=new QSqlQuery(sql);
     if(q1->size()>0) {
-      fprintf(f,"\"%s",(const char *)q->value(1).toString());
-      if(q->value(2).toString().lower()=="a") {
-	fprintf(f,"-AM\",");
-      }
-      else {
-	if(q->value(2).toString().lower()=="f") {
-	  fprintf(f,"-FM\",");
-	}
-	else {
-	  fprintf(f,"\",");
-	}
-      }
-      fprintf(f,(const char *)PhoneField(q->value(3)));
-      fprintf(f,",\"****\",\"****\",\"****\"");
-      fprintf(f,"\n");
+      tab->addCell(1,row)->
+	setText(DvtStationCallString(q->value(1).toString(),
+				     q->value(2).toString()),fm);
+      tab->addCell(2,row)->setText(q->value(3).toString(),fm);
+      tab->addCell(3,row)->
+	setText(DvtFormatPhoneNumber(q->value(4).toString()),fm);
+      row++;
       while(q1->next()) {
-	fprintf(f,"\"****\",\"****\",\"****\",");
-	fprintf(f,"\"%s\",",(const char *)
-		q1->value(0).toDateTime().toString("MM/dd/yyyy"));
-	fprintf(f,(const char *)StringField(q1->value(1)));
-	fprintf(f,(const char *)StringField(q1->value(2)));
-	fprintf(f,"\n");
+	tab->addCell(1,row);
+	tab->addCell(2,row);
+	tab->addCell(3,row);
+	tab->addCell(4,row)->
+	  setText(q1->value(0).toDateTime().toString("MM/dd/yyyy"),fm);
+	tab->addCell(5,row)->setText(q1->value(1).toString(),fm);
+	tab->addCell(5,row)->setText(q1->value(2).toString(),fm);
+	row++;
       }
-      fprintf(f,"\n");
     }
     delete q1;
   }
   delete q;
-  fclose(f);
-  ForkViewer(outfile);
+  delete fm;
+  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }
