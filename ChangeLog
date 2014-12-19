@@ -741,3 +741,7 @@
 2014-12-19 Fred Gleason <fredg@paravelsystems.com>
 	* Converted 'Arbitron' report to use spreadsheet
 	rendering library.
+2014-12-19 Fred Gleason <fredg@paravelsystems.com>
+	* Converted 'Programs by City/State', 'Programs by DMA Market'
+	and 'Programs by MSA Market' reports to use the spreadsheet
+	rendering library.

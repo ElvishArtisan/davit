@@ -59,17 +59,23 @@ void ListReports::ProgramByMarketReport(PickFields::MarketType type)
   if((f=GetTempFile(&outfile))==NULL) {
     return;
   }
-  fprintf(f,"ID;PSCALC3\n");
-  fprintf(f,"C;X1;Y1;K\"Programs in %s\n",(const char *)market);
-  fprintf(f,"C;X1;Y2;K\"Report Date: %s\"\n",
-	  (const char *)QDate::currentDate().toString("MMMM dd, yyyy"));
-  fprintf(f,"C;X1;Y4;K\"CALL LETTERS\"\n");
-  fprintf(f,"C;X2;Y4;K\"FREQUENCY\"\n");
-  fprintf(f,"C;X3;Y4;K\"CITY\"\n");
-  fprintf(f,"C;X4;Y4;K\"STATE\"\n");
-  fprintf(f,"C;X5;Y4;K\"DMA MARKET\"\n");
-  fprintf(f,"C;X6;Y4;K\"MSA MARKET\"\n");
-  fprintf(f,"C;X7;Y4;K\"PROGRAM\"\n");
+  fclose(f);
+  QFont main_font("arial",10,QFont::Normal);
+  QFontMetrics *fm=new QFontMetrics(main_font);
+
+  SpreadSheet *sheet=new SpreadSheet();
+  SpreadTab *tab=sheet->addTab(1);
+  tab->setName(tr("Programs by")+" "+market);
+  tab->addCell(1,1)->setText(tr("Programs in")+" "+market,fm);
+  tab->addCell(1,2)->setText(tr("Report Date")+": "+
+			     QDate::currentDate().toString("MMMM dd, yyyy"),fm);
+  tab->addCell(1,4)->setText(tr("CALL LETTERS"),fm);
+  tab->addCell(2,4)->setText(tr("FREQUENCY"),fm);
+  tab->addCell(3,4)->setText(tr("CITY"),fm);
+  tab->addCell(4,4)->setText(tr("STATE"),fm);
+  tab->addCell(5,4)->setText(tr("DMA MARKET"),fm);
+  tab->addCell(6,4)->setText(tr("MSA MARKET"),fm);
+  tab->addCell(7,4)->setText(tr("PROGRAM"),fm);
   sql=QString("select AFFILIATES.ID,AFFILIATES.STATION_CALL,")+
     "AFFILIATES.STATION_TYPE,AFFILIATES.STATION_FREQUENCY,"+
     "AFFILIATES.LICENSE_CITY,AFFILIATES.LICENSE_STATE,DMA_NAME,MARKET_NAME,"+
@@ -82,24 +88,24 @@ void ListReports::ProgramByMarketReport(PickFields::MarketType type)
   case PickFields::NoMarket:
     if(!city.isEmpty()) {
       sql+="(AFFILIATES.LICENSE_CITY=\""+city+"\")&&";
-      fprintf(f,"C;X1;Y1;K\"Programs in %s\n",
-	      (const char *)DvtFormatCityState(city,state));
+      tab->addCell(1,1)->setText(tr("Programs in")+" "+
+				 DvtFormatCityState(city,state),fm);
     }
     else {
-      fprintf(f,"C;X1;Y1;K\"Programs in %s\n",
-	      (const char *)AbbreviationToState(state));
+      tab->addCell(1,1)->setText(tr("Programs in")+" "+
+				 AbbreviationToState(state),fm);
     }
     sql+="(AFFILIATES.LICENSE_STATE=\""+state+"\")";
     break;
 
   case PickFields::DmaMarket:
     sql+="(DMA_NAME=\""+market+"\")";
-    fprintf(f,"C;X1;Y1;K\"Programs in %s\n",(const char *)market);
+    tab->addCell(1,1)->setText(tr("Programs in")+" "+market,fm);
     break;
 
   case PickFields::MsaMarket:
     sql+="(MARKET_NAME=\""+market+"\")";
-    fprintf(f,"C;X1;Y1;K\"Programs in %s\n",(const char *)market);
+    tab->addCell(1,1)->setText(tr("Programs in")+" "+market,fm);
     break;
   }
   sql+=" order by AFFILIATES.LICENSE_STATE,AFFILIATES.LICENSE_CITY,";
@@ -108,46 +114,32 @@ void ListReports::ProgramByMarketReport(PickFields::MarketType type)
   int row=5;
   while(q->next()) {
     // Call Letters
-    fprintf(f,"C;X1;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)DvtStationCallString(q->value(1).toString(),
-						      q->value(2).toString()));
-    fprintf(f,"\"\n");
-    
+    tab->addCell(1,row)->
+      setText(DvtStationCallString(q->value(1).toString(),
+				   q->value(2).toString()),fm);
+
     // Frequency
-    fprintf(f,"C;X2;Y%d;K\"",row);
-    fprintf(f,"%s",
-	    (const char *)DvtFormatFrequency(q->value(3).toDouble()));
-    fprintf(f,"\"\n");
+    tab->addCell(2,row)->
+      setText(DvtFormatFrequency(q->value(3).toDouble()),fm);
 
     // City
-    fprintf(f,"C;X3;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)q->value(4).toString());
-    fprintf(f,"\"\n");
+    tab->addCell(3,row)->setText(q->value(4).toString(),fm);
 
     // State
-    fprintf(f,"C;X4;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)q->value(5).toString().upper());
-    fprintf(f,"\"\n");
+    tab->addCell(4,row)->setText(q->value(5).toString().upper(),fm);
 
     // DMA Market
-    fprintf(f,"C;X5;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)q->value(6).toString());
-    fprintf(f,"\"\n");
+    tab->addCell(5,row)->setText(q->value(6).toString(),fm);
 
     // MSA Market
-    fprintf(f,"C;X6;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)q->value(7).toString());
-    fprintf(f,"\"\n");
+    tab->addCell(6,row)->setText(q->value(7).toString(),fm);
 
     // Program
-    fprintf(f,"C;X7;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)q->value(8).toString());
-    fprintf(f,"\"\n");
+    tab->addCell(7,row)->setText(q->value(8).toString(),fm);
 
     row++;
   }
   delete q;
-  fprintf(f,"E\n");
-  fclose(f);
-  ForkViewer(outfile);
+  delete fm;
+  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }
