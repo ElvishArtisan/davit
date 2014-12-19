@@ -52,15 +52,22 @@ void ListReports::ArbitronReport()
   if((f=GetTempFile(&outfile))==NULL) {
     return;
   }
-  fprintf(f,"ID;PSCALC3\n");
+  fclose(f);
+  QFont main_font("arial",10,QFont::Normal);
+  QFontMetrics *fm=new QFontMetrics(main_font);
+
+  SpreadSheet *sheet=new SpreadSheet();
+  SpreadTab *tab=sheet->addTab(1);
+  tab->setName(tr("Arbitron"));
+  //  fprintf(f,"ID;PSCALC3\n");
   sql=QString().sprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",pgm_id);
   q=new QSqlQuery(sql);
   if(q->first()) {
-    fprintf(f,"C;X1;Y%d;K\"%s\"\n",row++,(const char *)q->value(0).toString());
+    tab->addCell(1,row++)->setText(q->value(0).toString(),fm);
   }
   delete q;
-  fprintf(f,"C;X1;Y%d;K\"Arbitron Listing - %s\"\n",row++,
-	  (const char *)dt.toString("MM/dd/yyyy hh:mm:ss"));
+  tab->addCell(1,row++)->setText(tr("Arbitron Listing")+" - "+
+				 dt.toString("MM/dd/yyyy hh:mm:ss"),fm);
   sql=QString().sprintf("select AFFILIATES.STATION_CALL,\
                          AFFILIATES.STATION_TYPE,AIRINGS.AIR_TIME,\
                          AIRINGS.AIR_LENGTH,AIRINGS.AIR_SUN,AIRINGS.AIR_MON,\
@@ -71,18 +78,11 @@ void ListReports::ArbitronReport()
                          left join PROGRAMS on (AIRINGS.PROGRAM_ID=PROGRAMS.ID)\
                          where PROGRAMS.ID=%d",pgm_id);
   q=new QSqlQuery(sql);
-  fprintf(f,"C;X1;Y%d;K\"Listings Generated: %d\"\n",row++,q->size());
+  tab->addCell(1,row++)->setText(tr("Listings Generated")+": "+
+				 QString().sprintf("%d",q->size()),fm);
   while(q->next()) {
-    fprintf(f,"C;X1;Y%d;K\"",row++);
-    fprintf(f,"%s",(const char *)q->value(0).toString().upper());
-    if(q->value(1).toString().lower()=="a") {
-      fprintf(f,"%s","-AM,");
-    }
-    else {
-      if(q->value(1).toString().lower()=="f") {
-	fprintf(f,"%s","-FM,");
-      }
-    }
+    QString str=DvtStationCallString(q->value(0).toString(),
+				     q->value(1).toString());
     if((q->value(5).toString()=="Y")&&(q->value(6).toString()=="Y")&&
        (q->value(7).toString()=="Y")&&(q->value(8).toString()=="Y")&&
        (q->value(9).toString()=="Y")) {
@@ -129,12 +129,10 @@ void ListReports::ArbitronReport()
 	dow+=QString().sprintf("%d",q->value(2).toTime().hour()-11);
 	dow+="p";
       }
-      fprintf(f," %s",(const char *)dow);
+      tab->addCell(1,row++)->setText(str+" "+dow,fm);
     }
-    fprintf(f,"\"\n");
   }
   delete q;
-  fprintf(f,"E\n");
-  fclose(f);
-  ForkViewer(outfile);
+  delete fm;
+  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }
