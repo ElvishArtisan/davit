@@ -1244,9 +1244,15 @@ int DvtCreateNewAffiliateRecord()
 }
 
 
+QString DvtStationTypeString(const QString &type)
+{
+  return type.upper()+"M";
+}
+
+
 QString DvtStationCallString(const QString &call,const QString &type)
 {
-  return call.upper()+"-"+type.upper()+"M";
+  return call.upper()+"-"+DvtStationTypeString(type);
 }
 
 

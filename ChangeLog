@@ -723,3 +723,6 @@
 	'davit/programbymarket_report.cpp'.
 2014-12-16 Fred Gleason <fredg@paravelsystems.com>
 	* Added a spreadsheet rendering system in 'lib/spread_*.
+2014-12-18 Fred Gleason <fredg@paravelsystems.com>
+	* Converted 'Added Programs' and 'Deleted Programs' report to use
+	spreadsheet rendering library.

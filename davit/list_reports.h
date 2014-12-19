@@ -26,6 +26,7 @@
 #include <vector>
 
 #include <qdialog.h>
+#include <qfontmetrics.h>
 #include <qpushbutton.h>
 #include <qlistview.h>
 #include <qstringlist.h>
@@ -33,6 +34,7 @@
 
 #include <dvt.h>
 #include <dvtlistviewitem.h>
+#include <spread_sheet.h>
 
 #include <pick_fields.h>
 
@@ -117,6 +119,9 @@ class ListReports : public QDialog
   QString FrequencyField(const QVariant &v);
   QString TypeField(const QVariant &v);
   QString ContactFields(int affiliate_id,ContactType type,int fields);
+  void ContactFields(int affiliate_id,ContactType type,int fields,
+		     SpreadTab *tab,int colnum,int rownum,
+		     QFontMetrics *fm=NULL);
   QString EmptyField();
   QListView *list_reports_list;
   QPushButton *list_run_button;

@@ -22,9 +22,11 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-bin_SCRIPTS = add_mysql_user.sh
+bin_SCRIPTS = add_mysql_user.sh\
+              xfer_contacts.pl
 
-EXTRA_DIST = add_mysql_user.sh
+EXTRA_DIST = add_mysql_user.sh\
+             xfer_contacts.pl
 
 CLEANFILES = *~
 MAINTAINERCLEANFILES = *~ Makefile.in

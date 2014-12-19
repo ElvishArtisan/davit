@@ -277,25 +277,6 @@ FILE *ListReports::GetTempFile(QString *filename)
   return f;
 }
 
-/*
-int ListReports::GetActiveAffiliates(std::vector<int> *affiliate_ids)
-{
-  QString sql;
-  QSqlQuery *q;
-
-  affiliate_ids->push_back(0);
-  sql="select AFFILIATE_ID from AIRINGS order by AFFILIATE_ID";
-  q=new QSqlQuery(sql);
-  while(q->next()) {
-    if(affiliate_ids->back()!=q->value(0).toInt()) {
-      affiliate_ids->push_back(q->value(0).toInt());
-    }
-  }
-  delete q;
-  affiliate_ids->erase(affiliate_ids->begin());
-  return affiliate_ids->size();
-}
-*/
 
 QString ListReports::GetEmailContactList(int affiliate_id,bool affidavit,
 					 bool progdir)
@@ -474,13 +455,6 @@ QString ListReports::PhoneField(const QVariant &v)
   if(v.toString().isEmpty()) {
     return QString("\"[none]\",");
   }
-  /*
-  QString pnum=v.toString().stripWhiteSpace();
-  if(pnum.length()==10) {
-    return QString("\"(")+pnum.left(3)+QString(") ")+
-      pnum.mid(3,3)+QString("-")+pnum.right(4)+QString("\",");
-  }
-  */
   return QString("\"")+PhoneString(v.toString())+QString("\",");
 }
 
@@ -600,6 +574,75 @@ QString ListReports::ContactFields(int affiliate_id,ContactType type,int fields)
   delete q;
 
   return ret;
+}
+
+
+void ListReports::ContactFields(int affiliate_id,ContactType type,int fields,
+				SpreadTab *tab,int colnum,int rownum,
+				QFontMetrics *fm)
+{
+  QString field;
+  QString sql;
+  QSqlQuery *q;
+  QString ret;
+
+  switch(type) {
+  case ListReports::ProgramDirectorContact:
+    field="PROGRAM_DIRECTOR";
+    break;
+
+  case ListReports::AffidavitContact:
+    field="AFFIDAVIT";
+    break;
+
+  case ListReports::GeneralManagerContact:
+    field="GENERAL_MANAGER";
+    break;
+  }
+  sql=QString().sprintf("select NAME,PHONE,FAX,EMAIL from CONTACTS \
+                         where (AFFILIATE_ID=%d)&&(%s=\"Y\")",
+			affiliate_id,(const char *)field);
+  q=new QSqlQuery(sql);
+  if(q->first()) {
+    if((fields&FieldName)!=0) {
+      tab->addCell(colnum,rownum)->setText(q->value(0).toString(),fm);
+      colnum++;
+    }
+    if((fields&FieldPhone)!=0) {
+      tab->addCell(colnum,rownum)->
+	setText(DvtFormatPhoneNumber(q->value(1).toString()),fm);
+      colnum++;
+    }
+    if((fields&FieldFax)!=0) {
+      tab->addCell(colnum,rownum)->
+	setText(DvtFormatPhoneNumber(q->value(2).toString()),fm);
+      colnum++;
+    }
+    if((fields&FieldEmail)!=0) {
+      tab->addCell(colnum,rownum)->setText(q->value(3).toString(),fm);
+      colnum++;
+    }
+  }
+  else {
+    if((fields&FieldName)!=0) {
+      tab->addCell(colnum,rownum);
+      colnum++;
+      ret+=StringField("");
+    }
+    if((fields&FieldPhone)!=0) {
+      tab->addCell(colnum,rownum);
+      colnum++;
+    }
+    if((fields&FieldFax)!=0) {
+      tab->addCell(colnum,rownum);
+      colnum++;
+    }
+    if((fields&FieldEmail)!=0) {
+      tab->addCell(colnum,rownum);
+      colnum++;
+    }
+  }
+  delete q;
 }
 
 

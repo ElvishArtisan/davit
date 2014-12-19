@@ -107,6 +107,7 @@ QString DvtFormatPhoneNumber(const QString &str);
 QString DvtFormatFrequency(double freq);
 QString DvtNormalizePhoneNumber(const QString &str,bool *ok=NULL);
 int DvtCreateNewAffiliateRecord();
+QString DvtStationTypeString(const QString &type);
 QString DvtStationCallString(const QString &call,const QString &type);
 QString DvtStationCallString(int affiliate_id);
 bool DvtAffidavitNeeded(int affiliate_id,const QDate &date);
