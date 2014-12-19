@@ -732,3 +732,9 @@
 2014-12-19 Fred Gleason <fredg@paravelsystems.com>
 	* Converted 'Affiliate Activity' report to use spreadsheet
 	rendering library.
+2014-12-19 Fred Gleason <fredg@paravelsystems.com>
+	* Converted 'All Affiliates', 'Affiliates by Daypart',
+	'Affiliates by Network', 'Affiliates by Program',
+	'Affiliates by Program/DMA Market', Affiliates by Program/MSA Market',
+	'Affiliate/Contacts by Program' reports to use spreadsheet
+	rendering library.

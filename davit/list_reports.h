@@ -82,7 +82,13 @@ class ListReports : public QDialog
   void AffiliatesByNetworkReport();
   void AffiliatesByProgramReport(int contacts);
   void AffiliatesByDaypartReport();
+  /*
   void RenderAffiliateReport(FILE *f,const QString &where,
+			     const QString &title,const QString &sub,
+			     bool show_program_name,int contacts);
+  */
+  void RenderAffiliateReport(SpreadTab *tab,QFontMetrics *fm,
+			     const QString &where,
 			     const QString &title,const QString &sub,
 			     bool show_program_name,int contacts);
 

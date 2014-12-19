@@ -110,6 +110,7 @@ int DvtCreateNewAffiliateRecord();
 QString DvtStationTypeString(const QString &type);
 QString DvtStationCallString(const QString &call,const QString &type);
 QString DvtStationCallString(int affiliate_id);
+QString DvtMarketRankString(int rank);
 bool DvtAffidavitNeeded(int affiliate_id,const QDate &date);
 bool DvtAffidavitNeeded(std::vector<int> *ids,std::map<int,int> *counts,
 			const QDate &start_date,const QDate &end_date,

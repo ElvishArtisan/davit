@@ -1203,6 +1203,9 @@ QString DvtFormatFrequency(double freq)
   if(freq<108.0) {
     ret=QString().sprintf("%5.1lf MHz",freq);
   }
+  if(freq==0.0) {
+    ret=QObject::tr("N/A");
+  }
   return ret;
 }
 
@@ -1270,6 +1273,17 @@ QString DvtStationCallString(int affiliate_id)
   }
   delete q;
 
+  return ret;
+}
+
+
+QString DvtMarketRankString(int rank)
+{
+  QString ret="";
+
+  if(rank>0) {
+    ret=QString().sprintf("%d",rank);
+  }
   return ret;
 }
 
