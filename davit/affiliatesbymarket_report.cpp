@@ -2,9 +2,7 @@
 //
 // Generate an Affiliates by DMA|MSA Market report.
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: affiliatesbymarket_report.cpp,v 1.2 2013/02/26 19:06:17 pcvs Exp $
+//   (C) Copyright 2010-2014 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -66,44 +64,51 @@ void ListReports::AffiliatesByMarketReport(PickFields::MarketType type)
   if((f=GetTempFile(&outfile))==NULL) {
     return;
   }
-  fprintf(f,"ID;PSCALC3\n");
+  fclose(f);
+  QFont main_font("arial",10,QFont::Normal);
+  QFontMetrics *fm=new QFontMetrics(main_font);
+  
+  SpreadSheet *sheet=new SpreadSheet();
+  SpreadTab *tab=sheet->addTab(1);
 
   switch(type) {
   case PickFields::DmaMarket:
-    fprintf(f,"C;X1;Y1;K\"Affiliates by Program/DMA Market Report\"\n");
+    tab->setName(tr("Affiliates by Program/DMA"));
+    tab->addCell(1,1)->
+      setText(tr("Affiliates by Program/DMA Market Report"),fm);
     field_name="DMA_NAME";
     break;
 
   case PickFields::MsaMarket:
-    fprintf(f,"C;X1;Y1;K\"Affiliates by Program/MSA Market Report\"\n");
+    tab->setName(tr("Affiliates by Program/MSA"));
+    tab->addCell(1,1)->
+      setText(tr("Affiliates by Program/MSA Market Report"),fm);
     field_name="MARKET_NAME";
     break;
 
   case PickFields::NoMarket:
     break;
   }
-  fprintf(f,"C;X2;Y1;K\"Report Date: %s\"\n",
-	  (const char *)QDate::currentDate().toString("MMMM dd, yyyy"));
+  tab->addCell(2,1)->setText(tr("Report Date")+": "+
+			     QDate::currentDate().toString("MMMM dd, yyyy"),fm);
   sql=QString().sprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",
 			pgm_id);
   q=new QSqlQuery(sql);
   if(q->first()) {
-    fprintf(f,"C;X2;Y2;K\"Program: %s\"\n",
-	    (const char *)q->value(0).toString());
+    tab->addCell(2,2)->setText(tr("Program")+": "+q->value(0).toString(),fm);
   }
   delete q;
-  fprintf(f,"C;X2;Y3;K\"Market: %s\"\n",(const char *)market);
-  fprintf(f,"C;X1;Y5;K\"AFFILIATE\"\n");
-  fprintf(f,"C;X2;Y5;K\"START\"\n");
-  fprintf(f,"C;X3;Y5;K\"LENGTH\"\n");
-  fprintf(f,"C;X4;Y5;K\"SUN\"\n");
-  fprintf(f,"C;X5;Y5;K\"MON\"\n");
-  fprintf(f,"C;X6;Y5;K\"TUE\"\n");
-  fprintf(f,"C;X7;Y5;K\"WED\"\n");
-  fprintf(f,"C;X8;Y5;K\"THU\"\n");
-  fprintf(f,"C;X9;Y5;K\"FRI\"\n");
-  fprintf(f,"C;X10;Y5;K\"SAT\"\n");
-
+  tab->addCell(2,3)->setText(tr("Market")+": "+market,fm);
+  tab->addCell(1,5)->setText(tr("AFFILIATE"),fm);
+  tab->addCell(2,5)->setText(tr("START"),fm);
+  tab->addCell(3,5)->setText(tr("LENGTH"),fm);
+  tab->addCell(4,5)->setText(tr("SUN"),fm);
+  tab->addCell(5,5)->setText(tr("MON"),fm);
+  tab->addCell(6,5)->setText(tr("TUE"),fm);
+  tab->addCell(7,5)->setText(tr("WED"),fm);
+  tab->addCell(8,5)->setText(tr("THU"),fm);
+  tab->addCell(9,5)->setText(tr("FRI"),fm);
+  tab->addCell(10,5)->setText(tr("SAT"),fm);
   sql=QString().sprintf("select AIRINGS.AIR_SUN,\
                                 AIRINGS.AIR_MON,\
                                 AIRINGS.AIR_TUE,\
@@ -126,143 +131,36 @@ void ListReports::AffiliatesByMarketReport(PickFields::MarketType type)
   q=new QSqlQuery(sql);
   while(q->next()) {
     // Affiliate
-    fprintf(f,"C;X1;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)q->value(9).toString());
-    if(q->value(10).toString().lower()=="a") {
-      fprintf(f,"%s","-AM");
-    }
-    else {
-      if(q->value(10).toString().lower()=="f") {
-	fprintf(f,"%s","-FM");
-      }
-    }
-    fprintf(f," -- %s, %s\"\n",(const char *)q->value(11).toString(),
-	    (const char *)q->value(12).toString());
-    fprintf(f,"\n");
+    tab->addCell(1,row)->
+      setText(DvtStationCallString(q->value(9).toString(),
+				   q->value(10).toString()),fm);
 
     //
     // Start time
     //
-    fprintf(f,"C;X2;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)q->value(7).toTime().toString("hh:mm:ss"));
-    fprintf(f,"\n");
+    tab->addCell(2,row)->setText(q->value(7).toTime().toString("hh:mm:ss"),fm);
 
     //
     // Length
     //
-    fprintf(f,"C;X3;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)DvtGetTimeLength(q->value(8).toInt()*1000,
-						  false,false));
-    fprintf(f,"\n");
+    tab->addCell(3,row)->setText(DvtGetTimeLength(q->value(8).toInt()*1000,
+						  false,false),fm);
 
     //
     // Days of Week
     //
     for(int i=0;i<7;i++) {
-      fprintf(f,"C;X%d;Y%d;K\"",i+4,row);
       if(q->value(i).toString()=="Y") {
-	fprintf(f,"X");
+	tab->addCell(4+i,row)->setText("X",fm);
       }
-      fprintf(f,"\n");
+      else {
+	tab->addCell(4+i,row);
+      }
     }
 
     row++;
   }
   delete q;
-
-
-  /*
-  sql="select ID,STATION_CALL,STATION_TYPE from AFFILIATES where (";
-  GetActiveAffiliates(&ids);
-  for(unsigned i=0;i<ids.size();i++) {
-    sql+=QString().sprintf("(ID=%d)||",ids[i]);
-  }
-  sql=sql.left(sql.length()-2);
-  sql+=") order by STATION_CALL desc";
-  q=new QSqlQuery(sql);
-  while(q->next()) {
-    // Call Letters
-    fprintf(f,"C;X1;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)q->value(1).toString());
-    if(q->value(2).toString().lower()=="a") {
-      fprintf(f,"%s","-AM");
-    }
-    else {
-      if(q->value(2).toString().lower()=="f") {
-	fprintf(f,"%s","-FM");
-      }
-    }
-    fprintf(f,"\"\n");
-
-    // E-Mail Address
-    fprintf(f,"C;X2;Y%d;K\"",row++);
-    fprintf(f,"%s",
-	    (const char *)GetEmailContactList(q->value(0).toInt(),true,false));
-    fprintf(f,"\"\n");
-  }
-  delete q;
-  */
-  fprintf(f,"E\n");
-  fclose(f);
-  ForkViewer(outfile);
+  delete fm;
+  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }
-
-
-
-/*
-void ListReports::AffidavitReport()
-{
-  QString s;
-  QString sql;
-  QSqlQuery *q;
-  QString outfile;
-  FILE *f=NULL;
-  int row=4;
-  std::vector<int> ids;
-
-  //
-  // Generate Report
-  //
-  if((f=GetTempFile(&outfile))==NULL) {
-    return;
-  }
-  fprintf(f,"ID;PSCALC3\n");
-  fprintf(f,"C;X1;Y1;K\"Affiliate Affidavit Contacts\"\n");
-  fprintf(f,"C;X2;Y1;K\"Report Date: %s\"\n",
-	  (const char *)QDate::currentDate().toString("MMMM dd, yyyy"));
-  fprintf(f,"C;X1;Y3;K\"CALL LETTERS\"\n");
-  fprintf(f,"C;X2;Y3;K\"AFFIDAVIT CONTACT E-MAIL\"\n");
-  sql="select ID,STATION_CALL,STATION_TYPE from AFFILIATES where (";
-  GetActiveAffiliates(&ids);
-  for(unsigned i=0;i<ids.size();i++) {
-    sql+=QString().sprintf("(ID=%d)||",ids[i]);
-  }
-  sql=sql.left(sql.length()-2);
-  sql+=") order by STATION_CALL desc";
-  q=new QSqlQuery(sql);
-  while(q->next()) {
-    // Call Letters
-    fprintf(f,"C;X1;Y%d;K\"",row);
-    fprintf(f,"%s",(const char *)q->value(1).toString());
-    if(q->value(2).toString().lower()=="a") {
-      fprintf(f,"%s","-AM");
-    }
-    else {
-      if(q->value(2).toString().lower()=="f") {
-	fprintf(f,"%s","-FM");
-      }
-    }
-    fprintf(f,"\"\n");
-
-    // E-Mail Address
-    fprintf(f,"C;X2;Y%d;K\"",row++);
-    fprintf(f,"%s",
-	    (const char *)GetEmailContactList(q->value(0).toInt(),true,false));
-    fprintf(f,"\"\n");
-  }
-  delete q;
-  fprintf(f,"E\n");
-  fclose(f);
-  ForkViewer(outfile);
-}
-*/

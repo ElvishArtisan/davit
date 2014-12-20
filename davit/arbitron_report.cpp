@@ -59,7 +59,6 @@ void ListReports::ArbitronReport()
   SpreadSheet *sheet=new SpreadSheet();
   SpreadTab *tab=sheet->addTab(1);
   tab->setName(tr("Arbitron"));
-  //  fprintf(f,"ID;PSCALC3\n");
   sql=QString().sprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",pgm_id);
   q=new QSqlQuery(sql);
   if(q->first()) {
