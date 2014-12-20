@@ -2,7 +2,7 @@
 //
 // Generate an Affiliate Missing Affidavit Contact List Report
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2010-2014 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -48,12 +48,19 @@ void ListReports::MissingAffidavitContactReport()
   if((f=GetTempFile(&outfile))==NULL) {
     return;
   }
-  fprintf(f,"ID;PSCALC3\n");
-  fprintf(f,"C;X1;Y1;K\"Missing Affidavit Contacts\n");
-  fprintf(f,"C;X2;Y1;K\"Report Date: %s\"\n",
-	  (const char *)QDate::currentDate().toString("MMMM dd, yyyy"));
-  fprintf(f,"C;X1;Y3;K\"CALL LETTERS\"\n");
-  fprintf(f,"C;X2;Y3;K\"STATION PHONE\"\n");
+  fclose(f);
+
+  QFont main_font("arial",10,QFont::Normal);
+  QFontMetrics *fm=new QFontMetrics(main_font);
+  SpreadSheet *sheet=new SpreadSheet();
+  SpreadTab *tab=sheet->addTab(1);
+  tab->setName(tr("Missiing Affidavit Contacts"));
+
+  tab->addCell(1,1)->setText(tr("Missing Affidavit Contacts"),fm);
+  tab->addCell(2,1)->setText(tr("Report Date")+": "+
+			     QDate::currentDate().toString("MMMM dd, yyyy"),fm);
+  tab->addCell(1,3)->setText(tr("CALL LETTERS"),fm);
+  tab->addCell(2,3)->setText(tr("STATION PHONE"),fm);
   sql=QString("select ID,STATION_CALL,STATION_TYPE,PHONE from AFFILIATES ")+
     "where IS_AFFILIATE=\"Y\"";
   q=new QSqlQuery(sql);
@@ -66,23 +73,18 @@ void ListReports::MissingAffidavitContactReport()
     q1=new QSqlQuery(sql);
     if(!q1->first()) {
       // Call Letters
-      fprintf(f,"C;X1;Y%d;K\"",row);
-      fprintf(f,"%s",(const char *)DvtStationCallString(q->value(1).toString(),
-						      q->value(2).toString()));
-      fprintf(f,"\"\n");
+      tab->addCell(1,row)->
+	setText(DvtStationCallString(q->value(1).toString(),
+				     q->value(2).toString()),fm);
     
       // Phone
-      fprintf(f,"C;X2;Y%d;K\"",row);
-      fprintf(f,"%s",
-	      (const char *)DvtFormatPhoneNumber(q->value(3).toString()));
-      fprintf(f,"\"\n");
-
+      tab->addCell(2,row)->
+	setText(DvtFormatPhoneNumber(q->value(3).toString()),fm);
       row++;
     }
     delete q1;
   }
   delete q;
-  fprintf(f,"E\n");
-  fclose(f);
-  ForkViewer(outfile);
+  delete fm;
+  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }
