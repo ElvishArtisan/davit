@@ -311,8 +311,11 @@ void ListAirings::RefreshList()
     item->setId(q->value(10).toInt());
     item->setText(0,q->value(0).toString());
     item->setText(1,q->value(1).toTime().toString("hh:mm:ss"));
-    item->setText(2,q->value(1).toTime().addSecs(q->value(2).toInt()).
-		  toString("hh:mm:ss"));
+    QTime t=q->value(1).toTime().addSecs(q->value(2).toInt());
+    if(t==QTime(23,59,59)) {
+      t=QTime(0,0,0);
+    }
+    item->setText(2,t.toString("hh:mm:ss"));
     if(q->value(3).toString()=="Y") {
       item->setText(3,tr("Su"));
     }

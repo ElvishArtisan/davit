@@ -198,7 +198,12 @@ EditAiring::EditAiring(DvtFeed *feed,QWidget *parent,const char *name)
   }
   delete q;
   edit_starttime_edit->setTime(feed->startTime());
-  edit_endtime_edit->setTime(feed->endTime());
+  if(feed->endTime()==QTime(23,59,59)) {
+    edit_endtime_edit->setTime(QTime(0,0,0));
+  }
+  else {
+    edit_endtime_edit->setTime(feed->endTime());
+  }
   edit_sun_button->setChecked(feed->dowActive(7));
   edit_mon_button->setChecked(feed->dowActive(1));
   edit_tue_button->setChecked(feed->dowActive(2));
@@ -228,15 +233,22 @@ QSizePolicy EditAiring::sizePolicy() const
 
 void EditAiring::okData()
 {
-  if(edit_starttime_edit->time()>=edit_endtime_edit->time()) {
+  if((edit_starttime_edit->time()>=edit_endtime_edit->time())&&
+     (edit_endtime_edit->time()!=QTime(0,0,0))) {
     QMessageBox::warning(this,tr("Invalid Times"),
 			 tr("The program cannot end before it starts!"));
     return;
   }
   edit_feed->setName(edit_program_box->currentText());
   edit_feed->setStartTime(edit_starttime_edit->time());
-  edit_feed->setLength(edit_starttime_edit->time().
-		       secsTo(edit_endtime_edit->time()));
+  if(edit_endtime_edit->time()==QTime(0,0,0)) {
+    edit_feed->setLength(edit_starttime_edit->time().
+			 secsTo(QTime(23,59,59)));
+  }
+  else {
+    edit_feed->setLength(edit_starttime_edit->time().
+			 secsTo(edit_endtime_edit->time()));
+  }
   edit_feed->setDowActive(7,edit_sun_button->isChecked());
   edit_feed->setDowActive(1,edit_mon_button->isChecked());
   edit_feed->setDowActive(2,edit_tue_button->isChecked());

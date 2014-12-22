@@ -751,3 +751,6 @@
 2014-12-22 Fred Gleason <fredg@paravelsystems.com>
 	* Modified 'davit/preview.cpp' to place the exception section
 	of affidavits on a separate page.
+2014-12-22 Fred Gleason <fredg@paravelsystems.com>
+	* Modified 'davit/edit_airing.cpp' and 'davit/list_airings.cpp'
+	to allow air times to end at midnight.
