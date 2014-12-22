@@ -457,6 +457,7 @@ void Preview::Render(bool print)
   // Exception Section
   //
   if(!preview_show_airings) {
+    preview_printer->newPage();
     sql=QString().sprintf("select AIRED.AIR_DATETIME,AIRED.AIR_LENGTH,\
                            AIRED.ORIGIN_DATETIME,AIRED.CONTACT_NAME,\
                            PROGRAMS.PROGRAM_NAME \

@@ -2,9 +2,7 @@
 //
 // Spawn an external text file viewer.
 //
-//   (C) Copyright 2002-2006 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: dvttextfile.h,v 1.1 2008/02/01 22:48:08 fredg Exp $
+//   (C) Copyright 2002-2014 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as

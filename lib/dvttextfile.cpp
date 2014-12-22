@@ -2,7 +2,7 @@
 //
 // Spawn an external text file viewer.
 //
-//   (C) Copyright 2002-2006 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2014 Fred Gleason <fredg@paravelsystems.com>
 //
 //      $Id: dvttextfile.cpp,v 1.3 2011/02/02 18:06:32 pcvs Exp $
 //
