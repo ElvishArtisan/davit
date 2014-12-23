@@ -50,17 +50,15 @@ void ListReports::MissingAffidavitContactReport()
   }
   fclose(f);
 
-  QFont main_font("arial",10,QFont::Normal);
-  QFontMetrics *fm=new QFontMetrics(main_font);
   SpreadSheet *sheet=new SpreadSheet();
   SpreadTab *tab=sheet->addTab(1);
   tab->setName(tr("Missiing Affidavit Contacts"));
 
-  tab->addCell(1,1)->setText(tr("Missing Affidavit Contacts"),fm);
+  tab->addCell(1,1)->setText(tr("Missing Affidavit Contacts"));
   tab->addCell(2,1)->setText(tr("Report Date")+": "+
-			     QDate::currentDate().toString("MMMM dd, yyyy"),fm);
-  tab->addCell(1,3)->setText(tr("CALL LETTERS"),fm);
-  tab->addCell(2,3)->setText(tr("STATION PHONE"),fm);
+			     QDate::currentDate().toString("MMMM dd, yyyy"));
+  tab->addCell(1,3)->setText(tr("CALL LETTERS"));
+  tab->addCell(2,3)->setText(tr("STATION PHONE"));
   sql=QString("select ID,STATION_CALL,STATION_TYPE,PHONE from AFFILIATES ")+
     "where IS_AFFILIATE=\"Y\"";
   q=new QSqlQuery(sql);
@@ -75,16 +73,15 @@ void ListReports::MissingAffidavitContactReport()
       // Call Letters
       tab->addCell(1,row)->
 	setText(DvtStationCallString(q->value(1).toString(),
-				     q->value(2).toString()),fm);
+				     q->value(2).toString()));
     
       // Phone
       tab->addCell(2,row)->
-	setText(DvtFormatPhoneNumber(q->value(3).toString()),fm);
+	setText(DvtFormatPhoneNumber(q->value(3).toString()));
       row++;
     }
     delete q1;
   }
   delete q;
-  delete fm;
   ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

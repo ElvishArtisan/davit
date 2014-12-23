@@ -53,8 +53,6 @@ void ListReports::ArbitronReport()
     return;
   }
   fclose(f);
-  QFont main_font("arial",10,QFont::Normal);
-  QFontMetrics *fm=new QFontMetrics(main_font);
 
   SpreadSheet *sheet=new SpreadSheet();
   SpreadTab *tab=sheet->addTab(1);
@@ -62,11 +60,11 @@ void ListReports::ArbitronReport()
   sql=QString().sprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",pgm_id);
   q=new QSqlQuery(sql);
   if(q->first()) {
-    tab->addCell(1,row++)->setText(q->value(0).toString(),fm);
+    tab->addCell(1,row++)->setText(q->value(0).toString());
   }
   delete q;
   tab->addCell(1,row++)->setText(tr("Arbitron Listing")+" - "+
-				 dt.toString("MM/dd/yyyy hh:mm:ss"),fm);
+				 dt.toString("MM/dd/yyyy hh:mm:ss"));
   sql=QString().sprintf("select AFFILIATES.STATION_CALL,\
                          AFFILIATES.STATION_TYPE,AIRINGS.AIR_TIME,\
                          AIRINGS.AIR_LENGTH,AIRINGS.AIR_SUN,AIRINGS.AIR_MON,\
@@ -78,7 +76,7 @@ void ListReports::ArbitronReport()
                          where PROGRAMS.ID=%d",pgm_id);
   q=new QSqlQuery(sql);
   tab->addCell(1,row++)->setText(tr("Listings Generated")+": "+
-				 QString().sprintf("%d",q->size()),fm);
+				 QString().sprintf("%d",q->size()));
   while(q->next()) {
     QString str=DvtStationCallString(q->value(0).toString(),
 				     q->value(1).toString());
@@ -128,10 +126,9 @@ void ListReports::ArbitronReport()
 	dow+=QString().sprintf("%d",q->value(2).toTime().hour()-11);
 	dow+="p";
       }
-      tab->addCell(1,row++)->setText(str+" "+dow,fm);
+      tab->addCell(1,row++)->setText(str+" "+dow);
     }
   }
   delete q;
-  delete fm;
   ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

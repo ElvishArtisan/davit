@@ -21,7 +21,13 @@
 #ifndef SPREAD_OBJECT_H
 #define SPREAD_OBJECT_H
 
+#include <qfont.h>
+#include <qfontmetrics.h>
 #include <qstring.h>
+
+#define SPREAD_DEFAULT_FONT_FACE "arial"
+#define SPREAD_DEFAULT_FONT_SIZE 10
+#define SPREAD_DEFAULT_FONT_WEIGHT QFont::Normal
 
 class SpreadObject
 {
@@ -29,11 +35,18 @@ class SpreadObject
   enum FileFormat {SlkFormat=0,ExcelXmlFormat=1};
   SpreadObject();
   ~SpreadObject();
+  QFont defaultFont() const;
+  void setDefaultFont(const QFont &font);
   virtual QString write(FileFormat fmt)=0;
 
  protected:
+  QFontMetrics *fontMetrics() const;
   QString escapeXml(const QString &xml);
   QString unEscapeXml(const QString &xml);
+
+ private:
+  QFont obj_font;
+  QFontMetrics *obj_font_metrics;
 };
 
 

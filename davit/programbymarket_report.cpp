@@ -60,22 +60,20 @@ void ListReports::ProgramByMarketReport(PickFields::MarketType type)
     return;
   }
   fclose(f);
-  QFont main_font("arial",10,QFont::Normal);
-  QFontMetrics *fm=new QFontMetrics(main_font);
 
   SpreadSheet *sheet=new SpreadSheet();
   SpreadTab *tab=sheet->addTab(1);
   tab->setName(tr("Programs by")+" "+market);
-  tab->addCell(1,1)->setText(tr("Programs in")+" "+market,fm);
+  tab->addCell(1,1)->setText(tr("Programs in")+" "+market);
   tab->addCell(1,2)->setText(tr("Report Date")+": "+
-			     QDate::currentDate().toString("MMMM dd, yyyy"),fm);
-  tab->addCell(1,4)->setText(tr("CALL LETTERS"),fm);
-  tab->addCell(2,4)->setText(tr("FREQUENCY"),fm);
-  tab->addCell(3,4)->setText(tr("CITY"),fm);
-  tab->addCell(4,4)->setText(tr("STATE"),fm);
-  tab->addCell(5,4)->setText(tr("DMA MARKET"),fm);
-  tab->addCell(6,4)->setText(tr("MSA MARKET"),fm);
-  tab->addCell(7,4)->setText(tr("PROGRAM"),fm);
+			     QDate::currentDate().toString("MMMM dd, yyyy"));
+  tab->addCell(1,4)->setText(tr("CALL LETTERS"));
+  tab->addCell(2,4)->setText(tr("FREQUENCY"));
+  tab->addCell(3,4)->setText(tr("CITY"));
+  tab->addCell(4,4)->setText(tr("STATE"));
+  tab->addCell(5,4)->setText(tr("DMA MARKET"));
+  tab->addCell(6,4)->setText(tr("MSA MARKET"));
+  tab->addCell(7,4)->setText(tr("PROGRAM"));
   sql=QString("select AFFILIATES.ID,AFFILIATES.STATION_CALL,")+
     "AFFILIATES.STATION_TYPE,AFFILIATES.STATION_FREQUENCY,"+
     "AFFILIATES.LICENSE_CITY,AFFILIATES.LICENSE_STATE,DMA_NAME,MARKET_NAME,"+
@@ -89,23 +87,23 @@ void ListReports::ProgramByMarketReport(PickFields::MarketType type)
     if(!city.isEmpty()) {
       sql+="(AFFILIATES.LICENSE_CITY=\""+city+"\")&&";
       tab->addCell(1,1)->setText(tr("Programs in")+" "+
-				 DvtFormatCityState(city,state),fm);
+				 DvtFormatCityState(city,state));
     }
     else {
       tab->addCell(1,1)->setText(tr("Programs in")+" "+
-				 AbbreviationToState(state),fm);
+				 AbbreviationToState(state));
     }
     sql+="(AFFILIATES.LICENSE_STATE=\""+state+"\")";
     break;
 
   case PickFields::DmaMarket:
     sql+="(DMA_NAME=\""+market+"\")";
-    tab->addCell(1,1)->setText(tr("Programs in")+" "+market,fm);
+    tab->addCell(1,1)->setText(tr("Programs in")+" "+market);
     break;
 
   case PickFields::MsaMarket:
     sql+="(MARKET_NAME=\""+market+"\")";
-    tab->addCell(1,1)->setText(tr("Programs in")+" "+market,fm);
+    tab->addCell(1,1)->setText(tr("Programs in")+" "+market);
     break;
   }
   sql+=" order by AFFILIATES.LICENSE_STATE,AFFILIATES.LICENSE_CITY,";
@@ -116,30 +114,29 @@ void ListReports::ProgramByMarketReport(PickFields::MarketType type)
     // Call Letters
     tab->addCell(1,row)->
       setText(DvtStationCallString(q->value(1).toString(),
-				   q->value(2).toString()),fm);
+				   q->value(2).toString()));
 
     // Frequency
     tab->addCell(2,row)->
-      setText(DvtFormatFrequency(q->value(3).toDouble()),fm);
+      setText(DvtFormatFrequency(q->value(3).toDouble()));
 
     // City
-    tab->addCell(3,row)->setText(q->value(4).toString(),fm);
+    tab->addCell(3,row)->setText(q->value(4).toString());
 
     // State
-    tab->addCell(4,row)->setText(q->value(5).toString().upper(),fm);
+    tab->addCell(4,row)->setText(q->value(5).toString().upper());
 
     // DMA Market
-    tab->addCell(5,row)->setText(q->value(6).toString(),fm);
+    tab->addCell(5,row)->setText(q->value(6).toString());
 
     // MSA Market
-    tab->addCell(6,row)->setText(q->value(7).toString(),fm);
+    tab->addCell(6,row)->setText(q->value(7).toString());
 
     // Program
-    tab->addCell(7,row)->setText(q->value(8).toString(),fm);
+    tab->addCell(7,row)->setText(q->value(8).toString());
 
     row++;
   }
   delete q;
-  delete fm;
   ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

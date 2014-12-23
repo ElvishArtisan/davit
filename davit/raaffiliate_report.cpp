@@ -53,42 +53,36 @@ void ListReports::RAAffiliateReport()
     return;
   }
   fclose(f);
-  QFont main_font("arial",10,QFont::Normal);
-  QFontMetrics *fm=new QFontMetrics(main_font);
+
   SpreadSheet *sheet=new SpreadSheet();
   SpreadTab *tab=sheet->addTab(1);
   tab->setName(tr("RadioAmerica Affiliates"));
 
-  tab->addCell(1,1)->setText(tr("RadioAmerica Affiliates Report"),fm);
+  tab->addCell(1,1)->setText(tr("RadioAmerica Affiliates Report"));
   tab->addCell(1,2)->setText(tr("Report Date")+": "+
-			     dt.toString("MM/dd/yyyy hh:mm:ss"),fm);
+			     dt.toString("MM/dd/yyyy hh:mm:ss"));
   int col=1;
   int row=4;
 
-  tab->addCell(col++,row)->setText(tr("CALL"),fm);
-  tab->addCell(col++,row)->setText(tr("BAND"),fm);
-  tab->addCell(col++,row)->setText(tr("FREQ"),fm);
-  tab->addCell(col++,row)->setText(tr("ADDRESS1"),fm);
-  tab->addCell(col++,row)->setText(tr("CITY"),fm);
-  tab->addCell(col++,row)->setText(tr("STATE"),fm);
-  tab->addCell(col++,row)->setText(tr("MSA MARKET"),fm);
-  tab->addCell(col++,row)->setText(tr("MSA RANK"),fm);
-  tab->addCell(col++,row)->setText(tr("DMA MARKET"),fm);
-  tab->addCell(col++,row)->setText(tr("DMA RANK"),fm);
-  tab->addCell(col++,row)->setText(tr("PD NAME"),fm);
-  tab->addCell(col++,row)->setText(tr("PD PHONE"),fm);
-  tab->addCell(col++,row)->setText(tr("PD FAX"),fm);
-  tab->addCell(col++,row)->setText(tr("PD E-MAIL"),fm);
-  tab->addCell(col++,row)->setText(tr("AFFIDAVIT NAME"),fm);
-  tab->addCell(col++,row)->setText(tr("AFFIDAVIT PHONE"),fm);
-  tab->addCell(col++,row)->setText(tr("PROGRAM"),fm);
-  tab->addCell(col++,row)->setText(tr("AIRING"),fm);
+  tab->addCell(col++,row)->setText(tr("CALL"));
+  tab->addCell(col++,row)->setText(tr("BAND"));
+  tab->addCell(col++,row)->setText(tr("FREQ"));
+  tab->addCell(col++,row)->setText(tr("ADDRESS1"));
+  tab->addCell(col++,row)->setText(tr("CITY"));
+  tab->addCell(col++,row)->setText(tr("STATE"));
+  tab->addCell(col++,row)->setText(tr("MSA MARKET"));
+  tab->addCell(col++,row)->setText(tr("MSA RANK"));
+  tab->addCell(col++,row)->setText(tr("DMA MARKET"));
+  tab->addCell(col++,row)->setText(tr("DMA RANK"));
+  tab->addCell(col++,row)->setText(tr("PD NAME"));
+  tab->addCell(col++,row)->setText(tr("PD PHONE"));
+  tab->addCell(col++,row)->setText(tr("PD FAX"));
+  tab->addCell(col++,row)->setText(tr("PD E-MAIL"));
+  tab->addCell(col++,row)->setText(tr("AFFIDAVIT NAME"));
+  tab->addCell(col++,row)->setText(tr("AFFIDAVIT PHONE"));
+  tab->addCell(col++,row)->setText(tr("PROGRAM"));
+  tab->addCell(col++,row)->setText(tr("AIRING"));
   row++;
-  /*
-  sql=QString("select ID,STATION_CALL,STATION_TYPE,STATION_FREQUENCY,")+
-    "ADDRESS1,ADDRESS2,CITY,STATE,ZIPCODE,MARKET_NAME,MARKET_RANK,DMA_NAME,"+
-    "DMA_RANK from AFFILIATES";
-  */
   sql=QString("select AFFILIATES.ID,AFFILIATES.STATION_CALL,")+
     "AFFILIATES.STATION_TYPE,AFFILIATES.STATION_FREQUENCY,"+
     "AFFILIATES.ADDRESS1,AFFILIATES.ADDRESS2,AFFILIATES.CITY,"+
@@ -111,33 +105,33 @@ void ListReports::RAAffiliateReport()
   q=new QSqlQuery(sql);
   while(q->next()) {
     col=1;
-    tab->addCell(col++,row)->setText(q->value(1).toString(),fm);
+    tab->addCell(col++,row)->setText(q->value(1).toString());
     tab->addCell(col++,row)->
-      setText(DvtStationTypeString(q->value(2).toString()),fm);
+      setText(DvtStationTypeString(q->value(2).toString()));
     tab->addCell(col++,row)->
-      setText(DvtFormatFrequency(q->value(3).toDouble()),fm);
-    tab->addCell(col++,row)->setText(q->value(4).toString(),fm);
-    tab->addCell(col++,row)->setText(q->value(6).toString(),fm);
-    tab->addCell(col++,row)->setText(q->value(7).toString().upper(),fm);
-    tab->addCell(col++,row)->setText(q->value(9).toString(),fm);
+      setText(DvtFormatFrequency(q->value(3).toDouble()));
+    tab->addCell(col++,row)->setText(q->value(4).toString());
+    tab->addCell(col++,row)->setText(q->value(6).toString());
+    tab->addCell(col++,row)->setText(q->value(7).toString().upper());
+    tab->addCell(col++,row)->setText(q->value(9).toString());
     tab->addCell(col++,row)->
-      setText(DvtMarketRankString(q->value(10).toInt()),fm);
-    tab->addCell(col++,row)->setText(q->value(11).toString(),fm);
+      setText(DvtMarketRankString(q->value(10).toInt()));
+    tab->addCell(col++,row)->setText(q->value(11).toString());
     tab->addCell(col++,row)->
-      setText(DvtMarketRankString(q->value(12).toInt()),fm);
+      setText(DvtMarketRankString(q->value(12).toInt()));
     ContactFields(q->value(0).toInt(),
 		  ListReports::ProgramDirectorContact,
 		  ListReports::FieldName|
 		  ListReports::FieldPhone|
 		  ListReports::FieldFax|
-		  ListReports::FieldEmail,tab,col,row,fm);
+		  ListReports::FieldEmail,tab,col,row);
     col+=4;
     ContactFields(q->value(0).toInt(),
 		  ListReports::AffidavitContact,
 		  ListReports::FieldName|
-		  ListReports::FieldPhone,tab,col,row,fm);
+		  ListReports::FieldPhone,tab,col,row);
     col+=2;
-    tab->addCell(col++,row)->setText(q->value(13).toString(),fm);
+    tab->addCell(col++,row)->setText(q->value(13).toString());
     dow="";
     if(q->value(16).toString()=="Y") {
       dow+="Su";
@@ -163,10 +157,9 @@ void ListReports::RAAffiliateReport()
     dow+=(", "+q->value(14).toTime().toString("h ap")+"-"+
 	  q->value(14).toTime().
 	  addSecs(q->value(15).toInt()).toString("h ap"));
-    tab->addCell(col++,row)->setText(dow,fm);
+    tab->addCell(col++,row)->setText(dow);
     row++;
   }
   delete q;
-  delete fm;
   ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

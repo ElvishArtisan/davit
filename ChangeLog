@@ -760,3 +760,8 @@
 2014-12-23 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in the 'Added Programs' report where the date
 	range parameters were ignored.
+2014-12-23 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'SpreadObject::defaultFont()', 'SpreadObject::setDefaultFont()'
+	and 'SpreadObject::fontMetrics()' methods in 'lib/spread_object.cpp'
+	and 'lib/spread_object.h'.
+	* Converted reports to use default font.

@@ -22,11 +22,35 @@
 
 SpreadObject::SpreadObject()
 {
+  obj_font=QFont(SPREAD_DEFAULT_FONT_FACE,SPREAD_DEFAULT_FONT_SIZE,
+		 SPREAD_DEFAULT_FONT_WEIGHT);
+  obj_font_metrics=new QFontMetrics(obj_font);
 }
 
 
 SpreadObject::~SpreadObject()
 {
+  delete obj_font_metrics;
+}
+
+
+QFont SpreadObject::defaultFont() const
+{
+  return obj_font;
+}
+
+
+void SpreadObject::setDefaultFont(const QFont &font)
+{
+  obj_font=font;
+  delete obj_font_metrics;
+  obj_font_metrics=new QFontMetrics(obj_font);
+}
+
+
+QFontMetrics *SpreadObject::fontMetrics() const
+{
+  return obj_font_metrics;
 }
 
 

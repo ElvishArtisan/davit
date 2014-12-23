@@ -22,7 +22,6 @@
 #include <vector>
 
 #include <qfile.h>
-#include <qfontmetrics.h>
 #include <qsqldatabase.h>
 #include <qmessagebox.h>
 
@@ -63,12 +62,6 @@ void ListReports::MissingAffidavitReport()
   delete d;
 
   //
-  // Fonts
-  //
-  QFont base_font("arial",10,QFont::Normal);
-  QFontMetrics *fm=new QFontMetrics(base_font);
-
-  //
   // Generate Report
   //
   if((f=GetTempFile(&outfile))==NULL) {
@@ -76,21 +69,21 @@ void ListReports::MissingAffidavitReport()
   }
   sheet=new SpreadSheet();
   SpreadTab *tab=sheet->addTab(1);
-  tab->addCell(1,1)->setText(tr("Affiliates Missing Affidavits"),fm);
+  tab->addCell(1,1)->setText(tr("Affiliates Missing Affidavits"));
   tab->cell(1,1)->setWidth(120.0);
   tab->addCell(1,2)->setText(tr("Report Date")+":"+
-			     QDate::currentDate().toString("MMMM dd, yyyy"),fm);
+			     QDate::currentDate().toString("MMMM dd, yyyy"));
   switch(filter) {
   case Dvt::All:
-    tab->addCell(1,3)->setText(tr("All Programs"),fm);
+    tab->addCell(1,3)->setText(tr("All Programs"));
     break;
 
   case Dvt::Weekday:
-    tab->addCell(1,3)->setText(tr("All Weekday Programs"),fm);
+    tab->addCell(1,3)->setText(tr("All Weekday Programs"));
     break;
 
   case Dvt::Weekend:
-    tab->addCell(1,3)->setText(tr("All Weekend Programs"),fm);
+    tab->addCell(1,3)->setText(tr("All Weekend Programs"));
     break;
 
   case Dvt::Program:
@@ -98,22 +91,22 @@ void ListReports::MissingAffidavitReport()
       QString().sprintf("where ID=%d",program_id);
     q=new QSqlQuery(sql);
     if(q->first()) {
-      tab->addCell(1,3)->setText(q->value(0).toString(),fm);
+      tab->addCell(1,3)->setText(q->value(0).toString());
     }
     else {
-      tab->addCell(1,3)->setText(tr("INTERNAL ERROR!"),fm);
+      tab->addCell(1,3)->setText(tr("INTERNAL ERROR!"));
     }
     delete q;
     break;
   }
-  tab->addCell(1,5)->setText(tr("CALL LETTERS"),fm);
-  tab->addCell(2,5)->setText(tr("NAME"),fm);
-  tab->addCell(3,5)->setText(tr("PHONE"),fm);
-  tab->addCell(4,5)->setText(tr("E-MAIL"),fm);
-  tab->addCell(5,5)->setText(tr("MISSING"),fm);
-  tab->addCell(6,5)->setText(tr("STATE"),fm);
-  tab->addCell(7,5)->setText(tr("DMA MARKET"),fm);
-  tab->addCell(8,5)->setText(tr("MSA MARKET"),fm);
+  tab->addCell(1,5)->setText(tr("CALL LETTERS"));
+  tab->addCell(2,5)->setText(tr("NAME"));
+  tab->addCell(3,5)->setText(tr("PHONE"));
+  tab->addCell(4,5)->setText(tr("E-MAIL"));
+  tab->addCell(5,5)->setText(tr("MISSING"));
+  tab->addCell(6,5)->setText(tr("STATE"));
+  tab->addCell(7,5)->setText(tr("DMA MARKET"));
+  tab->addCell(8,5)->setText(tr("MSA MARKET"));
   int row=6;
 
   DvtAffidavitNeeded(&affiliate_ids,&affiliate_counts,
@@ -167,7 +160,7 @@ void ListReports::MissingAffidavitReport()
     // Call Letters
     tab->addCell(1,row)->
       setText(DvtStationCallString(q->value(1).toString(),
-				   q->value(2).toString()),fm);
+				   q->value(2).toString()));
 
     //
     // Contact Info
@@ -178,9 +171,9 @@ void ListReports::MissingAffidavitReport()
 
     DvtContactInfo(&name,NULL,&email,&phone,NULL,q->value(0).toInt(),
 		   Dvt::AffidavitContact);
-    tab->addCell(2,row)->setText(name,fm);  // Contact Name
-    tab->addCell(3,row)->setText(DvtFormatPhoneNumber(phone),fm);  // Contact Phone
-    tab->addCell(4,row)->setText(email,fm);    // Contact E-Mail Address
+    tab->addCell(2,row)->setText(name);  // Contact Name
+    tab->addCell(3,row)->setText(DvtFormatPhoneNumber(phone));  // Contact Phone
+    tab->addCell(4,row)->setText(email);    // Contact E-Mail Address
 
     // Missing Months
     std::vector<QDate> dates;
@@ -192,15 +185,14 @@ void ListReports::MissingAffidavitReport()
       }
       date_str=date_str.left(date_str.length()-2);
     }
-    tab->addCell(5,row)->setText(date_str,fm);
-    tab->addCell(6,row)->setText(q->value(3).toString().upper(),fm);  // State of License
-    tab->addCell(7,row)->setText(q->value(4).toString(),fm);    // DMA Market
-    tab->addCell(8,row)->setText(q->value(5).toString(),fm);    // MSA Market
+    tab->addCell(5,row)->setText(date_str);
+    tab->addCell(6,row)->setText(q->value(3).toString().upper());  // State of License
+    tab->addCell(7,row)->setText(q->value(4).toString());    // DMA Market
+    tab->addCell(8,row)->setText(q->value(5).toString());    // MSA Market
 
     row++;
   }
   delete q;
   fclose(f);
-  printf("OUT: %s\n",(const char *)outfile);
   ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

@@ -81,10 +81,11 @@ void SpreadCell::setText(const QString &str,QFontMetrics *auto_fm)
 {
   cell_text=str;
 
-  if(auto_fm!=NULL) {
-    setWidth(auto_fm->width(cell_text)+10);
-    setHeight(auto_fm->height());
+  if(auto_fm==NULL) {
+    auto_fm=fontMetrics();
   }
+  setWidth(auto_fm->width(cell_text)+10);
+  setHeight(auto_fm->height());
 }
 
 

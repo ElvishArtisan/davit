@@ -44,12 +44,6 @@ void ListReports::AffidavitReport()
   QString str;
 
   //
-  // Generate Fonts
-  //
-  QFont main_font("arial",10,QFont::Normal);
-  QFontMetrics *fm=new QFontMetrics(main_font);
-
-  //
   // Generate Report
   //
   if((f=GetTempFile(&outfile))==NULL) {
@@ -60,13 +54,13 @@ void ListReports::AffidavitReport()
   SpreadTab *tab=sheet->addTab(1);
   tab->setName(tr("Affidavit Contacts"));
 
-  tab->addCell(1,1)->setText(tr("Affiliate Affidavit Contacts"),fm);
+  tab->addCell(1,1)->setText(tr("Affiliate Affidavit Contacts"));
   tab->addCell(1,2)->setText(tr("Report Date")+": "+
-			     QDate::currentDate().toString("MM/dd/yyyy"),fm);
-  tab->addCell(1,3)->setText(tr("CALL LETTERS"),fm);
-  tab->addCell(2,3)->setText(tr("AFFIDAVIT CONTACT NAME"),fm);
-  tab->addCell(3,3)->setText(tr("AFFIDAVIT CONTACT PHONE"),fm);
-  tab->addCell(4,3)->setText(tr("AFFIDAVIT CONTACT E-MAIL"),fm);
+			     QDate::currentDate().toString("MM/dd/yyyy"));
+  tab->addCell(1,3)->setText(tr("CALL LETTERS"));
+  tab->addCell(2,3)->setText(tr("AFFIDAVIT CONTACT NAME"));
+  tab->addCell(3,3)->setText(tr("AFFIDAVIT CONTACT PHONE"));
+  tab->addCell(4,3)->setText(tr("AFFIDAVIT CONTACT E-MAIL"));
   sql="select ID,STATION_CALL,STATION_TYPE from AFFILIATES \
        where (AFFIDAVIT_ACTIVE=\"Y\") order by STATION_CALL desc";
   q=new QSqlQuery(sql);
@@ -74,15 +68,14 @@ void ListReports::AffidavitReport()
     // Call Letters
     tab->addCell(1,row)->
       setText(DvtStationCallString(q->value(1).toString(),
-				   q->value(2).toString()),fm);
+				   q->value(2).toString()));
     ContactFields(q->value(0).toInt(),
 		  ListReports::AffidavitContact,
 		  ListReports::FieldEmail|
 		  ListReports::FieldName|
-		  ListReports::FieldPhone,tab,2,row,fm);
+		  ListReports::FieldPhone,tab,2,row);
     row++;
   }
   delete q;
-  delete fm;
   ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

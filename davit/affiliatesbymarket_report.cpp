@@ -65,9 +65,6 @@ void ListReports::AffiliatesByMarketReport(PickFields::MarketType type)
     return;
   }
   fclose(f);
-  QFont main_font("arial",10,QFont::Normal);
-  QFontMetrics *fm=new QFontMetrics(main_font);
-  
   SpreadSheet *sheet=new SpreadSheet();
   SpreadTab *tab=sheet->addTab(1);
 
@@ -75,14 +72,14 @@ void ListReports::AffiliatesByMarketReport(PickFields::MarketType type)
   case PickFields::DmaMarket:
     tab->setName(tr("Affiliates by Program/DMA"));
     tab->addCell(1,1)->
-      setText(tr("Affiliates by Program/DMA Market Report"),fm);
+      setText(tr("Affiliates by Program/DMA Market Report"));
     field_name="DMA_NAME";
     break;
 
   case PickFields::MsaMarket:
     tab->setName(tr("Affiliates by Program/MSA"));
     tab->addCell(1,1)->
-      setText(tr("Affiliates by Program/MSA Market Report"),fm);
+      setText(tr("Affiliates by Program/MSA Market Report"));
     field_name="MARKET_NAME";
     break;
 
@@ -90,25 +87,25 @@ void ListReports::AffiliatesByMarketReport(PickFields::MarketType type)
     break;
   }
   tab->addCell(2,1)->setText(tr("Report Date")+": "+
-			     QDate::currentDate().toString("MMMM dd, yyyy"),fm);
+			     QDate::currentDate().toString("MMMM dd, yyyy"));
   sql=QString().sprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",
 			pgm_id);
   q=new QSqlQuery(sql);
   if(q->first()) {
-    tab->addCell(2,2)->setText(tr("Program")+": "+q->value(0).toString(),fm);
+    tab->addCell(2,2)->setText(tr("Program")+": "+q->value(0).toString());
   }
   delete q;
-  tab->addCell(2,3)->setText(tr("Market")+": "+market,fm);
-  tab->addCell(1,5)->setText(tr("AFFILIATE"),fm);
-  tab->addCell(2,5)->setText(tr("START"),fm);
-  tab->addCell(3,5)->setText(tr("LENGTH"),fm);
-  tab->addCell(4,5)->setText(tr("SUN"),fm);
-  tab->addCell(5,5)->setText(tr("MON"),fm);
-  tab->addCell(6,5)->setText(tr("TUE"),fm);
-  tab->addCell(7,5)->setText(tr("WED"),fm);
-  tab->addCell(8,5)->setText(tr("THU"),fm);
-  tab->addCell(9,5)->setText(tr("FRI"),fm);
-  tab->addCell(10,5)->setText(tr("SAT"),fm);
+  tab->addCell(2,3)->setText(tr("Market")+": "+market);
+  tab->addCell(1,5)->setText(tr("AFFILIATE"));
+  tab->addCell(2,5)->setText(tr("START"));
+  tab->addCell(3,5)->setText(tr("LENGTH"));
+  tab->addCell(4,5)->setText(tr("SUN"));
+  tab->addCell(5,5)->setText(tr("MON"));
+  tab->addCell(6,5)->setText(tr("TUE"));
+  tab->addCell(7,5)->setText(tr("WED"));
+  tab->addCell(8,5)->setText(tr("THU"));
+  tab->addCell(9,5)->setText(tr("FRI"));
+  tab->addCell(10,5)->setText(tr("SAT"));
   sql=QString().sprintf("select AIRINGS.AIR_SUN,\
                                 AIRINGS.AIR_MON,\
                                 AIRINGS.AIR_TUE,\
@@ -133,25 +130,25 @@ void ListReports::AffiliatesByMarketReport(PickFields::MarketType type)
     // Affiliate
     tab->addCell(1,row)->
       setText(DvtStationCallString(q->value(9).toString(),
-				   q->value(10).toString()),fm);
+				   q->value(10).toString()));
 
     //
     // Start time
     //
-    tab->addCell(2,row)->setText(q->value(7).toTime().toString("hh:mm:ss"),fm);
+    tab->addCell(2,row)->setText(q->value(7).toTime().toString("hh:mm:ss"));
 
     //
     // Length
     //
     tab->addCell(3,row)->setText(DvtGetTimeLength(q->value(8).toInt()*1000,
-						  false,false),fm);
+						  false,false));
 
     //
     // Days of Week
     //
     for(int i=0;i<7;i++) {
       if(q->value(i).toString()=="Y") {
-	tab->addCell(4+i,row)->setText("X",fm);
+	tab->addCell(4+i,row)->setText("X");
       }
       else {
 	tab->addCell(4+i,row);
@@ -161,6 +158,5 @@ void ListReports::AffiliatesByMarketReport(PickFields::MarketType type)
     row++;
   }
   delete q;
-  delete fm;
   ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }
