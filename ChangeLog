@@ -754,3 +754,6 @@
 2014-12-22 Fred Gleason <fredg@paravelsystems.com>
 	* Modified 'davit/edit_airing.cpp' and 'davit/list_airings.cpp'
 	to allow air times to end at midnight.
+2014-12-23 Fred Gleason <fredg@paravelsystems.com>
+	* Converted 'RadioAmerica Affiliates' report to use the
+	spreadsheet rendering library.

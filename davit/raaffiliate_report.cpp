@@ -35,7 +35,6 @@ void ListReports::RAAffiliateReport()
   QDate date;
   QString sql;
   QSqlQuery *q;
-  QSqlQuery *q1;
   FILE *f=NULL;
   QString outfile;
   QString dow;
@@ -53,103 +52,121 @@ void ListReports::RAAffiliateReport()
   if((f=GetTempFile(&outfile))==NULL) {
     return;
   }
-  fprintf(f,"\"RadioAmerica Affiliates Report\"\n");
-  fprintf(f,"\"Report Date: %s\"\n",(const char *)dt.toString("MM/dd/yyyy hh:mm:ss"));
-  fprintf(f,"\n");
-  fprintf(f,"\"CALL\",\"BAND\",\"FREQ\",\"ADDRESS1\",\"CITY\",\"STATE\",\"MSA MARKET\",\"MSA RANK\",\"DMA MARKET\",\"DMA RANK\",\"PD NAME\",\"PD PHONE\",\"PD FAX\",\"PD E-MAIL\",\"AFFIDAVIT NAME\",\"AFFIDAVIT E-MAIL\"\n");
-  sql="select ID,STATION_CALL,STATION_TYPE,STATION_FREQUENCY,ADDRESS1,\
-       ADDRESS2,CITY,STATE,ZIPCODE,MARKET_NAME,MARKET_RANK,DMA_NAME,DMA_RANK \
-       from AFFILIATES";
+  fclose(f);
+  QFont main_font("arial",10,QFont::Normal);
+  QFontMetrics *fm=new QFontMetrics(main_font);
+  SpreadSheet *sheet=new SpreadSheet();
+  SpreadTab *tab=sheet->addTab(1);
+  tab->setName(tr("RadioAmerica Affiliates"));
+
+  tab->addCell(1,1)->setText(tr("RadioAmerica Affiliates Report"),fm);
+  tab->addCell(1,2)->setText(tr("Report Date")+": "+
+			     dt.toString("MM/dd/yyyy hh:mm:ss"),fm);
+  int col=1;
+  int row=4;
+
+  tab->addCell(col++,row)->setText(tr("CALL"),fm);
+  tab->addCell(col++,row)->setText(tr("BAND"),fm);
+  tab->addCell(col++,row)->setText(tr("FREQ"),fm);
+  tab->addCell(col++,row)->setText(tr("ADDRESS1"),fm);
+  tab->addCell(col++,row)->setText(tr("CITY"),fm);
+  tab->addCell(col++,row)->setText(tr("STATE"),fm);
+  tab->addCell(col++,row)->setText(tr("MSA MARKET"),fm);
+  tab->addCell(col++,row)->setText(tr("MSA RANK"),fm);
+  tab->addCell(col++,row)->setText(tr("DMA MARKET"),fm);
+  tab->addCell(col++,row)->setText(tr("DMA RANK"),fm);
+  tab->addCell(col++,row)->setText(tr("PD NAME"),fm);
+  tab->addCell(col++,row)->setText(tr("PD PHONE"),fm);
+  tab->addCell(col++,row)->setText(tr("PD FAX"),fm);
+  tab->addCell(col++,row)->setText(tr("PD E-MAIL"),fm);
+  tab->addCell(col++,row)->setText(tr("AFFIDAVIT NAME"),fm);
+  tab->addCell(col++,row)->setText(tr("AFFIDAVIT PHONE"),fm);
+  tab->addCell(col++,row)->setText(tr("PROGRAM"),fm);
+  tab->addCell(col++,row)->setText(tr("AIRING"),fm);
+  row++;
+  /*
+  sql=QString("select ID,STATION_CALL,STATION_TYPE,STATION_FREQUENCY,")+
+    "ADDRESS1,ADDRESS2,CITY,STATE,ZIPCODE,MARKET_NAME,MARKET_RANK,DMA_NAME,"+
+    "DMA_RANK from AFFILIATES";
+  */
+  sql=QString("select AFFILIATES.ID,AFFILIATES.STATION_CALL,")+
+    "AFFILIATES.STATION_TYPE,AFFILIATES.STATION_FREQUENCY,"+
+    "AFFILIATES.ADDRESS1,AFFILIATES.ADDRESS2,AFFILIATES.CITY,"+
+    "AFFILIATES.STATE,AFFILIATES.ZIPCODE,AFFILIATES.MARKET_NAME,"+
+    "AFFILIATES.MARKET_RANK,AFFILIATES.DMA_NAME,AFFILIATES.DMA_RANK,"+
+    "PROGRAMS.PROGRAM_NAME,AIRINGS.AIR_TIME,AIRINGS.AIR_LENGTH,"+
+    "AIRINGS.AIR_SUN,AIRINGS.AIR_MON,AIRINGS.AIR_TUE,AIRINGS.AIR_WED,"+
+    "AIRINGS.AIR_THU,AIRINGS.AIR_FRI,AIRINGS.AIR_SAT "+
+    "from AFFILIATES left join AIRINGS "+
+    "on AFFILIATES.ID=AIRINGS.AFFILIATE_ID "+
+    "right join PROGRAMS on PROGRAMS.ID=AIRINGS.PROGRAM_ID "+
+    "where AFFILIATES.STATION_CALL is not null ";
   if(affiliate_id>0) {
-    sql+=QString().sprintf(" where ID=%d",affiliate_id);
+    sql+=QString().sprintf("&&(AFFILIATES.ID=%d)",affiliate_id);
   }
-  sql+=" order by STATE,CITY,STATION_CALL";
+  if(pgm_id>0) {
+    sql+=QString().sprintf("&&(PROGRAMS.ID=%d)",pgm_id);
+  }
+  sql+=" order by AFFILIATES.STATE,AFFILIATES.CITY,AFFILIATES.STATION_CALL";
   q=new QSqlQuery(sql);
   while(q->next()) {
-    sql=QString().sprintf("select PROGRAMS.PROGRAM_NAME,AIRINGS.AIR_TIME,\
-                         AIRINGS.AIR_LENGTH,AIRINGS.AIR_SUN,AIRINGS.AIR_MON,\
-                         AIRINGS.AIR_TUE,AIRINGS.AIR_WED,AIRINGS.AIR_THU,\
-                         AIRINGS.AIR_FRI,AIRINGS.AIR_SAT \
-                         from AIRINGS right join PROGRAMS \
-                         on (AIRINGS.PROGRAM_ID=PROGRAMS.ID)\
-                         where (AIRINGS.AFFILIATE_ID=%d)",q->value(0).toInt());
-    if(pgm_id>0) {
-      sql+=QString().sprintf("&&(PROGRAMS.ID=%d)",pgm_id);
+    col=1;
+    tab->addCell(col++,row)->setText(q->value(1).toString(),fm);
+    tab->addCell(col++,row)->
+      setText(DvtStationTypeString(q->value(2).toString()),fm);
+    tab->addCell(col++,row)->
+      setText(DvtFormatFrequency(q->value(3).toDouble()),fm);
+    tab->addCell(col++,row)->setText(q->value(4).toString(),fm);
+    tab->addCell(col++,row)->setText(q->value(6).toString(),fm);
+    tab->addCell(col++,row)->setText(q->value(7).toString().upper(),fm);
+    tab->addCell(col++,row)->setText(q->value(9).toString(),fm);
+    tab->addCell(col++,row)->
+      setText(DvtMarketRankString(q->value(10).toInt()),fm);
+    tab->addCell(col++,row)->setText(q->value(11).toString(),fm);
+    tab->addCell(col++,row)->
+      setText(DvtMarketRankString(q->value(12).toInt()),fm);
+    ContactFields(q->value(0).toInt(),
+		  ListReports::ProgramDirectorContact,
+		  ListReports::FieldName|
+		  ListReports::FieldPhone|
+		  ListReports::FieldFax|
+		  ListReports::FieldEmail,tab,col,row,fm);
+    col+=4;
+    ContactFields(q->value(0).toInt(),
+		  ListReports::AffidavitContact,
+		  ListReports::FieldName|
+		  ListReports::FieldPhone,tab,col,row,fm);
+    col+=2;
+    tab->addCell(col++,row)->setText(q->value(13).toString(),fm);
+    dow="";
+    if(q->value(16).toString()=="Y") {
+      dow+="Su";
     }
-    q1=new QSqlQuery(sql);
-    if(q1->size()>0) {
-      fprintf(f,"\"%s\",",(const char *)q->value(1).toString());
-
-      fprintf(f,(const char *)TypeField(q->value(2)));
-      fprintf(f,(const char *)FrequencyField(q->value(3)));
-      fprintf(f,(const char *)AddressField(q->value(4),q->value(5)));
-      fprintf(f,(const char *)StringField(q->value(6)));
-      fprintf(f,(const char *)StringField(q->value(7)));
-      if(q->value(9).toString().isEmpty()) {
-	fprintf(f,(const char *)EmptyField());
-	fprintf(f,(const char *)EmptyField());
-      }
-      else {
-	fprintf(f,(const char *)StringField(q->value(9)));
-	fprintf(f,(const char *)StringField(q->value(10)));
-      }
-      if(q->value(11).toString().isEmpty()) {
-	fprintf(f,(const char *)EmptyField());
-	fprintf(f,(const char *)EmptyField());
-      }
-      else {
-	fprintf(f,(const char *)StringField(q->value(11)));
-	fprintf(f,(const char *)StringField(q->value(12)));
-      }
-      fprintf(f,(const char *)ContactFields(q->value(0).toInt(),
-					    ListReports::ProgramDirectorContact,
-					    ListReports::FieldName|
-					    ListReports::FieldPhone|
-					    ListReports::FieldFax|
-					    ListReports::FieldEmail));
-      fprintf(f,(const char *)ContactFields(q->value(0).toInt(),
-					    ListReports::AffidavitContact,
-					    ListReports::FieldName|
-					    ListReports::FieldEmail));
-      fprintf(f,"\n");
-      fprintf(f,"\"\",\"PROGRAM\",\"AIRING\"\n");
-      while(q1->next()) {
-	dow="";
-	if(q1->value(3).toString()=="Y") {
-	  dow+="Su";
-	}
-	if(q1->value(4).toString()=="Y") {
-	  dow+="Mo";
-	}
-	if(q1->value(5).toString()=="Y") {
-	  dow+="Tu";
-	}
-	if(q1->value(6).toString()=="Y") {
-	  dow+="We";
-	}
-	if(q1->value(7).toString()=="Y") {
-	  dow+="Th";
-	}
-	if(q1->value(8).toString()=="Y") {
-	  dow+="Fr";
-	}
-	if(q1->value(9).toString()=="Y") {
-	  dow+="Sa";
-	}
-	if(!dow.isEmpty()) {
-	  fprintf(f,"\"\",\"%s\",",(const char *)q1->value(0).toString());
-	  dow+=(", "+q1->value(1).toTime().toString("h ap")+"-"+
-	    q1->value(1).toTime().
-		addSecs(q1->value(2).toInt()).toString("h ap"));
-	  fprintf(f,"\"%s\"",(const char *)dow);
-	}
-	fprintf(f,"\n");
-      }
-      fprintf(f,"\n");
+    if(q->value(17).toString()=="Y") {
+      dow+="Mo";
     }
-    delete q1;
+    if(q->value(18).toString()=="Y") {
+      dow+="Tu";
+    }
+    if(q->value(19).toString()=="Y") {
+      dow+="We";
+    }
+    if(q->value(20).toString()=="Y") {
+      dow+="Th";
+    }
+    if(q->value(21).toString()=="Y") {
+      dow+="Fr";
+    }
+    if(q->value(22).toString()=="Y") {
+      dow+="Sa";
+    }
+    dow+=(", "+q->value(14).toTime().toString("h ap")+"-"+
+	  q->value(14).toTime().
+	  addSecs(q->value(15).toInt()).toString("h ap"));
+    tab->addCell(col++,row)->setText(dow,fm);
+    row++;
   }
   delete q;
-  fclose(f);
-  ForkViewer(outfile);
+  delete fm;
+  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }
