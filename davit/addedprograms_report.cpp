@@ -96,8 +96,8 @@ void ListReports::AddedProgramsReport(Dvt::RemarkType type)
   // Report Body
   //
   sql="select AFFILIATES.ID,AFFILIATES.STATION_CALL,AFFILIATES.STATION_TYPE,\
-       AFFILIATES.STATION_FREQUENCY,AFFILIATES.ADDRESS1,AFFILIATES.ADDRESS2,\
-       AFFILIATES.CITY,AFFILIATES.STATE,AFFILIATES.ZIPCODE,\
+       AFFILIATES.STATION_FREQUENCY,AFFILIATES.ADDRESS1,AFFILIATES.ADDRESS2, \
+       AFFILIATES.CITY,AFFILIATES.STATE,AFFILIATES.ZIPCODE,		\
        AFFILIATES.MARKET_NAME \
        from AFFILIATES left join AFFILIATE_REMARKS \
        on (AFFILIATES.ID=AFFILIATE_REMARKS.AFFILIATE_ID) where";
@@ -119,14 +119,17 @@ void ListReports::AddedProgramsReport(Dvt::RemarkType type)
   q=new QSqlQuery(sql);
   int row=5;
   while(q->next()) {
-    sql=QString().sprintf("select PROGRAMS.PROGRAM_NAME,\
-                           AFFILIATE_REMARKS.REMARK_DATETIME \
-                           from AFFILIATE_REMARKS right join PROGRAMS \
-                           on (AFFILIATE_REMARKS.PROGRAM_ID=PROGRAMS.ID)\
-                           where (AFFILIATE_REMARKS.EVENT_TYPE=%d)&&\
-                           (AFFILIATE_REMARKS.AFFILIATE_ID=%d)",
-			  type,
-			  q->value(0).toInt());
+    sql=QString("select PROGRAMS.PROGRAM_NAME,")+
+      "AFFILIATE_REMARKS.REMARK_DATETIME "+
+      "from AFFILIATE_REMARKS right join PROGRAMS "+
+      "on (AFFILIATE_REMARKS.PROGRAM_ID=PROGRAMS.ID) where "+
+      QString().sprintf("(AFFILIATE_REMARKS.EVENT_TYPE=%d)&&",type)+
+      QString().sprintf("(AFFILIATE_REMARKS.AFFILIATE_ID=%d)&&",
+			q->value(0).toInt())+
+      "(AFFILIATE_REMARKS.REMARK_DATETIME>=\""+
+      start_date.toString("yyyy-MM-dd")+" 00:00:00\")&&"+
+      "(AFFILIATE_REMARKS.REMARK_DATETIME<\""+
+      end_date.addDays(1).toString("yyyy-MM-dd")+" 00:00:00\")";
     if(pgm_id>0) {
       sql+=QString().sprintf("&&(AFFILIATE_REMARKS.PROGRAM_ID=%d)",pgm_id);
     }

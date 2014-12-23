@@ -757,3 +757,6 @@
 2014-12-23 Fred Gleason <fredg@paravelsystems.com>
 	* Converted 'RadioAmerica Affiliates' report to use the
 	spreadsheet rendering library.
+2014-12-23 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in the 'Added Programs' report where the date
+	range parameters were ignored.
