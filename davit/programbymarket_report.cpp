@@ -32,14 +32,14 @@
 #include <list_reports.h>
 
 
-void ListReports::ProgramByMarketReport(PickFields::MarketType type)
+void ListReports::ProgramByMarketReport(PickFields::MarketType type,
+					SpreadSheet *sheet)
 {
   QString s;
   QString sql;
   QSqlQuery *q=NULL;
   QString where;
   QString outfile;
-  FILE *f=NULL;
 
   //
   // Get Market
@@ -56,13 +56,7 @@ void ListReports::ProgramByMarketReport(PickFields::MarketType type)
   //
   // Generate Report
   //
-  if((f=GetTempFile(&outfile))==NULL) {
-    return;
-  }
-  fclose(f);
-
-  SpreadSheet *sheet=new SpreadSheet();
-  SpreadTab *tab=sheet->addTab(1);
+  SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Programs by")+" "+market);
   tab->addCell(1,1)->setText(tr("Programs in")+" "+market);
   tab->addCell(1,2)->setText(tr("Report Date")+": "+
@@ -138,5 +132,4 @@ void ListReports::ProgramByMarketReport(PickFields::MarketType type)
     row++;
   }
   delete q;
-  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

@@ -60,28 +60,40 @@ class ListReports : public QDialog
 		    GeneralManagerContact=0x04};
   enum Fields {FieldName=0x01,FieldPhone=0x02,FieldFax=0x04,
 	       FieldEmail=0x08};
-  void ActivityReport();
-  void AddedProgramsReport(Dvt::RemarkType type);
-  void AffidavitReport();
+
+  //
+  // activity_report.cpp
+  //
+  void ActivityReport(SpreadSheet *sheet);
+
+  //
+  // addedprograms_report.cpp
+  //
+  void AddedProgramsReport(Dvt::RemarkType type,SpreadSheet *sheet);
+
+  //
+  // affidavit_report.cpp
+  //
+  void AffidavitReport(SpreadSheet *sheet);
 
   //
   // missingaffidavit_report.cpp
   //
-  void MissingAffidavitReport();
+  void MissingAffidavitReport(SpreadSheet *sheet);
 
   //
   // missingaffidavitcontact_report.cpp
   //
-  void MissingAffidavitContactReport();
+  void MissingAffidavitContactReport(SpreadSheet *sheet);
 
   //
   // affiliatesbyprogram.cpp
   //
-  void AllAffiliatesReport();
-  void AllAffiliateContacts();
-  void AffiliatesByNetworkReport();
-  void AffiliatesByProgramReport(int contacts);
-  void AffiliatesByDaypartReport();
+  void AllAffiliatesReport(SpreadSheet *sheet);
+  void AllAffiliateContacts(SpreadSheet *sheet);
+  void AffiliatesByNetworkReport(SpreadSheet *sheet);
+  void AffiliatesByProgramReport(int contacts,SpreadSheet *sheet);
+  void AffiliatesByDaypartReport(SpreadSheet *sheet);
   void RenderAffiliateReport(SpreadTab *tab,const QString &where,
 			     const QString &title,const QString &sub,
 			     bool show_program_name,int contacts);
@@ -89,22 +101,23 @@ class ListReports : public QDialog
   //
   // arbitron_report.cpp
   //
-  void ArbitronReport();
+  void ArbitronReport(SpreadSheet *sheet);
 
   //
   // affiliatesbymarket_report.cpp
   //
-  void AffiliatesByMarketReport(PickFields::MarketType type);
+  void AffiliatesByMarketReport(PickFields::MarketType type,SpreadSheet *sheet);
 
   //
   // programbymarket_report.cpp
   //
-  void ProgramByMarketReport(PickFields::MarketType type);
+  void ProgramByMarketReport(PickFields::MarketType type,SpreadSheet *sheet);
 
   //
   // raaffiliate_report.cpp
   //
-  void RAAffiliateReport();
+  void RAAffiliateReport(SpreadSheet *sheet);
+
   QString GetEmailContactList(int affiliate_id,bool affidavit,bool progdir);
   QString GetNameContactList(int affiliate_id,bool affidavit,bool progdir);
   QString GetPhoneNumberContactList(int affiliate_id,bool affidavit,

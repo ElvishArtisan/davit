@@ -28,7 +28,7 @@
 #include <pick_daypart.h>
 #include <list_reports.h>
 
-void ListReports::AllAffiliatesReport()
+void ListReports::AllAffiliatesReport(SpreadSheet *sheet)
 {
   //
   // Generate Where Clause
@@ -40,41 +40,21 @@ void ListReports::AllAffiliatesReport()
   //
   // Render Report
   //
-  QString outfile;
-  FILE *f=NULL;
-  if((f=GetTempFile(&outfile))==NULL) {
-    return;
-  }
-  fclose(f);
-
-  SpreadSheet *sheet=new SpreadSheet();
-  SpreadTab *tab=sheet->addTab(1);
+  SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("All Affiliates"));
   RenderAffiliateReport(tab,where,tr("All Affiliates Report"),"",true,0);
-  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }
 
 
-void ListReports::AllAffiliateContacts()
+void ListReports::AllAffiliateContacts(SpreadSheet *sheet)
 {
   QString sql;
   QSqlQuery *q;
 
-  QString outfile;
-  FILE *f=NULL;
-  if((f=GetTempFile(&outfile))==NULL) {
-    return;
-  }
-  fclose(f);
-
   //
   // Generate Fonts
   //
-  QFont main_font("arial",10,QFont::Normal);
-  QFontMetrics *fm=new QFontMetrics(main_font);
-
-  SpreadSheet *sheet=new SpreadSheet();
-  SpreadTab *tab=sheet->addTab(1);
+  SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Affiliate Contacts"));
 
   //
@@ -148,20 +128,16 @@ void ListReports::AllAffiliateContacts()
   }
 
   delete q;
-  delete fm;
-  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }
 
 
-void ListReports::AffiliatesByNetworkReport()
+void ListReports::AffiliatesByNetworkReport(SpreadSheet *sheet)
 {
   int network_id=0;
   QDate date;
   QString sql;
   QString where;
   QSqlQuery *q;
-  FILE *f=NULL;
-  QString outfile;
   QString network_name;
   QDateTime dt=QDateTime(QDate::currentDate(),QTime::currentTime());
 
@@ -173,13 +149,7 @@ void ListReports::AffiliatesByNetworkReport()
   }
   delete r;
 
-  if((f=GetTempFile(&outfile))==NULL) {
-    return;
-  }
-  fclose(f);
-
-  SpreadSheet *sheet=new SpreadSheet();
-  SpreadTab *tab=sheet->addTab(1);
+  SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Affiliates by Network"));
   sql=QString().sprintf("select NAME from NETWORKS where ID=%d",network_id);
   q=new QSqlQuery(sql);
@@ -192,19 +162,16 @@ void ListReports::AffiliatesByNetworkReport()
   RenderAffiliateReport(tab,where,tr("Affiliates by Network Report"),
 			QString().sprintf("Network: %s",
 					  (const char *)network_name),true,0);
-  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }
 
 
-void ListReports::AffiliatesByProgramReport(int contacts)
+void ListReports::AffiliatesByProgramReport(int contacts,SpreadSheet *sheet)
 {
   int pgm_id=0;
   QDate date;
   QString sql;
   QString where;
   QSqlQuery *q;
-  FILE *f=NULL;
-  QString outfile;
   QString program_name;
   QDateTime dt=QDateTime(QDate::currentDate(),QTime::currentTime());
   PickFields::SortField sort=(PickFields::SortField)(PickFields::SortAffiliate|
@@ -219,13 +186,7 @@ void ListReports::AffiliatesByProgramReport(int contacts)
   }
   delete r;
 
-  if((f=GetTempFile(&outfile))==NULL) {
-    return;
-  }
-  fclose(f);
-
-  SpreadSheet *sheet=new SpreadSheet();
-  SpreadTab *tab=sheet->addTab(1);
+  SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Affiliates by Program"));
   sql=QString().sprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",pgm_id);
   q=new QSqlQuery(sql);
@@ -252,13 +213,11 @@ void ListReports::AffiliatesByProgramReport(int contacts)
 			QString().sprintf("Program: %s",
 					  (const char *)program_name),false,
 			contacts);
-  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }
 
 
-void ListReports::AffiliatesByDaypartReport()
+void ListReports::AffiliatesByDaypartReport(SpreadSheet *sheet)
 {
-  FILE *f=NULL;
   QString where;
   QString outfile;
   QString subtitle;
@@ -273,13 +232,7 @@ void ListReports::AffiliatesByDaypartReport()
   }
   delete r;
 
-  if((f=GetTempFile(&outfile))==NULL) {
-    return;
-  }
-  fclose(f);
-
-  SpreadSheet *sheet=new SpreadSheet();
-  SpreadTab *tab=sheet->addTab(1);
+  SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Affiliates by Daypart"));
 
   subtitle=QString().sprintf("Start Time: %s, End Time: %s, Days Selected: ",
@@ -320,7 +273,6 @@ void ListReports::AffiliatesByDaypartReport()
   where+=" order by AFFILIATES.STATION_CALL,AFFILIATES.STATION_TYPE";
   RenderAffiliateReport(tab,where,tr("Affiliates by Daypart Report"),
 			subtitle,true,0);
-  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }
 
 

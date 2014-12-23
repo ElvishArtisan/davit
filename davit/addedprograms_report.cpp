@@ -2,9 +2,7 @@
 //
 // The RadioAmerica Affiliate Report for Davit
 //
-//   (C) Copyright 2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: addedprograms_report.cpp,v 1.7 2011/02/21 23:41:18 pcvs Exp $
+//   (C) Copyright 2008-2014 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -30,7 +28,7 @@
 #include <pick_fields.h>
 #include <list_reports.h>
 
-void ListReports::AddedProgramsReport(Dvt::RemarkType type)
+void ListReports::AddedProgramsReport(Dvt::RemarkType type,SpreadSheet *sheet)
 {
   int affiliate_id=0;
   int pgm_id=0;
@@ -39,8 +37,6 @@ void ListReports::AddedProgramsReport(Dvt::RemarkType type)
   QString sql;
   QSqlQuery *q;
   QSqlQuery *q1;
-  FILE *f=NULL;
-  QString outfile;
   QString dow;
   QDateTime dt=QDateTime(QDate::currentDate(),QTime::currentTime());
 
@@ -53,16 +49,10 @@ void ListReports::AddedProgramsReport(Dvt::RemarkType type)
   }
   delete r;
 
-  if((f=GetTempFile(&outfile))==NULL) {
-    return;
-  }
-  fclose(f);
-
   //
   // Report Header
   //
-  SpreadSheet *sheet=new SpreadSheet();
-  SpreadTab *tab=sheet->addTab(1);
+  SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   if(type==Dvt::RemarkProgramAdd) {
     tab->setName(tr("Added Programs"));
     tab->addCell(1,1)->setText(tr("Added Programs Report"));
@@ -172,5 +162,4 @@ void ListReports::AddedProgramsReport(Dvt::RemarkType type)
     delete q1;
   }
   delete q;
-  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

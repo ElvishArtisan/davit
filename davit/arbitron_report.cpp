@@ -2,9 +2,7 @@
 //
 // The Arbitron Report for Davit
 //
-//   (C) Copyright 2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: arbitron_report.cpp,v 1.11 2011/02/21 23:41:18 pcvs Exp $
+//   (C) Copyright 2008-2014 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -28,14 +26,12 @@
 #include <pick_fields.h>
 #include <list_reports.h>
 
-void ListReports::ArbitronReport()
+void ListReports::ArbitronReport(SpreadSheet *sheet)
 {
   int pgm_id=0;
   QDate date;
   QString sql;
   QSqlQuery *q;
-  FILE *f=NULL;
-  QString outfile;
   QString dow;
   int row=1;
   QDateTime dt=QDateTime(QDate::currentDate(),QTime::currentTime());
@@ -49,13 +45,7 @@ void ListReports::ArbitronReport()
   }
   delete r;
 
-  if((f=GetTempFile(&outfile))==NULL) {
-    return;
-  }
-  fclose(f);
-
-  SpreadSheet *sheet=new SpreadSheet();
-  SpreadTab *tab=sheet->addTab(1);
+  SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Arbitron"));
   sql=QString().sprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",pgm_id);
   q=new QSqlQuery(sql);
@@ -130,5 +120,4 @@ void ListReports::ArbitronReport()
     }
   }
   delete q;
-  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

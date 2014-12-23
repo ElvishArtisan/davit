@@ -30,7 +30,7 @@
 #include <pick_fields.h>
 #include <list_reports.h>
 
-void ListReports::ActivityReport()
+void ListReports::ActivityReport(SpreadSheet *sheet)
 {
   int affiliate_id=0;
   QDate start_date=QDate::currentDate().addMonths(-1);
@@ -38,8 +38,6 @@ void ListReports::ActivityReport()
   QString sql;
   QSqlQuery *q;
   QSqlQuery *q1;
-  FILE *f=NULL;
-  QString outfile;
   QString dow;
   int row=5;
   QDateTime dt=QDateTime(QDate::currentDate(),QTime::currentTime());
@@ -53,29 +51,17 @@ void ListReports::ActivityReport()
   }
   delete r;
 
-  if((f=GetTempFile(&outfile))==NULL) {
-    return;
-  }
-  fclose(f);
-
-  //
-  // Generate Fonts
-  //
-  QFont main_font("arial",10,QFont::Normal);
-  QFontMetrics *fm=new QFontMetrics(main_font);
-
-  SpreadSheet *sheet=new SpreadSheet();
-  SpreadTab *tab=sheet->addTab(1);
+  SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Affiliate Activity"));
-  tab->addCell(1,1)->setText(tr("Affiliate Activity Report"),fm);
+  tab->addCell(1,1)->setText(tr("Affiliate Activity Report"));
   tab->addCell(1,2)->setText(tr("Report Date")+": "+
-			     dt.toString("MM/dd/yyyy hh:mm:ss"),fm);
-  tab->addCell(1,4)->setText(tr("CALL"),fm);
-  tab->addCell(2,4)->setText(tr("PROGRAM DIRECTOR"),fm);
-  tab->addCell(3,4)->setText(tr("PHONE"),fm);
-  tab->addCell(4,4)->setText(tr("DATE"),fm);
-  tab->addCell(5,4)->setText(tr("USER NAME"),fm);
-  tab->addCell(6,4)->setText(tr("REMARKS"),fm);
+			     dt.toString("MM/dd/yyyy hh:mm:ss"));
+  tab->addCell(1,4)->setText(tr("CALL"));
+  tab->addCell(2,4)->setText(tr("PROGRAM DIRECTOR"));
+  tab->addCell(3,4)->setText(tr("PHONE"));
+  tab->addCell(4,4)->setText(tr("DATE"));
+  tab->addCell(5,4)->setText(tr("USER NAME"));
+  tab->addCell(6,4)->setText(tr("REMARKS"));
   sql="select AFFILIATES.ID,AFFILIATES.STATION_CALL,AFFILIATES.STATION_TYPE,\
        CONTACTS.NAME,CONTACTS.PHONE \
        from AFFILIATES left join CONTACTS \
@@ -104,25 +90,23 @@ void ListReports::ActivityReport()
     if(q1->size()>0) {
       tab->addCell(1,row)->
 	setText(DvtStationCallString(q->value(1).toString(),
-				     q->value(2).toString()),fm);
-      tab->addCell(2,row)->setText(q->value(3).toString(),fm);
+				     q->value(2).toString()));
+      tab->addCell(2,row)->setText(q->value(3).toString());
       tab->addCell(3,row)->
-	setText(DvtFormatPhoneNumber(q->value(4).toString()),fm);
+	setText(DvtFormatPhoneNumber(q->value(4).toString()));
       row++;
       while(q1->next()) {
 	tab->addCell(1,row);
 	tab->addCell(2,row);
 	tab->addCell(3,row);
 	tab->addCell(4,row)->
-	  setText(q1->value(0).toDateTime().toString("MM/dd/yyyy"),fm);
-	tab->addCell(5,row)->setText(q1->value(1).toString(),fm);
-	tab->addCell(5,row)->setText(q1->value(2).toString(),fm);
+	  setText(q1->value(0).toDateTime().toString("MM/dd/yyyy"));
+	tab->addCell(5,row)->setText(q1->value(1).toString());
+	tab->addCell(5,row)->setText(q1->value(2).toString());
 	row++;
       }
     }
     delete q1;
   }
   delete q;
-  delete fm;
-  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

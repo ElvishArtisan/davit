@@ -29,7 +29,8 @@
 
 #include <list_reports.h>
 
-void ListReports::AffiliatesByMarketReport(PickFields::MarketType type)
+void ListReports::AffiliatesByMarketReport(PickFields::MarketType type,
+					   SpreadSheet *sheet)
 {
   int pgm_id;
   QString market;
@@ -53,20 +54,13 @@ void ListReports::AffiliatesByMarketReport(PickFields::MarketType type)
   QString sql;
   QString field_name;
   QSqlQuery *q;
-  QString outfile;
-  FILE *f=NULL;
   int row=6;
   std::vector<int> ids;
 
   //
   // Generate Report
   //
-  if((f=GetTempFile(&outfile))==NULL) {
-    return;
-  }
-  fclose(f);
-  SpreadSheet *sheet=new SpreadSheet();
-  SpreadTab *tab=sheet->addTab(1);
+  SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
 
   switch(type) {
   case PickFields::DmaMarket:
@@ -158,5 +152,4 @@ void ListReports::AffiliatesByMarketReport(PickFields::MarketType type)
     row++;
   }
   delete q;
-  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

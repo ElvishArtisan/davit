@@ -31,27 +31,19 @@
 #include <list_reports.h>
 
 
-void ListReports::MissingAffidavitContactReport()
+void ListReports::MissingAffidavitContactReport(SpreadSheet *sheet)
 {
   QString s;
   QString sql;
   QSqlQuery *q=NULL;
   QSqlQuery *q1=NULL;
   QString where;
-  QString outfile;
-  FILE *f=NULL;
   int row=4;
 
   //
   // Generate Report
   //
-  if((f=GetTempFile(&outfile))==NULL) {
-    return;
-  }
-  fclose(f);
-
-  SpreadSheet *sheet=new SpreadSheet();
-  SpreadTab *tab=sheet->addTab(1);
+  SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Missiing Affidavit Contacts"));
 
   tab->addCell(1,1)->setText(tr("Missing Affidavit Contacts"));
@@ -83,5 +75,4 @@ void ListReports::MissingAffidavitContactReport()
     delete q1;
   }
   delete q;
-  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

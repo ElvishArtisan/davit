@@ -46,6 +46,7 @@
 #include <add_provider.h>
 #include <globals.h>
 #include <dvtconf.h>
+#include <spread_sheet.h>
 
 ListReports::ListReports(QWidget *parent,const char *name)
   : QDialog(parent,name,true)
@@ -156,68 +157,78 @@ QSizePolicy ListReports::sizePolicy() const
 
 void ListReports::runData()
 {
+  SpreadSheet *sheet=new SpreadSheet();
+  FILE *f=NULL;
+  QString outfile;
+
   QListViewItem *item=list_reports_list->selectedItem();
   if(item==NULL) {
     return;
   }
   if(item->text(0)==tr("Added Programs")) {
-    AddedProgramsReport(Dvt::RemarkProgramAdd);
+    AddedProgramsReport(Dvt::RemarkProgramAdd,sheet);
   }
   if(item->text(0)==tr("Deleted Programs")) {
-    AddedProgramsReport(Dvt::RemarkProgramDelete);
+    AddedProgramsReport(Dvt::RemarkProgramDelete,sheet);
   }
   if(item->text(0)==tr("All Affiliates")) {
-    AllAffiliatesReport();
+    AllAffiliatesReport(sheet);
   }
   if(item->text(0)==tr("All Affiliate Contacts")) {
-    AllAffiliateContacts();
+    AllAffiliateContacts(sheet);
   }
   if(item->text(0)==tr("Affiliates by Daypart")) {
-    AffiliatesByDaypartReport();
+    AffiliatesByDaypartReport(sheet);
   }
   if(item->text(0)==tr("Affiliates by Network")) {
-    AffiliatesByNetworkReport();
+    AffiliatesByNetworkReport(sheet);
   }
   if(item->text(0)==tr("Affiliates by Program")) {
-    AffiliatesByProgramReport(0);
+    AffiliatesByProgramReport(0,sheet);
   }
   if(item->text(0)==tr("Affiliates/Contacts by Program")) {
     AffiliatesByProgramReport(ListReports::ProgramDirectorContact|
-			      ListReports::AffidavitContact);
+			      ListReports::AffidavitContact,sheet);
   }
   if(item->text(0)==tr("Arbitron")) {
-    ArbitronReport();
+    ArbitronReport(sheet);
   }
   if(item->text(0)==tr("RadioAmerica Affiliate")) {
-    RAAffiliateReport();
+    RAAffiliateReport(sheet);
   }
   if(item->text(0)==tr("Affiliate Activity")) {
-    ActivityReport();
+    ActivityReport(sheet);
   }
   if(item->text(0)==tr("Affidavit Contacts")) {
-    AffidavitReport();
+    AffidavitReport(sheet);
   }
   if(item->text(0)==tr("Missing Affidavit Submissions")) {
-    MissingAffidavitReport();
+    MissingAffidavitReport(sheet);
   }
   if(item->text(0)==tr("Missing Affidavit Data Contacts")) {
-    MissingAffidavitContactReport();
+    MissingAffidavitContactReport(sheet);
   }
   if(item->text(0)==tr("Affiliates by Program/DMA Market")) {
-    AffiliatesByMarketReport(PickFields::DmaMarket);
+    AffiliatesByMarketReport(PickFields::DmaMarket,sheet);
   }
   if(item->text(0)==tr("Affiliates by Program/MSA Market")) {
-    AffiliatesByMarketReport(PickFields::MsaMarket);
+    AffiliatesByMarketReport(PickFields::MsaMarket,sheet);
   }
   if(item->text(0)==tr("Programs by DMA Market")) {
-    ProgramByMarketReport(PickFields::DmaMarket);
+    ProgramByMarketReport(PickFields::DmaMarket,sheet);
   }
   if(item->text(0)==tr("Programs by MSA Market")) {
-    ProgramByMarketReport(PickFields::MsaMarket);
+    ProgramByMarketReport(PickFields::MsaMarket,sheet);
   }
   if(item->text(0)==tr("Programs by City/State")) {
-    ProgramByMarketReport(PickFields::NoMarket);
+    ProgramByMarketReport(PickFields::NoMarket,sheet);
   }
+
+  if((f=GetTempFile(&outfile))==NULL) {
+    return;
+  }
+  fclose(f);
+  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }
 
 

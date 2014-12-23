@@ -41,7 +41,6 @@ dist_davit_SOURCES = activity_report.cpp\
                      addedprograms_report.cpp\
                      affidavit_picker.cpp\
                      affidavit_report.cpp\
-                     affiliate_report.cpp\
                      affiliatesbymarket_report.cpp\
                      affiliatesbyprogram_report.cpp\
                      arbitron_report.cpp\

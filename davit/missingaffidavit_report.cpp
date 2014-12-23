@@ -33,20 +33,17 @@
 #include <list_reports.h>
 
 
-void ListReports::MissingAffidavitReport()
+void ListReports::MissingAffidavitReport(SpreadSheet *sheet)
 {
   QString s;
   QString sql;
   QSqlQuery *q=NULL;
   QString where;
-  QString outfile;
-  FILE *f=NULL;
   std::vector<int> affiliate_ids;
   std::map<int,int> affiliate_counts;
   Dvt::AffidavitStationFilter filter=Dvt::All;
   Dvt::AffidavitSortType sort_type=Dvt::ByCount;
   int program_id=-1;
-  SpreadSheet *sheet;
 
   //
   // Get Parameters
@@ -64,11 +61,7 @@ void ListReports::MissingAffidavitReport()
   //
   // Generate Report
   //
-  if((f=GetTempFile(&outfile))==NULL) {
-    return;
-  }
-  sheet=new SpreadSheet();
-  SpreadTab *tab=sheet->addTab(1);
+  SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->addCell(1,1)->setText(tr("Affiliates Missing Affidavits"));
   tab->cell(1,1)->setWidth(120.0);
   tab->addCell(1,2)->setText(tr("Report Date")+":"+
@@ -193,6 +186,4 @@ void ListReports::MissingAffidavitReport()
     row++;
   }
   delete q;
-  fclose(f);
-  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

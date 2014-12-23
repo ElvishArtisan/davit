@@ -2,9 +2,7 @@
 //
 // The RadioAmerica Affiliate Report for Davit
 //
-//   (C) Copyright 2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: raaffiliate_report.cpp,v 1.12 2011/09/27 21:00:29 pcvs Exp $
+//   (C) Copyright 2008-2014 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -28,15 +26,13 @@
 #include <pick_fields.h>
 #include <list_reports.h>
 
-void ListReports::RAAffiliateReport()
+void ListReports::RAAffiliateReport(SpreadSheet *sheet)
 {
   int affiliate_id=0;
   int pgm_id=0;
   QDate date;
   QString sql;
   QSqlQuery *q;
-  FILE *f=NULL;
-  QString outfile;
   QString dow;
   QDateTime dt=QDateTime(QDate::currentDate(),QTime::currentTime());
 
@@ -49,13 +45,7 @@ void ListReports::RAAffiliateReport()
   }
   delete r;
 
-  if((f=GetTempFile(&outfile))==NULL) {
-    return;
-  }
-  fclose(f);
-
-  SpreadSheet *sheet=new SpreadSheet();
-  SpreadTab *tab=sheet->addTab(1);
+  SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("RadioAmerica Affiliates"));
 
   tab->addCell(1,1)->setText(tr("RadioAmerica Affiliates Report"));
@@ -161,5 +151,4 @@ void ListReports::RAAffiliateReport()
     row++;
   }
   delete q;
-  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

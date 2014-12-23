@@ -32,13 +32,11 @@
 #include <list_reports.h>
 
 
-void ListReports::AffidavitReport()
+void ListReports::AffidavitReport(SpreadSheet *sheet)
 {
   QString s;
   QString sql;
   QSqlQuery *q;
-  QString outfile;
-  FILE *f=NULL;
   int row=4;
   std::vector<int> ids;
   QString str;
@@ -46,12 +44,7 @@ void ListReports::AffidavitReport()
   //
   // Generate Report
   //
-  if((f=GetTempFile(&outfile))==NULL) {
-    return;
-  }
-  fclose(f);
-  SpreadSheet *sheet=new SpreadSheet();
-  SpreadTab *tab=sheet->addTab(1);
+  SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Affidavit Contacts"));
 
   tab->addCell(1,1)->setText(tr("Affiliate Affidavit Contacts"));
@@ -77,5 +70,4 @@ void ListReports::AffidavitReport()
     row++;
   }
   delete q;
-  ForkViewer(outfile,sheet->write(SpreadObject::ExcelXmlFormat));
 }

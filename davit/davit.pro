@@ -38,7 +38,6 @@ SOURCES += add_provider.cpp
 SOURCES += add_remark.cpp
 SOURCES += add_user.cpp
 SOURCES += affidavit_picker.cpp
-SOURCES += affiliate_report.cpp
 SOURCES += createdb.cpp
 SOURCES += davit.cpp
 SOURCES += daypicker.cpp

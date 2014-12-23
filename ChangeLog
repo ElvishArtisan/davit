@@ -765,3 +765,5 @@
 	and 'SpreadObject::fontMetrics()' methods in 'lib/spread_object.cpp'
 	and 'lib/spread_object.h'.
 	* Converted reports to use default font.
+2014-12-23 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored reports to use common 'SpreadSheet' object.
