@@ -28,7 +28,7 @@
 #include <pick_daypart.h>
 #include <list_reports.h>
 
-void ListReports::AllAffiliatesReport(SpreadSheet *sheet)
+bool ListReports::AllAffiliatesReport(SpreadSheet *sheet)
 {
   //
   // Generate Where Clause
@@ -42,11 +42,11 @@ void ListReports::AllAffiliatesReport(SpreadSheet *sheet)
   //
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("All Affiliates"));
-  RenderAffiliateReport(tab,where,tr("All Affiliates Report"),"",true,0);
+  return RenderAffiliateReport(tab,where,tr("All Affiliates Report"),"",true,0);
 }
 
 
-void ListReports::AllAffiliateContacts(SpreadSheet *sheet)
+bool ListReports::AllAffiliateContacts(SpreadSheet *sheet)
 {
   QString sql;
   QSqlQuery *q;
@@ -128,10 +128,12 @@ void ListReports::AllAffiliateContacts(SpreadSheet *sheet)
   }
 
   delete q;
+
+  return true;
 }
 
 
-void ListReports::AffiliatesByNetworkReport(SpreadSheet *sheet)
+bool ListReports::AffiliatesByNetworkReport(SpreadSheet *sheet)
 {
   int network_id=0;
   QDate date;
@@ -145,7 +147,7 @@ void ListReports::AffiliatesByNetworkReport(SpreadSheet *sheet)
 			       false,0,PickFields::NoMarket,this);
   if(r->exec()!=0) {
     delete r;
-    return;
+    return false;
   }
   delete r;
 
@@ -159,13 +161,13 @@ void ListReports::AffiliatesByNetworkReport(SpreadSheet *sheet)
   delete q;
   where=QString().sprintf("where (NETWORKS.ID=%d) ",network_id);
   where+=" order by AFFILIATES.STATION_CALL,AFFILIATES.STATION_TYPE";
-  RenderAffiliateReport(tab,where,tr("Affiliates by Network Report"),
-			QString().sprintf("Network: %s",
-					  (const char *)network_name),true,0);
+  return RenderAffiliateReport(tab,where,tr("Affiliates by Network Report"),
+			       QString().sprintf("Network: %s",
+					   (const char *)network_name),true,0);
 }
 
 
-void ListReports::AffiliatesByProgramReport(int contacts,SpreadSheet *sheet)
+bool ListReports::AffiliatesByProgramReport(int contacts,SpreadSheet *sheet)
 {
   int pgm_id=0;
   QDate date;
@@ -182,7 +184,7 @@ void ListReports::AffiliatesByProgramReport(int contacts,SpreadSheet *sheet)
 			       &sort,PickFields::NoMarket,this);
   if(r->exec()!=0) {
     delete r;
-    return;
+    return false;
   }
   delete r;
 
@@ -209,14 +211,14 @@ void ListReports::AffiliatesByProgramReport(int contacts,SpreadSheet *sheet)
 	" order by AFFILIATES.MARKET_NAME,AFFILIATES.STATE,AFFILIATES.CITY";
       break;
   }
-  RenderAffiliateReport(tab,where,tr("Affiliates by Program Report"),
-			QString().sprintf("Program: %s",
+  return RenderAffiliateReport(tab,where,tr("Affiliates by Program Report"),
+			       QString().sprintf("Program: %s",
 					  (const char *)program_name),false,
 			contacts);
 }
 
 
-void ListReports::AffiliatesByDaypartReport(SpreadSheet *sheet)
+bool ListReports::AffiliatesByDaypartReport(SpreadSheet *sheet)
 {
   QString where;
   QString outfile;
@@ -228,7 +230,7 @@ void ListReports::AffiliatesByDaypartReport(SpreadSheet *sheet)
   PickDaypart *r=new PickDaypart(&start_time,&end_time,dows);
   if(r->exec()!=0) {
     delete r;
-    return;
+    return false;
   }
   delete r;
 
@@ -271,12 +273,12 @@ void ListReports::AffiliatesByDaypartReport(SpreadSheet *sheet)
     subtitle+="Su";
   }
   where+=" order by AFFILIATES.STATION_CALL,AFFILIATES.STATION_TYPE";
-  RenderAffiliateReport(tab,where,tr("Affiliates by Daypart Report"),
-			subtitle,true,0);
+  return RenderAffiliateReport(tab,where,tr("Affiliates by Daypart Report"),
+			       subtitle,true,0);
 }
 
 
-void ListReports::RenderAffiliateReport(SpreadTab *tab,const QString &where,
+bool ListReports::RenderAffiliateReport(SpreadTab *tab,const QString &where,
 					const QString &title,const QString &sub,
 					bool show_program_name,int contacts)
 {
@@ -420,4 +422,6 @@ void ListReports::RenderAffiliateReport(SpreadTab *tab,const QString &where,
     row++;
   }
   delete q;
+
+  return true;
 }

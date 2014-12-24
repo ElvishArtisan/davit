@@ -33,7 +33,7 @@
 #include <list_reports.h>
 
 
-void ListReports::MissingAffidavitReport(SpreadSheet *sheet)
+bool ListReports::MissingAffidavitReport(SpreadSheet *sheet)
 {
   QString s;
   QString sql;
@@ -54,7 +54,7 @@ void ListReports::MissingAffidavitReport(SpreadSheet *sheet)
   AffidavitPicker *d=new AffidavitPicker(&filter,&sort_type,&program_id,this);
   if(d->exec()!=0) {
     delete d;
-    return;
+    return false;
   }
   delete d;
 
@@ -186,4 +186,6 @@ void ListReports::MissingAffidavitReport(SpreadSheet *sheet)
     row++;
   }
   delete q;
+
+  return true;
 }

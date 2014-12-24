@@ -32,7 +32,7 @@
 #include <list_reports.h>
 
 
-void ListReports::ProgramByMarketReport(PickFields::MarketType type,
+bool ListReports::ProgramByMarketReport(PickFields::MarketType type,
 					SpreadSheet *sheet)
 {
   QString s;
@@ -46,7 +46,7 @@ void ListReports::ProgramByMarketReport(PickFields::MarketType type,
   //
   PickFields *d=new PickFields(NULL,NULL,NULL,false,NULL,false,NULL,false,NULL,type,this);
   if(d->exec()<0) {
-    return;
+    return false;
   }
   QString market=d->selectedMarket();
   QString city=d->selectedCity();
@@ -132,4 +132,6 @@ void ListReports::ProgramByMarketReport(PickFields::MarketType type,
     row++;
   }
   delete q;
+
+  return true;
 }

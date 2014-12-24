@@ -32,7 +32,7 @@
 #include <list_reports.h>
 
 
-void ListReports::AffidavitReport(SpreadSheet *sheet)
+bool ListReports::AffidavitReport(SpreadSheet *sheet)
 {
   QString s;
   QString sql;
@@ -70,4 +70,6 @@ void ListReports::AffidavitReport(SpreadSheet *sheet)
     row++;
   }
   delete q;
+
+  return true;
 }

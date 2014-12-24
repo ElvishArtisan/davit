@@ -41,6 +41,7 @@
 #endif
 
 #include <dvt.h>
+#include <spread_sheet.h>
 
 #define BUFFER_SIZE 1024
 
@@ -1501,6 +1502,71 @@ unsigned DvtContactInfo(QString *name,QString *title,QString *email,
   }
   if(fax!=NULL) {
     *fax=(*fax).left((*fax).length()-2).stripWhiteSpace();
+  }
+
+  return ret;
+}
+
+
+QFont DvtGetFont(const QString &base_name)
+{
+  QString face=SPREAD_DEFAULT_FONT_FACE;
+  int size=SPREAD_DEFAULT_FONT_SIZE;
+  QFont::Weight weight=SPREAD_DEFAULT_FONT_WEIGHT;
+  bool ok=false;
+  int n;
+
+  if(getenv(base_name+"_FONT_FACE")!=NULL) {
+    face=getenv(base_name+"_FONT_FACE");
+  }
+  if(getenv(base_name+"_FONT_SIZE")!=NULL) {
+    n=QString(getenv(base_name+"_FONT_SIZE")).toInt(&ok);
+    if(ok) {
+      size=n;
+    }
+    else {
+      fprintf(stderr,"davit: %s_FONT_SIZE value is malformatted\n",
+	      (const char *)base_name);
+    }
+  }
+  if(getenv(base_name+"_FONT_WEIGHT")!=NULL) {
+    QString wt=getenv(base_name+"_FONT_WEIGHT");
+    if(wt.lower()=="normal") {
+      weight=QFont::Normal;
+    }
+    else {
+      if(wt.lower()=="bold") {
+	weight=QFont::Bold;
+      }
+      else {
+	fprintf(stderr,"davit: %s_FONT_WEIGHT value is malformatted\n",
+		(const char *)base_name);
+      }
+    }
+  }
+
+  return QFont(face,size,weight);
+}
+
+
+SpreadObject::FileFormat DvtGetSpreadSheetFileFormat(const QString &base_name)
+{
+  SpreadObject::FileFormat ret=SpreadSheet::ExcelXmlFormat;
+
+  if(getenv(base_name+"_FORMAT")!=NULL) {
+    QString str=QString(getenv(base_name+"_FORMAT")).lower();
+    if(str=="slk") {
+      ret=SpreadObject::SlkFormat;
+    }
+    else {
+      if(str=="excelxml") {
+	ret=SpreadSheet::ExcelXmlFormat;
+      }
+      else {
+	fprintf(stderr,"davit: %s_FORMAT value is malformatted\n",
+		(const char *)base_name);
+      }
+    }
   }
 
   return ret;

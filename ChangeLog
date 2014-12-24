@@ -767,3 +767,7 @@
 	* Converted reports to use default font.
 2014-12-23 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored reports to use common 'SpreadSheet' object.
+2014-12-23 Fred Gleason <fredg@paravelsystems.com>
+	* Added support for 'DAVIT_REPORT_FORMAT', 'DAVIT_REPORT_FONT_FACE',
+	'DAVIT_REPORT_FONT_SIZE' and 'DAVIT_REPORT_FONT_WEIGHT' environmental
+	variables.

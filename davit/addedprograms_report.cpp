@@ -28,7 +28,7 @@
 #include <pick_fields.h>
 #include <list_reports.h>
 
-void ListReports::AddedProgramsReport(Dvt::RemarkType type,SpreadSheet *sheet)
+bool ListReports::AddedProgramsReport(Dvt::RemarkType type,SpreadSheet *sheet)
 {
   int affiliate_id=0;
   int pgm_id=0;
@@ -45,7 +45,7 @@ void ListReports::AddedProgramsReport(Dvt::RemarkType type,SpreadSheet *sheet)
 			       PickFields::NoMarket,this);
   if(r->exec()!=0) {
     delete r;
-    return;
+    return false;
   }
   delete r;
 
@@ -162,4 +162,6 @@ void ListReports::AddedProgramsReport(Dvt::RemarkType type,SpreadSheet *sheet)
     delete q1;
   }
   delete q;
+
+  return true;
 }

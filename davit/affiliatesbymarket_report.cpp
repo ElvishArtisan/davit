@@ -29,7 +29,7 @@
 
 #include <list_reports.h>
 
-void ListReports::AffiliatesByMarketReport(PickFields::MarketType type,
+bool ListReports::AffiliatesByMarketReport(PickFields::MarketType type,
 					   SpreadSheet *sheet)
 {
   int pgm_id;
@@ -42,7 +42,7 @@ void ListReports::AffiliatesByMarketReport(PickFields::MarketType type,
 			       NULL,type,this);
   if(r->exec()!=0) {
     delete r;
-    return;
+    return false;
   }
   market=r->selectedMarket();
   delete r;
@@ -152,4 +152,6 @@ void ListReports::AffiliatesByMarketReport(PickFields::MarketType type,
     row++;
   }
   delete q;
+
+  return true;
 }

@@ -1,0 +1,34 @@
+ENVIRONMENTAL VARIABLES FOR DAVIT
+
+------------------------------------------------------------------------------
+DAVIT_REPORT_FORMAT
+
+Determines the format of the data sent to the report reader.  The following
+values are recognized:
+       Slk - The 'SLK' spreadsheet format.  This is a very simple format
+             that provides text info but no formatting information.
+
+  ExcelXml - The Excel XML spreadsheet format.  A simple format that provides
+             little formatting information, but is compatible with most
+             versions of MS Excel.  This is the default.
+
+
+------------------------------------------------------------------------------
+DAVIT_REPORT_FONT_FACE
+
+The name of the font to use for reports.  Default is 'arial'.
+
+
+------------------------------------------------------------------------------
+DAVIT_REPORT_FONT_SIZE
+
+The size of the font to use for reports.  Default is '10'.
+
+
+------------------------------------------------------------------------------
+DAVIT_REPORT_FONT_WEIGHT
+
+The weight of the font to use for reports.  The following values are
+recognized:
+       Normal
+       Bold

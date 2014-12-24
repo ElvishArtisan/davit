@@ -21,7 +21,8 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-EXTRA_DIST = tables.txt
+EXTRA_DIST = env_vars.txt\
+             tables.txt
 
 CLEANFILES = *~
 MAINTAINERCLEANFILES = *~ Makefile.in configure aclocal.m4

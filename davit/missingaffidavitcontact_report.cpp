@@ -31,7 +31,7 @@
 #include <list_reports.h>
 
 
-void ListReports::MissingAffidavitContactReport(SpreadSheet *sheet)
+bool ListReports::MissingAffidavitContactReport(SpreadSheet *sheet)
 {
   QString s;
   QString sql;
@@ -75,4 +75,6 @@ void ListReports::MissingAffidavitContactReport(SpreadSheet *sheet)
     delete q1;
   }
   delete q;
+
+  return true;
 }

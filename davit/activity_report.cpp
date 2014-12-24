@@ -30,7 +30,7 @@
 #include <pick_fields.h>
 #include <list_reports.h>
 
-void ListReports::ActivityReport(SpreadSheet *sheet)
+bool ListReports::ActivityReport(SpreadSheet *sheet)
 {
   int affiliate_id=0;
   QDate start_date=QDate::currentDate().addMonths(-1);
@@ -47,7 +47,7 @@ void ListReports::ActivityReport(SpreadSheet *sheet)
 			       PickFields::NoMarket,this);
   if(r->exec()!=0) {
     delete r;
-    return;
+    return false;
   }
   delete r;
 
@@ -109,4 +109,6 @@ void ListReports::ActivityReport(SpreadSheet *sheet)
     delete q1;
   }
   delete q;
+
+  return true;
 }

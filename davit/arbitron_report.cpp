@@ -26,7 +26,7 @@
 #include <pick_fields.h>
 #include <list_reports.h>
 
-void ListReports::ArbitronReport(SpreadSheet *sheet)
+bool ListReports::ArbitronReport(SpreadSheet *sheet)
 {
   int pgm_id=0;
   QDate date;
@@ -41,7 +41,7 @@ void ListReports::ArbitronReport(SpreadSheet *sheet)
 		   PickFields::NoMarket,this);
   if(r->exec()!=0) {
     delete r;
-    return;
+    return false;
   }
   delete r;
 
@@ -120,4 +120,6 @@ void ListReports::ArbitronReport(SpreadSheet *sheet)
     }
   }
   delete q;
+
+  return true;
 }

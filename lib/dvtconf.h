@@ -36,6 +36,7 @@
 #include <stdio.h>
 
 #include <dvt.h>
+#include <spread_sheet.h>
 
 /* Function Prototypes */
 int DvtGetPrivateProfileBool(const char *,const char *,const char *,bool);
@@ -121,5 +122,8 @@ void DvtUpdateIsAffiliateField();
 unsigned DvtContactInfo(QString *name,QString *title,QString *email,
 			QString *phone,QString *fax,
 			int affiliate_id,Dvt::ContactType type);
+QFont DvtGetFont(const QString &base_name);
+SpreadObject::FileFormat DvtGetSpreadSheetFileFormat(const QString &base_name);
+
 
 #endif   // DVTCONF_H

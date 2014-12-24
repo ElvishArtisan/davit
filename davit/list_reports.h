@@ -64,59 +64,59 @@ class ListReports : public QDialog
   //
   // activity_report.cpp
   //
-  void ActivityReport(SpreadSheet *sheet);
+  bool ActivityReport(SpreadSheet *sheet);
 
   //
   // addedprograms_report.cpp
   //
-  void AddedProgramsReport(Dvt::RemarkType type,SpreadSheet *sheet);
+  bool AddedProgramsReport(Dvt::RemarkType type,SpreadSheet *sheet);
 
   //
   // affidavit_report.cpp
   //
-  void AffidavitReport(SpreadSheet *sheet);
+  bool AffidavitReport(SpreadSheet *sheet);
 
   //
   // missingaffidavit_report.cpp
   //
-  void MissingAffidavitReport(SpreadSheet *sheet);
+  bool MissingAffidavitReport(SpreadSheet *sheet);
 
   //
   // missingaffidavitcontact_report.cpp
   //
-  void MissingAffidavitContactReport(SpreadSheet *sheet);
+  bool MissingAffidavitContactReport(SpreadSheet *sheet);
 
   //
   // affiliatesbyprogram.cpp
   //
-  void AllAffiliatesReport(SpreadSheet *sheet);
-  void AllAffiliateContacts(SpreadSheet *sheet);
-  void AffiliatesByNetworkReport(SpreadSheet *sheet);
-  void AffiliatesByProgramReport(int contacts,SpreadSheet *sheet);
-  void AffiliatesByDaypartReport(SpreadSheet *sheet);
-  void RenderAffiliateReport(SpreadTab *tab,const QString &where,
+  bool AllAffiliatesReport(SpreadSheet *sheet);
+  bool AllAffiliateContacts(SpreadSheet *sheet);
+  bool AffiliatesByNetworkReport(SpreadSheet *sheet);
+  bool AffiliatesByProgramReport(int contacts,SpreadSheet *sheet);
+  bool AffiliatesByDaypartReport(SpreadSheet *sheet);
+  bool RenderAffiliateReport(SpreadTab *tab,const QString &where,
 			     const QString &title,const QString &sub,
 			     bool show_program_name,int contacts);
 
   //
   // arbitron_report.cpp
   //
-  void ArbitronReport(SpreadSheet *sheet);
+  bool ArbitronReport(SpreadSheet *sheet);
 
   //
   // affiliatesbymarket_report.cpp
   //
-  void AffiliatesByMarketReport(PickFields::MarketType type,SpreadSheet *sheet);
+  bool AffiliatesByMarketReport(PickFields::MarketType type,SpreadSheet *sheet);
 
   //
   // programbymarket_report.cpp
   //
-  void ProgramByMarketReport(PickFields::MarketType type,SpreadSheet *sheet);
+  bool ProgramByMarketReport(PickFields::MarketType type,SpreadSheet *sheet);
 
   //
   // raaffiliate_report.cpp
   //
-  void RAAffiliateReport(SpreadSheet *sheet);
+  bool RAAffiliateReport(SpreadSheet *sheet);
 
   QString GetEmailContactList(int affiliate_id,bool affidavit,bool progdir);
   QString GetNameContactList(int affiliate_id,bool affidavit,bool progdir);
