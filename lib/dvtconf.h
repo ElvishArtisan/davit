@@ -97,7 +97,7 @@ bool DvtTimeSynced();
 QString DvtTruncateAfterWord(QString str,int word,bool add_dots=false);
 QString DvtHomeDir();
 QString DvtTempDir();
-FILE *DvtTempFile(QString *filename,const char *mode);
+QString DvtTempName(const QString &ext);
 int DvtDeleteFile(const QString &filename);
 QString DvtEscapeString(const QString &str);
 QString DvtFormatCityState(const QString &city,const QString &state);

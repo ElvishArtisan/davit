@@ -780,3 +780,5 @@
 2015-01-05 Fred Gleason <fredg@paravelsystems.com>
 	* Removed dead methods from 'davit/list_reports.cpp' and
 	'davit/list_reports.h'.
+2015-01-05 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored temporary file generation routines.

@@ -157,8 +157,6 @@ QSizePolicy ListReports::sizePolicy() const
 
 void ListReports::runData()
 {
-  FILE *f=NULL;
-  QString outfile;
   SpreadSheet *sheet=new SpreadSheet();
   bool ok=false;
 
@@ -232,11 +230,7 @@ void ListReports::runData()
   }
 
   if(ok) {
-    if((f=GetTempFile(&outfile))==NULL) {
-      return;
-    }
-    fclose(f);
-    ForkViewer(outfile+".xml",
+    ForkViewer(DvtTempName(Spread::fileExtension(DvtGetSpreadSheetFileFormat("DAVIT_REPORT"))),
 	       sheet->write(DvtGetSpreadSheetFileFormat("DAVIT_REPORT")));
     // printf("out: %s\n",(const char *)outfile);
   }
@@ -262,57 +256,6 @@ void ListReports::resizeEvent(QResizeEvent *e)
     setGeometry(10,10,size().width()-20,size().height()-80);
   list_run_button->setGeometry(10,size().height()-60,80,50);
   list_close_button->setGeometry(size().width()-90,size().height()-60,80,50);
-}
-
-
-FILE *ListReports::GetTempFile(QString *filename)
-{
-  FILE *f=NULL;
-#ifdef WIN32
-  QString tempfile=QString().sprintf("%s\\davit-%s.txt",(const char *)GetTempDir(),
-	           (const char *)QTime::currentTime().toString("hhmmsszzz"));
-  if((f=fopen(tempfile,"w"))==NULL) {
-    QMessageBox::warning(this,tr("Davit -- File Error"),
-			 tr("Unable to create temporary file at \"")+
-			 tempfile+"\".");
-    *filename="";
-    return NULL;
-  }
-  temp_files.push_back(tempfile);
-  *filename=tempfile;
-#else
-  char pathname[PATH_MAX];
-  int fd=-1;
-
-  strcpy(pathname,"/tmp/davitXXXXXX");
-  if((fd=mkstemp(pathname))<0) {
-    QMessageBox::warning(this,tr("Davit -- File Error"),
-			 tr("Unable to create temporary file at \"")+
-			 pathname+"\".");
-    *filename="";
-    return NULL;
-  }
-  temp_files.push_back(pathname);
-  *filename=pathname;
-  f=fdopen(fd,"r+");
-#endif  // WIN32
-  return f;
-}
-
-
-QString ListReports::GetTempDir()
-{
-#ifdef WIN32
-  if(getenv("TEMP")!=NULL) {
-    return QString(getenv("TEMP"));
-  }
-  if(getenv("TMP")!=NULL) {
-    return QString(getenv("TMP"));
-  }
-  return QString("C:\\");
-#else
-  return QString("/tmp");
-#endif  // WIN32
 }
 
 

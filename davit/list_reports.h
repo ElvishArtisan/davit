@@ -118,8 +118,6 @@ class ListReports : public QDialog
   //
   bool RAAffiliateReport(SpreadSheet *sheet);
 
-  FILE *GetTempFile(QString *filename);
-  QString GetTempDir();
   void ForkViewer(const QString &filename,const QString &data="");
   void ContactFields(int affiliate_id,ContactType type,int fields,
 		     SpreadTab *tab,int colnum,int rownum,

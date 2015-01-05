@@ -1013,22 +1013,16 @@ QString DvtTempDir()
 }
 
 
-FILE *DvtTempFile(QString *filename,const char *mode)
+QString DvtTempName(const QString &ext)
 {
-#ifdef WIN32
-  *filename=DvtTempDir()+QString().sprintf("\\%010u",rand());
-  return fopen((const char *)(*filename),mode);
-#else
-  int fd=-1;
-  char tempfile[PATH_MAX];
+  QString ret=DvtTempDir();
 
-  strcpy(tempfile,DvtTempDir()+"/davitXXXXXX");
-  if((fd=mkstemp(tempfile))<0) {
-    return NULL;
-  }
-  *filename=tempfile;
-  return fdopen(fd,mode);
-#endif
+  ret+="/";
+  ret+=QDate::currentDate().toString("yyyyMMdd");
+  ret+=QTime::currentTime().toString("hhmmsszzz");
+  ret+="."+ext;
+
+  return ret;
 }
 
 
