@@ -23,7 +23,7 @@
 #include "spread_tab.h"
 
 SpreadTab::SpreadTab()
-  : SpreadObject()
+  : Spread()
 {
   tab_tab=-1;
   tab_name="[tab]";
@@ -31,7 +31,7 @@ SpreadTab::SpreadTab()
 
 
 SpreadTab::SpreadTab(int tab)
-  : SpreadObject()
+  : Spread()
 {
   tab_tab=tab;
   tab_name=QObject::tr("Sheet")+QString().sprintf("%d",tab);
@@ -159,14 +159,14 @@ void SpreadTab::deleteCell(int col,int row)
 }
 
 
-QString SpreadTab::write(SpreadObject::FileFormat fmt)
+QString SpreadTab::write(Spread::FileFormat fmt)
 {
   switch(fmt) {
-  case SpreadObject::SlkFormat:
+  case Spread::SlkFormat:
     return WriteSlkFormat();
     break;
 
-  case SpreadObject::ExcelXmlFormat:
+  case Spread::ExcelXmlFormat:
     return WriteExcelXmlFormat();
     break;
   }
@@ -180,7 +180,7 @@ QString SpreadTab::WriteSlkFormat()
 
   ret+="ID;PSCALC3\n";
   for(unsigned i=0;i<tab_cells.size();i++) {
-    ret+=tab_cells[i]->write(SpreadObject::SlkFormat);
+    ret+=tab_cells[i]->write(Spread::SlkFormat);
   }
   ret+="E\n";
 

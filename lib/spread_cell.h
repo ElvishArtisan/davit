@@ -24,9 +24,9 @@
 #include <qfontmetrics.h>
 #include <qstring.h>
 
-#include <spread_object.h>
+#include <spread.h>
 
-class SpreadCell : public SpreadObject
+class SpreadCell : public Spread
 {
  public:
   SpreadCell();
@@ -42,7 +42,7 @@ class SpreadCell : public SpreadObject
   void setWidth(double w);
   double height() const;
   void setHeight(double h);
-  QString write(SpreadObject::FileFormat fmt);
+  QString write(Spread::FileFormat fmt);
 
  private:
   QString WriteSlkFormat();

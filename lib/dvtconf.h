@@ -124,7 +124,7 @@ unsigned DvtContactInfo(QString *name,QString *title,QString *email,
 			QString *phone,QString *fax,
 			int affiliate_id,Dvt::ContactType type);
 QFont DvtGetFont(const QString &base_name);
-SpreadObject::FileFormat DvtGetSpreadSheetFileFormat(const QString &base_name);
+Spread::FileFormat DvtGetSpreadSheetFileFormat(const QString &base_name);
 QStringList DvtReportViewerCommand(const QString &filename,
 				   const QString &ooffice_path);
 

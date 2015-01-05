@@ -1,4 +1,4 @@
-// spread_object.cpp
+// spread.cpp
 //
 // Abstract base class for a spreadsheet object.
 //
@@ -18,9 +18,9 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include "spread_object.h"
+#include "spread.h"
 
-SpreadObject::SpreadObject()
+Spread::Spread()
 {
   obj_font=QFont(SPREAD_DEFAULT_FONT_FACE,SPREAD_DEFAULT_FONT_SIZE,
 		 SPREAD_DEFAULT_FONT_WEIGHT);
@@ -28,19 +28,19 @@ SpreadObject::SpreadObject()
 }
 
 
-SpreadObject::~SpreadObject()
+Spread::~Spread()
 {
   delete obj_font_metrics;
 }
 
 
-QFont SpreadObject::defaultFont() const
+QFont Spread::defaultFont() const
 {
   return obj_font;
 }
 
 
-void SpreadObject::setDefaultFont(const QFont &font)
+void Spread::setDefaultFont(const QFont &font)
 {
   obj_font=font;
   delete obj_font_metrics;
@@ -48,13 +48,31 @@ void SpreadObject::setDefaultFont(const QFont &font)
 }
 
 
-QFontMetrics *SpreadObject::fontMetrics() const
+QString Spread::fileExtension(FileFormat fmt)
+{
+  QString ret="";
+
+  switch(fmt) {
+  case Spread::SlkFormat:
+    ret="slk";
+    break;
+
+  case Spread::ExcelXmlFormat:
+    ret="xml";
+    break;
+  }
+
+  return ret;
+}
+
+
+QFontMetrics *Spread::fontMetrics() const
 {
   return obj_font_metrics;
 }
 
 
-QString SpreadObject::escapeXml(const QString &xml)
+QString Spread::escapeXml(const QString &xml)
 {
   /*
    * Escape a string in accordance with XML-1.0
@@ -69,7 +87,7 @@ QString SpreadObject::escapeXml(const QString &xml)
 }
 
 
-QString SpreadObject::unEscapeXml(const QString &xml)
+QString Spread::unEscapeXml(const QString &xml)
 {
   /*
    * Unescape a string in accordance with XML-1.0

@@ -21,7 +21,7 @@
 #include "spread_sheet.h"
 
 SpreadSheet::SpreadSheet()
-  : SpreadObject()
+  : Spread()
 {
 }
 
@@ -68,14 +68,14 @@ void SpreadSheet::deleteTab(int tabnum)
 }
 
 
-QString SpreadSheet::write(FileFormat fmt)
+QString SpreadSheet::write(Spread::FileFormat fmt)
 {
   switch(fmt) {
-  case SpreadObject::SlkFormat:
+  case Spread::SlkFormat:
     return WriteSlkFormat();
     break;
 
-  case SpreadObject::ExcelXmlFormat:
+  case Spread::ExcelXmlFormat:
     return WriteExcelXmlFormat();
     break;
   }
@@ -88,7 +88,7 @@ QString SpreadSheet::WriteSlkFormat()
   QString ret="";
 
   for(unsigned i=0;i<sheet_tabs.size();i++) {
-    ret+=sheet_tabs[i]->write(SpreadObject::SlkFormat);
+    ret+=sheet_tabs[i]->write(Spread::SlkFormat);
   }
 
   return ret;
@@ -136,7 +136,7 @@ QString SpreadSheet::WriteExcelXmlFormat()
     "<Style ss:ID=\"co1\"/><Style ss:ID=\"ta1\"/></Styles>\n";
 
   for(unsigned i=0;i<sheet_tabs.size();i++) {
-    xml+=sheet_tabs[i]->write(SpreadObject::ExcelXmlFormat);
+    xml+=sheet_tabs[i]->write(Spread::ExcelXmlFormat);
   }
 
   xml+="</Workbook>\n";

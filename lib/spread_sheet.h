@@ -23,7 +23,7 @@
 
 #include <spread_tab.h>
 
-class SpreadSheet : public SpreadObject
+class SpreadSheet : public Spread
 {
  public:
   SpreadSheet();
@@ -32,7 +32,7 @@ class SpreadSheet : public SpreadObject
   SpreadTab *tab(int tabnum) const;
   SpreadTab *addTab(int tabnum);
   void deleteTab(int tabnum);
-  QString write(FileFormat fmt);
+  QString write(Spread::FileFormat fmt);
 
  private:
   QString WriteSlkFormat();

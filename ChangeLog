@@ -773,3 +773,7 @@
 	variables.
 2015-01-05 Fred Gleason <fredg@paravelsystems.com>
 	* Added an 'Affiliates/admin Contacts by Program' report.
+2015-01-05 Fred Gleason <fredg@paravelsystems.com>
+	* Renamed 'SpreadObject' base class to 'Spread'.
+	* Added a 'Spread::fileExtension()' method in 'lib/spread.cpp'
+	and 'lib/spread.h'.

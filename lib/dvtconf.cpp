@@ -150,7 +150,7 @@ int GetIni(const char *sFileName,const char *cHeader,const char *cLabel,
 
   strcpy(sName,sFileName);
 #ifdef WIN32
-  for(int i=0;i<strlen(sName);i++) {
+  for(i=0;i<strlen(sName);i++) {
     if(sName[i]=='/') {
       sName[i]='\\';
     }
@@ -1549,18 +1549,18 @@ QFont DvtGetFont(const QString &base_name)
 }
 
 
-SpreadObject::FileFormat DvtGetSpreadSheetFileFormat(const QString &base_name)
+Spread::FileFormat DvtGetSpreadSheetFileFormat(const QString &base_name)
 {
-  SpreadObject::FileFormat ret=SpreadSheet::ExcelXmlFormat;
+  Spread::FileFormat ret=SpreadSheet::ExcelXmlFormat;
 
   if(getenv(base_name+"_FORMAT")!=NULL) {
     QString str=QString(getenv(base_name+"_FORMAT")).lower();
     if(str=="slk") {
-      ret=SpreadObject::SlkFormat;
+      ret=Spread::SlkFormat;
     }
     else {
       if(str=="excelxml") {
-	ret=SpreadSheet::ExcelXmlFormat;
+	ret=Spread::ExcelXmlFormat;
       }
       else {
 	fprintf(stderr,"davit: %s_FORMAT value is malformatted\n",
@@ -1588,6 +1588,13 @@ QStringList DvtReportViewerCommand(const QString &filename,
     ret=ret.split(" ",QString(getenv("DAVIT_REPORT_COMMAND")));
     ret.push_back(filename);
   }
-
+  /*
+  QString str="CMD: ";
+  for(unsigned i=0;i<ret.size();i++) {
+    str+=ret[i];
+    str+=" ";
+  }
+  QMessageBox::information(NULL,"DEBUG",str);
+  */
   return ret;
 }

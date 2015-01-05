@@ -1,4 +1,4 @@
-// spread_object.h
+// spread.h
 //
 // Abstract base class for a spreadsheet object.
 //
@@ -18,8 +18,8 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef SPREAD_OBJECT_H
-#define SPREAD_OBJECT_H
+#ifndef SPREAD_H
+#define SPREAD_H
 
 #include <qfont.h>
 #include <qfontmetrics.h>
@@ -29,15 +29,16 @@
 #define SPREAD_DEFAULT_FONT_SIZE 10
 #define SPREAD_DEFAULT_FONT_WEIGHT QFont::Normal
 
-class SpreadObject
+class Spread
 {
  public:
   enum FileFormat {SlkFormat=0,ExcelXmlFormat=1};
-  SpreadObject();
-  ~SpreadObject();
+  Spread();
+  ~Spread();
   QFont defaultFont() const;
   void setDefaultFont(const QFont &font);
   virtual QString write(FileFormat fmt)=0;
+  static QString fileExtension(FileFormat fmt);
 
  protected:
   QFontMetrics *fontMetrics() const;
@@ -50,4 +51,4 @@ class SpreadObject
 };
 
 
-#endif   // SPREAD_OBJECT_H
+#endif   // SPREAD_H

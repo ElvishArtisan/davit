@@ -25,7 +25,7 @@
 
 #include <spread_cell.h>
 
-class SpreadTab : public SpreadObject
+class SpreadTab : public Spread
 {
  public:
   SpreadTab();
@@ -42,7 +42,7 @@ class SpreadTab : public SpreadObject
   SpreadCell *cell(int col,int row) const;
   SpreadCell *addCell(int col,int row);
   void deleteCell(int col,int row);
-  QString write(SpreadObject::FileFormat fmt);
+  QString write(Spread::FileFormat fmt);
 
  private:
   QString WriteSlkFormat();

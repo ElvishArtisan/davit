@@ -23,7 +23,7 @@
 #include "spread_cell.h"
 
 SpreadCell::SpreadCell()
-  : SpreadObject()
+  : Spread()
 {
   cell_column=-1;
   cell_row=-1;
@@ -113,14 +113,14 @@ void SpreadCell::setHeight(double h)
 }
 
 
-QString SpreadCell::write(SpreadObject::FileFormat fmt)
+QString SpreadCell::write(Spread::FileFormat fmt)
 {
   switch(fmt) {
-  case SpreadObject::SlkFormat:
+  case Spread::SlkFormat:
     return WriteSlkFormat();
     break;
 
-  case SpreadObject::ExcelXmlFormat:
+  case Spread::ExcelXmlFormat:
     return WriteExcelXmlFormat();
     break;
   }

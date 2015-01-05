@@ -236,7 +236,7 @@ void ListReports::runData()
       return;
     }
     fclose(f);
-    ForkViewer(outfile,
+    ForkViewer(outfile+".xml",
 	       sheet->write(DvtGetSpreadSheetFileFormat("DAVIT_REPORT")));
     // printf("out: %s\n",(const char *)outfile);
   }
