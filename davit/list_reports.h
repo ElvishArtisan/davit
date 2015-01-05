@@ -118,24 +118,12 @@ class ListReports : public QDialog
   //
   bool RAAffiliateReport(SpreadSheet *sheet);
 
-  QString GetEmailContactList(int affiliate_id,bool affidavit,bool progdir);
-  QString GetNameContactList(int affiliate_id,bool affidavit,bool progdir);
-  QString GetPhoneNumberContactList(int affiliate_id,bool affidavit,
-				    bool progdir);
   FILE *GetTempFile(QString *filename);
   QString GetTempDir();
   void ForkViewer(const QString &filename,const QString &data="");
-  QString StringField(const QVariant &v);
-  QString PhoneField(const QVariant &v);
-  QString PhoneString(const QString &pnum);
-  QString AddressField(const QVariant &v1,const QVariant &v2);
-  QString FrequencyField(const QVariant &v);
-  QString TypeField(const QVariant &v);
-  QString ContactFields(int affiliate_id,ContactType type,int fields);
   void ContactFields(int affiliate_id,ContactType type,int fields,
 		     SpreadTab *tab,int colnum,int rownum,
 		     QFontMetrics *fm=NULL);
-  QString EmptyField();
   QListView *list_reports_list;
   QPushButton *list_run_button;
   QPushButton *list_close_button;

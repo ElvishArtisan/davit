@@ -777,3 +777,6 @@
 	* Renamed 'SpreadObject' base class to 'Spread'.
 	* Added a 'Spread::fileExtension()' method in 'lib/spread.cpp'
 	and 'lib/spread.h'.
+2015-01-05 Fred Gleason <fredg@paravelsystems.com>
+	* Removed dead methods from 'davit/list_reports.cpp' and
+	'davit/list_reports.h'.
