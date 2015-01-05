@@ -1571,3 +1571,23 @@ SpreadObject::FileFormat DvtGetSpreadSheetFileFormat(const QString &base_name)
 
   return ret;
 }
+
+
+QStringList DvtReportViewerCommand(const QString &filename,
+				   const QString &ooffice_path)
+{
+  QStringList ret;
+
+  if(getenv("DAVIT_REPORT_COMMAND")==NULL) {
+    ret.push_back(ooffice_path);
+    ret.push_back("--calc");
+    ret.push_back("-view");
+    ret.push_back(filename);
+  }
+  else {
+    ret=ret.split(" ",QString(getenv("DAVIT_REPORT_COMMAND")));
+    ret.push_back(filename);
+  }
+
+  return ret;
+}

@@ -771,3 +771,5 @@
 	* Added support for 'DAVIT_REPORT_FORMAT', 'DAVIT_REPORT_FONT_FACE',
 	'DAVIT_REPORT_FONT_SIZE' and 'DAVIT_REPORT_FONT_WEIGHT' environmental
 	variables.
+2015-01-05 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'Affiliates/admin Contacts by Program' report.

@@ -97,7 +97,7 @@ ListReports::ListReports(QWidget *parent,const char *name)
   item=new QListViewItem(list_reports_list);
   item->setText(0,tr("Affiliates by Program"));
   item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Affiliates/Contacts by Program"));
+  item->setText(0,tr("Affiliates/Admin Contacts by Program"));
   item=new QListViewItem(list_reports_list);
   item->setText(0,tr("Added Programs"));
   item=new QListViewItem(list_reports_list);
@@ -192,6 +192,10 @@ void ListReports::runData()
   if(item->text(0)==tr("Affiliates/Contacts by Program")) {
     ok=AffiliatesByProgramReport(ListReports::ProgramDirectorContact|
 			      ListReports::AffidavitContact,sheet);
+  }
+  if(item->text(0)==tr("Affiliates/Admin Contacts by Program")) {
+    ok=AffiliatesByProgramReport(ListReports::ProgramDirectorContact|
+			      ListReports::GeneralManagerContact,sheet);
   }
   if(item->text(0)==tr("Arbitron")) {
     ok=ArbitronReport(sheet);
@@ -436,20 +440,11 @@ void ListReports::ForkViewer(const QString &filename,const QString &data)
     fclose(f);
   }
 
-#ifdef WIN32
-  QProcess proc;
-  proc.addArgument(openoffice_path);
-  proc.addArgument("--calc");
-  proc.addArgument("-view");
-  proc.addArgument(filename);
-  bool ret=proc.launch("");
-#else
-  if(fork()==0) {
-    execlp("soffice","soffice","--calc","-view",(const char *)filename,
-	   (char *)0);
-    exit(0);
+  QProcess proc(DvtReportViewerCommand(filename,openoffice_path));
+  if(!proc.launch("")) {
+    QMessageBox::warning(this,"Davit - "+tr("Error"),
+			 tr("Unable to launch report viewer!"));
   }
-#endif  // WIN32
 }
 
 

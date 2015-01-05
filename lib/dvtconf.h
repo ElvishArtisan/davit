@@ -31,6 +31,7 @@
 #include <qfont.h>
 #include <qhostaddress.h>
 #include <qsqldatabase.h>
+#include <qstringlist.h>
 #include <qvariant.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -124,6 +125,8 @@ unsigned DvtContactInfo(QString *name,QString *title,QString *email,
 			int affiliate_id,Dvt::ContactType type);
 QFont DvtGetFont(const QString &base_name);
 SpreadObject::FileFormat DvtGetSpreadSheetFileFormat(const QString &base_name);
+QStringList DvtReportViewerCommand(const QString &filename,
+				   const QString &ooffice_path);
 
 
 #endif   // DVTCONF_H

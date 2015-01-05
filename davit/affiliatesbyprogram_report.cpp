@@ -322,6 +322,11 @@ bool ListReports::RenderAffiliateReport(SpreadTab *tab,const QString &where,
     tab->addCell(col++,row)->setText(tr("AFFIDAVIT PHONE"));
     tab->addCell(col++,row)->setText(tr("AFFIDAVIT E-MAIL"));
   }
+  if((contacts&ListReports::GeneralManagerContact)!=0) {
+    tab->addCell(col++,row)->setText(tr("GM NAME"));
+    tab->addCell(col++,row)->setText(tr("GM PHONE"));
+    tab->addCell(col++,row)->setText(tr("GM E-MAIL"));
+  }
   row++;
 
   sql=QString().sprintf("select AFFILIATES.STATION_CALL,\
@@ -415,6 +420,13 @@ bool ListReports::RenderAffiliateReport(SpreadTab *tab,const QString &where,
     if((contacts&ListReports::AffidavitContact)!=0) {
       ContactFields(q->value(10).toInt(),
 		    ListReports::AffidavitContact,
+		    ListReports::FieldName|ListReports::FieldPhone|
+		    ListReports::FieldEmail,
+		    tab,col,row);
+    }
+    if((contacts&ListReports::GeneralManagerContact)!=0) {
+      ContactFields(q->value(10).toInt(),
+		    ListReports::GeneralManagerContact,
 		    ListReports::FieldName|ListReports::FieldPhone|
 		    ListReports::FieldEmail,
 		    tab,col,row);

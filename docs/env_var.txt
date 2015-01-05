@@ -1,6 +1,13 @@
 ENVIRONMENTAL VARIABLES FOR DAVIT
 
 ------------------------------------------------------------------------------
+DAVIT_REPORT_COMMAND
+
+The command to use to launch the report viewer.  Default is
+'soffice --calc --view'.
+
+
+------------------------------------------------------------------------------
 DAVIT_REPORT_FORMAT
 
 Determines the format of the data sent to the report reader.  The following
