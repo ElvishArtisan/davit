@@ -782,3 +782,6 @@
 	'davit/list_reports.h'.
 2015-01-05 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored temporary file generation routines.
+2015-01-05 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'lib/dvtmail-win32.cpp' that broke the build
+	under Windows.

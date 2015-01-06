@@ -70,7 +70,8 @@ bool DvtSendMail(const QStringList &to_addrs,const QStringList &cc_addrs,
   //
   // Generate Temporary File
   //
-  if((f=DvtTempFile(&tempfile,"w"))==NULL) {
+  tempfile=DvtTempName("");
+  if((f=fopen(tempfile,"w"))==NULL) {
     return false;
   }
 
