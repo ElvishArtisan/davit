@@ -785,3 +785,5 @@
 2015-01-05 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'lib/dvtmail-win32.cpp' that broke the build
 	under Windows.
+2015-01-12 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 2.2.0.
