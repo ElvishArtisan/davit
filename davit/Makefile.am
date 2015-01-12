@@ -39,7 +39,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      add_remark.cpp add_remark.h\
                      add_user.cpp add_user.h\
                      addedprograms_report.cpp\
-                     affidavit_picker.cpp\
+                     affidavit_picker.cpp affidavit_picker.h\
                      affidavit_report.cpp\
                      affiliatesbymarket_report.cpp\
                      affiliatesbyprogram_report.cpp\

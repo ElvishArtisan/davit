@@ -100,7 +100,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README
 %doc INSTALL
 %doc ChangeLog
-%doc docs/env_vars.txt
+%doc docs/env_var.txt
 %doc scripts/add_mysql_user.sh
 
 %files web

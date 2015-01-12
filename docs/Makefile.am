@@ -21,7 +21,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-EXTRA_DIST = env_vars.txt\
+EXTRA_DIST = env_var.txt\
              tables.txt
 
 CLEANFILES = *~

@@ -787,3 +787,8 @@
 	under Windows.
 2015-01-12 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 2.2.0.
+2015-01-12 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/Makefile.am' that broke the 'make rpm'
+	target.
+	* Fixed a bug in 'davit/davit.spec.in' that broke the 'make rpm'
+	target.
