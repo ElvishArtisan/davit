@@ -39,7 +39,7 @@ class PickFields : public QDialog
  Q_OBJECT
  public:
   enum SortField {SortAffiliate=0x0001,SortCityState=0x0002,SortMarket=0x0004};
-  enum MarketType {NoMarket=0,DmaMarket=1,MsaMarket=2};
+  enum MarketType {NoMarket=0,DmaMarket=1,MsaMarket=2,StateMarket=3};
   PickFields(QDate *start_date,QDate *end_date,
 	     int *pgm_id,bool pgm_all,
 	     int *affiliate_id,bool affiliate_all,
@@ -57,6 +57,7 @@ class PickFields : public QDialog
  private slots:
   void selectStartDateData();
   void selectEndDateData();
+  void stateCodeChangedData(const QString &code);
   void okData();
   void cancelData();
 

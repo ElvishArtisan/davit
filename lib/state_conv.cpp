@@ -18,186 +18,191 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <qobject.h>
+
 #include <state_conv.h>
 
 QString StateToAbbreviation(const QString &str)
 {
   QString state=str.lower();
-  if(state=="alabama") {
+  if(state==QObject::tr("all")) {
+    return "aa";
+  }
+  if(state==QObject::tr("alabama")) {
     return "al";
   }
-  if(state=="alaska") {
+  if(state==QObject::tr("alaska")) {
     return "ak";
   }
-  if(state=="american samoa") {
+  if(state==QObject::tr("american samoa")) {
     return "as";
   }
-  if(state=="arizona") {
+  if(state==QObject::tr("arizona")) {
     return "az";
   }
-  if(state=="arkansas") {
+  if(state==QObject::tr("arkansas")) {
     return "ar";
   }
-  if(state=="california") {
+  if(state==QObject::tr("california")) {
     return "ca";
   }
-  if(state=="colorado") {
+  if(state==QObject::tr("colorado")) {
     return "co";
   }
-  if(state=="connecticut") {
+  if(state==QObject::tr("connecticut")) {
     return "ct";
   }
-  if(state=="delaware") {
+  if(state==QObject::tr("delaware")) {
     return "de";
   }
-  if(state=="district of columbia") {
+  if(state==QObject::tr("district of columbia")) {
     return "dc";
   }
-  if(state=="federated states of micronesia") {
+  if(state==QObject::tr("federated states of micronesia")) {
     return "fm";
   }
-  if(state=="florida") {
+  if(state==QObject::tr("florida")) {
     return "fl";
   }
-  if(state=="georgia") {
+  if(state==QObject::tr("georgia")) {
     return "ga";
   }
-  if(state=="guam") {
+  if(state==QObject::tr("guam")) {
     return "gu";
   }
-  if(state=="hawaii") {
+  if(state==QObject::tr("hawaii")) {
     return "hi";
   }
-  if(state=="idaho") {
+  if(state==QObject::tr("idaho")) {
     return "id";
   }
-  if(state=="illinois") {
+  if(state==QObject::tr("illinois")) {
     return "il";
   }
-  if(state=="indiana") {
+  if(state==QObject::tr("indiana")) {
     return "in";
   }
-  if(state=="iowa") {
+  if(state==QObject::tr("iowa")) {
     return "ia";
   }
-  if(state=="kansas") {
+  if(state==QObject::tr("kansas")) {
     return "ks";
   }
-  if(state=="kentucky") {
+  if(state==QObject::tr("kentucky")) {
     return "ky";
   }
-  if(state=="louisiana") {
+  if(state==QObject::tr("louisiana")) {
     return "la";
   }
-  if(state=="maine") {
+  if(state==QObject::tr("maine")) {
     return "me";
   }
-  if(state=="marshall islands") {
+  if(state==QObject::tr("marshall islands")) {
     return "mh";
   }
-  if(state=="maryland") {
+  if(state==QObject::tr("maryland")) {
     return "md";
   }
-  if(state=="massachusetts") {
+  if(state==QObject::tr("massachusetts")) {
     return "ma";
   }
-  if(state=="michigan") {
+  if(state==QObject::tr("michigan")) {
     return "mi";
   }
-  if(state=="minnesota") {
+  if(state==QObject::tr("minnesota")) {
     return "mn";
   }
-  if(state=="mississippi") {
+  if(state==QObject::tr("mississippi")) {
     return "ms";
   }
-  if(state=="missouri") {
+  if(state==QObject::tr("missouri")) {
     return "mo";
   }
-  if(state=="montana") {
+  if(state==QObject::tr("montana")) {
     return "mt";
   }
-  if(state=="nebraska") {
+  if(state==QObject::tr("nebraska")) {
     return "ne";
   }
-  if(state=="nevada") {
+  if(state==QObject::tr("nevada")) {
     return "nv";
   }
-  if(state=="new hampshire") {
+  if(state==QObject::tr("new hampshire")) {
     return "nh";
   }
-  if(state=="new jersey") {
+  if(state==QObject::tr("new jersey")) {
     return "nj";
   }
-  if(state=="new mexico") {
+  if(state==QObject::tr("new mexico")) {
     return "nm";
   }
-  if(state=="new york") {
+  if(state==QObject::tr("new york")) {
     return "ny";
   }
-  if(state=="north carolina") {
+  if(state==QObject::tr("north carolina")) {
     return "nc";
   }
-  if(state=="north dakota") {
+  if(state==QObject::tr("north dakota")) {
     return "nd";
   }
-  if(state=="northern mariana islands") {
+  if(state==QObject::tr("northern mariana islands")) {
     return "mp";
   }
-  if(state=="ohio") {
+  if(state==QObject::tr("ohio")) {
     return "oh";
   }
-  if(state=="oklahoma") {
+  if(state==QObject::tr("oklahoma")) {
     return "ok";
   }
-  if(state=="oregon") {
+  if(state==QObject::tr("oregon")) {
     return "or";
   }
-  if(state=="palau") {
+  if(state==QObject::tr("palau")) {
     return "pw";
   }
-  if(state=="pennsylvania") {
+  if(state==QObject::tr("pennsylvania")) {
     return "pa";
   }
-  if(state=="puerto rico") {
+  if(state==QObject::tr("puerto rico")) {
     return "pr";
   }
-  if(state=="rhode island") {
+  if(state==QObject::tr("rhode island")) {
     return "ri";
   }
-  if(state=="south carolina") {
+  if(state==QObject::tr("south carolina")) {
     return "sc";
   }
-  if(state=="south dakota") {
+  if(state==QObject::tr("south dakota")) {
     return "sd";
   }
-  if(state=="tennessee") {
+  if(state==QObject::tr("tennessee")) {
     return "tn";
   }
-  if(state=="texas") {
+  if(state==QObject::tr("texas")) {
     return "tx";
   }
-  if(state=="utah") {
+  if(state==QObject::tr("utah")) {
     return "ut";
   }
-  if(state=="vermont") {
+  if(state==QObject::tr("vermont")) {
     return "vt";
   }
-  if(state=="virgin islands") {
+  if(state==QObject::tr("virgin islands")) {
     return "vi";
   }
-  if(state=="virginia") {
+  if(state==QObject::tr("virginia")) {
     return "va";
   }
-  if(state=="washington") {
+  if(state==QObject::tr("washington")) {
     return "wa";
   }
-  if(state=="west virginia") {
+  if(state==QObject::tr("west virginia")) {
     return "wv";
   }
-  if(state=="wisconsin") {
+  if(state==QObject::tr("wisconsin")) {
     return "wi";
   }
-  if(state=="wyoming") {
+  if(state==QObject::tr("wyoming")) {
     return "wy";
   }
   return "";
@@ -207,182 +212,185 @@ QString StateToAbbreviation(const QString &str)
 QString AbbreviationToState(const QString &str)
 {
   QString state=str.lower();
+  if(state=="aa") {
+    return QObject::tr("ALL");
+  }
   if(state=="al") {
-    return "Alabama";
+    return QObject::tr("Alabama");
   }
   if(state=="ak") {
-    return "Alaska";
+    return QObject::tr("Alaska");
   }
   if(state=="as") {
-    return "American Samoa";
+    return QObject::tr("American Samoa");
   }
   if(state=="az") {
-    return "Arizona";
+    return QObject::tr("Arizona");
   }
   if(state=="ar") {
-    return "Arkansas";
+    return QObject::tr("Arkansas");
   }
   if(state=="ca") {
-    return "California";
+    return QObject::tr("California");
   }
   if(state=="co") {
-    return "Colorado";
+    return QObject::tr("Colorado");
   }
   if(state=="ct") {
-    return "Connecticut";
+    return QObject::tr("Connecticut");
   }
   if(state=="de") {
-    return "Delaware";
+    return QObject::tr("Delaware");
   }
   if(state=="dc") {
-    return "District of Columbia";
+    return QObject::tr("District of Columbia");
   }
   if(state=="fm") {
-    return "Federated States of Micronesia";
+    return QObject::tr("Federated States of Micronesia");
   }
   if(state=="fl") {
-    return "Florida";
+    return QObject::tr("Florida");
   }
   if(state=="ga") {
-    return "Georgia";
+    return QObject::tr("Georgia");
   }
   if(state=="gu") {
-    return "Guam";
+    return QObject::tr("Guam");
   }
   if(state=="hi") {
-    return "Hawaii";
+    return QObject::tr("Hawaii");
   }
   if(state=="id") {
-    return "Idaho";
+    return QObject::tr("Idaho");
   }
   if(state=="il") {
-    return "Illinois";
+    return QObject::tr("Illinois");
   }
   if(state=="in") {
-    return "Indiana";
+    return QObject::tr("Indiana");
   }
   if(state=="ia") {
-    return "Iowa";
+    return QObject::tr("Iowa");
   }
   if(state=="ks") {
-    return "Kansas";
+    return QObject::tr("Kansas");
   }
   if(state=="ky") {
-    return "Kentucky";
+    return QObject::tr("Kentucky");
   }
   if(state=="la") {
-    return "Louisiana";
+    return QObject::tr("Louisiana");
   }
   if(state=="me") {
-    return "Maine";
+    return QObject::tr("Maine");
   }
   if(state=="mh") {
-    return "Marshall Islands";
+    return QObject::tr("Marshall Islands");
   }
   if(state=="md") {
-    return "Maryland";
+    return QObject::tr("Maryland");
   }
   if(state=="ma") {
-    return "Massachusetts";
+    return QObject::tr("Massachusetts");
   }
   if(state=="mi") {
-    return "Michigan";
+    return QObject::tr("Michigan");
   }
   if(state=="mn") {
-    return "Minnesota";
+    return QObject::tr("Minnesota");
   }
   if(state=="ms") {
-    return "Mississippi";
+    return QObject::tr("Mississippi");
   }
   if(state=="mo") {
-    return "Missouri";
+    return QObject::tr("Missouri");
   }
   if(state=="mt") {
-    return "Montana";
+    return QObject::tr("Montana");
   }
   if(state=="ne") {
-    return "Nebraska";
+    return QObject::tr("Nebraska");
   }
   if(state=="nv") {
-    return "Nevada";
+    return QObject::tr("Nevada");
   }
   if(state=="nh") {
-    return "New Hampshire";
+    return QObject::tr("New Hampshire");
   }
   if(state=="nj") {
-    return "New Jersey";
+    return QObject::tr("New Jersey");
   }
   if(state=="nm") {
-    return "New Mexico";
+    return QObject::tr("New Mexico");
   }
   if(state=="ny") {
-    return "New York";
+    return QObject::tr("New York");
   }
   if(state=="nc") {
-    return "North Carolina";
+    return QObject::tr("North Carolina");
   }
   if(state=="nd") {
-    return "North Dakota";
+    return QObject::tr("North Dakota");
   }
   if(state=="mp") {
-    return "Northern Mariana Islands";
+    return QObject::tr("Northern Mariana Islands");
   }
   if(state=="oh") {
-    return "Ohio";
+    return QObject::tr("Ohio");
   }
   if(state=="ok") {
-    return "Oklahoma";
+    return QObject::tr("Oklahoma");
   }
   if(state=="or") {
-    return "Oregon";
+    return QObject::tr("Oregon");
   }
   if(state=="pw") {
-    return "Palau";
+    return QObject::tr("Palau");
   }
   if(state=="pa") {
-    return "Pennsylvania";
+    return QObject::tr("Pennsylvania");
   }
   if(state=="pr") {
-    return "Puerto Rico";
+    return QObject::tr("Puerto Rico");
   }
   if(state=="ri") {
-    return "Rhode Island";
+    return QObject::tr("Rhode Island");
   }
   if(state=="sc") {
-    return "South Carolina";
+    return QObject::tr("South Carolina");
   }
   if(state=="sd") {
-    return "South Dakota";
+    return QObject::tr("South Dakota");
   }
   if(state=="tn") {
-    return "Tennessee";
+    return QObject::tr("Tennessee");
   }
   if(state=="tx") {
-    return "Texas";
+    return QObject::tr("Texas");
   }
   if(state=="ut") {
-    return "Utah";
+    return QObject::tr("Utah");
   }
   if(state=="vt") {
-    return "Vermont";
+    return QObject::tr("Vermont");
   }
   if(state=="vi") {
-    return "Virgin Islands";
+    return QObject::tr("Virgin Islands");
   }
   if(state=="va") {
-    return "Virginia";
+    return QObject::tr("Virginia");
   }
   if(state=="wa") {
-    return "Washington";
+    return QObject::tr("Washington");
   }
   if(state=="wv") {
-    return "West Virginia";
+    return QObject::tr("West Virginia");
   }
   if(state=="wi") {
-    return "Wisconsin";
+    return QObject::tr("Wisconsin");
   }
   if(state=="wy") {
-    return "Wyoming";
+    return QObject::tr("Wyoming");
   }
   return "";
 }

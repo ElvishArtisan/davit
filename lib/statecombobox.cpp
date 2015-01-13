@@ -24,9 +24,10 @@
 #include <statecombobox.h>
 
 
-StateComboBox::StateComboBox(QWidget *parent,const char *name)
+StateComboBox::StateComboBox(bool incl_all,QWidget *parent,const char *name)
   : QComboBox(parent,name)
 {
+  insertItem(tr("ALL"));
   insertItem(tr("Alabama"));
   insertItem(tr("Alaska"));
   insertItem(tr("America Samoa"));
@@ -86,6 +87,9 @@ StateComboBox::StateComboBox(QWidget *parent,const char *name)
   insertItem(tr("West Virginia"));
   insertItem(tr("Wisconsin"));
   insertItem(tr("Wyoming"));
+
+  connect(this,SIGNAL(activated(const QString &)),
+	  this,SLOT(activatedData(const QString &)));
 }
 
 
@@ -104,4 +108,10 @@ void StateComboBox::setCurrentStateCode(const QString &state_code)
       return;
     }
   }
+}
+
+
+void StateComboBox::activatedData(const QString &str)
+{
+  emit stateCodeChanged(StateToAbbreviation(str));
 }

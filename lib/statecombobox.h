@@ -30,11 +30,17 @@ class StateComboBox : public QComboBox
 {
  Q_OBJECT
  public:
-  StateComboBox(QWidget *parent=0,const char *name=0);
+  StateComboBox(bool incl_all,QWidget *parent=0,const char *name=0);
   QString currentStateCode() const;
+
+ signals:
+  void stateCodeChanged(const QString &code);
 
  public slots:
   void setCurrentStateCode(const QString &state_code);
+
+ private slots:
+  void activatedData(const QString &str);
 };
 
 

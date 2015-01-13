@@ -240,7 +240,9 @@ PickFields::PickFields(QDate *start_date,QDate *end_date,
   report_city_edit=NULL;
   report_state_label=NULL;
   report_state_box=NULL;
-  if(market==PickFields::NoMarket) {
+  QString market_table;
+  switch(market) {
+  case PickFields::StateMarket:
     report_city_edit=new QLineEdit(this);
     report_city_edit->setGeometry(110,report_ypos,sizeHint().width()-120,20);
     report_city_edit->setFont(font);
@@ -250,16 +252,21 @@ PickFields::PickFields(QDate *start_date,QDate *end_date,
     report_city_label->setAlignment(AlignVCenter|AlignRight);
     report_ypos+=22;
 
-    report_state_box=new StateComboBox(this);
+    report_state_box=new StateComboBox(true,this);
     report_state_box->setGeometry(110,report_ypos,sizeHint().width()-120,20);
     report_state_box->setFont(font);
     report_state_label=new QLabel(report_state_box,tr("State:"),this);
     report_state_label->setGeometry(10,report_ypos,95,20);
     report_state_label->setFont(label_font);
     report_state_label->setAlignment(AlignVCenter|AlignRight);
+    connect(report_state_box,SIGNAL(stateCodeChanged(const QString &)),
+	    this,SLOT(stateCodeChangedData(const QString &)));
+    stateCodeChangedData("aa");
     report_ypos+=22;
-  }
-  else {
+    break;
+
+  case PickFields::DmaMarket:
+  case PickFields::MsaMarket:
     report_market_box=new QComboBox(this);
     report_market_box->setGeometry(110,report_ypos,sizeHint().width()-120,20);
     report_market_box->setFont(font);
@@ -268,7 +275,6 @@ PickFields::PickFields(QDate *start_date,QDate *end_date,
     report_market_label->setFont(label_font);
     report_market_label->setAlignment(AlignVCenter|AlignRight);
     report_ypos+=22;
-    QString market_table;
     switch(market) {
     case PickFields::DmaMarket:
       market_table="DMA_MARKETS";
@@ -279,6 +285,7 @@ PickFields::PickFields(QDate *start_date,QDate *end_date,
       break;
 
     case PickFields::NoMarket:
+    case PickFields::StateMarket:
       break;
     }
     sql=QString().sprintf("select NAME from %s order by NAME",
@@ -290,6 +297,10 @@ PickFields::PickFields(QDate *start_date,QDate *end_date,
       }
     }
     delete q;
+    break;
+
+  case PickFields::NoMarket:
+    break;
   }
 
   //
@@ -383,6 +394,13 @@ void PickFields::selectEndDateData()
     report_end_date_edit->setDate(date);
   }
   delete d;
+}
+
+
+void PickFields::stateCodeChangedData(const QString &code)
+{
+  report_city_edit->setDisabled(code=="aa");
+  report_city_label->setDisabled(code=="aa");
 }
 
 

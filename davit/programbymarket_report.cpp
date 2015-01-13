@@ -75,28 +75,33 @@ bool ListReports::ProgramByMarketReport(PickFields::MarketType type,
     "from AFFILIATES left join AIRINGS "+
     "on AFFILIATES.ID=AIRINGS.AFFILIATE_ID "+
     "left join PROGRAMS on AIRINGS.PROGRAM_ID=PROGRAMS.ID "+
-    "where (AFFILIATES.IS_AFFILIATE=\"Y\")&&";
+    "where (AFFILIATES.IS_AFFILIATE=\"Y\")";
   switch(type) {
   case PickFields::NoMarket:
-    if(!city.isEmpty()) {
-      sql+="(AFFILIATES.LICENSE_CITY=\""+city+"\")&&";
-      tab->addCell(1,1)->setText(tr("Programs in")+" "+
-				 DvtFormatCityState(city,state));
+    break;
+
+  case PickFields::StateMarket:
+    if(state!="aa") {
+      if(!city.isEmpty()) {
+	sql+="&&(AFFILIATES.LICENSE_CITY=\""+city+"\")";
+	tab->addCell(1,1)->setText(tr("Programs in")+" "+
+				   DvtFormatCityState(city,state));
+      }
+      else {
+	tab->addCell(1,1)->setText(tr("Programs in")+" "+
+				   AbbreviationToState(state));
+      }
+      sql+="&&(AFFILIATES.LICENSE_STATE=\""+state+"\")";
     }
-    else {
-      tab->addCell(1,1)->setText(tr("Programs in")+" "+
-				 AbbreviationToState(state));
-    }
-    sql+="(AFFILIATES.LICENSE_STATE=\""+state+"\")";
     break;
 
   case PickFields::DmaMarket:
-    sql+="(DMA_NAME=\""+market+"\")";
+    sql+="&&(DMA_NAME=\""+market+"\")";
     tab->addCell(1,1)->setText(tr("Programs in")+" "+market);
     break;
 
   case PickFields::MsaMarket:
-    sql+="(MARKET_NAME=\""+market+"\")";
+    sql+="&&(MARKET_NAME=\""+market+"\")";
     tab->addCell(1,1)->setText(tr("Programs in")+" "+market);
     break;
   }

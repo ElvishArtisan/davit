@@ -66,7 +66,7 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Station Call
   //
-  edit_station_call_edit=new QLineEdit(this,"edit_station_call_edit");
+  edit_station_call_edit=new QLineEdit(this);
   edit_station_call_edit->setGeometry(55,10,50,20);
   edit_station_call_edit->setFont(font);
   QLabel *label=new QLabel(edit_station_call_edit,"Call:",
@@ -78,14 +78,12 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Station Frequency
   //
-  edit_station_frequency_edit=
-    new QLineEdit(this,"edit_station_frequency_edit");
+  edit_station_frequency_edit=new QLineEdit(this);
   edit_station_frequency_edit->setGeometry(160,10,50,20);
   edit_station_frequency_edit->setFont(font);
   edit_station_frequency_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  label=new QLabel(edit_station_frequency_edit,"Freq:",
-			   this,"edit_station_frequency_label");
+  label=new QLabel(edit_station_frequency_edit,"Freq:",this);
   label->setGeometry(115,10,40,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -93,13 +91,13 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Station Type
   //
-  edit_station_type_box=new QComboBox(this,"edit_station_type_box");
+  edit_station_type_box=new QComboBox(this);
   edit_station_type_box->setGeometry(260,10,80,20);
   edit_station_type_box->setFont(font);
   edit_station_type_box->insertItem(tr("AM"));
   edit_station_type_box->insertItem(tr("FM"));
   edit_station_type_box->insertItem(tr("Internet"));
-  edit_station_type_edit=new QLineEdit(this,"edit_station_type_edit");
+  edit_station_type_edit=new QLineEdit(this);
   edit_station_type_edit->setGeometry(260,10,80,20);
   edit_station_type_edit->setFont(font);
   edit_station_type_edit->setReadOnly(true);
@@ -109,8 +107,7 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   else {
     edit_station_type_box->hide();
   }
-  label=new QLabel(edit_station_type_box,"Type:",
-		   this,"edit_station_type_label");
+  label=new QLabel(edit_station_type_box,"Type:",this);
   label->setGeometry(215,10,40,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -118,19 +115,18 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Daytime Power
   //
-  edit_station_power_edit=new QLineEdit(this,"edit_station_power_edit");
+  edit_station_power_edit=new QLineEdit(this);
   edit_station_power_edit->setGeometry(415,10,45,20);
   edit_station_power_edit->setFont(font);
   QIntValidator *validator=new QIntValidator(0,100000,this);
   edit_station_power_edit->setValidator(validator);
   edit_station_power_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  label=new QLabel(edit_station_power_edit,"Power Day:",
-		   this,"edit_station_power_label");
+  label=new QLabel(edit_station_power_edit,"Power Day:",this);
   label->setGeometry(340,10,70,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
-  label=new QLabel("W",this,"edit_license_power_unit");
+  label=new QLabel("W",this);
   label->setGeometry(465,10,20,20);
   label->setAlignment(AlignLeft|AlignVCenter);
   label->setFont(font);
@@ -138,19 +134,17 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Nighttime Power
   //
-  edit_station_night_power_edit=
-    new QLineEdit(this,"edit_station_night_power_edit");
+  edit_station_night_power_edit=new QLineEdit(this);
   edit_station_night_power_edit->setGeometry(535,10,45,20);
   edit_station_night_power_edit->setFont(font);
   edit_station_night_power_edit->setValidator(validator);
   edit_station_night_power_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  label=new QLabel(edit_station_night_power_edit,"Night:",
-		   this,"edit_station_night_power_label");
+  label=new QLabel(edit_station_night_power_edit,"Night:",this);
   label->setGeometry(490,10,40,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
-  label=new QLabel("W",this,"edit_license_night_power_unit");
+  label=new QLabel("W",this);
   label->setGeometry(585,10,20,20);
   label->setAlignment(AlignLeft|AlignVCenter);
   label->setFont(font);
@@ -158,14 +152,12 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // City of License
   //
-  edit_license_city_edit=
-    new QLineEdit(this,"edit_license_city_call_edit");
+  edit_license_city_edit=new QLineEdit(this);
   edit_license_city_edit->setGeometry(125,32,160,20);
   edit_license_city_edit->setFont(font);
   edit_license_city_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  label=new QLabel(edit_license_city_edit,"City of License:",
-		   this,"edit_license_city_label");
+  label=new QLabel(edit_license_city_edit,"City of License:",this);
   label->setGeometry(30,32,90,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -173,10 +165,10 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // State of License
   //
-  edit_license_state_box=new StateComboBox(this,"edit_license_state_box");
+  edit_license_state_box=new StateComboBox(false,this);
   edit_license_state_box->setGeometry(405,32,200,20);
   edit_license_state_box->setFont(font);
-  edit_license_state_edit=new QLineEdit(this,"edit_license_state_edit");
+  edit_license_state_edit=new QLineEdit(this);
   edit_license_state_edit->setGeometry(405,32,200,20);
   edit_license_state_edit->setFont(font);
   edit_license_state_edit->setReadOnly(true);
@@ -186,8 +178,7 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   else {
     edit_license_state_box->hide();
   }
-  label=new QLabel(edit_license_state_box,"State of License:",
-		   this,"edit_license_state_label");
+  label=new QLabel(edit_license_state_box,"State of License:",this);
   label->setGeometry(300,32,100,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -196,11 +187,10 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   // MSA Market Name
   //
   edit_market_box=
-    new QComboBox(this,"edit_market_call_box");
+    new QComboBox(this);
   edit_market_box->setGeometry(125,54,260,20);
   edit_market_box->setFont(font);
-  label=new QLabel(edit_market_box,"MSA Market:",
-		   this,"edit_market_label");
+  label=new QLabel(edit_market_box,"MSA Market:",this);
   label->setGeometry(30,54,90,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -208,13 +198,12 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Market Rank
   //
-  edit_market_rank_spin=new QSpinBox(this,"edit_market_rank_spin");
+  edit_market_rank_spin=new QSpinBox(this);
   edit_market_rank_spin->setGeometry(535,54,60,20);
   edit_market_rank_spin->setFont(font);
   edit_market_rank_spin->setRange(0,999);
   edit_market_rank_spin->setSpecialValueText(tr("None"));
-  label=new QLabel(edit_market_rank_spin,"MSA Market Rank:",
-		   this,"edit_market_rank_label");
+  label=new QLabel(edit_market_rank_spin,"MSA Market Rank:",this);
   label->setGeometry(400,54,130,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -224,12 +213,10 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // DMA Name
   //
-  edit_dma_box=
-    new QComboBox(this,"edit_dma_call_edit");
+  edit_dma_box=new QComboBox(this);
   edit_dma_box->setGeometry(125,76,260,20);
   edit_dma_box->setFont(font);
-  label=new QLabel(edit_dma_box,"DMA Market:",
-		   this,"edit_dma_label");
+  label=new QLabel(edit_dma_box,"DMA Market:",this);
   label->setGeometry(30,76,90,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -237,13 +224,12 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // DMA Rank
   //
-  edit_dma_rank_spin=new QSpinBox(this,"edit_dma_rank_spin");
+  edit_dma_rank_spin=new QSpinBox(this);
   edit_dma_rank_spin->setGeometry(535,76,60,20);
   edit_dma_rank_spin->setFont(font);
   edit_dma_rank_spin->setRange(0,999);
   edit_dma_rank_spin->setSpecialValueText(tr("None"));
-  label=new QLabel(edit_dma_rank_spin,"DMA Market Rank:",
-		   this,"edit_dma_rank_label");
+  label=new QLabel(edit_dma_rank_spin,"DMA Market Rank:",this);
   label->setGeometry(400,76,130,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -253,11 +239,10 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Second Network
   //
-  edit_second_network_box=
-    new QComboBox(this,"edit_second_network_call_box");
+  edit_second_network_box=new QComboBox(this);
   edit_second_network_box->setGeometry(125,98,160,20);
   edit_second_network_box->setFont(font);
-  edit_second_network_edit=new QLineEdit(this,"edit_second_network_edit");
+  edit_second_network_edit=new QLineEdit(this);
   edit_second_network_edit->setGeometry(125,98,160,20);
   edit_second_network_edit->setFont(font);
   edit_second_network_edit->setReadOnly(true);
@@ -267,8 +252,7 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   else {
     edit_second_network_box->hide();
   }
-  label=new QLabel(edit_second_network_box,"Second Network:",
-		   this,"edit_second_network_label");
+  label=new QLabel(edit_second_network_box,"Second Network:",this);
   label->setGeometry(10,98,110,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -276,7 +260,7 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Time Zone
   //
-  edit_timezone_box=new QComboBox(this,"edit_timezone_box");
+  edit_timezone_box=new QComboBox(this);
   edit_timezone_box->setGeometry(375,98,60,20);
   edit_timezone_box->setFont(font);
   edit_timezone_box->insertItem("EDT");
@@ -285,7 +269,7 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   edit_timezone_box->insertItem("PDT");
   edit_timezone_box->insertItem("AKDT");
   edit_timezone_box->insertItem("HST");
-  edit_timezone_edit=new QLineEdit(this,"edit_timezone_edit");
+  edit_timezone_edit=new QLineEdit(this);
   edit_timezone_edit->setGeometry(375,98,60,20);
   edit_timezone_edit->setFont(font);
   edit_timezone_edit->setReadOnly(true);
@@ -295,8 +279,7 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   else {
     edit_timezone_box->hide();
   }
-  label=new QLabel(edit_timezone_box,"Time Zone:",
-		   this,"edit_timezone_label");
+  label=new QLabel(edit_timezone_box,"Time Zone:",this);
   label->setGeometry(290,98,80,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -304,14 +287,12 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Previous Station Call
   //
-  edit_station_prev_call_edit=
-    new QLineEdit(this,"edit_station_prev_call_edit");
+  edit_station_prev_call_edit=new QLineEdit(this);
   edit_station_prev_call_edit->setGeometry(545,98,50,20);
   edit_station_prev_call_edit->setFont(font);
   edit_station_prev_call_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  label=new QLabel(edit_station_prev_call_edit,"Previous Call:",
-		   this,"edit_station_prev_call_label");
+  label=new QLabel(edit_station_prev_call_edit,"Previous Call:",this);
   label->setGeometry(450,98,90,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -319,14 +300,13 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Business Name
   //
-  edit_business_name_edit=new QLineEdit(this,"edit_business_name_edit");
+  edit_business_name_edit=new QLineEdit(this);
   edit_business_name_edit->setGeometry(125,120,sizeHint().width()-135,20);
   edit_business_name_edit->setFont(font);
   edit_business_name_edit->setMaxLength(64);
   edit_business_name_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  label=new QLabel(edit_business_name_edit,"Business Name:",
-		   this,"edit_business_name_label");
+  label=new QLabel(edit_business_name_edit,"Business Name:",this);
   label->setGeometry(10,120,110,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -334,20 +314,19 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Address
   //
-  edit_address1_edit=new QLineEdit(this,"edit_address1_edit");
+  edit_address1_edit=new QLineEdit(this);
   edit_address1_edit->setGeometry(125,142,sizeHint().width()-135,20);
   edit_address1_edit->setFont(font);
   edit_address1_edit->setMaxLength(64);
   edit_address1_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  edit_address2_edit=new QLineEdit(this,"edit_address2_edit");
+  edit_address2_edit=new QLineEdit(this);
   edit_address2_edit->setGeometry(125,164,sizeHint().width()-135,20);
   edit_address2_edit->setFont(font);
   edit_address2_edit->setMaxLength(64);
   edit_address2_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  label=new QLabel(edit_address1_edit,"Address:",
-		   this,"edit_address1_label");
+  label=new QLabel(edit_address1_edit,"Address:",this);
   label->setGeometry(10,142,110,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -355,14 +334,13 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // City
   //
-  edit_city_edit=new QLineEdit(this,"edit_city_edit");
+  edit_city_edit=new QLineEdit(this);
   edit_city_edit->setGeometry(125,186,190,20);
   edit_city_edit->setFont(font);
   edit_city_edit->setMaxLength(64);
   edit_city_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  label=new QLabel(edit_address1_edit,"City:",
-		   this,"edit_address1_label");
+  label=new QLabel(edit_address1_edit,"City:",this);
   label->setGeometry(10,186,110,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -370,10 +348,10 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // State
   //
-  edit_state_box=new StateComboBox(this,"edit_license_state_box");
+  edit_state_box=new StateComboBox(this);
   edit_state_box->setGeometry(370,186,200,20);
   edit_state_box->setFont(font);
-  edit_state_edit=new QLineEdit(this,"edit_state_edit");
+  edit_state_edit=new QLineEdit(this);
   edit_state_edit->setGeometry(370,186,200,20);
   edit_state_edit->setFont(font);
   edit_state_edit->setReadOnly(true);
@@ -383,8 +361,7 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   else {
     edit_state_box->hide();
   }
-  label=new QLabel(edit_state_box,"State:",
-		   this,"edit_state_label");
+  label=new QLabel(edit_state_box,"State:",this);
   label->setGeometry(315,186,50,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -392,14 +369,13 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Zip Code
   //
-  edit_zipcode_edit=new QLineEdit(this,"edit_zipcode_edit");
+  edit_zipcode_edit=new QLineEdit(this);
   edit_zipcode_edit->setGeometry(125,208,100,20);
   edit_zipcode_edit->setFont(font);
   edit_zipcode_edit->setMaxLength(10);
   edit_zipcode_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  label=new QLabel(edit_address1_edit,"Zip Code:",
-		   this,"edit_zipcode_label");
+  label=new QLabel(edit_address1_edit,"Zip Code:",this);
   label->setGeometry(10,1208,110,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -407,14 +383,13 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // E-Mail
   //
-  edit_email_addr_edit=new QLineEdit(this,"edit_email_addr_edit");
+  edit_email_addr_edit=new QLineEdit(this);
   edit_email_addr_edit->setGeometry(285,208,140,20);
   edit_email_addr_edit->setFont(font);
   edit_email_addr_edit->setMaxLength(64);
   edit_email_addr_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  label=new QLabel(edit_address1_edit,"E-Mail:",
-		   this,"edit_fax_label");
+  label=new QLabel(edit_address1_edit,"E-Mail:",this);
   label->setGeometry(230,208,50,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -422,14 +397,13 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Phone
   //
-  edit_phone_edit=new QLineEdit(this,"edit_phone_edit");
+  edit_phone_edit=new QLineEdit(this);
   edit_phone_edit->setGeometry(125,230,100,20);
   edit_phone_edit->setFont(font);
   edit_phone_edit->setMaxLength(20);
   edit_phone_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  label=new QLabel(edit_address1_edit,"Phone:",
-		   this,"edit_phone_label");
+  label=new QLabel(edit_address1_edit,"Phone:",this);
   label->setGeometry(10,230,110,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -437,14 +411,13 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Fax
   //
-  edit_fax_edit=new QLineEdit(this,"edit_fax_edit");
+  edit_fax_edit=new QLineEdit(this);
   edit_fax_edit->setGeometry(285,230,100,20);
   edit_fax_edit->setFont(font);
   edit_fax_edit->setMaxLength(20);
   edit_fax_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  label=new QLabel(edit_address1_edit,"Fax:",
-		   this,"edit_fax_label");
+  label=new QLabel(edit_address1_edit,"Fax:",this);
   label->setGeometry(230,230,50,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -452,14 +425,13 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Web URL
   //
-  edit_web_url_edit=new QLineEdit(this,"edit_web_url_edit");
+  edit_web_url_edit=new QLineEdit(this);
   edit_web_url_edit->setGeometry(125,252,200,20);
   edit_web_url_edit->setFont(font);
   edit_web_url_edit->setMaxLength(64);
   edit_web_url_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  label=new QLabel(edit_address1_edit,"Web Address:",
-		   this,"edit_web_url_label");
+  label=new QLabel(edit_address1_edit,"Web Address:",this);
   label->setGeometry(10,252,110,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -489,7 +461,7 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   // Contacts Dialog
   //
-  edit_contact_list=new ListContacts(id,this,"edit_contact_list");
+  edit_contact_list=new ListContacts(id,this);
   connect(edit_contact_list,SIGNAL(visibilityChanged(bool)),
 	  this,SLOT(contactsVisibilityChangedData(bool)));
   edit_contacts_button=new QPushButton(tr("Show Contacts"),this);
@@ -546,7 +518,7 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   //  OK Button
   //
-  QPushButton *button=new QPushButton(this,"ok_button");
+  QPushButton *button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
   button->setDefault(true);
   button->setFont(label_font);
@@ -556,7 +528,7 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent,const char *name)
   //
   //  Cancel Button
   //
-  button=new QPushButton(this,"cancel_button");
+  button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
   button->setFont(label_font);
   button->setText("&Cancel");

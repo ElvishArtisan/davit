@@ -61,13 +61,12 @@ EditProvider::EditProvider(const QString &bname,
   //
   // Business Name
   //
-  edit_business_name_edit=new QLineEdit(this,"edit_business_name_edit");
+  edit_business_name_edit=new QLineEdit(this);
   edit_business_name_edit->setGeometry(125,10,sizeHint().width()-135,20);
   edit_business_name_edit->setFont(font);
   edit_business_name_edit->setMaxLength(64);
   edit_business_name_edit->setReadOnly(true);
-  QLabel *label=new QLabel(edit_business_name_edit,"Business Name:",
-			   this,"edit_business_name_label");
+  QLabel *label=new QLabel(edit_business_name_edit,"Business Name:",this);
   label->setGeometry(10,10,110,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -75,20 +74,19 @@ EditProvider::EditProvider(const QString &bname,
   //
   // Address
   //
-  edit_address1_edit=new QLineEdit(this,"edit_address1_edit");
+  edit_address1_edit=new QLineEdit(this);
   edit_address1_edit->setGeometry(125,32,sizeHint().width()-135,20);
   edit_address1_edit->setFont(font);
   edit_address1_edit->setMaxLength(64);
   edit_address1_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProviderEdit));
-  edit_address2_edit=new QLineEdit(this,"edit_address2_edit");
+  edit_address2_edit=new QLineEdit(this);
   edit_address2_edit->setGeometry(125,54,sizeHint().width()-135,20);
   edit_address2_edit->setFont(font);
   edit_address2_edit->setMaxLength(64);
   edit_address2_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProviderEdit));
-  label=new QLabel(edit_address1_edit,"Address:",
-		   this,"edit_address1_label");
+  label=new QLabel(edit_address1_edit,"Address:",this);
   label->setGeometry(10,32,110,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -96,14 +94,13 @@ EditProvider::EditProvider(const QString &bname,
   //
   // City
   //
-  edit_city_edit=new QLineEdit(this,"edit_city_edit");
+  edit_city_edit=new QLineEdit(this);
   edit_city_edit->setGeometry(125,76,190,20);
   edit_city_edit->setFont(font);
   edit_city_edit->setMaxLength(64);
   edit_city_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProviderEdit));
-  label=new QLabel(edit_address1_edit,"City:",
-		   this,"edit_address1_label");
+  label=new QLabel(edit_address1_edit,"City:",this);
   label->setGeometry(10,76,110,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -111,10 +108,10 @@ EditProvider::EditProvider(const QString &bname,
   //
   // State
   //
-  edit_state_box=new StateComboBox(this,"edit_state_box");
+  edit_state_box=new StateComboBox(false,this);
   edit_state_box->setGeometry(370,76,200,20);
   edit_state_box->setFont(font);
-  edit_state_edit=new QLineEdit(this,"edit_state_edit");
+  edit_state_edit=new QLineEdit(this);
   edit_state_edit->setGeometry(370,76,200,20);
   edit_state_edit->setFont(font);
   edit_state_edit->setReadOnly(true);
@@ -124,8 +121,7 @@ EditProvider::EditProvider(const QString &bname,
   else {
     edit_state_box->hide();
   }
-  label=new QLabel(edit_state_box,"State:",
-		   this,"edit_state_label");
+  label=new QLabel(edit_state_box,"State:",this);
   label->setGeometry(315,76,50,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -133,14 +129,13 @@ EditProvider::EditProvider(const QString &bname,
   //
   // Zip Code
   //
-  edit_zipcode_edit=new QLineEdit(this,"edit_zipcode_edit");
+  edit_zipcode_edit=new QLineEdit(this);
   edit_zipcode_edit->setGeometry(125,98,100,20);
   edit_zipcode_edit->setFont(font);
   edit_zipcode_edit->setMaxLength(10);
   edit_zipcode_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProviderEdit));
-  label=new QLabel(edit_address1_edit,"Zip Code:",
-		   this,"edit_zipcode_label");
+  label=new QLabel(edit_address1_edit,"Zip Code:",this);
   label->setGeometry(10,98,110,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -148,7 +143,7 @@ EditProvider::EditProvider(const QString &bname,
   //
   // Contact Section Label
   //
-  label=new QLabel("Contact",this,"edit_contact_name_label");
+  label=new QLabel("Contact",this);
   label->setGeometry(50,130,70,20);
   label->setAlignment(AlignCenter);
   label->setFont(big_font);
@@ -156,14 +151,13 @@ EditProvider::EditProvider(const QString &bname,
   //
   // Contact Name
   //
-  edit_contact_name_edit=new QLineEdit(this,"edit_contact_name_edit");
+  edit_contact_name_edit=new QLineEdit(this);
   edit_contact_name_edit->setGeometry(125,152,sizeHint().width()-275,20);
   edit_contact_name_edit->setFont(font);
   edit_contact_name_edit->setMaxLength(64);
   edit_contact_name_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProviderEdit));
-  label=new QLabel(edit_contact_name_edit,"Name:",
-		   this,"edit_contact_name_label");
+  label=new QLabel(edit_contact_name_edit,"Name:",this);
   label->setGeometry(20,152,100,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -171,14 +165,13 @@ EditProvider::EditProvider(const QString &bname,
   //
   // Contact Phone
   //
-  edit_contact_phone_edit=new QLineEdit(this,"edit_contact_phone_edit");
+  edit_contact_phone_edit=new QLineEdit(this);
   edit_contact_phone_edit->setGeometry(125,174,150,20);
   edit_contact_phone_edit->setFont(font);
   edit_contact_phone_edit->setMaxLength(20);
   edit_contact_phone_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProviderEdit));
-  label=new QLabel(edit_contact_phone_edit,"Phone:",
-		   this,"edit_contact_phone_label");
+  label=new QLabel(edit_contact_phone_edit,"Phone:",this);
   label->setGeometry(20,174,100,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -186,14 +179,13 @@ EditProvider::EditProvider(const QString &bname,
   //
   // Contact Fax
   //
-  edit_contact_fax_edit=new QLineEdit(this,"edit_contact_fax_edit");
+  edit_contact_fax_edit=new QLineEdit(this);
   edit_contact_fax_edit->setGeometry(315,174,150,20);
   edit_contact_fax_edit->setFont(font);
   edit_contact_fax_edit->setMaxLength(20);
   edit_contact_fax_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProviderEdit));
-  label=new QLabel(edit_contact_fax_edit,"Fax:",
-		   this,"edit_contact_fax_label");
+  label=new QLabel(edit_contact_fax_edit,"Fax:",this);
   label->setGeometry(280,174,30,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -201,14 +193,13 @@ EditProvider::EditProvider(const QString &bname,
   //
   // Contact Email
   //
-  edit_contact_email_edit=new QLineEdit(this,"edit_contact_email_edit");
+  edit_contact_email_edit=new QLineEdit(this);
   edit_contact_email_edit->setGeometry(125,196,sizeHint().width()-275,20);
   edit_contact_email_edit->setFont(font);
   edit_contact_email_edit->setMaxLength(64);
   edit_contact_email_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProviderEdit));
-  label=new QLabel(edit_contact_email_edit,"E-Mail Address:",
-		   this,"edit_contact_email_label");
+  label=new QLabel(edit_contact_email_edit,"E-Mail Address:",this);
   label->setGeometry(20,196,100,20);
   label->setAlignment(AlignRight|AlignVCenter);
   label->setFont(label_font);
@@ -216,7 +207,7 @@ EditProvider::EditProvider(const QString &bname,
   //
   //  Programs Button
   //
-  QPushButton *button=new QPushButton(this,"programs_button");
+  QPushButton *button=new QPushButton(this);
   button->setGeometry(10,sizeHint().height()-60,80,50);
   button->setFont(label_font);
   button->setText("&Programs");
@@ -226,7 +217,7 @@ EditProvider::EditProvider(const QString &bname,
   //
   //  OK Button
   //
-  button=new QPushButton(this,"ok_button");
+  button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
   button->setDefault(true);
   button->setFont(label_font);
@@ -236,7 +227,7 @@ EditProvider::EditProvider(const QString &bname,
   //
   //  Cancel Button
   //
-  button=new QPushButton(this,"cancel_button");
+  button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
   button->setFont(label_font);
   button->setText("&Cancel");

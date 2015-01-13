@@ -78,6 +78,7 @@ bool ListReports::AffiliatesByMarketReport(PickFields::MarketType type,
     break;
 
   case PickFields::NoMarket:
+  case PickFields::StateMarket:
     break;
   }
   tab->addCell(2,1)->setText(tr("Report Date")+": "+

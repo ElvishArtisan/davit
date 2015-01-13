@@ -794,3 +794,6 @@
 	target.
 2015-01-12 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 2.2.2.
+2015-01-12 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the 'City' and 'State' fields from the Pick Fields
+	dialog for the 'Affiliate by Program' report.

@@ -226,7 +226,7 @@ void ListReports::runData()
     ok=ProgramByMarketReport(PickFields::MsaMarket,sheet);
   }
   if(item->text(0)==tr("Programs by City/State")) {
-    ok=ProgramByMarketReport(PickFields::NoMarket,sheet);
+    ok=ProgramByMarketReport(PickFields::StateMarket,sheet);
   }
 
   if(ok) {
