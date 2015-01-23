@@ -799,3 +799,7 @@
 	dialog for the 'Affiliate by Program' report.
 2015-01-13 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 2.2.3.
+2015-01-23 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/affiliatesbyprogram_report.cpp' that
+	caused contact information to be incorrect in the
+	'Affiliates/Admin Contacts by Program' report.

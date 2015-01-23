@@ -410,7 +410,7 @@ bool ListReports::RenderAffiliateReport(SpreadTab *tab,const QString &where,
       tab->addCell(col++,row)->setText(dow);
     }
     if((contacts&ListReports::ProgramDirectorContact)!=0) {
-      ContactFields(q->value(10).toInt(),
+      ContactFields(q->value(19).toInt(),
 		    ListReports::ProgramDirectorContact,
 		    ListReports::FieldName|ListReports::FieldPhone|
 		    ListReports::FieldEmail,
@@ -418,14 +418,14 @@ bool ListReports::RenderAffiliateReport(SpreadTab *tab,const QString &where,
       col+=3;
     }
     if((contacts&ListReports::AffidavitContact)!=0) {
-      ContactFields(q->value(10).toInt(),
+      ContactFields(q->value(19).toInt(),
 		    ListReports::AffidavitContact,
 		    ListReports::FieldName|ListReports::FieldPhone|
 		    ListReports::FieldEmail,
 		    tab,col,row);
     }
     if((contacts&ListReports::GeneralManagerContact)!=0) {
-      ContactFields(q->value(10).toInt(),
+      ContactFields(q->value(19).toInt(),
 		    ListReports::GeneralManagerContact,
 		    ListReports::FieldName|ListReports::FieldPhone|
 		    ListReports::FieldEmail,
