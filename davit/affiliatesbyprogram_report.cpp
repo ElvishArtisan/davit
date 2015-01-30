@@ -345,7 +345,7 @@ bool ListReports::RenderAffiliateReport(SpreadTab *tab,const QString &where,
                          left join NETWORKS on \
                          (AFFILIATES.SECOND_NETWORK_ID=NETWORKS.ID)\
                          %s",(const char *)where);
-  //printf("SQL: %s\n",(const char *)sql);
+  //  printf("SQL: %s\n",(const char *)sql);
   q=new QSqlQuery(sql);
   while(q->next()) {
     col=1;
@@ -404,9 +404,14 @@ bool ListReports::RenderAffiliateReport(SpreadTab *tab,const QString &where,
     }
     if(!dow.isEmpty()) {
       tab->addCell(col++,row)->setText(dow);
-      dow=(q->value(9).toTime().toString("h ap")+"-"+
-	   q->value(9).toTime().addSecs(q->value(10).toInt()).
-	   toString("h ap"));
+      if(q->value(10).toInt()==3599) {   // Program ends at midnight
+	dow=(q->value(9).toTime().toString("h ap")+"-12 am");
+      }
+      else {
+	dow=(q->value(9).toTime().toString("h ap")+"-"+
+	     q->value(9).toTime().addSecs(q->value(10).toInt()).
+	     toString("h ap"));
+      }
       tab->addCell(col++,row)->setText(dow);
     }
     if((contacts&ListReports::ProgramDirectorContact)!=0) {

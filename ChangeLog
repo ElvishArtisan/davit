@@ -805,3 +805,7 @@
 	'Affiliates/Admin Contacts by Program' report.
 2015-01-23 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 2.2.4.
+2015-01-30 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'davit/affiliatesbyprogram_report.cpp' that caused
+	programs with an ending time of midnight to be reported as ending
+	at 11 PM.
