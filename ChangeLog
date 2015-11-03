@@ -809,3 +809,6 @@
 	* Fixed a bug in 'davit/affiliatesbyprogram_report.cpp' that caused
 	programs with an ending time of midnight to be reported as ending
 	at 11 PM.
+2015-11-02 Fred Gleason <fredg@paravelsystems.com>
+	* Cleaned up warnings in 'configure.ac' and 'Makefile.am'.
+	* Added a 'qt3-MySQL' dependency in 'davit.spec.in'.

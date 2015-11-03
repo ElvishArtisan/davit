@@ -37,8 +37,11 @@ CONFIGURE INVOCATIONS
 OpenSuSE:
 	./configure --prefix=/usr --libexecdir=/srv/www/dvt-bin
 
-CentOS 5:
+RHEL/CentOS 5:
 	./configure --prefix=/usr --libexecdir=/var/httpd/dvt-bin
 
-CentOS 6:
+RHEL/CentOS 6:
+	./configure --prefix=/usr --libexecdir=/var/www/dvt-bin
+
+RHEL/CentOS 7:
 	./configure --prefix=/usr --libexecdir=/var/www/dvt-bin

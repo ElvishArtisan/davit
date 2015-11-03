@@ -102,7 +102,7 @@ else
   AC_SUBST(DAVIT_LIB_PATH,lib)
 fi
 
-AC_OUTPUT(./Makefile \
+AC_OUTPUT(Makefile \
   helpers/Makefile \
   scripts/Makefile \
   lib/Makefile \

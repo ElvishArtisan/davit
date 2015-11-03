@@ -25,6 +25,7 @@ License: GPL
 Group: Productivity/Office/Other
 Source: davit-@VERSION@.tar.gz
 BuildRoot: /var/tmp/davit-@VERSION@
+Requires: qt3-MySQL
 
 %package web
 Summary: Web components for the Davit Affiliate Relations System
@@ -111,6 +112,8 @@ rm -rf $RPM_BUILD_ROOT
 @LOCAL_PREFIX@/bin/dvt_import
 
 %changelog
+* Mon Nov  2 2015 Fred Gleason <fgleason@radioamerica.org>
+-- Added a 'qt3-MySQL' dependency.
 * Tue May 13 2014 Fred Gleason <fgleason@radioamerica.org>
 -- Modified for CentOS 6.
 * Fri Apr 29 2011 Fred Gleason <fgleason@radioamerica.org>
