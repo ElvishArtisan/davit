@@ -814,3 +814,5 @@
 	* Added a 'qt3-MySQL' dependency in 'davit.spec.in'.
 2016-07-28 Fred Gleason <fredg@paravelsystems.com>
 	* Updated 'acinclude.m4'.
+2016-07-28 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'OpenofficePath=" parameter to the Config file.

@@ -184,8 +184,8 @@ MainWidget::MainWidget(QWidget *parent,const char *name)
   //
   // Find OpenOffice (Win32 only)
   //
-#ifdef WIN32
   /*
+#ifdef WIN32
   bool ok=false;
   QSettings s;
   s.insertSearchPath(QSettings::Windows,"/OpenOffice.org");
@@ -206,11 +206,12 @@ MainWidget::MainWidget(QWidget *parent,const char *name)
   else {
     openoffice_path=s.readEntry("/OpenOffice.org/"+key+"/Path");
   }
-  */
   openoffice_path="C:/Program Files/OpenOffice 4/program/soffice";
 #else
   openoffice_path="soffice";
 #endif  // WIN32
+  */
+  openoffice_path=global_geometry->openofficePath();
 
   //
   // Create Dialogs

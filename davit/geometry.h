@@ -33,6 +33,7 @@ class Geometry
   void setVisible(Widget widget,bool state);
   QRect geometry(Widget widget,const QRect &def) const;
   void setGeometry(Widget widget,const QRect &rect);
+  QString openofficePath() const;
   void load();
   void save();
 
@@ -41,6 +42,7 @@ class Geometry
   QString ConfigPath();
   bool geo_visible[LastWidget];
   QRect geo_rects[LastWidget];
+  QString openoffice_path;
 };
 
 

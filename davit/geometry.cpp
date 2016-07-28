@@ -79,6 +79,12 @@ void Geometry::setGeometry(Widget widget,const QRect &rect)
 }
 
 
+QString Geometry::openofficePath() const
+{
+  return openoffice_path;
+}
+
+
 void Geometry::load()
 {
 #ifdef WIN32
@@ -100,6 +106,8 @@ void Geometry::load()
       setHeight(settings.readNumEntry(key+QString().
 				     sprintf("Widget%dHeight",i+1),0));
   }
+  openoffice_path=settings.readEntry(key+"OpenofficePath",
+	              "C:/Program Files/OpenOffice 4/program/soffice");
 #else
   DvtProfile *p=new DvtProfile();
   if(!p->setSource(ConfigPath())) {
@@ -119,6 +127,7 @@ void Geometry::load()
     geo_rects[i].
       setHeight(p->intValue("DavitGeometry",
 			   QString().sprintf("Widget%dHeight",i+1),0));
+    openoffice_path=p->stringValue("DavitGeometry","OpenofficePath","soffice");
   }
   delete p;
 #endif  // WIN32
