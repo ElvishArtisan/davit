@@ -816,3 +816,6 @@
 	* Updated 'acinclude.m4'.
 2016-07-28 Fred Gleason <fredg@paravelsystems.com>
 	* Added an 'OpenofficePath=" parameter to the Config file.
+2025-05-10 Fred Gleason <fredg@paravelsystems.com>
+	* Updated the 'AR_GCC_TARGET()' and 'AR_GET_DISTRO()' autoconf
+	macros.

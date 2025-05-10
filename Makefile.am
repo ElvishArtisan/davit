@@ -4,7 +4,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 ##
-##   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
+##   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##     $Id: Makefile.am,v 1.12 2014/05/13 11:20:37 pcvs Exp $
 ##
@@ -38,7 +38,7 @@ rpm:	dist
 	rm -rf $(HOME)/rpmbuild/BUILD/davit-$(VERSION)
 
 EXTRA_DIST = davit.spec.in davit.pro autogen.sh davit.conf-sample\
-             get_target.sh dvt-bin.conf.in get_target.sh get_distro.sh\
+             get_target.sh dvt-bin.conf.in get_target.pl get_distro.sh\
              davit.ism build_win32.bat PACKAGE_VERSION davit-sample.ini\
              davit.ini kdmrc-example
 
