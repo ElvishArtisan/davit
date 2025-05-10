@@ -1,12 +1,8 @@
-## automake.am
+## Makefile.am
 ##
 ## Top-level Makefile.am for Davit
 ##
-## Use automake to process this into a Makefile.in
-##
 ##   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
-##
-##     $Id: Makefile.am,v 1.12 2014/05/13 11:20:37 pcvs Exp $
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -22,7 +18,14 @@
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
 
-SUBDIRS = helpers scripts docs icons lib davit web utils
+SUBDIRS = helpers\
+          lib\
+          scripts\
+          docs\
+          icons\
+          davit\
+          web\
+          utils
 
 ACLOCAL_AMFLAGS = -I m4
 
@@ -37,18 +40,47 @@ rpm:	dist
 	rm $(HOME)/rpmbuild/SOURCES/davit-$(VERSION).tar.gz
 	rm -rf $(HOME)/rpmbuild/BUILD/davit-$(VERSION)
 
-EXTRA_DIST = davit.spec.in davit.pro autogen.sh davit.conf-sample\
-             get_target.sh dvt-bin.conf.in get_target.pl get_distro.sh\
-             davit.ism build_win32.bat PACKAGE_VERSION davit-sample.ini\
-             davit.ini kdmrc-example
+EXTRA_DIST = autogen.sh\
+             build_win32.bat\
+             davit-sample.ini\
+             davit.conf-sample\
+             davit.ini kdmrc-example\
+             davit.ism\
+             davit.pro\
+             davit.spec.in\
+             dvt-bin.conf.in\
+             get_target.sh\
+             get_target.pl\
+             get_distro.sh\
+             PACKAGE_VERSION
 
 zip:	dist
 	tar -zxf davit-@VERSION@.tar.gz
 	zip -r davit-@VERSION@.zip davit-@VERSION@
 	rm -rf davit-@VERSION@
 
-CLEANFILES = *~ moc_* *.tgz *.mo *.rpm *.zip
-DISTCLEANFILES = *~ moc_* *.tar.gz *.spec dvt-bin.conf
-MAINTAINERCLEANFILES = *~ Makefile.in configure aclocal.m4 moc_* *.tar.gz\
-                       depcomp install-sh missing mkinstalldirs\
-                       config.guess config.sub ltmain.sh
+CLEANFILES = *~\
+             *.mo\
+             *.rpm\
+             *.tgz\
+             *.zip\
+             moc_*
+
+DISTCLEANFILES = *~\
+                 *.spec\
+                 *.tar.gz\
+                 dvt-bin.conf\
+                 moc_*
+
+MAINTAINERCLEANFILES = *~\
+                       *.tar.gz\
+                       aclocal.m4\
+                       config.guess\
+                       config.sub\
+                       configure\
+                       depcomp\
+                       install-sh\
+                       ltmain.sh\
+                       Makefile.in\
+                       missing mkinstalldirs\
+                       moc_*

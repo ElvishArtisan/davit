@@ -1,10 +1,8 @@
-## automake.am
+## Makefile.am
 ##
-## Automake.am for davit/utils
+## Makefile.am for davit/utils
 ##
-##   (C) Copyright 2002-2008 Fred Gleason <fredg@paravelsystems.com>
-##
-##      $Id: Makefile.am,v 1.4 2011/04/29 21:04:59 pcvs Exp $
+##   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as
@@ -22,7 +20,10 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-SUBDIRS = dvtdbcheck dvtstamp dvt_import vnc
+SUBDIRS = dvtdbcheck\
+          dvtstamp\
+          dvt_import\
+          vnc
 
 AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -DQTDIR=\"@QT_DIR@\" @QT_CXXFLAGS@ -I$(top_srcdir)/lib
 LIBS = @QT_LIBS@ -L$(top_srcdir)/lib
@@ -34,5 +35,17 @@ moc_%.cpp:	%.h
 
 EXTRA_DIST = utils.pro
 
-CLEANFILES = *~ moc_* *.qm *.obj *.idb *.pdb *ilk
-MAINTAINERCLEANFILES = *~ Makefile.in configure aclocal.m4 *.tar.gz moc_*
+CLEANFILES = *~\
+             *.idb\
+             *ilk\
+             *.obj\
+             *.pdb\
+             *.qm\
+             moc_*
+
+MAINTAINERCLEANFILES = *~\
+                       *.tar.gz\
+                       aclocal.m4\
+                       configure\
+                       Makefile.in\
+                       moc_*

@@ -819,3 +819,5 @@
 2025-05-10 Fred Gleason <fredg@paravelsystems.com>
 	* Updated the 'AR_GCC_TARGET()' and 'AR_GET_DISTRO()' autoconf
 	macros.
+2025-05-10 Fred Gleason <fredg@paravelsystems.com>
+	* Cleaned up makefiles.

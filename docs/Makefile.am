@@ -1,10 +1,8 @@
-## automake.am
+## Makefile.am
 ##
-## docs/automake.am for Davit
+## docs/Makefile.am for Davit
 ##
-## (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-##
-##      $Id: Makefile.am,v 1.1 2007/03/16 13:28:36 fredg Exp $
+## (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -19,10 +17,12 @@
 ##   License along with this program; if not, write to the Free Software
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
-## Use automake to process this into a Makefile.in
 
 EXTRA_DIST = env_var.txt\
              tables.txt
 
 CLEANFILES = *~
-MAINTAINERCLEANFILES = *~ Makefile.in configure aclocal.m4
+MAINTAINERCLEANFILES = *~\
+                       aclocal.m4\
+                       configure\
+                       Makefile.in

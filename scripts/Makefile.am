@@ -1,10 +1,8 @@
-## automake.am
+## Makefile.am
 ##
 ## Scripts Directory Makefile.am for Davit
 ##
-## (C) Copyright 2011 Fred Gleason <fredg@paravelsystems.com>
-##
-##      $Id: Makefile.am,v 1.1 2011/01/06 17:22:38 pcvs Exp $
+## (C) Copyright 2011-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -19,8 +17,6 @@
 ##   License along with this program; if not, write to the Free Software
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
-##
-## Use automake to process this into a Makefile.in
 
 bin_SCRIPTS = add_mysql_user.sh\
               xfer_contacts.pl

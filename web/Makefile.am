@@ -1,10 +1,8 @@
-## automake.am
+## Makefile.am
 ##
-## Automake.am for davit/web
+## Makefile.am for davit/web
 ##
-##   (C) Copyright 2002-2008 Fred Gleason <fredg@paravelsystems.com>
-##
-##      $Id: Makefile.am,v 1.1 2008/01/25 12:27:23 fredg Exp $
+##   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as
@@ -20,7 +18,6 @@
 ##   License along with this program; if not, write to the Free Software
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
-## Use automake to process this into a Makefile.in
 
 SUBDIRS = davit
 
@@ -34,5 +31,17 @@ moc_%.cpp:	%.h
 
 EXTRA_DIST = web.pro
 
-CLEANFILES = *~ moc_* *.qm *.obj *.idb *.pdb *ilk
-MAINTAINERCLEANFILES = *~ Makefile.in configure aclocal.m4 *.tar.gz moc_*
+CLEANFILES = *~\
+             *.idb\
+             *.ilk\
+             *.obj\
+             *.pdb\
+             *.qm\
+             moc_*
+
+MAINTAINERCLEANFILES = *~\
+                       *.tar.gz\
+                       aclocal.m4\
+                       configure\
+                       Makefile.in\
+                       moc_*

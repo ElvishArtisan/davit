@@ -1,12 +1,8 @@
-## automake.am
+## Makefile.am
 ##
-## helpers/ Automake.am for Davit
+## helpers/Makefile.am for Davit
 ##
-## Use automake to process this into a Makefile.in
-##
-##   (C) Copyright 2002-2008 Fred Gleason <fredg@paravelsystems.com>
-##
-##    $Id: Makefile.am,v 1.1 2008/02/05 13:59:19 fredg Exp $
+##   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU Library General Public License 
@@ -22,7 +18,17 @@
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
 
-EXTRA_DIST = win32_frag1.txt win32_frag2.txt
+EXTRA_DIST = win32_frag1.txt\
+             win32_frag2.txt
 
-CLEANFILES = *~ moc_* *.tar.gz *.bat
-MAINTAINERCLEANFILES = *~ Makefile.in configure aclocal.m4 moc_* *.tar.gz
+CLEANFILES = *~\
+             *.bat\
+             *.tar.gz\
+             moc_*
+
+MAINTAINERCLEANFILES = *~\
+                       *.tar.gz\
+                       aclocal.m4\
+                       configure\
+                       Makefile.in\
+                       moc_*

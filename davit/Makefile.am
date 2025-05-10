@@ -1,12 +1,8 @@
-## automake.am
+## Makefile.am
 ##
 ## davit/ Makefile.am for Davit
 ##
-## (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-##
-##     $Id: Makefile.am,v 1.30 2013/02/26 19:06:17 pcvs Exp $
-##
-## Use automake to process this into a Makefile.in
+## (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as

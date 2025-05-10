@@ -1,10 +1,8 @@
-## automake.am
+## Makefile.am
 ##
 ## utils/vnc Directory Makefile.am for Davit
 ##
-## (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-##
-##      $Id: Makefile.am,v 1.3 2011/01/06 18:37:51 pcvs Exp $
+## (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -19,8 +17,6 @@
 ##   License along with this program; if not, write to the Free Software
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
-##
-## Use automake to process this into a Makefile.in
 
 install-exec-local:	
 	cp davit.xinitrc @prefix@/bin/
@@ -33,8 +29,13 @@ uninstall:
 	rm -f @prefix@/bin/start_davit.sh
 	rm -f @prefix@/share/fvwm/davit-config
 
-EXTRA_DIST = davit.xinitrc.in start_davit.sh.in davit-config
+EXTRA_DIST = davit-config\
+             davit.xinitrc.in\
+             start_davit.sh.in
 
 CLEANFILES = *~
-DISTCLEANFILES = davit.xinitrc start_davit.sh
+
+DISTCLEANFILES = davit.xinitrc\
+                 start_davit.sh
+
 MAINTAINERCLEANFILES = *~ Makefile.in

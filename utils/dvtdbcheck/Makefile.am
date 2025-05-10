@@ -1,10 +1,8 @@
-## automake.am
+## Makefile.am
 ##
-## Automake.am for davit/utils/dvtdbcheck
+## Makefile.am for davit/utils/dvtdbcheck
 ##
-##   (C) Copyright 2011 Fred Gleason <fredg@paravelsystems.com>
-##
-##      $Id: Makefile.am,v 1.1 2011/04/29 21:04:59 pcvs Exp $
+##   (C) Copyright 2011-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -34,7 +32,17 @@ sbin_PROGRAMS = dvtdbcheck
 dist_dvtdbcheck_SOURCES = dvtdbcheck.cpp dvtdbcheck.h
 dvtdbcheck_LDADD = @QT_LIBS@ @VMIME_LIBS@ -ldvt
 
-EXTRA_DIST = 
+CLEANFILES = *~\
+             *.idb\
+             *.ilk\
+             *.obj\
+             *.pdb\
+             *.qm\
+             moc_*
 
-CLEANFILES = *~ moc_* *.qm *.obj *.idb *.pdb *ilk
-MAINTAINERCLEANFILES = *~ Makefile.in configure aclocal.m4 *.tar.gz moc_*
+MAINTAINERCLEANFILES = *~\
+                       *.tar.gz\
+                       aclocal.m4\
+                       configure\
+                       Makefile.in\
+                       moc_*

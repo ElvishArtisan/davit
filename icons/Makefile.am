@@ -1,10 +1,8 @@
-## automake.am
+## Makefile.am
 ##
-## Automake.am for icons/
+## Makefile.am for icons/
 ##
-## Use automake to process this into a Makefile.in
-##
-##   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
+##   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -29,4 +27,9 @@ EXTRA_DIST = davit-22x22.xpm\
 
 CLEANFILES = *~
 DISTCLEANFILES = moc_*
-MAINTAINERCLEANFILES = *~ Makefile.in configure aclocal.m4 moc_* *.tar.gz
+MAINTAINERCLEANFILES = *~\
+                       *.tar.gz\
+                       aclocal.m4\
+                       configure\
+                       Makefile.in\
+                       moc_*

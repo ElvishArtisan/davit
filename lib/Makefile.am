@@ -1,12 +1,8 @@
-## automake.am
+## Makefile.am
 ##
-## Automake.am for lib/
+## Makefile.am for lib/
 ##
-## Use automake to process this into a Makefile.in
-##
-##   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-##
-##     $Id: Makefile.am,v 1.15 2013/02/26 19:06:17 pcvs Exp $
+##   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -74,7 +70,20 @@ nodist_libdvt_la_SOURCES = moc_algocombobox.cpp\
 
 libdvt_la_LDFLAGS = -release $(VERSION)
 
-EXTRA_DIST = lib.pro dvtmail-win32.cpp
+EXTRA_DIST = lib.pro\
+             dvtmail-win32.cpp
 
-CLEANFILES = *~ moc_* *.obj *.lib *.idb *.pdb *.ilk
-MAINTAINERCLEANFILES = *~ Makefile.in configure aclocal.m4 *.tar.gz moc_*
+CLEANFILES = *~\
+             *.idb\
+             *.ilk\
+             *.lib\
+             *.obj\
+             *.pdb\
+             moc_*
+
+MAINTAINERCLEANFILES = *~\
+                       *.tar.gz\
+                       aclocal.m4\
+                       configure\
+                       Makefile.in\
+                       moc_*
