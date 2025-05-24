@@ -2,9 +2,7 @@
 //
 // Container class for a Davit Contact
 //
-//   (C) Copyright 2010-2012 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: contact.cpp,v 1.4 2012/02/09 17:56:33 pcvs Exp $
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -21,7 +19,7 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <contact.h>
+#include "contact.h"
 
 Contact::Contact()
 {

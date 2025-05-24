@@ -2,9 +2,7 @@
 //
 // List Davit Users.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_users.cpp,v 1.4 2010/10/21 21:07:54 pcvs Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,30 +18,34 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qsqldatabase.h>
 #include <math.h>
-#include <qmessagebox.h>
+
+#include <QLabel>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvtconfig.h>
 #include <dvtconf.h>
-#include <list_users.h>
-#include <edit_user.h>
-#include <add_user.h>
-#include <globals.h>
 
+#include "add_user.h"
+#include "edit_user.h"
+#include "globals.h"
+#include "list_users.h"
 
-ListUsers::ListUsers(QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+ListUsers::ListUsers(QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
+
   //
   // Fix the Window Size
   //
   setMinimumWidth(sizeHint().width());
   setMinimumHeight(sizeHint().height());
 
-  setCaption("Davit - Users");
+  setWindowTitle("Davit - Users");
 
   //
   // Create Fonts
@@ -56,7 +58,8 @@ ListUsers::ListUsers(QWidget *parent,const char *name)
   //
   // Users List
   //
-  list_users_list=new QListView(this,"list_users_list");
+  /*
+  list_users_list=new QListView(this);
   list_users_list->setMargin(5);
   list_users_list->setAllColumnsShowFocus(true);
   connect(list_users_list,
@@ -64,22 +67,22 @@ ListUsers::ListUsers(QWidget *parent,const char *name)
 	  this,
 	  SLOT(doubleClickedData(QListViewItem *,const QPoint &,int)));
   list_users_list->addColumn("Full Name");
-  list_users_list->setColumnAlignment(0,AlignLeft|AlignVCenter);
+  list_users_list->setColumnAlignment(0,Qt::AlignLeft|Qt::AlignVCenter);
   list_users_list->addColumn("User Name");
-  list_users_list->setColumnAlignment(1,AlignLeft|AlignVCenter);
+  list_users_list->setColumnAlignment(1,Qt::AlignLeft|Qt::AlignVCenter);
   list_users_list->addColumn("Description");
-  list_users_list->setColumnAlignment(2,AlignLeft|AlignVCenter);
+  list_users_list->setColumnAlignment(2,Qt::AlignLeft|Qt::AlignVCenter);
   list_users_list->addColumn("Phone Number");
-  list_users_list->setColumnAlignment(3,AlignCenter);
+  list_users_list->setColumnAlignment(3,Qt::AlignCenter);
   list_users_list->addColumn("E-Mail Address");
-  list_users_list->setColumnAlignment(4,AlignCenter);
+  list_users_list->setColumnAlignment(4,Qt::AlignCenter);
   list_users_list->addColumn("Administrator");
-  list_users_list->setColumnAlignment(5,AlignCenter);
-
+  list_users_list->setColumnAlignment(5,Qt::AlignCenter);
+  */
   //
   //  Add Button
   //
-  list_add_button=new QPushButton(this,"list_add_button");
+  list_add_button=new QPushButton(this);
   list_add_button->setFont(font);
   list_add_button->setText("&Add");
   connect(list_add_button,SIGNAL(clicked()),this,SLOT(addData()));
@@ -87,7 +90,7 @@ ListUsers::ListUsers(QWidget *parent,const char *name)
   //
   //  Edit Button
   //
-  list_edit_button=new QPushButton(this,"list_edit_button");
+  list_edit_button=new QPushButton(this);
   list_edit_button->setFont(font);
   list_edit_button->setText("&Edit");
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
@@ -95,7 +98,7 @@ ListUsers::ListUsers(QWidget *parent,const char *name)
   //
   //  Delete Button
   //
-  list_delete_button=new QPushButton(this,"list_delete_button");
+  list_delete_button=new QPushButton(this);
   list_delete_button->setFont(font);
   list_delete_button->setText("&Delete");
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
@@ -103,7 +106,7 @@ ListUsers::ListUsers(QWidget *parent,const char *name)
   //
   //  Close Button
   //
-  list_close_button=new QPushButton(this,"list_close_button");
+  list_close_button=new QPushButton(this);
   list_close_button->setDefault(true);
   list_close_button->setFont(font);
   list_close_button->setText("&Close");
@@ -132,11 +135,12 @@ QSizePolicy ListUsers::sizePolicy() const
 
 void ListUsers::addData()
 {
+  /*
   QString lname;
   QString sql;
   QSqlQuery *q;
 
-  AddUser *add=new AddUser(&lname,this,"add");
+  AddUser *add=new AddUser(&lname,this);
   if(add->exec()==0) {
     sql=QString().sprintf("insert into USERS set USER_NAME=\"%s\",\
                            USER_PASSWORD=password(\"\")",
@@ -157,11 +161,13 @@ void ListUsers::addData()
     delete edit;
   }
   delete add;
+  */
 }
 
 
 void ListUsers::editData()
 {
+  /*
   QListViewItem *item=list_users_list->selectedItem();
   
   if(item==NULL) {
@@ -172,11 +178,13 @@ void ListUsers::editData()
     UpdateItem(item);
   }
   delete edit;
+  */
 }
 
 
 void ListUsers::deleteData()
 {
+  /*
   QListViewItem *item=list_users_list->selectedItem();
 
   if(item==NULL) {
@@ -196,15 +204,16 @@ void ListUsers::deleteData()
   }
   DeleteUser(item->text(1));
   delete item;
+  */
 }
 
-
+/*
 void ListUsers::doubleClickedData(QListViewItem *item,const QPoint &pt,
 				      int c)
 {
   editData();
 }
-
+*/
 
 void ListUsers::closeData()
 {
@@ -214,7 +223,7 @@ void ListUsers::closeData()
 
 void ListUsers::resizeEvent(QResizeEvent *e)
 {
-  list_users_list->setGeometry(10,10,size().width()-20,size().height()-80);
+  //  list_users_list->setGeometry(10,10,size().width()-20,size().height()-80);
   list_add_button->setGeometry(10,size().height()-60,80,50);
   list_edit_button->setGeometry(100,size().height()-60,80,50);
   list_delete_button->setGeometry(190,size().height()-60,80,50);
@@ -228,7 +237,7 @@ void ListUsers::DeleteUser (QString lname)
   QSqlQuery *q;
 
   sql=QString().sprintf("delete from USERS where USER_NAME=\"%s\"",
-			(const char *)lname);
+			lname.toUtf8().constData());
   q=new QSqlQuery(sql);
   delete q;
 }
@@ -236,6 +245,7 @@ void ListUsers::DeleteUser (QString lname)
 
 void ListUsers::RefreshList()
 {
+  /*
   QSqlQuery *q;
   QListViewItem *item;
 
@@ -257,9 +267,10 @@ void ListUsers::RefreshList()
     }
   }
   delete q;
+  */
 }
 
-
+/*
 void ListUsers::UpdateItem(QListViewItem *item)
 {
   QSqlQuery *q=new 
@@ -281,3 +292,4 @@ void ListUsers::UpdateItem(QListViewItem *item)
   }
   delete q;
 }
+*/

@@ -2,9 +2,7 @@
 //
 // mySQL Administrative Login Widget for Davit.
 //
-//   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: mysql_login.h,v 1.1 2007/03/16 13:28:35 fredg Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,19 +21,15 @@
 #ifndef MYSQL_LOGIN_H
 #define MYSQL_LOGIN_H
 
-#include <qdialog.h>
-#include <qlineedit.h>
-#include <qtextedit.h>
-#include <qpixmap.h>
-#include <qradiobutton.h>
-
+#include <QDialog>
+#include <QLineEdit>
 
 class MySqlLogin : public QDialog
 {
   Q_OBJECT
   public:
    MySqlLogin(QString msg,QString *username,QString *password,
-	      QWidget *parent=0,const char *name=0);
+	      QWidget *parent=0);
    ~MySqlLogin();
    QSize sizeHint() const;
    QSizePolicy sizePolicy() const;

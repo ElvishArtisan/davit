@@ -2,9 +2,7 @@
 //
 // List Davit Providers.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_providers.h,v 1.3 2010/10/15 19:43:08 pcvs Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,9 +21,9 @@
 #ifndef LIST_PROVIDERS_H
 #define LIST_PROVIDERS_H
 
-#include <qdialog.h>
-#include <qpushbutton.h>
-#include <qlistview.h>
+#include <QDialog>
+#include <QListView>
+#include <QPushButton>
 
 #include <dvtlistviewitem.h>
 
@@ -33,7 +31,7 @@ class ListProviders : public QDialog
 {
  Q_OBJECT
  public:
-  ListProviders(QWidget *parent=0,const char *name=0);
+  ListProviders(QWidget *parent=0);
   ~ListProviders();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -42,7 +40,7 @@ class ListProviders : public QDialog
   void addData();
   void editData();
   void deleteData();
-  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
+  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
   void closeData();
 
  protected:
@@ -52,7 +50,7 @@ class ListProviders : public QDialog
   void DeleteProvider(int pid);
   void RefreshList();
   void UpdateItem(DvtListViewItem *item);
-  QListView *list_providers_list;
+  //  QListView *list_providers_list;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;

@@ -2,7 +2,7 @@
  *
  *   A QListViewItem class for Davit
  *
- *   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
+ *   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as
@@ -23,10 +23,9 @@
 #ifndef DVTLISTVIEWITEM_H
 #define DVTLISTVIEWITEM_H
 
-#include <qlistview.h>
+#include <QListView>
 
-
-class DvtListViewItem : public QListViewItem
+class DvtListViewItem// : public QListViewItem
 {
  public:
   DvtListViewItem(QListView *parent);

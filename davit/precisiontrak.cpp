@@ -2,7 +2,7 @@
 //
 // PrecisionTrak import routines for Davit
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,8 +20,9 @@
 
 #include <vector>
 
-#include <qmessagebox.h>
-#include <qfiledialog.h>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QSqlQuery>
 
 #include <dvtimport.h>
 #include <dvtconf.h>
@@ -43,11 +44,12 @@ void MainWidget::importExternalData()
   // Open Source File
   //
   QString filename=
-    QFileDialog::getOpenFileName("","CSV Files (*.csv)",this);
+    QFileDialog::getOpenFileName(this,tr("PrecisionTrack File"),"",
+				 "CSV Files (*.csv)");
   if(filename.isNull()) {
     return;
   }
-  FILE *f=fopen(filename,"r");
+  FILE *f=fopen(filename.toUtf8(),"r");
   if(f==NULL) {
     QMessageBox::warning(this,tr("Davit - File Error"),
 			 tr("Unable to open file!"));
@@ -60,14 +62,15 @@ void MainWidget::importExternalData()
   std::vector<QStringList> rows;
   QStringList cols;
   QString line=GetNextLine(f);
-  cols=cols.split(",",line);
+  //  cols=cols.split(",",line);
+  cols=line.split(",");
   if(cols.size()!=31) {
     QMessageBox::warning(this,tr("Davit - File Error"),
 	tr("Source file is unrecognized (incorrect number of data columns)."));
     fclose(f);
     return;
   }
-  for(unsigned i=0;i<cols.size();i++) {
+  for(int i=0;i<cols.size();i++) {
     cols[i].replace("\"","");
   }
   QStringList errs;
@@ -108,7 +111,7 @@ void MainWidget::importExternalData()
 
   if(errs.size()>0) {
     QString msg=tr("Source file is unrecognized (unexpected names in column header):");
-    for(unsigned i=0;i<errs.size();i++) {
+    for(int i=0;i<errs.size();i++) {
       msg+="\n"+errs[i];
     }
     QMessageBox::warning(this,tr("Davit - File Error"),msg);
@@ -133,7 +136,7 @@ void MainWidget::importExternalData()
     }
     else {
       fprintf(stderr,"line %d [%s] malformatted, skipping\n",
-	      lineno,(const char *)cols[2]);
+	      lineno,cols[2].toUtf8().constData());
     }
 
     lineno++;
@@ -179,14 +182,14 @@ void MainWidget::ProcessMarketRecord(const QString &table,QString &name,
   }
 
   sql=QString().sprintf("select ID from %s where NAME=\"%s\"",
-			(const char *)table,
-			(const char *)DvtEscapeString(name.stripWhiteSpace()));
+			table.toUtf8().constData(),
+			DvtEscapeString(name.trimmed()).toUtf8().constData());
   q=new QSqlQuery(sql);
   if(!q->first()) {
     delete q;
     sql=QString().sprintf("insert into %s set NAME=\"%s\",RANK=%d",
-			  (const char *)table,
-			  (const char *)name.stripWhiteSpace(),
+			  table.toUtf8().constData(),
+			  name.trimmed().toUtf8().constData(),
 			  rank);
     q=new QSqlQuery(sql);
   }
@@ -204,8 +207,8 @@ int MainWidget::GetMarketRank(const QString &table,const QString &name,
     return rank;
   }
   sql=QString().sprintf("select RANK from %s where NAME=\"%s\"",
-			(const char *)DvtEscapeString(table),
-			(const char *)DvtEscapeString(name.stripWhiteSpace()));
+			DvtEscapeString(table).toUtf8().constData(),
+			DvtEscapeString(name.trimmed()).toUtf8().constData());
   q=new QSqlQuery(sql);
   if(q->first()) {
     rank=q->value(0).toInt();
@@ -229,7 +232,7 @@ void MainWidget::ImportPrecisionTrakRecord(const QStringList &cols)
   //
   // Get Station Type
   //
-  QStringList fields=fields.split("-",cols[0]);
+  QStringList fields=cols[0].split("-");
   if(fields.size()==2) {
     type=fields[1].left(1);
   }
@@ -248,8 +251,8 @@ void MainWidget::ImportPrecisionTrakRecord(const QStringList &cols)
                          (LICENSE_CITY=\"%s\")&&\
                          (LICENSE_STATE=\"%s\")",
 			cols[1].toDouble(),
-			(const char *)DvtEscapeString(cols[3]),
-			(const char *)DvtEscapeString(cols[4]));
+			DvtEscapeString(cols[3]).toUtf8().constData(),
+			DvtEscapeString(cols[4]).toUtf8().constData());
   q=new QSqlQuery(sql);
   if(q->first()) {
     affiliate_id=q->value(0).toInt();
@@ -262,7 +265,8 @@ void MainWidget::ImportPrecisionTrakRecord(const QStringList &cols)
     sql=QString().sprintf("select ID,STATION_CALL,STATION_FREQUENCY,\
                            LICENSE_CITY,LICENSE_STATE from AFFILIATES \
                            where (STATION_CALL=\"%s\")&&(STATION_TYPE=\"%s\")",
-			  (const char *)cols[2],(const char *)type);
+			  cols[2].toUtf8().constData(),
+			  type.toUtf8().constData());
     q1=new QSqlQuery(sql);
     if(q1->first()) {
       /*

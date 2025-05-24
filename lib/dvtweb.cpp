@@ -3,7 +3,7 @@
 // Functions for interfacing with web components using the
 // Common Gateway Interface (CGI) Standard 
 //
-//   (C) Copyright 1996-2007 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 1996-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -24,11 +24,12 @@
 #include <string.h>
 #include <sys/time.h>
 
-#include <qdatetime.h>
-#include <qsqldatabase.h>
+#include <QDateTime>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
-#include <dvtconf.h>
-#include <dvtweb.h>
+#include "dvtconf.h"
+#include "dvtweb.h"
 
 
 /* DvtReadPost(char *cBuffer,int dSize) */
@@ -646,19 +647,19 @@ long int DvtAuthenticateLogin(const QString &username,const QString &passwd,
   //
   // Authenticate User
   //
-  int pt=username.find("-");
+  int pt=username.indexOf("-");
   if(pt<0) {
     return -1;
   }
   QString call=username.left(pt);
-  QString type=username.mid(pt+1,1).upper();
+  QString type=username.mid(pt+1,1).toUpper();
   sql=QString().sprintf("select ID from AFFILIATES \
                          where (STATION_CALL=\"%s\")&&\
                          (STATION_TYPE=\"%s\")&&\
                          (USER_PASSWORD=\"%s\")",
-			(const char *)DvtEscapeString(call),
-			(const char *)type,
-			(const char *)DvtEscapeString(passwd));
+			DvtEscapeString(call).toUtf8().constData(),
+			type.toUtf8().constData(),
+			DvtEscapeString(passwd).toUtf8().constData());
   q=new QSqlQuery(sql);
   if(!q->first()) {
     delete q;
@@ -680,7 +681,7 @@ long int DvtAuthenticateLogin(const QString &username,const QString &passwd,
                          TIME_STAMP=now()",
 			session,
 			q->value(0).toInt(),
-			(const char *)addr.toString());
+			addr.toString().toUtf8().constData());
   delete q;
   q=new QSqlQuery(sql);
   delete q;
@@ -697,9 +698,9 @@ int DvtAuthenticateSession(long int session_id,const QHostAddress &addr)
     QDateTime(QDate::currentDate(),QTime::currentTime());
   QString sql=QString().sprintf("delete from WEB_CONNECTIONS \
                                  where TIME_STAMP<\"%s\"",
-				(const char *)current_datetime.
+				current_datetime.
 				addSecs(-DVT_WEB_SESSION_TIMEOUT).
-				toString("yyyy-MM-dd hh:mm:ss"));
+				toString("yyyy-MM-dd hh:mm:ss").toUtf8().constData());
   QSqlQuery *q=new QSqlQuery(sql);
   delete q;
 
@@ -726,8 +727,8 @@ int DvtAuthenticateSession(long int session_id,const QHostAddress &addr)
   //
   sql=QString().sprintf("update WEB_CONNECTIONS set TIME_STAMP=\"%s\" \
                          where SESSION_ID=%ld",
-			(const char *)current_datetime.
-			toString("yyyy-MM-dd hh:mm:dd"),
+			current_datetime.
+			toString("yyyy-MM-dd hh:mm:dd").toUtf8().constData(),
 			session_id);
   q=new QSqlQuery(sql);
   delete q;

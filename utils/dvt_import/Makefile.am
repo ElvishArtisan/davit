@@ -19,14 +19,14 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -DQTDIR=\"@QT_DIR@\" @QT_CXXFLAGS@ -I$(top_srcdir)/lib
-LIBS = @QT_LIBS@ -L$(top_srcdir)/lib
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" @QT4_CFLAGS@ -I$(top_srcdir)/lib
+LIBS = -L$(top_srcdir)/lib
 MOC = @QT_MOC@
 
 bin_PROGRAMS = dvt_import
 
 dist_dvt_import_SOURCES = dvt_import.cpp dvt_import.h
-dvt_import_LDADD = @QT_LIBS@ @VMIME_LIBS@ -ldvt
+dvt_import_LDADD = @QT4_LIBS@ @VMIME_LIBS@ -ldvt
 
 EXTRA_DIST = dvt_import.pro
 

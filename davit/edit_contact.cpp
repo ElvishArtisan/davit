@@ -2,7 +2,7 @@
 //
 // Edit a Davit Contact.
 //
-//   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -19,21 +19,22 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qsqldatabase.h>
-#include <qpainter.h>
-#include <qmessagebox.h>
-
 #include <math.h>
+
+#include <QLabel>
+#include <QMessageBox>
+#include <QPainter>
+#include <QPushButton>
+#include <QSqlDatabase>
 
 #include <dvtconf.h>
 
-#include <edit_contact.h>
+#include "edit_contact.h"
 
-EditContact::EditContact(QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+EditContact::EditContact(QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   edit_contact=NULL;
 
   //
@@ -44,7 +45,7 @@ EditContact::EditContact(QWidget *parent,const char *name)
   setMaximumWidth(sizeHint().width());
   setMaximumHeight(sizeHint().height());
 
-  setCaption("Davit - Edit Contact");
+  setWindowTitle("Davit - Edit Contact");
 
   //
   // Create Fonts
@@ -61,40 +62,40 @@ EditContact::EditContact(QWidget *parent,const char *name)
   //
   edit_name_edit=new QLineEdit(this);
   edit_name_edit->setGeometry(100,10,sizeHint().width()-110,20);
-  QLabel *label=new QLabel(edit_name_edit,"Name:",this);
+  QLabel *label=new QLabel("Name:",this);
   label->setGeometry(10,10,85,20);
   label->setFont(label_font);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   //
   // Title
   //
   edit_title_edit=new QLineEdit(this);
   edit_title_edit->setGeometry(100,32,sizeHint().width()-110,20);
-  label=new QLabel(edit_title_edit,"Title:",this);
+  label=new QLabel("Title:",this);
   label->setGeometry(10,32,85,20);
   label->setFont(label_font);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   //
   // Phone
   //
   edit_phone_edit=new QLineEdit(this);
   edit_phone_edit->setGeometry(100,54,sizeHint().width()-110,20);
-  label=new QLabel(edit_phone_edit,"Phone:",this);
+  label=new QLabel("Phone:",this);
   label->setGeometry(10,54,85,20);
   label->setFont(label_font);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   //
   // Fax
   //
   edit_fax_edit=new QLineEdit(this);
   edit_fax_edit->setGeometry(100,76,sizeHint().width()-110,20);
-  label=new QLabel(edit_fax_edit,"Fax:",this);
+  label=new QLabel("Fax:",this);
   label->setGeometry(10,76,85,20);
   label->setFont(label_font);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   //
   // Email
@@ -103,62 +104,57 @@ EditContact::EditContact(QWidget *parent,const char *name)
   edit_email_edit->setGeometry(100,98,sizeHint().width()-110,20);
   connect(edit_email_edit,SIGNAL(textChanged(const QString &)),
     this,SLOT(emailChangedData(const QString &)));
-  label=new QLabel(edit_email_edit,"Email:",this);
+  label=new QLabel("Email:",this);
   label->setGeometry(10,98,85,20);
   label->setFont(label_font);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   //
   // Affidavit Checkbox
   //
-  edit_affidavit_box=new QCheckBox(this,"edit_affidavit_button");
+  edit_affidavit_box=new QCheckBox(this);
   edit_affidavit_box->setGeometry(105,118,20,20);
-  edit_affidavit_label=
-    new QLabel(edit_affidavit_box,"Receives Affidavit E-mail",this);
+  edit_affidavit_label=new QLabel("Receives Affidavit E-mail",this);
   edit_affidavit_label->setGeometry(122,117,sizeHint().width()-130,20);
   edit_affidavit_label->setFont(label_font);
-  edit_affidavit_label->setAlignment(AlignLeft|AlignVCenter);
+  edit_affidavit_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 
   //
   // Program Director Checkbox
   //
-  edit_program_director_box=new QCheckBox(this,"edit_program_director_button");
+  edit_program_director_box=new QCheckBox(this);
   edit_program_director_box->setGeometry(105,140,20,20);
   edit_program_director_label=
-    new QLabel(edit_program_director_box,"Receives Program Director E-mail",
-	       this);
+    new QLabel("Receives Program Director E-mail",this);
   edit_program_director_label->setGeometry(122,137,sizeHint().width()-130,20);
   edit_program_director_label->setFont(label_font);
-  edit_program_director_label->setAlignment(AlignLeft|AlignVCenter);
+  edit_program_director_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 
   //
   // General Manager Checkbox
   //
-  edit_general_manager_box=new QCheckBox(this,"edit_general_manager_button");
+  edit_general_manager_box=new QCheckBox(this);
   edit_general_manager_box->setGeometry(105,162,20,20);
-  edit_general_manager_label=
-    new QLabel(edit_general_manager_box,"Receives General Manager E-mail",
-	       this);
+  edit_general_manager_label=new QLabel("Receives General Manager E-mail",this);
   edit_general_manager_label->setGeometry(122,161,sizeHint().width()-130,20);
   edit_general_manager_label->setFont(label_font);
-  edit_general_manager_label->setAlignment(AlignLeft|AlignVCenter);
+  edit_general_manager_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 
   //
   // Locked Checkbox
   //
-  edit_locked_box=new QCheckBox(this,"edit_locked_button");
+  edit_locked_box=new QCheckBox(this);
   edit_locked_box->setGeometry(105,192,20,20);
   edit_locked_label=
-    new QLabel(edit_locked_box,"Lock This Contact Against External Updates",
-	       this);
+    new QLabel("Lock This Contact Against External Updates",this);
   edit_locked_label->setGeometry(122,191,sizeHint().width()-130,20);
   edit_locked_label->setFont(label_font);
-  edit_locked_label->setAlignment(AlignLeft|AlignVCenter);
+  edit_locked_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 
   //
   //  OK Button
   //
-  QPushButton *button=new QPushButton(this,"ok_button");
+  QPushButton *button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
   button->setDefault(true);
   button->setFont(label_font);
@@ -168,7 +164,7 @@ EditContact::EditContact(QWidget *parent,const char *name)
   //
   //  Cancel Button
   //
-  button=new QPushButton(this,"cancel_button");
+  button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
   button->setFont(label_font);
   button->setText("&Cancel");

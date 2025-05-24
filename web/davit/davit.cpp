@@ -2,9 +2,7 @@
 //
 // An Web-based affiliate manager
 //
-//   (C) Copyright 2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: davit.cpp,v 1.18 2011/08/04 20:25:50 pcvs Exp $
+//   (C) Copyright 2008-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -30,15 +28,16 @@
 #include <vmime/vmime.hpp>
 #include <vmime/platforms/posix/posixHandler.hpp>
 
-#include <qapplication.h>
-#include <qdatetime.h>
+#include <QApplication>
+#include <QDateTime>
+#include <QSqlQuery>
 
 #include <dvtconfig.h>
 #include <dvtweb.h>
 #include <dvtconf.h>
 #include <dvtmail.h>
 
-#include <davit.h>
+#include "davit.h"
 
 //
 // Define this to allow logins with "broken" usernames
@@ -46,9 +45,12 @@
 //
 #define DAVIT_WEB_LOGIN_HACK
 
-MainObject::MainObject(QObject *parent,const char *name)
-  :QObject(parent,name)
+MainObject::MainObject(QObject *parent)
+  :QObject(parent)
 {
+  /*
+   * FIXME: Port to Qt6
+   *
   //
   // Initialize Variables
   //
@@ -113,7 +115,7 @@ MainObject::MainObject(QObject *parent,const char *name)
       DvtCgiError("Invalid post data!");
       break;
   }
-
+  */
   exit(0);
 }
 
@@ -155,7 +157,8 @@ int MainObject::AuthenticatePost()
     }
     username=str;
 #ifdef DAVIT_WEB_LOGIN_HACK
-    if(((username.right(2).lower()=="am")||(username.right(2).lower()=="fm"))&&
+    if(((username.right(2).toLower()=="am")||
+	(username.right(2).toLower()=="fm"))&&
        username.mid(username.length()-3,1)!="-") {
       username=username.left(username.length()-2)+"-"+username.right(2);
     }
@@ -266,9 +269,9 @@ void MainObject::ServeMonthPicker()
                            (AIR_DATETIME<\"%s-01 00:00:00\")",
 			  cast_affiliate_id,
 			  Dvt::AiredStateScheduled,
-			  (const char *)date.toString("yyyy-MM"),
-			  (const char *)date.addMonths(1).
-			  toString("yyyy-MM"));
+			  date.toString("yyyy-MM").toUtf8().constData(),
+			  date.addMonths(1).toString("yyyy-MM").
+			  toUtf8().constData());
     q=new QSqlQuery(sql);
     if(q->first()) {
       data_needed=true;
@@ -280,11 +283,11 @@ void MainObject::ServeMonthPicker()
       printf("<form action=\"davit.cgi\" method=\"post\">\n");
       SetContext(DAVIT_COMMAND_SERVE_PROGRAM_LIST);
       printf("<input type=\"hidden\" name=\"LAST_MONTH_MONTH\" value=\"%s\">\n",
-	     (const char *)date.toString("MM"));
+	     date.toString("MM").toUtf8().constData());
       printf("<input type=\"hidden\" name=\"LAST_MONTH_YEAR\" value=\"%s\">\n",
-	     (const char *)date.toString("yyyy"));
+	     date.toString("yyyy").toUtf8().constData());
       printf("<input type=\"submit\" value=\"%s\" size=\"20\">\n",
-	     (const char *)date.toString("MMMM yyyy"));
+	     date.toString("MMMM yyyy").toUtf8().constData());
       printf("</form>\n");
       printf("</td></tr>\n");
     }
@@ -302,8 +305,8 @@ void MainObject::ServeMonthPicker()
   if(!cast_config->contactAddress().isEmpty()) {
     printf("Questions?  Please feel free to contact us at\n");
     printf("<a href=\"mailto:%s\">%s</a>.\n",
-	   (const char *)cast_config->contactAddress(),
-	   (const char *)cast_config->contactAddress());
+	   cast_config->contactAddress().toUtf8().constData(),
+	   cast_config->contactAddress().toUtf8().constData());
     printf("</td>\n");
     printf("</tr>\n");
     
@@ -347,15 +350,15 @@ void MainObject::ServeProgramList()
     printf("<td colspan=\"6\" align=\"center\"><big><strong>\n");
     if(q->value(1).toString()=="A") {
       printf("Scheduled Programs for %s-AM",
-	     (const char *)q->value(0).toString());
+	     q->value(0).toString().toUtf8().constData());
     }
     if(q->value(1).toString()=="F") {
       printf("Scheduled Programs for %s-FM",
-	     (const char *)q->value(0).toString());
+	     q->value(0).toString().toUtf8().constData());
     }
     if(q->value(1).toString()=="I") {
       printf("Scheduled Programs for %s-IN",
-	     (const char *)q->value(0).toString());
+	     q->value(0).toString().toUtf8().constData());
     }
     printf("</td>\n");
     printf("</tr>\n");
@@ -371,8 +374,8 @@ void MainObject::ServeProgramList()
 
     printf("<tr>\n");
     printf("<td colspan=\"6\" align=\"center\"><big>\n");
-    printf("%s",(const char *)QDate(last_year,last_month,1).
-	   toString("MMMM yyyy"));
+    printf("%s",QDate(last_year,last_month,1).toString("MMMM yyyy").
+	   toUtf8().constData());
     printf("</big></td>\n");
     printf("</tr>\n");
 
@@ -408,30 +411,31 @@ void MainObject::ServeProgramList()
                            order by PROGRAMS.PROGRAM_NAME,AIRED.AIR_DATETIME",
 			  cast_affiliate_id,
 			  Dvt::AiredStateScheduled,
-			  (const char *)date.toString("yyyy-MM"),
-			  (const char *)date.addMonths(1).toString("yyyy-MM"));
+			  date.toString("yyyy-MM").toUtf8().constData(),
+			  date.addMonths(1).toString("yyyy-MM").
+			  toUtf8().constData());
     q=new QSqlQuery(sql);
     while(q->next()) {
       printf("<tr>\n");
       printf("<td bgcolor=\"%s\" align=\"left\">%s</td>\n",
-	     (const char *)line_colors[current_color],
-	     (const char *)q->value(0).toString());
+	     line_colors[current_color].toUtf8().constData(),
+	     q->value(0).toString().toUtf8().constData());
       printf("<td bgcolor=\"%s\" align=\"center\">%s</td>",
-	     (const char *)line_colors[current_color],
-	     (const char *)q->value(1).toDateTime().toString("MM/dd/yyyy"));
+	     line_colors[current_color].toUtf8().constData(),
+	     q->value(1).toDateTime().toString("MM/dd/yyyy").
+	     toUtf8().constData());
       printf("<td bgcolor=\"%s\" align=\"center\">%s</td>\n",
-	     (const char *)line_colors[current_color],
-	     (const char *)TimeWidget(q->value(3).toInt(),"START",
-				      q->value(1).toTime()));
+	     line_colors[current_color].toUtf8().constData(),
+	     TimeWidget(q->value(3).toInt(),"START",q->value(1).toTime()).
+	     toUtf8().constData());
       printf("<td bgcolor=\"%s\" align=\"center\">&nbsp;</td>\n",
-	     (const char *)line_colors[current_color]);
+	     line_colors[current_color].toUtf8().constData());
       printf("<td bgcolor=\"%s\" align=\"center\">%s</td>\n",
-	     (const char *)line_colors[current_color],
-	     (const char *)TimeWidget(q->value(3).toInt(),"END",
-				      q->value(1).toTime().
-				      addSecs(q->value(2).toInt())));
+	     line_colors[current_color].toUtf8().constData(),
+	     TimeWidget(q->value(3).toInt(),"END",q->value(1).toTime().
+			addSecs(q->value(2).toInt())).toUtf8().constData());
       printf("<td bgcolor=\"%s\" align=\"center\">",
-	     (const char *)line_colors[current_color]);
+	     line_colors[current_color].toUtf8().constData());
       printf("<select name=\"CORRECT_%d\">\n",q->value(3).toInt());
       printf("  <option value=\"Yes\" selected>Yes</option>\n");
       printf("  <option value=\"No\">No</option>\n");
@@ -462,6 +466,9 @@ void MainObject::ServeProgramList()
 
 void MainObject::ProcessPrograms()
 {
+  /*
+   * FIXME: Port to Qt6
+   *
   char str[1024];
   char var[1024];
   int last_month;
@@ -521,8 +528,9 @@ void MainObject::ProcessPrograms()
                          (AIRED.AIR_DATETIME<\"%s-01 00:00:00\")&&\
                          (AIRED.STATE=%d) order by AIR_DATETIME",
 			cast_affiliate_id,
-			(const char *)date.toString("yyyy-MM"),
-			(const char *)date.addMonths(1).toString("yyyy-MM"),
+			date.toString("yyyy-MM").toUtf8().constData(),
+			date.addMonths(1).toString("yyyy-MM").
+			toUtf8().constData(),
 			Dvt::AiredStateScheduled);
   q=new QSqlQuery(sql);
   while(q->next()) {
@@ -555,15 +563,15 @@ void MainObject::ProcessPrograms()
                            CONTACT_EMAIL=\"%s\",\
                            ORIGIN_DATETIME=now() \
                            where ID=%d",
-			  (const char *)q->value(1).toDateTime().
-			  toString("yyyy-MM-dd"),
-			  (const char *)start_time.toString("hh:mm:ss"),
+			  q->value(1).toDateTime().toString("yyyy-MM-dd").
+			  toUtf8().constData(),
+			  start_time.toString("hh:mm:ss").toUtf8().constData(),
 			  air_length,
 			  state,
-			  (const char *)DvtEscapeString(name),
-			  (const char *)DvtEscapeString(phone),
-			  (const char *)DvtEscapeString(fax),
-			  (const char *)DvtEscapeString(email),
+			  DvtEscapeString(name).toUtf8().constData(),
+			  DvtEscapeString(phone).toUtf8().constData(),
+			  DvtEscapeString(fax).toUtf8().constData(),
+			  DvtEscapeString(email).toUtf8().constData(),
 			  q->value(0).toInt());
     q1=new QSqlQuery(sql);
     delete q1;
@@ -576,7 +584,7 @@ void MainObject::ProcessPrograms()
     SendDiscrepancyAlert(cast_affiliate_id,date,discreps);
   }
   ServeMonthPicker();
-
+  */
   exit(0);
 }
 
@@ -619,19 +627,19 @@ QString MainObject::TimeWidget(int id,const QString &name,
   QString ret;
 
   ret+=QString().sprintf("<input type=\"text\" maxlength=\"2\" size=\"2\" name=\"%s_HOUR_%d\" value=\"%s\">",
-			 (const char *)name,
+			 name.toUtf8().constData(),
 			 id,
-			 (const char *)time.toString("hh"));
+			 time.toString("hh").toUtf8().constData());
   ret+=":";
   ret+=QString().sprintf("<input type=\"text\" maxlength=\"2\" size=\"2\" name=\"%s_MINUTE_%d\" value=\"%s\">",
-			 (const char *)name,
+			 name.toUtf8().constData(),
 			 id,
-			 (const char *)time.toString("mm"));
+			 time.toString("mm").toUtf8().constData());
   ret+=":";
   ret+=QString().sprintf("<input type=\"text\" maxlength=\"2\" size=\"2\" name=\"%s_SECOND_%d\" value=\"%s\">",
-			 (const char *)name,
+			 name.toUtf8().constData(),
 			 id,
-			 (const char *)time.toString("ss"));
+			 time.toString("ss").toUtf8().constData());
 
   return ret;
 }
@@ -639,25 +647,30 @@ QString MainObject::TimeWidget(int id,const QString &name,
 
 QTime MainObject::GetTime(int id,const QString &name)
 {
+  /*
+   * FIXME: Port to Qt6
+   *
   int hour;
   int minute;
   int second;
-  char tag[1024];
+  QString tag;
 
-  snprintf(tag,1024,"%s_HOUR_%d",(const char *)name,id);
+  tag=QString().sprintf("%s_HOUR_%d",name.toUtf8().constData(),id);
   if(DvtGetPostInt(cast_post,tag,&hour)<0) {
     DvtCgiError(QString("Missing ")+tag);
   }
-  snprintf(tag,1024,"%s_MINUTE_%d",(const char *)name,id);
+  tag=QString().sprintf("%s_MINUTE_%d",name.toUtf8().constData(),id);
   if(DvtGetPostInt(cast_post,tag,&minute)<0) {
     DvtCgiError(QString("Missing ")+tag);
   }
-  snprintf(tag,1024,"%s_SECOND_%d",(const char *)name,id);
+  tag=QString().sprintf("%s_SECOND_%d",name.toUtf8().constData(),id);
   if(DvtGetPostInt(cast_post,tag,&second)<0) {
     DvtCgiError(QString("Missing ")+tag);
   }
   
   return QTime(hour,minute,second);
+  */
+  return QTime();
 }
 
 
@@ -677,6 +690,6 @@ void MainObject::SendDiscrepancyAlert(int affiliate_id,QDate &date,int quan)
 int main(int argc,char *argv[])
 {
   QApplication a(argc,argv,false);
-  new MainObject(NULL,"main");
+  new MainObject();
   return a.exec();
 }

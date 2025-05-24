@@ -1,10 +1,8 @@
-//   dvtimport.cpp
+// dvtimport.cpp
 //
-//   Data Import Routines for Davit
+// Data Import Routines for Davit
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtimport.cpp,v 1.2 2008/01/29 16:55:37 fredg Exp $
+// (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -19,14 +17,13 @@
 //   License along with this program; if not, write to the Free Software
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-//
 
 #include <stdio.h>
 
-#include <qsqldatabase.h>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
-#include <dvtimport.h>
-
+#include "dvtimport.h"
 
 QStringList DvtGetCommaList(const QString params,bool strip_quotes)
 {
@@ -34,7 +31,7 @@ QStringList DvtGetCommaList(const QString params,bool strip_quotes)
   QStringList sl;
   bool quoted=false;
 
-  for(unsigned i=0;i<params.length();i++) {
+  for(int i=0;i<params.length();i++) {
     if(params.at(i)=='"') {
       quoted=!quoted;
     }
@@ -46,7 +43,7 @@ QStringList DvtGetCommaList(const QString params,bool strip_quotes)
   sl.push_back(params.mid(start,params.length()+1));
 
   if(strip_quotes) {
-    for(unsigned i=0;i<sl.size();i++) {
+    for(int i=0;i<sl.size();i++) {
       if(sl[i].left(1)=="\"") {
 	sl[i]=sl[i].right(sl[i].length()-1);
       }
@@ -69,7 +66,7 @@ bool DvtImportTable(const QString &srcfile,const QString &desttable,
   QStringList values;
   QSqlQuery *q;
 
-  FILE *f=fopen(srcfile,"r");
+  FILE *f=fopen(srcfile.toUtf8(),"r");
   if(f==NULL) {
     return false;
   }
@@ -82,11 +79,11 @@ bool DvtImportTable(const QString &srcfile,const QString &desttable,
     else {
       size=fieldnames.size();
     }
-    sql=QString().sprintf("insert into %s set ",(const char *)desttable);
+    sql=QString().sprintf("insert into %s set ",desttable.toUtf8().constData());
     for(unsigned i=0;i<size;i++) {
       if(!fieldnames[i].isEmpty()) {
-	sql+=QString().sprintf("%s=%s,",(const char *)fieldnames[i],
-			       (const char *)values[i]);
+	sql+=QString().sprintf("%s=%s,",fieldnames[i].toUtf8().constData(),
+			       values[i].toUtf8().constData());
       }
     }
     sql=sql.left(sql.length()-1);

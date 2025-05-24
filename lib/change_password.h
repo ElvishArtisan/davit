@@ -2,9 +2,7 @@
 //
 // Set Password Widget for Davit.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: change_password.h,v 1.1 2007/03/16 13:28:40 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,18 +21,18 @@
 #ifndef CHANGE_PASSWORD_H
 #define CHANGE_PASSWORD_H
 
-#include <qdialog.h>
-#include <qlineedit.h>
-#include <qtextedit.h>
-#include <qpixmap.h>
-#include <qradiobutton.h>
+#include <QDialog>
+#include <QLineEdit>
+#include <QTextEdit>
+#include <QPixmap>
+#include <QRadioButton>
 
 
 class ChangePassword : public QDialog
 {
   Q_OBJECT
   public:
-   ChangePassword(QString *password,QWidget *parent=0,const char *name=0);
+   ChangePassword(QString *password,QWidget *parent=0);
    ~ChangePassword();
    QSize sizeHint() const;
    QSizePolicy sizePolicy() const;

@@ -2,7 +2,7 @@
 //
 // The RadioAmerica Affiliate Report for Davit
 //
-//   (C) Copyright 2008-2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2008-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -18,13 +18,14 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qdatetime.h>
-#include <qsqldatabase.h>
+#include <QDateTime>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvtconf.h>
 
-#include <pick_fields.h>
-#include <list_reports.h>
+#include "list_reports.h"
+#include "pick_fields.h"
 
 bool ListReports::RAAffiliateReport(SpreadSheet *sheet)
 {
@@ -102,7 +103,7 @@ bool ListReports::RAAffiliateReport(SpreadSheet *sheet)
       setText(DvtFormatFrequency(q->value(3).toDouble()));
     tab->addCell(col++,row)->setText(q->value(4).toString());
     tab->addCell(col++,row)->setText(q->value(6).toString());
-    tab->addCell(col++,row)->setText(q->value(7).toString().upper());
+    tab->addCell(col++,row)->setText(q->value(7).toString().toUpper());
     tab->addCell(col++,row)->setText(q->value(9).toString());
     tab->addCell(col++,row)->
       setText(DvtMarketRankString(q->value(10).toInt()));

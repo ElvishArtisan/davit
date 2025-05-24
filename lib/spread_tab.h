@@ -2,7 +2,7 @@
 //
 // Abstract a spreadsheet tab.
 //
-//   (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2014-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -23,14 +23,14 @@
 
 #include <vector>
 
-#include <spread_cell.h>
+#include "spread_cell.h"
 
 class SpreadTab : public Spread
 {
  public:
   SpreadTab();
   SpreadTab(int tab);
-  ~SpreadTab();
+  virtual ~SpreadTab();
   int tab() const;
   void setTab(int tab);
   QString name() const;

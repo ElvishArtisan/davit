@@ -2,9 +2,7 @@
 //
 // A Qt-based application for testing General Purpose Outputs (GPO).
 //
-//   (C) Copyright 2002-2003 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtdatepicker.cpp,v 1.1 2008/02/01 22:48:06 fredg Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -20,20 +18,19 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <QLabel>
+#include <QMouseEvent>
+#include <QPalette>
+#include <QString>
+#include <QWidget>
 
-#include <qwidget.h>
-#include <qstring.h>
-#include <qlabel.h>
-#include <qpalette.h>
-
-#include <dvtdatepicker.h>
+#include "dvtdatepicker.h"
 
 //
 // Global Classes
 //
-DvtDatePicker::DvtDatePicker(int low_year,int high_year,
-			 QWidget *parent,const char *name)
-  :QWidget(parent,name)
+DvtDatePicker::DvtDatePicker(int low_year,int high_year,QWidget *parent)
+  :QWidget(parent)
 {
   pick_low_year=low_year;
   pick_high_year=high_year;
@@ -49,10 +46,10 @@ DvtDatePicker::DvtDatePicker(int low_year,int high_year,
   //
   // Month
   //
-  pick_month_box=new QComboBox(this,"pick_month_box");
+  pick_month_box=new QComboBox(this);
   pick_month_box->setGeometry(0,0,120,26);
   for(int i=1;i<13;i++) {
-    pick_month_box->insertItem(QDate::longMonthName(i));
+    pick_month_box->insertItem(i-1,QDate::longMonthName(i));
   }
   connect(pick_month_box,SIGNAL(activated(int)),
 	  this,SLOT(monthActivatedData(int)));
@@ -61,17 +58,17 @@ DvtDatePicker::DvtDatePicker(int low_year,int high_year,
   // Year
   //
   if((high_year-low_year)<=10) {
-    pick_year_box=new QComboBox(this,"pick_year_box");
+    pick_year_box=new QComboBox(this);
     pick_year_box->setGeometry(130,0,90,26);
     for(int i=low_year;i<(high_year+1);i++) {
-      pick_year_box->insertItem(QString().sprintf("%04d",i));
+      pick_year_box->insertItem(i-low_year,QString().sprintf("%04d",i));
     }
     connect(pick_year_box,SIGNAL(activated(int)),
 	    this,SLOT(yearActivatedData(int)));
     pick_year_spin=NULL;
   }
   else {
-    pick_year_spin=new QSpinBox(this,"pick_year_spin");
+    pick_year_spin=new QSpinBox(this);
     pick_year_spin->setGeometry(160,0,60,26);
     pick_year_spin->setRange(low_year,high_year);
     pick_year_box=NULL;
@@ -83,64 +80,63 @@ DvtDatePicker::DvtDatePicker(int low_year,int high_year,
   // Date Labels
   //
   QPalette weekend_palette=palette();
-  weekend_palette.setColor(QPalette::Active,QColorGroup::Background,
+  weekend_palette.setColor(QPalette::Active,QPalette::Background,
+			   palette().color(QPalette::Active,QPalette::Mid));
+  weekend_palette.setColor(QPalette::Inactive,QPalette::Background,
 			   palette().color(QPalette::Active,
-					   QColorGroup::Mid));
-  weekend_palette.setColor(QPalette::Inactive,QColorGroup::Background,
-			   palette().color(QPalette::Active,
-					   QColorGroup::Mid));
+					   QPalette::Mid));
 
-  QLabel *label=new QLabel(tr("Mo"),this,"monday_label");
+  QLabel *label=new QLabel(tr("Mo"),this);
   label->setGeometry(DVTDATEPICKER_X_ORIGIN,30,30,30);
   label->setFont(header_font);
-  label->setAlignment(AlignCenter);
+  label->setAlignment(Qt::AlignCenter);
 
-  label=new QLabel(tr("Tu"),this,"tuesday_label");
+  label=new QLabel(tr("Tu"),this);
   label->setGeometry(DVTDATEPICKER_X_ORIGIN+DVTDATEPICKER_X_INTERVAL,
 		     DVTDATEPICKER_Y_ORIGIN,30,30);
   label->setFont(header_font);
-  label->setAlignment(AlignCenter);
+  label->setAlignment(Qt::AlignCenter);
 
-  label=new QLabel(tr("We"),this,"wednesday_label");
+  label=new QLabel(tr("We"),this);
   label->setGeometry(DVTDATEPICKER_X_ORIGIN+DVTDATEPICKER_X_INTERVAL*2,
 		     DVTDATEPICKER_Y_ORIGIN,30,30);
   label->setFont(header_font);
-  label->setAlignment(AlignCenter);
+  label->setAlignment(Qt::AlignCenter);
 
-  label=new QLabel(tr("Th"),this,"thursday_label");
+  label=new QLabel(tr("Th"),this);
   label->setGeometry(DVTDATEPICKER_X_ORIGIN+DVTDATEPICKER_X_INTERVAL*3,
 		     DVTDATEPICKER_Y_ORIGIN,30,30);
   label->setFont(header_font);
-  label->setAlignment(AlignCenter);
+  label->setAlignment(Qt::AlignCenter);
 
-  label=new QLabel(tr("Fr"),this,"friday_label");
+  label=new QLabel(tr("Fr"),this);
   label->setGeometry(DVTDATEPICKER_X_ORIGIN+DVTDATEPICKER_X_INTERVAL*4,
 		     DVTDATEPICKER_Y_ORIGIN,30,30);
   label->setFont(header_font);
-  label->setAlignment(AlignCenter);
+  label->setAlignment(Qt::AlignCenter);
 
-  label=new QLabel(tr("Sa"),this,"satudvtay_label");
+  label=new QLabel(tr("Sa"),this);
   label->setGeometry(DVTDATEPICKER_X_ORIGIN+DVTDATEPICKER_X_INTERVAL*5,
 		     DVTDATEPICKER_Y_ORIGIN,30,30);
   label->setFont(header_font);
-  label->setAlignment(AlignCenter);
+  label->setAlignment(Qt::AlignCenter);
   label->setPalette(weekend_palette);
 
-  label=new QLabel(tr("Su"),this,"sunday_label");
+  label=new QLabel(tr("Su"),this);
   label->setGeometry(DVTDATEPICKER_X_ORIGIN+DVTDATEPICKER_X_INTERVAL*6,
 		     DVTDATEPICKER_Y_ORIGIN,30,30);
   label->setFont(header_font);
-  label->setAlignment(AlignCenter);
+  label->setAlignment(Qt::AlignCenter);
   label->setPalette(weekend_palette);
 
 
   for(int i=0;i<6;i++) {
     for(int j=0;j<7;j++) {
-      pick_date_label[i][j]=new QLabel(this,"date_label");
+      pick_date_label[i][j]=new QLabel(this);
       pick_date_label[i][j]->
 	setGeometry(DVTDATEPICKER_X_ORIGIN+DVTDATEPICKER_X_INTERVAL*j,
 		    DVTDATEPICKER_Y_ORIGIN+20+DVTDATEPICKER_Y_INTERVAL*i,30,30);
-      pick_date_label[i][j]->setAlignment(AlignCenter);
+      pick_date_label[i][j]->setAlignment(Qt::AlignCenter);
     }
   }
   PrintDays();
@@ -179,9 +175,9 @@ bool DvtDatePicker::setDate(QDate date)
     return false;
   }
   pick_date=date;
-  pick_month_box->setCurrentItem(date.month()-1);
+  pick_month_box->setCurrentIndex(date.month()-1);
   if(pick_year_box!=NULL) {
-    pick_year_box->setCurrentItem(date.year()-pick_low_year);
+    pick_year_box->setCurrentIndex(date.year()-pick_low_year);
   }
   else {
     pick_year_spin->setValue(date.year());
@@ -206,14 +202,14 @@ void DvtDatePicker::monthActivatedData(int id)
 
 void DvtDatePicker::yearActivatedData(int id)
 {
-  QDate date=QDate(pick_low_year+pick_year_box->currentItem(),
+  QDate date=QDate(pick_low_year+pick_year_box->currentIndex(),
 		   pick_date.month(),1);
   if(pick_date.day()<=date.daysInMonth()) {
-    pick_date=QDate(pick_low_year+pick_year_box->currentItem(),
+    pick_date=QDate(pick_low_year+pick_year_box->currentIndex(),
 		    pick_date.month(),pick_date.day());
   }
   else {
-    pick_date=QDate(pick_low_year+pick_year_box->currentItem(),
+    pick_date=QDate(pick_low_year+pick_year_box->currentIndex(),
 		    pick_date.month(),date.daysInMonth());
   }
   PrintDays();
@@ -266,12 +262,12 @@ void DvtDatePicker::PrintDays()
   // Clear Days
   //
   QPalette weekend_palette=palette();
-  weekend_palette.setColor(QPalette::Active,QColorGroup::Background,
+  weekend_palette.setColor(QPalette::Active,QPalette::Background,
 			   palette().color(QPalette::Active,
-					   QColorGroup::Mid));
-  weekend_palette.setColor(QPalette::Inactive,QColorGroup::Background,
+					   QPalette::Mid));
+  weekend_palette.setColor(QPalette::Inactive,QPalette::Background,
 			   palette().color(QPalette::Active,
-					   QColorGroup::Mid));
+					   QPalette::Mid));
   for(int i=0;i<6;i++) {
     for(int j=0;j<5;j++) {
       pick_date_label[i][j]->clear();
@@ -289,11 +285,11 @@ void DvtDatePicker::PrintDays()
   // Get Top of Month
   //
   if(pick_year_box!=NULL) {
-    top_date=QDate(pick_low_year+pick_year_box->currentItem(),
-		   pick_month_box->currentItem()+1,1);
+    top_date=QDate(pick_low_year+pick_year_box->currentIndex(),
+		   pick_month_box->currentIndex()+1,1);
   }
   else {
-    top_date=QDate(pick_year_spin->value(),pick_month_box->currentItem()+1,1);
+    top_date=QDate(pick_year_spin->value(),pick_month_box->currentIndex()+1,1);
   }
 
   //
@@ -325,26 +321,26 @@ void DvtDatePicker::SelectDay(int day,int dow_offset,bool state)
   int dow=slot-7*week;
   QPalette pal=palette();
   if(state) {
-    pal.setColor(QPalette::Active,QColorGroup::Foreground,
+    pal.setColor(QPalette::Active,QPalette::Foreground,
 		 palette().
-		 color(QPalette::Active,QColorGroup::HighlightedText));
-    pal.setColor(QPalette::Active,QColorGroup::Background,
-		 palette().color(QPalette::Active,QColorGroup::Highlight));
-    pal.setColor(QPalette::Inactive,QColorGroup::Foreground,
+		 color(QPalette::Active,QPalette::HighlightedText));
+    pal.setColor(QPalette::Active,QPalette::Background,
+		 palette().color(QPalette::Active,QPalette::Highlight));
+    pal.setColor(QPalette::Inactive,QPalette::Foreground,
 		 palette().
-		 color(QPalette::Active,QColorGroup::HighlightedText));
-    pal.setColor(QPalette::Inactive,QColorGroup::Background,
-		 palette().color(QPalette::Active,QColorGroup::Highlight));
+		 color(QPalette::Active,QPalette::HighlightedText));
+    pal.setColor(QPalette::Inactive,QPalette::Background,
+		 palette().color(QPalette::Active,QPalette::Highlight));
   }
   else {
-    pal.setColor(QPalette::Active,QColorGroup::Foreground,
-		 palette().color(QPalette::Active,QColorGroup::Text));
-    pal.setColor(QPalette::Active,QColorGroup::Background,
-		 palette().color(QPalette::Active,QColorGroup::Background));
-    pal.setColor(QPalette::Inactive,QColorGroup::Foreground,
-		 palette().color(QPalette::Active,QColorGroup::Text));
-    pal.setColor(QPalette::Inactive,QColorGroup::Background,
-		 palette().color(QPalette::Active,QColorGroup::Background));
+    pal.setColor(QPalette::Active,QPalette::Foreground,
+		 palette().color(QPalette::Active,QPalette::Text));
+    pal.setColor(QPalette::Active,QPalette::Background,
+		 palette().color(QPalette::Active,QPalette::Background));
+    pal.setColor(QPalette::Inactive,QPalette::Foreground,
+		 palette().color(QPalette::Active,QPalette::Text));
+    pal.setColor(QPalette::Inactive,QPalette::Background,
+		 palette().color(QPalette::Active,QPalette::Background));
   }
   pick_date_label[week][dow]->setPalette(pal);
 }

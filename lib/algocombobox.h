@@ -2,9 +2,7 @@
 //
 // QComboBox for choosing an audio encoding algorithm.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: algocombobox.h,v 1.1 2007/03/21 13:38:44 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,14 +21,13 @@
 #ifndef ALGOCOMBOBOX_H
 #define ALGOCOMBOBOX_H
 
-#include <qcombobox.h>
-
+#include <QComboBox>
 
 class AlgoComboBox : public QComboBox
 {
  Q_OBJECT
  public:
-  AlgoComboBox(QWidget *parent=0,const char *name=0);
+  AlgoComboBox(QWidget *parent=0);
   QString currentAlgoCode() const;
 
  public slots:

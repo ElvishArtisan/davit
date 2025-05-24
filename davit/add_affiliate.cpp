@@ -2,9 +2,7 @@
 //
 // Edit a Davit Affiliate.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: add_affiliate.cpp,v 1.3 2008/01/29 16:55:33 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,20 +18,21 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
-
 #include <math.h>
 
-#include <add_affiliate.h>
+#include <QPushButton>
+#include <QLabel>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+
+#include "add_affiliate.h"
 
 
-AddAffiliate::AddAffiliate(QString *call,QString *type,
-			   QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+AddAffiliate::AddAffiliate(QString *call,QString *type,QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   add_call=call;
   add_type=type;
 
@@ -45,7 +44,7 @@ AddAffiliate::AddAffiliate(QString *call,QString *type,
   setMaximumWidth(sizeHint().width());
   setMaximumHeight(sizeHint().height());
 
-  setCaption("Davit - Add Affiliate");
+  setWindowTitle("Davit - Add Affiliate");
 
   //
   // Create Fonts
@@ -58,33 +57,32 @@ AddAffiliate::AddAffiliate(QString *call,QString *type,
   //
   // Station Call
   //
-  add_call_edit=new QLineEdit(this,"add_call_edit");
+  add_call_edit=new QLineEdit(this);
   add_call_edit->setGeometry(110,10,80,20);
   add_call_edit->setFont(font);
   add_call_edit->setMaxLength(8);
-  QLabel *label=
-    new QLabel(add_call_edit,"Station Call:",this,"add_call_label");
+  QLabel *label=new QLabel("Station Call:",this);
   label->setGeometry(10,10,95,20);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   label->setFont(label_font);
 
   //
   // Station Type
   //
-  add_type_box=new QComboBox(this,"add_type_edit");
+  add_type_box=new QComboBox(this);
   add_type_box->setGeometry(110,32,80,20);
-  label=new QLabel(add_type_box,"Type:",this,"add_type_label");
+  label=new QLabel("Type:",this);
   label->setGeometry(10,32,95,20);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   label->setFont(label_font);
-  add_type_box->insertItem("AM");
-  add_type_box->insertItem("FM");
-  add_type_box->insertItem("Internet");
+  add_type_box->insertItem(0,"AM");
+  add_type_box->insertItem(1,"FM");
+  add_type_box->insertItem(2,"Internet");
 
   //
   //  OK Button
   //
-  QPushButton *button=new QPushButton(this,"ok_button");
+  QPushButton *button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
   button->setDefault(true);
   button->setFont(label_font);
@@ -94,7 +92,7 @@ AddAffiliate::AddAffiliate(QString *call,QString *type,
   //
   //  Cancel Button
   //
-  button=new QPushButton(this,"cancel_button");
+  button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
   button->setFont(label_font);
   button->setText("&Cancel");
@@ -124,8 +122,8 @@ void AddAffiliate::okData()
   QString sql=
     QString().sprintf("select STATION_CALL from AFFILIATES \
                        where (STATION_CALL=\"%s\")&&(STATION_TYPE=\"%s\")",
-		      (const char *)add_call_edit->text(),
-		      (const char *)add_type_box->currentText().left(1));
+		      add_call_edit->text().toUtf8().constData(),
+		      add_type_box->currentText().left(1).toUtf8().constData());
   QSqlQuery *q=new QSqlQuery(sql);
   if(q->first()) {
     QMessageBox::warning(this,"Affiliate Exists",

@@ -2,9 +2,7 @@
 //
 // List Davit Airings.
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_airings.cpp,v 1.2 2011/03/14 21:07:36 pcvs Exp $
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,20 +18,21 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
+#include <QMessageBox>
+#include <QSqlDatabase>
 
 #include <dvtconf.h>
 
-#include <globals.h>
-#include <edit_airing.h>
-#include <list_airings.h>
+#include "edit_airing.h"
+#include "globals.h"
+#include "list_airings.h"
 
-ListAirings::ListAirings(int id,QWidget *parent,const char *name)
-  : QDialog(parent,name,false)
+ListAirings::ListAirings(int id,QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   list_id=id;
-  setCaption(tr("Davit - Program List for ")+DvtStationCallString(id));
+  setWindowTitle(tr("Davit - Program List for ")+DvtStationCallString(id));
 
   //
   // Create Fonts
@@ -49,7 +48,8 @@ ListAirings::ListAirings(int id,QWidget *parent,const char *name)
   //
   // Airings List
   //
-  list_airings_list=new QListView(this,"list_airings_list");
+/*
+  list_airings_list=new QListView(this);
   list_airings_list->setGeometry(10,489,sizeHint().width()-80,100);
   list_airings_list->setAllColumnsShowFocus(true);
   list_airings_list->setItemMargin(5);
@@ -77,8 +77,8 @@ ListAirings::ListAirings(int id,QWidget *parent,const char *name)
   list_airings_list->setColumnAlignment(8,AlignCenter);
   list_airings_list->addColumn(tr("Sa"));
   list_airings_list->setColumnAlignment(9,AlignCenter);
-
-  list_add_button=new QPushButton(this,"list_addfeed_button");
+*/
+  list_add_button=new QPushButton(this);
   list_add_button->setGeometry(sizeHint().width()-60,489,50,30);
   list_add_button->setFont(label_font);
   list_add_button->setText(tr("Add"));
@@ -86,7 +86,7 @@ ListAirings::ListAirings(int id,QWidget *parent,const char *name)
     setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateSchedule));
   connect(list_add_button,SIGNAL(clicked()),this,SLOT(addData()));
 
-  list_edit_button=new QPushButton(this,"list_editfeed_button");
+  list_edit_button=new QPushButton(this);
   list_edit_button->setGeometry(sizeHint().width()-60,524,50,30);
   list_edit_button->setFont(label_font);
   list_edit_button->setText(tr("Edit"));
@@ -94,7 +94,7 @@ ListAirings::ListAirings(int id,QWidget *parent,const char *name)
     setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateSchedule));
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
 
-  list_delete_button=new QPushButton(this,"list_deletefeed_button");
+  list_delete_button=new QPushButton(this);
   list_delete_button->setGeometry(sizeHint().width()-60,559,50,30);
   list_delete_button->setFont(label_font);
   list_delete_button->setText(tr("Delete"));
@@ -139,6 +139,7 @@ QSizePolicy ListAirings::sizePolicy() const
 
 void ListAirings::addData()
 {
+  /*
   QString sql;
   QSqlQuery *q;
   DvtFeed feed;
@@ -174,11 +175,13 @@ void ListAirings::addData()
   delete q;
   delete edit_airing;
   emit remarkAdded();
+  */
 }
 
 
 void ListAirings::editData()
 {
+  /*
   DvtListViewItem *item=(DvtListViewItem *)list_airings_list->selectedItem();
   if(item==NULL) {
     return;
@@ -202,11 +205,13 @@ void ListAirings::editData()
   feed.modifyAffiliate(item->id());
   RefreshItem(item,&feed);
   delete edit_airing;
+  */
 }
 
 
 void ListAirings::deleteData()
 {
+  /*
   QString sql;
   QSqlQuery *q;
   QSqlQuery *q1;
@@ -266,18 +271,19 @@ void ListAirings::deleteData()
   delete q;
   delete item;
   emit remarkAdded();
+  */
 }
 
-
+/*
 void ListAirings::doubleClickedData(QListViewItem *item,const QPoint &pt,int c)
 {
   editData();
 }
-
+*/
 
 void ListAirings::resizeEvent(QResizeEvent *e)
 {
-  list_airings_list->setGeometry(0,0,size().width(),size().height()-40);
+  //list_airings_list->setGeometry(0,0,size().width(),size().height()-40);
   list_add_button->setGeometry(10,size().height()-35,50,30);
   list_edit_button->setGeometry(70,size().height()-35,50,30);
   list_delete_button->setGeometry(130,size().height()-35,50,30);
@@ -286,6 +292,7 @@ void ListAirings::resizeEvent(QResizeEvent *e)
 
 void ListAirings::RefreshList()
 {
+  /*
   QString sql;
   QSqlQuery *q;
 
@@ -339,11 +346,13 @@ void ListAirings::RefreshList()
     }
   }
   delete q;
+  */
 }
 
 
 void ListAirings::RefreshItem(DvtListViewItem *item,DvtFeed *airing)
 {
+  /*
   item->setText(0,airing->name());
   item->setText(1,airing->startTime().toString("hh:mm:ss"));
   item->setText(2,airing->startTime().
@@ -390,4 +399,5 @@ void ListAirings::RefreshItem(DvtListViewItem *item,DvtFeed *airing)
   else {
     item->setText(9,"");
   }
+  */
 }

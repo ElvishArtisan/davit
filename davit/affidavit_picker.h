@@ -2,7 +2,7 @@
 //
 // Pick fields for an Affidavit Report
 //
-//   (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2014-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,10 +23,10 @@
 
 #include <vector>
 
-#include <qdialog.h>
-#include <qcombobox.h>
-#include <qpushbutton.h>
-#include <qlabel.h>
+#include <QDialog>
+#include <QComboBox>
+#include <QPushButton>
+#include <QLabel>
 
 #include <dvt.h>
 

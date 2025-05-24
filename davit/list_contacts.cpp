@@ -2,9 +2,7 @@
 //
 // List Davit Contacts.
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_contacts.cpp,v 1.7 2013/03/11 18:31:17 pcvs Exp $
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,18 +18,19 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
+#include <QSqlDatabase>
+#include <QMessageBox>
 
 #include <dvtconf.h>
 
-#include <list_contacts.h>
+#include "list_contacts.h"
 
-ListContacts::ListContacts(int id,QWidget *parent,const char *name)
-  : QDialog(parent,name,false)
+ListContacts::ListContacts(int id,QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   list_id=id;
-  setCaption(tr("Davit - Contacts for ")+DvtStationCallString(id));
+  setWindowTitle(tr("Davit - Contacts for ")+DvtStationCallString(id));
 
   //
   // Create Fonts
@@ -47,6 +46,7 @@ ListContacts::ListContacts(int id,QWidget *parent,const char *name)
   //
   // Contact List
   //
+  /*
   list_contacts_list=new ContactListView(this);
   list_contacts_list->setAllColumnsShowFocus(true);
   list_contacts_list->setItemMargin(5);
@@ -72,18 +72,18 @@ ListContacts::ListContacts(int id,QWidget *parent,const char *name)
   list_contacts_list->setColumnAlignment(7,AlignCenter);
   list_contacts_list->addColumn(tr("Locked"));
   list_contacts_list->setColumnAlignment(8,AlignCenter);
-
-  list_add_button=new QPushButton(this,"list_add_button");
+  */
+  list_add_button=new QPushButton(this);
   list_add_button->setFont(label_font);
   list_add_button->setText(tr("Add"));
   connect(list_add_button,SIGNAL(clicked()),this,SLOT(addData()));
 
-  list_edit_button=new QPushButton(this,"list_edit_button");
+  list_edit_button=new QPushButton(this);
   list_edit_button->setFont(label_font);
   list_edit_button->setText(tr("Edit"));
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
 
-  list_delete_button=new QPushButton(this,"list_delete_button");
+  list_delete_button=new QPushButton(this);
   list_delete_button->setFont(label_font);
   list_delete_button->setText(tr("Delete"));
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
@@ -125,17 +125,20 @@ QSizePolicy ListContacts::sizePolicy() const
 
 void ListContacts::addData()
 {
+  /*
   Contact *contact=new Contact();
   if(list_contact_dialog->exec(contact)==0) {
     DvtListViewItem *item=new DvtListViewItem(list_contacts_list);
     UpdateItem(item,contact);
   }
   delete contact;
+  */
 }
 
 
 void ListContacts::editData()
 {
+  /*
   DvtListViewItem *item=(DvtListViewItem *)list_contacts_list->selectedItem();
   if(item==NULL) {
     return;
@@ -154,11 +157,13 @@ void ListContacts::editData()
     UpdateItem(item,contact);
   }
   delete contact;
+  */
 }
 
 
 void ListContacts::deleteData()
 {
+  /*
   QString sql;
   QSqlQuery *q;
   DvtListViewItem *item=(DvtListViewItem *)list_contacts_list->selectedItem();
@@ -172,18 +177,19 @@ void ListContacts::deleteData()
   q=new QSqlQuery(sql);
   delete q;
   delete item;
+  */
 }
 
-
+/*
 void ListContacts::doubleClickedData(QListViewItem *item,const QPoint &pt,int c)
 {
   editData();
 }
-
+*/
 
 void ListContacts::resizeEvent(QResizeEvent *e)
 {
-  list_contacts_list->setGeometry(0,0,size().width(),size().height()-40);
+  //  list_contacts_list->setGeometry(0,0,size().width(),size().height()-40);
   list_add_button->setGeometry(10,size().height()-35,50,30);
   list_edit_button->setGeometry(70,size().height()-35,50,30);
   list_delete_button->setGeometry(130,size().height()-35,50,30);
@@ -192,6 +198,7 @@ void ListContacts::resizeEvent(QResizeEvent *e)
 
 void ListContacts::RefreshList()
 {
+  /*
   QString sql;
   QSqlQuery *q;
   DvtListViewItem *item=NULL;
@@ -214,11 +221,13 @@ void ListContacts::RefreshList()
     item->setText(8,q->value(9).toString());
   }
   delete q;
+  */
 }
 
 
 void ListContacts::UpdateItem(DvtListViewItem *item,Contact *contact)
 {
+  /*
   QString sql;
   QSqlQuery *q;
 
@@ -288,4 +297,5 @@ void ListContacts::UpdateItem(DvtListViewItem *item,Contact *contact)
   item->setText(6,DvtYesNo(contact->programDirector()));
   item->setText(7,DvtYesNo(contact->generalManager()));
   item->setText(8,DvtYesNo(contact->locked()));
+  */
 }

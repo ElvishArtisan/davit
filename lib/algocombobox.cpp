@@ -2,9 +2,7 @@
 //
 // QComboBox for choosing a US state.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: algocombobox.cpp,v 1.1 2007/03/21 13:38:44 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,23 +18,22 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <state_conv.h>
-#include <algocombobox.h>
+#include "algocombobox.h"
+#include "state_conv.h"
 
-
-AlgoComboBox::AlgoComboBox(QWidget *parent,const char *name)
-  : QComboBox(parent,name)
+AlgoComboBox::AlgoComboBox(QWidget *parent)
+  : QComboBox(parent)
 {
-  insertItem("G.722");
-  insertItem("MPEG Layer 2");
-  insertItem("MPEG Layer 3");
-  insertItem("AAC");
+  insertItem(0,"G.722");
+  insertItem(1,"MPEG Layer 2");
+  insertItem(2,"MPEG Layer 3");
+  insertItem(3,"AAC");
 }
 
 
 QString AlgoComboBox::currentAlgoCode() const
 {
-  switch(currentItem()) {
+  switch(currentIndex()) {
       case 0:
 	return "G";
 
@@ -56,15 +53,15 @@ QString AlgoComboBox::currentAlgoCode() const
 void AlgoComboBox::setCurrentAlgoCode(const QString &algo_code)
 {
   if(algo_code=="G") {
-    setCurrentItem(0);
+    setCurrentIndex(0);
   }
   if(algo_code=="2") {
-    setCurrentItem(1);
+    setCurrentIndex(1);
   }
   if(algo_code=="3") {
-    setCurrentItem(2);
+    setCurrentIndex(2);
   }
   if(algo_code=="A") {
-    setCurrentItem(3);
+    setCurrentIndex(3);
   }
 }

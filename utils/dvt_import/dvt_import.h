@@ -1,10 +1,8 @@
 // dvt_import.h
 //
-// A Batch Importer for Rivendell.
+// A Batch Importer for Davit
 //
-//   (C) Copyright 2002-2006 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: dvt_import.h,v 1.1 2008/01/29 16:55:40 fredg Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -26,9 +24,9 @@
 
 #include <list>
 
-#include <qobject.h>
-#include <qsqldatabase.h>
-#include <qfileinfo.h>
+#include <QObject>
+#include <QFileInfo>
+#include <QSqlDatabase>
 
 #include <dvtconfig.h>
 #include <dvtcmdswitch.h>
@@ -40,7 +38,7 @@ class MainObject : public QObject
 {
  public:
   enum TableType {NoTable=0,StationsTable=1,ProgramsTable=2};
-  MainObject(QObject *parent=0,const char *name=0);
+  MainObject(QObject *parent=0);
   DvtConfig *import_config;
   DvtCmdSwitch *import_cmd;
 

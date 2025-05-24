@@ -2,9 +2,7 @@
 //
 // Pick fields for a Davit report.
 //
-//   (C) Copyright 2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: pick_fields.h,v 1.7 2011/02/21 23:41:18 pcvs Exp $
+//   (C) Copyright 2008-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -25,12 +23,12 @@
 
 #include <vector>
 
-#include <qdialog.h>
-#include <qcombobox.h>
-#include <qdatetimeedit.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qlabel.h>
+#include <QComboBox>
+#include <QDateTimeEdit>
+#include <QDialog>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
 
 #include <statecombobox.h>
 
@@ -46,7 +44,7 @@ class PickFields : public QDialog
 	     int *network_id,bool network_all,
 	     PickFields::SortField *sort,
       	     PickFields::MarketType market,
-	     QWidget *parent=0,const char *name=0);
+	     QWidget *parent=0);
   ~PickFields();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

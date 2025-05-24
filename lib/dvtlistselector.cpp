@@ -1,10 +1,8 @@
-//   dvtlistselector.cpp
+// dvtlistselector.cpp
 //
-//   A List Selector Widget.
+// A List Selector Widget.
 //
-//   (C) Copyright 2002,2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtlistselector.cpp,v 1.2 2008/12/19 17:36:55 fredg Exp $
+// (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -23,18 +21,15 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <qwidget.h>
-#include <qhbox.h>
-#include <qvbox.h>
-#include <qstring.h>
-#include <qpixmap.h>
-#include <qpixmap.h>
 
-#include <dvtlistselector.h>
+#include <QWidget>
+#include <QString>
+#include <QPixmap>
 
+#include "dvtlistselector.h"
 
-DvtListSelector::DvtListSelector(QWidget *parent,const char *name)
-  : QHBox(parent,name)
+DvtListSelector::DvtListSelector(QWidget *parent)
+  : QHBoxLayout(parent)
 {
   QFont font;
 
@@ -45,16 +40,16 @@ DvtListSelector::DvtListSelector(QWidget *parent,const char *name)
   font.setPixelSize(10);
 
   setSpacing(10);
-
-  QVBox *source_box=new QVBox(this,"source_box");
-  list_source_label=new QLabel(source_box,"list_source_label");
+  /*
+  QVBoxLayout *source_box=new QVBoxLayout(this);
+  list_source_label=new QLabel(source_box);
   list_source_label->setFont(font);
   list_source_label->setText(tr("Available Services"));
   list_source_label->setAlignment(AlignCenter);
-  list_source_box=new QListBox(source_box,"list_source_box");
+  list_source_box=new QListBox(source_box);
 
-  QVBox *button_box=new QVBox(this,"button_box");
-  list_add_button=new QPushButton(button_box,"list_add_button");
+  QVBoxLayout *button_box=new QVBox(this);
+  list_add_button=new QPushButton(button_box);
   list_add_button->setText(tr("Add >>"));
   list_add_button->setDisabled(true);
   connect(list_add_button,SIGNAL(clicked()),this,SLOT(addData()));
@@ -77,18 +72,21 @@ DvtListSelector::DvtListSelector(QWidget *parent,const char *name)
   list_dest_label->setText(tr("Active Services"));
   list_dest_label->setAlignment(AlignCenter);
   list_dest_box=new QListBox(dest_box,"list_dest_box");
+  */
 }
 
 
 uint DvtListSelector::sourceCount() const
 {
-  return list_source_box->count();
+  //  return list_source_box->count();
+  return 0;
 }
 
 
 uint DvtListSelector::destCount() const
 {
-  return list_dest_box->count();
+  //  return list_dest_box->count();
+  return 0;
 }
 
 
@@ -106,108 +104,128 @@ void DvtListSelector::destSetLabel(QString label)
 
 void DvtListSelector::sourceInsertItem(const QString &text,int index)
 {
+  /*
   list_source_box->insertItem(text,index);
   list_source_box->sort();
   CheckButtons();
+  */
 }
 
 
 void DvtListSelector::destInsertItem(const QString &text,int index)
 {
+  /*
   list_dest_box->insertItem(text,index);
   list_dest_box->sort();
   CheckButtons();
+  */
 }
 
 
 void DvtListSelector::sourceRemoveItem(int index)
 {
+  /*
   list_source_box->removeItem(index);
   CheckButtons();
+  */
 }
 
 
 void DvtListSelector::destRemoveItem(int index)
 {
+  /*
   list_dest_box->removeItem(index);
   CheckButtons();
+  */
 }
 
 
 QString DvtListSelector::sourceText(int index) const
 {
-  return list_source_box->text(index);
+  //  return list_source_box->text(index);
+  return QString();
 }
 
 
 QString DvtListSelector::destText(int index) const
 {
-  return list_dest_box->text(index);
+  //  return list_dest_box->text(index);
+  return QString();
 }
 
 
 void DvtListSelector::sourceChangeItem(const QString &text,int index)
 {
+  /*
   list_source_box->changeItem(text,index);
   list_source_box->sort();
+  */
 }
 
 
 void DvtListSelector::destChangeItem(const QString &text,int index)
 {
+  /*
   list_dest_box->changeItem(text,index);
   list_dest_box->sort();
+  */
 }
 
 
 int DvtListSelector::sourceNumItemsVisible() const
 {
-  return list_source_box->numItemsVisible();
+  //  return list_source_box->numItemsVisible();
+  return 0;
 }
 
 
 int DvtListSelector::destNumItemsVisible() const
 {
-  return list_dest_box->numItemsVisible();
+  //  return list_dest_box->numItemsVisible();
+  return 0;
 }
 
 
 int DvtListSelector::sourceCurrentItem() const
 {
-  return list_source_box->currentItem();
+  //  return list_source_box->currentItem();
+  return 0;
 }
 
 
 int DvtListSelector::destCurrentItem() const
 {
-  return list_dest_box->currentItem();
+  //  return list_dest_box->currentItem();
+  return 0;
 }
 
 
 QString DvtListSelector::sourceCurrentText() const
 {
-  return list_source_box->currentText();
+  //  return list_source_box->currentText();
+  return QString();
 }
 
 
 QString DvtListSelector::destCurrentText() const
 {
-  return list_dest_box->currentText();
+  //  return list_dest_box->currentText();
+  return QString();
 }
 
 
 void DvtListSelector::sourceSetCurrentItem(int item)
 {
-  list_source_box->setCurrentItem(item);
+  //list_source_box->setCurrentItem(item);
 }
 
 
 void DvtListSelector::destSetCurrentItem(int item)
 {
-  list_dest_box->setCurrentItem(item);
+  //  list_dest_box->setCurrentItem(item);
 }
 
-
+/*
 QListBoxItem *DvtListSelector::sourceFindItem(const QString &text,
 				      ComparisonFlags compare) const
 {
@@ -220,17 +238,20 @@ QListBoxItem *DvtListSelector::destFindItem(const QString &text,
 {
   return list_dest_box->findItem(text,compare);
 }
-
+*/
 
 void DvtListSelector::clear()
 {
+  /*
   list_source_box->clear();
   list_dest_box->clear();
+  */
 }
 
 
 void DvtListSelector::addData()
 {
+  /*
   if(list_source_box->currentItem()>=0) {
     list_dest_box->
       insertItem(list_source_box->currentText());
@@ -239,11 +260,13 @@ void DvtListSelector::addData()
     list_source_box->setCurrentItem(-1);
     CheckButtons();
   }
+  */
 }
 
 
 void DvtListSelector::addAllData()
 {
+  /*
   for(unsigned i=0;i<list_source_box->count();i++) {
     list_dest_box->
       insertItem(list_source_box->text(i));
@@ -251,11 +274,13 @@ void DvtListSelector::addAllData()
   list_source_box->clear();
   list_dest_box->sort();
   CheckButtons();
+  */
 }
 
 
 void DvtListSelector::removeData()
 {
+  /*
   if(list_dest_box->currentItem()>=0) {
     list_source_box->
       insertItem(list_dest_box->currentText());
@@ -264,11 +289,13 @@ void DvtListSelector::removeData()
     list_dest_box->setCurrentItem(-1);
     CheckButtons();
   }
+  */
 }
 
 
 void DvtListSelector::removeAllData()
 {
+  /*
   for(unsigned i=0;i<list_dest_box->count();i++) {
     list_source_box->
       insertItem(list_dest_box->text(i));
@@ -276,13 +303,16 @@ void DvtListSelector::removeAllData()
   list_dest_box->clear();
   list_source_box->sort();
   CheckButtons();
+  */
 }
 
 
 void DvtListSelector::CheckButtons()
 {
+  /*
   list_add_button->setDisabled(list_source_box->count()==0);
   list_addall_button->setDisabled(list_source_box->count()==0);
   list_remove_button->setDisabled(list_dest_box->count()==0);
   list_removeall_button->setDisabled(list_dest_box->count()==0);
+  */
 }

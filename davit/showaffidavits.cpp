@@ -2,9 +2,7 @@
 //
 // Show an affiliates affidavit status.
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: showaffidavits.cpp,v 1.8 2011/04/29 22:13:25 pcvs Exp $
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,18 +18,20 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qdatetime.h>
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
+#include <QDateTime>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvtconf.h>
 
-#include <showaffidavits.h>
-#include <globals.h>
+#include "globals.h"
+#include "showaffidavits.h"
 
-ShowAffidavits::ShowAffidavits(int id,QWidget *parent,const char *name)
-  : QWidget(parent,name)
+ShowAffidavits::ShowAffidavits(int id,QWidget *parent)
+  : QWidget(parent)
 {
+  /*
   QDate now(QDate::currentDate().year(),QDate::currentDate().month(),1);
   QDate month=now.addMonths(-11);
   int col=0;
@@ -72,6 +72,7 @@ ShowAffidavits::ShowAffidavits(int id,QWidget *parent,const char *name)
   show_mail_button->setFont(label_font);
   show_mail_button->setDisabled(ok||(!email_enabled));
   connect(show_mail_button,SIGNAL(clicked()),this,SLOT(mailClickedData()));
+  */
 }
 
 
@@ -94,12 +95,14 @@ QSizePolicy ShowAffidavits::sizePolicy() const
 
 void ShowAffidavits::setAffiliateStatus(bool state)
 {
+  /*
   if(!state) {
     QListViewItem *item=show_list->firstChild();
     for(int i=0;i<show_list->columns();i++) {
       item->setText(i,"");
     }
   }
+  */
 }
 
 
@@ -124,10 +127,10 @@ void ShowAffidavits::mailClickedData()
 				       q->value(1).toString()+"M");
     affidavit_email_template.replace("%S",q->value(0).toString()+"-"+
 				     q->value(1).toString()+"M");
-    affidavit_email_subject.replace("%U",q->value(0).toString().lower()+"-"+
-				    q->value(1).toString().lower()+"m");
-    affidavit_email_template.replace("%U",q->value(0).toString().lower()+"-"+
-				     q->value(1).toString().lower()+"m");
+    affidavit_email_subject.replace("%U",q->value(0).toString().toLower()+"-"+
+				    q->value(1).toString().toLower()+"m");
+    affidavit_email_template.replace("%U",q->value(0).toString().toLower()+"-"+
+				     q->value(1).toString().toLower()+"m");
     affidavit_email_subject.replace("%P",q->value(2).toString());
     affidavit_email_template.replace("%P",q->value(2).toString());
   }
@@ -156,7 +159,7 @@ void ShowAffidavits::mailClickedData()
                REMARK=\"Sent an affidavit reminder e-mail.\"",
 	      Dvt::RemarkAffidavitReminder,
 	      show_id,
-	      (const char *)DvtEscapeString(global_dvtuser->name()));
+	      DvtEscapeString(global_dvtuser->name()).toUtf8().constData());
     q=new QSqlQuery(sql);
     delete q;
     emit remarksUpdated();

@@ -2,9 +2,7 @@
 //
 // List Davit Reports.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_reports.h,v 1.16 2014/01/02 19:49:13 pcvs Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -25,31 +23,31 @@
 
 #include <vector>
 
-#include <qdialog.h>
-#include <qfontmetrics.h>
-#include <qpushbutton.h>
-#include <qlistview.h>
-#include <qstringlist.h>
-#include <qdatetime.h>
+#include <QDateTime>
+#include <QDialog>
+#include <QFontMetrics>
+#include <QListView>
+#include <QPushButton>
+#include <QStringList>
 
 #include <dvt.h>
 #include <dvtlistviewitem.h>
 #include <spread_sheet.h>
 
-#include <pick_fields.h>
+#include "pick_fields.h"
 
 class ListReports : public QDialog
 {
  Q_OBJECT
  public:
-  ListReports(QWidget *parent=0,const char *name=0);
+  ListReports(QWidget *parent=0);
   ~ListReports();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
 
  private slots:
   void runData();
-  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
+  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
   void closeData();
 
  protected:

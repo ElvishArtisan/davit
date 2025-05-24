@@ -2,9 +2,7 @@
 //
 // Edit a Davit Network.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: edit_network.cpp,v 1.2 2011/06/14 21:47:07 pcvs Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,19 +18,21 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
-
 #include <math.h>
 
-#include <edit_network.h>
+#include <QLabel>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+
+#include "edit_network.h"
 
 
-EditNetwork::EditNetwork(QString *network,QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+EditNetwork::EditNetwork(QString *network,QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   edit_network=network;
 
   //
@@ -43,7 +43,7 @@ EditNetwork::EditNetwork(QString *network,QWidget *parent,const char *name)
   setMaximumWidth(sizeHint().width());
   setMaximumHeight(sizeHint().height());
 
-  setCaption("Davit - Edit Network");
+  setWindowTitle("Davit - Edit Network");
 
   //
   // Create Fonts
@@ -56,21 +56,20 @@ EditNetwork::EditNetwork(QString *network,QWidget *parent,const char *name)
   //
   // Network Name
   //
-  edit_network_edit=new QLineEdit(this,"edit_network_edit");
+  edit_network_edit=new QLineEdit(this);
   edit_network_edit->setGeometry(110,10,sizeHint().width()-120,20);
   edit_network_edit->setFont(font);
   edit_network_edit->setMaxLength(64);
   edit_network_edit->setText(*network);
-  QLabel *label=
-    new QLabel(edit_network_edit,"Network Name:",this,"edit_network_label");
+  QLabel *label=new QLabel("Network Name:",this);
   label->setGeometry(10,10,95,20);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   label->setFont(label_font);
 
   //
   //  OK Button
   //
-  QPushButton *button=new QPushButton(this,"ok_button");
+  QPushButton *button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
   button->setDefault(true);
   button->setFont(label_font);
@@ -80,7 +79,7 @@ EditNetwork::EditNetwork(QString *network,QWidget *parent,const char *name)
   //
   //  Cancel Button
   //
-  button=new QPushButton(this,"cancel_button");
+  button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
   button->setFont(label_font);
   button->setText("&Cancel");
@@ -109,8 +108,10 @@ void EditNetwork::okData()
 {
   QString sql=
     QString().sprintf("update NETWORKS set NAME=\"%s\" where NAME=\"%s\"",
-		      (const char *)DvtEscapeString(edit_network_edit->text()),
-		      (const char *)DvtEscapeString(edit_network_edit->text()));
+		      DvtEscapeString(edit_network_edit->text()).
+		      toUtf8().constData(),
+		      DvtEscapeString(edit_network_edit->text()).
+		      toUtf8().constData());
   QSqlQuery *q=new QSqlQuery(sql);
   delete q;
   *edit_network=edit_network_edit->text();

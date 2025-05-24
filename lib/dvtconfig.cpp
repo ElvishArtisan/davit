@@ -2,7 +2,7 @@
 //
 // A container class for mld(8) Configuration
 //
-//   (C) Copyright 2002-2004 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -18,12 +18,14 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qmessagebox.h>
-#include <qsettings.h>
+#include <stdio.h>
 
-#include <dvtprofile.h>
-#include <dvt.h>
-#include <dvtconfig.h>
+#include <QMessageBox>
+#include <QSettings>
+
+#include "dvt.h"
+#include "dvtconfig.h"
+#include "dvtprofile.h"
 
 
 DvtConfig::DvtConfig()
@@ -92,13 +94,13 @@ void DvtConfig::dumpConfig(FILE *stream)
   if(!mysqlHostname().isEmpty()) {
     fprintf(stream,"[mySQL]\n");
     fprintf(stream,
-	    "  Hostname = %s\n",(const char *)mysqlHostname());
+	    "  Hostname = %s\n",mysqlHostname().toUtf8().constData());
     fprintf(stream,
-	    "  Loginname = %s\n",(const char *)mysqlUsername());
+	    "  Loginname = %s\n",mysqlUsername().toUtf8().constData());
     fprintf(stream,
-	    "  Database = %s\n",(const char *)mysqlDbname());
+	    "  Database = %s\n",mysqlDbname().toUtf8().constData());
     fprintf(stream,
-	    "  Password = %s\n",(const char *)mysqlPassword());
+	    "  Password = %s\n",mysqlPassword().toUtf8().constData());
     fprintf(stream,"\n");
   }
   fprintf(stream,"\n");
@@ -147,8 +149,8 @@ void DvtConfig::clear()
   settings.insertSearchPath(QSettings::Windows,"/ParavelSystems");
   conf_filename=
     QString().sprintf("%s\\%s",
-		      (const char *)settings.
-		      readEntry("/Davit/InstallDir","C:\\etc"),
+		      settings.readEntry("/Davit/InstallDir","C:\\etc").
+		      toUtf8().constData(),
 		      DVT_DEFAULT_WIN_CONF_FILE);
 #else
   conf_filename=DVT_DEFAULT_CONF_FILE;

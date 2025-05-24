@@ -2,7 +2,7 @@
 //
 // Generate an Affiliates by DMA|MSA Market report.
 //
-//   (C) Copyright 2010-2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,14 +20,15 @@
 
 #include <vector>
 
-#include <qfile.h>
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
+#include <QFile>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvttextfile.h>
 #include <dvtconf.h>
 
-#include <list_reports.h>
+#include "list_reports.h"
 
 bool ListReports::AffiliatesByMarketReport(PickFields::MarketType type,
 					   SpreadSheet *sheet)
@@ -118,8 +119,8 @@ bool ListReports::AffiliatesByMarketReport(PickFields::MarketType type,
                                 on (AFFILIATES.ID=AIRINGS.AFFILIATE_ID) \
                                 where (PROGRAM_ID=%d)&&(%s=\"%s\")",
 			pgm_id,
-			(const char *)field_name,
-			(const char *)market);
+			field_name.toUtf8().constData(),
+			market.toUtf8().constData());
   q=new QSqlQuery(sql);
   while(q->next()) {
     // Affiliate

@@ -2,9 +2,7 @@
 //
 // Generate an Affadavit.
 //
-//   (C) Copyright 2002-2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: generate_affadavit.h,v 1.6 2011/03/29 15:38:51 pcvs Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,11 +21,11 @@
 #ifndef GENERATE_AFFADAVIT_H
 #define GENERATE_AFFADAVIT_H
 
-#include <qdialog.h>
-#include <qsqldatabase.h>
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qpushbutton.h>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QDialog>
+#include <QPushButton>
+#include <QSqlDatabase>
 
 #define AFFADAVIT_WIDTH 80
 
@@ -36,8 +34,7 @@ class GenerateAffadavit : public QDialog
   Q_OBJECT
  public:
   enum ReportType {ReportAffiliate=0,ReportProgram=1};
-  GenerateAffadavit(ReportType type,int id,
-		    QWidget *parent=0,const char *name=0);
+  GenerateAffadavit(ReportType type,int id,QWidget *parent=0);
   ~GenerateAffadavit();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

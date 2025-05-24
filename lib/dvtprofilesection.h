@@ -2,9 +2,7 @@
 //
 // A container class for profile sections.
 //
-// (C) Copyright 2002-2003 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtprofilesection.h,v 1.1 2007/11/19 16:53:39 fredg Exp $
+// (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -19,17 +17,13 @@
 //   License along with this program; if not, write to the Free Software
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-//
-
 
 #ifndef DVTPROFILESECTION_H
 #define DVTPROFILESECTION_H
 
 #include <vector>
 
-using namespace std;
-
-#include <qstring.h>
+#include <QString>
 
 #include <dvtprofileline.h>
 
@@ -45,7 +39,7 @@ class DvtProfileSection
 
  private:
   QString section_name;
-  vector<DvtProfileLine> section_line;
+  std::vector<DvtProfileLine> section_line;
 };
 
 

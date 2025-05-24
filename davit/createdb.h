@@ -2,7 +2,7 @@
 //
 // Create a CallCommander Database
 //
-//   (C) Copyright 2002-2004 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -22,13 +22,12 @@
 #ifndef CREATEDB_H
 #define CREATEDB_H
 
-#include <qstring.h>
-
+#include <QString>
 
 bool CreateDb(QString name,QString pwd);
 bool InitDb(QString name,QString pwd);
 bool UpdateDb(int ver);
 
 
-#endif
+#endif  // CREATEDB_H
 

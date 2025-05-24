@@ -1,10 +1,8 @@
 // add_user.cpp
 //
-// Edit a Davit User.
+// Add a Davit User.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: add_user.cpp,v 1.2 2007/11/19 16:53:29 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,19 +18,20 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
-
 #include <math.h>
 
-#include <add_user.h>
+#include <QPushButton>
+#include <QLabel>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
+#include "add_user.h"
 
-AddUser::AddUser(QString *loginname,QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+AddUser::AddUser(QString *loginname,QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   add_loginname=loginname;
 
   //
@@ -43,7 +42,7 @@ AddUser::AddUser(QString *loginname,QWidget *parent,const char *name)
   setMaximumWidth(sizeHint().width());
   setMaximumHeight(sizeHint().height());
 
-  setCaption("Davit - Add User");
+  setWindowTitle("Davit - Add User");
 
   //
   // Create Fonts
@@ -56,20 +55,19 @@ AddUser::AddUser(QString *loginname,QWidget *parent,const char *name)
   //
   // Login Name
   //
-  add_loginname_edit=new QLineEdit(this,"add_loginname_edit");
+  add_loginname_edit=new QLineEdit(this);
   add_loginname_edit->setGeometry(110,10,80,20);
   add_loginname_edit->setFont(font);
   add_loginname_edit->setMaxLength(8);
-  QLabel *label=
-    new QLabel(add_loginname_edit,"Login Name:",this,"add_loginname_label");
+  QLabel *label=new QLabel("Login Name:",this);
   label->setGeometry(10,10,95,20);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   label->setFont(label_font);
 
   //
   //  OK Button
   //
-  QPushButton *button=new QPushButton(this,"ok_button");
+  QPushButton *button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
   button->setDefault(true);
   button->setFont(label_font);
@@ -79,7 +77,7 @@ AddUser::AddUser(QString *loginname,QWidget *parent,const char *name)
   //
   //  Cancel Button
   //
-  button=new QPushButton(this,"cancel_button");
+  button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
   button->setFont(label_font);
   button->setText("&Cancel");
@@ -108,7 +106,7 @@ void AddUser::okData()
 {
   QString sql=
     QString().sprintf("select USER_NAME from USERS where USER_NAME=\"%s\"",
-		      (const char *)add_loginname_edit->text());
+		      add_loginname_edit->text().toUtf8().constData());
   QSqlQuery *q=new QSqlQuery(sql);
   if(q->first()) {
     QMessageBox::warning(this,"User Exists",

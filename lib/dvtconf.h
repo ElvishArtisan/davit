@@ -2,7 +2,7 @@
 //
 // The header file for the dvtconf package
 //
-//   (C) Copyright 1996-2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 1996-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -23,21 +23,22 @@
 
 #define MAX_RETRIES 10
 
-#include <map>
-#include <vector>
-
-#include <qstring.h>
-#include <qdatetime.h>
-#include <qfont.h>
-#include <qhostaddress.h>
-#include <qsqldatabase.h>
-#include <qstringlist.h>
-#include <qvariant.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <dvt.h>
-#include <spread_sheet.h>
+#include <map>
+#include <vector>
+
+#include <QString>
+#include <QDateTime>
+#include <QFont>
+#include <QHostAddress>
+#include <QSqlDatabase>
+#include <QStringList>
+#include <QVariant>
+
+#include "dvt.h"
+#include "spread_sheet.h"
 
 /* Function Prototypes */
 int DvtGetPrivateProfileBool(const char *,const char *,const char *,bool);

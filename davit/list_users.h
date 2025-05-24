@@ -2,9 +2,7 @@
 //
 // List Davit Users.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_users.h,v 1.1 2007/03/16 13:28:33 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,16 +21,15 @@
 #ifndef LIST_USERS_H
 #define LIST_USERS_H
 
-#include <qdialog.h>
-#include <qlistview.h>
-#include <qpushbutton.h>
-
+#include <QDialog>
+#include <QListView>
+#include <QPushButton>
 
 class ListUsers : public QDialog
 {
  Q_OBJECT
  public:
-  ListUsers(QWidget *parent=0,const char *name=0);
+  ListUsers(QWidget *parent=0);
   ~ListUsers();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -41,7 +38,7 @@ class ListUsers : public QDialog
   void addData();
   void editData();
   void deleteData();
-  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
+  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
   void closeData();
 
  protected:
@@ -50,8 +47,8 @@ class ListUsers : public QDialog
  private:
   void DeleteUser (QString loginname);
   void RefreshList();
-  void UpdateItem(QListViewItem *item);
-  QListView *list_users_list;
+  //  void UpdateItem(QListViewItem *item);
+  //  QListView *list_users_list;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;

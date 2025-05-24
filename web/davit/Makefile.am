@@ -19,14 +19,14 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -DQTDIR=\"@QT_DIR@\" @QT_CXXFLAGS@ -I$(top_srcdir)/lib
-LIBS = @QT_LIBS@ -L$(top_srcdir)/lib
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" @QT4_CFLAGS@ -I$(top_srcdir)/lib
+LIBS = -L$(top_srcdir)/lib
 MOC = @QT_MOC@
 
 libexec_PROGRAMS = davit.cgi
 
 dist_davit_cgi_SOURCES = davit.cpp davit.h
-davit_cgi_LDADD = @QT_LIBS@ @VMIME_LIBS@ -ldvt
+davit_cgi_LDADD = @QT4_LIBS@ @VMIME_LIBS@ -ldvt
 
 EXTRA_DIST = davit.pro
 

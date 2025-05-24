@@ -2,9 +2,7 @@
 //
 // Edit a Davit Affiliate.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: edit_affiliate.h,v 1.13 2011/03/14 21:07:36 pcvs Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -25,29 +23,29 @@
 
 #include <vector>
 
-#include <qdialog.h>
-#include <qlineedit.h>
-#include <qlistview.h>
-#include <qtextedit.h>
-#include <qspinbox.h>
-#include <qpushbutton.h>
-#include <qcheckbox.h>
-#include <qbuttongroup.h>
+#include <QDialog>
+#include <QLineEdit>
+#include <QListView>
+#include <QTextEdit>
+#include <QSpinBox>
+#include <QPushButton>
+#include <QCheckBox>
+#include <QButtonGroup>
 
 #include <dvtfeed.h>
 #include <dvtlistviewitem.h>
 
-#include <statecombobox.h>
-#include <list_contacts.h>
-#include <list_airings.h>
-#include <list_remarks.h>
-#include <showaffidavits.h>
+#include "list_contacts.h"
+#include "list_airings.h"
+#include "list_remarks.h"
+#include "showaffidavits.h"
+#include "statecombobox.h"
 
 class EditAffiliate : public QDialog
 {
  Q_OBJECT
  public:
-  EditAffiliate(int id,QWidget *parent=0,const char *name=0);
+  EditAffiliate(int id,QWidget *parent=0);
   ~EditAffiliate();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

@@ -821,3 +821,5 @@
 	macros.
 2025-05-10 Fred Gleason <fredg@paravelsystems.com>
 	* Cleaned up makefiles.
+2025-05-24 Fred Gleason <fredg@paravelsystems.com>
+	* Completed rough port to Qt4.

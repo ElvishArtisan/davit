@@ -2,9 +2,7 @@
 //
 // Edit a Davit Program.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: edit_program.h,v 1.3 2008/12/26 17:10:24 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,12 +21,12 @@
 #ifndef EDIT_PROGRAM_H
 #define EDIT_PROGRAM_H
 
-#include <qdialog.h>
-#include <qlineedit.h>
-#include <qdatetimeedit.h>
-#include <qlistview.h>
-#include <qlabel.h>
-#include <qtextedit.h>
+#include <QDialog>
+#include <QLineEdit>
+#include <QDateTimeEdit>
+#include <QListView>
+#include <QLabel>
+#include <QTextEdit>
 
 #include <algocombobox.h>
 #include <dvtlistviewitem.h>
@@ -38,7 +36,7 @@ class EditProgram : public QDialog
 {
  Q_OBJECT
  public:
-  EditProgram(const QString &pname,QWidget *parent=0,const char *name=0);
+  EditProgram(const QString &pname,QWidget *parent=0);
   ~EditProgram();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -48,7 +46,7 @@ class EditProgram : public QDialog
   void addFeedData();
   void editFeedData();
   void deleteFeedData();
-  void doubleClickedData(QListViewItem *item,const QPoint &pt,int col);
+  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int col);
   void primaryIsdnChangedData(const QString &str);
   void secondaryIsdnChangedData(const QString &str);
   void okData();

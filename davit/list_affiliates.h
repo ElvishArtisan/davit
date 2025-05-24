@@ -2,9 +2,7 @@
 //
 // List Davit Affiliates.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_affiliates.h,v 1.12 2011/08/19 19:58:49 pcvs Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,17 +21,17 @@
 #ifndef LIST_AFFILIATES_H
 #define LIST_AFFILIATES_H
 
-#include <qdialog.h>
-#include <qcheckbox.h>
-#include <qlistview.h>
-#include <qpushbutton.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <qcombobox.h>
-#include <qlineedit.h>
-#include <qsqldatabase.h>
-#include <qprogressdialog.h>
-#include <qpixmap.h>
+#include <QDialog>
+#include <QCheckBox>
+//#include <QListview>
+#include <QPushButton>
+#include <QLineEdit>
+#include <QLabel>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QSqlDatabase>
+#include <QProgressDialog>
+#include <QPixmap>
 
 #include <dvtlistviewitem.h>
 
@@ -41,7 +39,7 @@ class ListAffiliates : public QDialog
 {
  Q_OBJECT
  public:
-  ListAffiliates(QWidget *parent=0,const char *name=0);
+  ListAffiliates(QWidget *parent=0);
   ~ListAffiliates();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -57,7 +55,7 @@ class ListAffiliates : public QDialog
   void deleteData();
   void affadavitData();
   void affidavitReminderData();
-  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
+  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
   void closeData();
 
  protected:
@@ -79,7 +77,7 @@ class ListAffiliates : public QDialog
   QComboBox *list_year_box;
   QLabel *list_callfilter_label;
   QLineEdit *list_callfilter_edit;
-  QListView *list_affiliates_list;
+  //  QListView *list_affiliates_list;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;

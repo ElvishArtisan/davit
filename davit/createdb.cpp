@@ -2,7 +2,7 @@
 //
 // Create, Initialize and/or Update a Davit Database
 //
-//   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -24,20 +24,22 @@
 #include <sys/socket.h>
 #endif  // WIN32
 
-#include <qsqldatabase.h>
-#include <qdatetime.h>
+#include <QDateTime>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
 
 #include <dvt.h>
 #include <dvtconf.h>
-#include <createdb.h>
 
+#include "createdb.h"
 
 bool RunQuery(QString sql)
 {
   QSqlQuery *q=new QSqlQuery(sql);
   if(!q->isActive()) {
-    printf("SQL: %s\n",(const char *)sql);
-    printf("SQL Error: %s\n",(const char *)q->lastError().databaseText());
+    printf("SQL: %s\n",sql.toUtf8().constData());
+    printf("SQL Error: %s\n",q->lastError().databaseText().toUtf8().constData());
     delete q;
     return false;
   }
@@ -693,16 +695,16 @@ bool UpdateDb(int ver)
                                  EMAIL=\"%s\",\
                                  AFFIDAVIT=\"%c\"",
 				q->value(0).toInt(),
-				(const char *)DvtEscapeString(q->value(2+5*i).
-							      toString()),
-				(const char *)DvtEscapeString(q->value(3+5*i).
-							      toString()),
-				(const char *)DvtEscapeString(q->value(4+5*i).
-							      toString()),
-				(const char *)DvtEscapeString(q->value(5+5*i).
-							      toString()),
-				(const char *)DvtEscapeString(q->value(6+5*i).
-							      toString()),
+				DvtEscapeString(q->value(2+5*i).
+						toString()).toUtf8().constData(),
+				DvtEscapeString(q->value(3+5*i).
+						toString()).toUtf8().constData(),
+				DvtEscapeString(q->value(4+5*i).
+						toString()).toUtf8().constData(),
+				DvtEscapeString(q->value(5+5*i).
+						toString()).toUtf8().constData(),
+				DvtEscapeString(q->value(6+5*i).
+						toString()).toUtf8().constData(),
 				affidavit);
 	  q1=new QSqlQuery(sql);
 	  delete q1;
@@ -735,8 +737,8 @@ bool UpdateDb(int ver)
     while(q->next()) {
       sql=QString().
 	sprintf("update AFFILIATES set USER_PASSWORD=\"%s-%sm\" where ID=%d",
-		(const char *)DvtEscapeString(q->value(1).toString().lower()),
-		(const char *)q->value(2).toString().lower(),
+		DvtEscapeString(q->value(1).toString().toLower()).toUtf8().constData(),
+		q->value(2).toString().toLower().toUtf8().constData(),
 		q->value(0).toInt());
       q1=new QSqlQuery(sql);
       delete q1;
@@ -884,16 +886,16 @@ bool UpdateDb(int ver)
                                ((AIR_DATETIME>=\"%s 00:00:00\")&&\
                                 (AIR_DATETIME<\"%s 00:00:00\"))",
 				  q->value(0).toInt(),
-				  (const char *)date.toString("yyyy-MM-dd"),
-				  (const char *)date.addMonths(1).
-				  toString("yyyy-MM-dd"));
+				  date.toString("yyyy-MM-dd").toUtf8().constData(),
+				  date.addMonths(1).
+				  toString("yyyy-MM-dd").toUtf8().constData());
 	    q1=new QSqlQuery(sql);
 	    if(!q1->first()) {   // Synthesize "Old" affidavit data
 	      QString cmd=QString().
 		sprintf("dvtstamp --for-date=%s --for-affiliate-id=%d",
-			(const char *)date.toString("yyyy-MM"),
+			date.toString("yyyy-MM").toUtf8().constData(),
 			q->value(0).toInt());
-	      system(cmd);
+	      system(cmd.toUtf8());
 	    }
 	    delete q1;
 	  }

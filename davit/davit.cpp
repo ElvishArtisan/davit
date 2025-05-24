@@ -2,7 +2,7 @@
 //
 // The Davit Afilliat Manager Interface
 //
-//   (C) Copyright 2002-2004 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -29,35 +29,37 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#include <qapplication.h>
-#include <qwidget.h>
-#include <qpainter.h>
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qfiledialog.h>
-#include <qsettings.h>
-#include <qfile.h>
-#include <qstringlist.h>
-#include <qpixmap.h>
+
+#include <QApplication>
+#include <QFile>
+#include <QFileDialog>
+#include <QLabel>
+#include <QMessageBox>
+#include <QPainter>
+#include <QPixmap>
+#include <QPushButton>
+#include <QSettings>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QStringList>
+#include <QWidget>
 
 #include <dvt.h>
 #include <dvtconfig.h>
 #include <dvtimport.h>
 #include <login.h>
 
-#include <opendb.h>
-#include <createdb.h>
-#include <davit.h>
-#include <globals.h>
-#include <list_users.h>
-#include <list_affiliates.h>
-#include <list_providers.h>
-#include <list_programs.h>
-#include <list_networks.h>
-#include <list_reports.h>
-#include <edit_system.h>
+#include "createdb.h"
+#include "opendb.h"
+#include "davit.h"
+#include "globals.h"
+#include "list_affiliates.h"
+#include "list_providers.h"
+#include "list_programs.h"
+#include "list_networks.h"
+#include "list_reports.h"
+#include "edit_system.h"
+#include "list_users.h"
 
 //
 // Global Classes
@@ -89,8 +91,8 @@ void SigHandler(int signo)
 }
 #endif  // WIN32
 
-MainWidget::MainWidget(QWidget *parent,const char *name)
-  :QWidget(parent,name)
+MainWidget::MainWidget(QWidget *parent)
+  :QWidget(parent)
 {
   QString sql;
   QSqlQuery *q;
@@ -125,8 +127,8 @@ MainWidget::MainWidget(QWidget *parent,const char *name)
   //
   // Create And Set Icon
   //
-  QPixmap *map=new QPixmap(callcommander_xpm);
-  setIcon(*map);
+  QIcon *map=new QIcon(callcommander_xpm);
+  setWindowIcon(*map);
 
   //
   // Load Geometry
@@ -152,14 +154,14 @@ MainWidget::MainWidget(QWidget *parent,const char *name)
   // Log In
   //
   QString password;
-  Login *login=new Login(&loginname,&password,this,"login");
+  Login *login=new Login(&loginname,&password,this);
   if(login->exec()!=0) {
     exit(0);
   }
   sql=QString().sprintf("select USER_NAME from USERS where\
                          USER_NAME=\"%s\" && USER_PASSWORD=password(\"%s\")",
-			(const char *)loginname,
-			(const char *)password);
+			loginname.toUtf8().constData(),
+			password.toUtf8().constData());
   q=new QSqlQuery(sql);
   if(q->size()<=0) {
     QMessageBox::information(this,"Login Failed","Invalid Login!");
@@ -169,8 +171,8 @@ MainWidget::MainWidget(QWidget *parent,const char *name)
   global_dvtuser=new DvtUser(loginname);
   global_dvtsystem=new DvtSystem();
   global_dvtsystem->load();
-  setCaption(QString().sprintf("Davit - User: %s",
-			       (const char *)loginname));
+  setWindowTitle(QString().sprintf("Davit - User: %s",
+			       loginname.toUtf8().constData()));
 
   //
   // Check for E-Mail Capability
@@ -221,20 +223,20 @@ MainWidget::MainWidget(QWidget *parent,const char *name)
   //
   // Title
   //
-  QLabel *label=new QLabel("Davit Affiliate Manager",this,"main_title_label");
+  QLabel *label=new QLabel("Davit Affiliate Manager",this);
   label->setGeometry(10,5,sizeHint().width()-20,20);
   label->setFont(title_font);
-  label->setAlignment(AlignCenter);
+  label->setAlignment(Qt::AlignCenter);
 
-  label=new QLabel("Database Administrator",this,"sub_title_label");
+  label=new QLabel("Database Administrator",this);
   label->setGeometry(10,25,sizeHint().width()-20,20);
   label->setFont(default_font);
-  label->setAlignment(AlignCenter);
+  label->setAlignment(Qt::AlignCenter);
 
   //
   // Manage Users Button
   //
-  QPushButton *button=new QPushButton(this,"users_button");
+  QPushButton *button=new QPushButton(this);
   button->setGeometry(10,50,120,60);
   button->setFont(font);
   button->setText("Manage\n&Users");
@@ -244,7 +246,7 @@ MainWidget::MainWidget(QWidget *parent,const char *name)
   //
   // Generate Reports Button
   //
-  button=new QPushButton(this,"reports_button");
+  button=new QPushButton(this);
   button->setGeometry(150,50,120,60);
   button->setFont(font);
   button->setText("Generate\n&Reports");
@@ -259,7 +261,7 @@ MainWidget::MainWidget(QWidget *parent,const char *name)
   //
   // Manage Program Providers Button
   //
-  button=new QPushButton(this,"providers_button");
+  button=new QPushButton(this);
   button->setGeometry(150,120,120,60);
   button->setFont(font);
   button->setText("Manage\n&Providers");
@@ -269,7 +271,7 @@ MainWidget::MainWidget(QWidget *parent,const char *name)
   //
   // Manage Affiliate Button
   //
-  button=new QPushButton(this,"affiliate_button");
+  button=new QPushButton(this);
   button->setGeometry(10,120,120,60);
   button->setFont(font);
   button->setText("Manage\n&Affiliates");
@@ -279,7 +281,7 @@ MainWidget::MainWidget(QWidget *parent,const char *name)
   //
   // Manage Programs Button
   //
-  button=new QPushButton(this,"programs_button");
+  button=new QPushButton(this);
   button->setGeometry(150,190,120,60);
   button->setFont(font);
   button->setText("Manage\nP&rograms");
@@ -289,7 +291,7 @@ MainWidget::MainWidget(QWidget *parent,const char *name)
   //
   // Manage Networks Button
   //
-  button=new QPushButton(this,"networks_button");
+  button=new QPushButton(this);
   button->setGeometry(10,190,120,60);
   button->setFont(font);
   button->setText("Manage\n&Networks");
@@ -299,7 +301,7 @@ MainWidget::MainWidget(QWidget *parent,const char *name)
   //
   // Manage System Settings Button
   //
-  button=new QPushButton(this,"system_button");
+  button=new QPushButton(this);
   button->setGeometry(10,260,120,60);
   button->setFont(font);
   button->setText("Manage System\nSettings");
@@ -309,7 +311,7 @@ MainWidget::MainWidget(QWidget *parent,const char *name)
   //
   // Import External Data Button
   //
-  button=new QPushButton(this,"bia_button");
+  button=new QPushButton(this);
   button->setGeometry(150,260,120,60);
   button->setFont(font);
   button->setText("&Import\nExternal Data");
@@ -319,7 +321,7 @@ MainWidget::MainWidget(QWidget *parent,const char *name)
   //
   // Quit Button
   //
-  button=new QPushButton(this,"quit_button");
+  button=new QPushButton(this);
   button->setGeometry(10,sizeHint().height()-70,sizeHint().width()-20,60);
   button->setFont(font);
   button->setText("&Quit");
@@ -353,7 +355,7 @@ QSizePolicy MainWidget::sizePolicy() const
 
 void MainWidget::manageUsersData()
 {
-  ListUsers *list=new ListUsers(this,"list");
+  ListUsers *list=new ListUsers(this);
   list->exec();
   global_dvtuser->load();
   delete list;
@@ -372,7 +374,7 @@ void MainWidget::manageSystemData()
 
 void MainWidget::manageProvidersData()
 {
-  ListProviders *list=new ListProviders(this,"list");
+  ListProviders *list=new ListProviders(this);
   list->exec();
   delete list;
 }
@@ -380,7 +382,7 @@ void MainWidget::manageProvidersData()
 
 void MainWidget::manageAffiliateData()
 {
-  ListAffiliates *list=new ListAffiliates(this,"list");
+  ListAffiliates *list=new ListAffiliates(this);
   list->exec();
   delete list;
 }
@@ -388,7 +390,7 @@ void MainWidget::manageAffiliateData()
 
 void MainWidget::manageProgramsData()
 {
-  ListPrograms *list=new ListPrograms(-1,this,"list");
+  ListPrograms *list=new ListPrograms(-1,this);
   list->exec();
   delete list;
 }
@@ -396,7 +398,7 @@ void MainWidget::manageProgramsData()
 
 void MainWidget::manageNetworksData()
 {
-  ListNetworks *list=new ListNetworks(this,"list");
+  ListNetworks *list=new ListNetworks(this);
   list->exec();
   delete list;
 }
@@ -435,11 +437,11 @@ int main(int argc,char *argv[])
 {
   QApplication a(argc,argv);
   
-  MainWidget *w=new MainWidget(NULL,"main");
+  MainWidget *w=new MainWidget(NULL);
   if(exiting) {
       exit(0);
   }
-  a.setMainWidget(w);
+  //  a.setMainWidget(w);
   w->setGeometry(w->geometry().x(),w->geometry().y(),
 		 w->sizeHint().width(),w->sizeHint().height());
   w->show();

@@ -1,10 +1,8 @@
 // add_provider.cpp
 //
-// Edit a Davit Provider.
+// Add a Davit Provider.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: add_provider.cpp,v 1.2 2007/11/19 16:53:29 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,19 +18,20 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
-
 #include <math.h>
 
-#include <add_provider.h>
+#include <QPushButton>
+#include <QLabel>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
+#include "add_provider.h"
 
-AddProvider::AddProvider(QString *bname,QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+AddProvider::AddProvider(QString *bname,QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   add_business_name=bname;
 
   //
@@ -43,7 +42,7 @@ AddProvider::AddProvider(QString *bname,QWidget *parent,const char *name)
   setMaximumWidth(sizeHint().width());
   setMaximumHeight(sizeHint().height());
 
-  setCaption("Davit - Add Provider");
+  setWindowTitle("Davit - Add Provider");
 
   //
   // Create Fonts
@@ -56,20 +55,19 @@ AddProvider::AddProvider(QString *bname,QWidget *parent,const char *name)
   //
   // Station Call
   //
-  add_business_name_edit=new QLineEdit(this,"add_business_name_edit");
+  add_business_name_edit=new QLineEdit(this);
   add_business_name_edit->setGeometry(110,10,sizeHint().width()-120,20);
   add_business_name_edit->setFont(font);
   add_business_name_edit->setMaxLength(64);
-  QLabel *label=new QLabel(add_business_name_edit,"Business Name:",
-			   this,"add_business_name_label");
+  QLabel *label=new QLabel("Business Name:",this);
   label->setGeometry(10,10,95,20);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   label->setFont(label_font);
 
   //
   //  OK Button
   //
-  QPushButton *button=new QPushButton(this,"ok_button");
+  QPushButton *button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
   button->setDefault(true);
   button->setFont(label_font);
@@ -79,7 +77,7 @@ AddProvider::AddProvider(QString *bname,QWidget *parent,const char *name)
   //
   //  Cancel Button
   //
-  button=new QPushButton(this,"cancel_button");
+  button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
   button->setFont(label_font);
   button->setText("&Cancel");
@@ -109,7 +107,7 @@ void AddProvider::okData()
   QString sql=
     QString().sprintf("select BUSINESS_NAME from PROVIDERS \
                        where BUSINESS_NAME=\"%s\"",
-		      (const char *)add_business_name_edit->text());
+		      add_business_name_edit->text().toUtf8().constData());
   QSqlQuery *q=new QSqlQuery(sql);
   if(q->first()) {
     QMessageBox::warning(this,"Provider Exists",

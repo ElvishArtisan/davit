@@ -1,10 +1,8 @@
 // edit_network.h
 //
-// Edit a David Network.
+// Edit a Davit Network.
 //
-//   (C) Copyright 2007,2011 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: edit_network.h,v 1.2 2011/06/14 21:47:07 pcvs Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,9 +21,9 @@
 #ifndef EDIT_NETWORK_H
 #define EDIT_NETWORK_H
 
-#include <qdialog.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
+#include <QDialog>
+#include <QLineEdit>
+#include <QComboBox>
 
 #include <dvtconf.h>
 
@@ -33,7 +31,7 @@ class EditNetwork : public QDialog
 {
  Q_OBJECT
  public:
-  EditNetwork(QString *network,QWidget *parent=0,const char *name=0);
+  EditNetwork(QString *network,QWidget *parent=0);
   ~EditNetwork();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

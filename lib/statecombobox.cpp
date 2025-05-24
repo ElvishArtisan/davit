@@ -2,9 +2,7 @@
 //
 // QComboBox for choosing a US state.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: statecombobox.cpp,v 1.2 2007/03/19 11:20:33 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,73 +18,72 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <state_conv.h>
-#include <statecombobox.h>
+#include "state_conv.h"
+#include "statecombobox.h"
 
-
-StateComboBox::StateComboBox(bool incl_all,QWidget *parent,const char *name)
-  : QComboBox(parent,name)
+StateComboBox::StateComboBox(bool incl_all,QWidget *parent)
+  : QComboBox(parent)
 {
-  insertItem(tr("ALL"));
-  insertItem(tr("Alabama"));
-  insertItem(tr("Alaska"));
-  insertItem(tr("America Samoa"));
-  insertItem(tr("Arizona"));
-  insertItem(tr("Arkansas"));
-  insertItem(tr("California"));
-  insertItem(tr("Colorado"));
-  insertItem(tr("Connecticut"));
-  insertItem(tr("Delaware"));
-  insertItem(tr("District of Columbia"));
-  insertItem(tr("Fedrated States of Micronesia"));
-  insertItem(tr("Florida"));
-  insertItem(tr("Georgia"));
-  insertItem(tr("Guam"));
-  insertItem(tr("Hawaii"));
-  insertItem(tr("Idaho"));
-  insertItem(tr("Illinois"));
-  insertItem(tr("Indiana"));
-  insertItem(tr("Iowa"));
-  insertItem(tr("Kansas"));
-  insertItem(tr("Kentucky"));
-  insertItem(tr("Louisiana"));
-  insertItem(tr("Maine"));
-  insertItem(tr("Marshall Islands"));
-  insertItem(tr("Maryland"));
-  insertItem(tr("Massachusetts"));
-  insertItem(tr("Michigan"));
-  insertItem(tr("Minnesota"));
-  insertItem(tr("Mississippi"));
-  insertItem(tr("Missouri"));
-  insertItem(tr("Montana"));
-  insertItem(tr("Nebraska"));
-  insertItem(tr("Nevada"));
-  insertItem(tr("New Hampshire"));
-  insertItem(tr("New Jersey"));
-  insertItem(tr("New Mexico"));
-  insertItem(tr("New York"));
-  insertItem(tr("North Carolina"));
-  insertItem(tr("North Dakota"));
-  insertItem(tr("Northern Mariana Islands"));
-  insertItem(tr("Ohio"));
-  insertItem(tr("Oklahoma"));
-  insertItem(tr("Oregon"));
-  insertItem(tr("Palau"));
-  insertItem(tr("Pennsylvania"));
-  insertItem(tr("Puerto Rico"));
-  insertItem(tr("Rhode Island"));
-  insertItem(tr("South Carolina"));
-  insertItem(tr("South Dakota"));
-  insertItem(tr("Tennessee"));
-  insertItem(tr("Texas"));
-  insertItem(tr("Utah"));
-  insertItem(tr("Vermont"));
-  insertItem(tr("Virgin Islands"));
-  insertItem(tr("Virginia"));
-  insertItem(tr("Washington"));
-  insertItem(tr("West Virginia"));
-  insertItem(tr("Wisconsin"));
-  insertItem(tr("Wyoming"));
+  insertItem(count(),tr("ALL"));
+  insertItem(count(),tr("Alabama"));
+  insertItem(count(),tr("Alaska"));
+  insertItem(count(),tr("America Samoa"));
+  insertItem(count(),tr("Arizona"));
+  insertItem(count(),tr("Arkansas"));
+  insertItem(count(),tr("California"));
+  insertItem(count(),tr("Colorado"));
+  insertItem(count(),tr("Connecticut"));
+  insertItem(count(),tr("Delaware"));
+  insertItem(count(),tr("District of Columbia"));
+  insertItem(count(),tr("Fedrated States of Micronesia"));
+  insertItem(count(),tr("Florida"));
+  insertItem(count(),tr("Georgia"));
+  insertItem(count(),tr("Guam"));
+  insertItem(count(),tr("Hawaii"));
+  insertItem(count(),tr("Idaho"));
+  insertItem(count(),tr("Illinois"));
+  insertItem(count(),tr("Indiana"));
+  insertItem(count(),tr("Iowa"));
+  insertItem(count(),tr("Kansas"));
+  insertItem(count(),tr("Kentucky"));
+  insertItem(count(),tr("Louisiana"));
+  insertItem(count(),tr("Maine"));
+  insertItem(count(),tr("Marshall Islands"));
+  insertItem(count(),tr("Maryland"));
+  insertItem(count(),tr("Massachusetts"));
+  insertItem(count(),tr("Michigan"));
+  insertItem(count(),tr("Minnesota"));
+  insertItem(count(),tr("Mississippi"));
+  insertItem(count(),tr("Missouri"));
+  insertItem(count(),tr("Montana"));
+  insertItem(count(),tr("Nebraska"));
+  insertItem(count(),tr("Nevada"));
+  insertItem(count(),tr("New Hampshire"));
+  insertItem(count(),tr("New Jersey"));
+  insertItem(count(),tr("New Mexico"));
+  insertItem(count(),tr("New York"));
+  insertItem(count(),tr("North Carolina"));
+  insertItem(count(),tr("North Dakota"));
+  insertItem(count(),tr("Northern Mariana Islands"));
+  insertItem(count(),tr("Ohio"));
+  insertItem(count(),tr("Oklahoma"));
+  insertItem(count(),tr("Oregon"));
+  insertItem(count(),tr("Palau"));
+  insertItem(count(),tr("Pennsylvania"));
+  insertItem(count(),tr("Puerto Rico"));
+  insertItem(count(),tr("Rhode Island"));
+  insertItem(count(),tr("South Carolina"));
+  insertItem(count(),tr("South Dakota"));
+  insertItem(count(),tr("Tennessee"));
+  insertItem(count(),tr("Texas"));
+  insertItem(count(),tr("Utah"));
+  insertItem(count(),tr("Vermont"));
+  insertItem(count(),tr("Virgin Islands"));
+  insertItem(count(),tr("Virginia"));
+  insertItem(count(),tr("Washington"));
+  insertItem(count(),tr("West Virginia"));
+  insertItem(count(),tr("Wisconsin"));
+  insertItem(count(),tr("Wyoming"));
 
   connect(this,SIGNAL(activated(const QString &)),
 	  this,SLOT(activatedData(const QString &)));
@@ -103,8 +100,8 @@ void StateComboBox::setCurrentStateCode(const QString &state_code)
 {
   QString state=AbbreviationToState(state_code);
   for(int i=0;i<count();i++) {
-    if(state==text(i)) {
-      setCurrentItem(i);
+    if(state==itemText(i)) {
+      setCurrentIndex(i);
       return;
     }
   }

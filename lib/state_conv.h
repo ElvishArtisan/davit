@@ -2,7 +2,7 @@
 //
 // Conversion functions for state abreviations.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -21,7 +21,7 @@
 #ifndef STATE_CONV_H
 #define STATE_CONV_H
 
-#include <qstring.h>
+#include <QString>
 
 QString StateToAbbreviation(const QString &str);
 QString AbbreviationToState(const QString &str);

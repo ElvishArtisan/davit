@@ -2,7 +2,7 @@
 //
 // Abstract a spreadhsheet cell.
 //
-//   (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2014-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -21,8 +21,8 @@
 #ifndef SPREAD_CELL_H
 #define SPREAD_CELL_H
 
-#include <qfontmetrics.h>
-#include <qstring.h>
+#include <QFontMetrics>
+#include <QString>
 
 #include <spread.h>
 
@@ -31,7 +31,7 @@ class SpreadCell : public Spread
  public:
   SpreadCell();
   SpreadCell(int col,int row);
-  ~SpreadCell();
+  virtual ~SpreadCell();
   int column() const;
   void setColumn(int col);
   int row() const;

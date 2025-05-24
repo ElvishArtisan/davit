@@ -1,10 +1,8 @@
-//   dvtimport.h
+// dvtimport.h
 //
-//   Data Import Routines for Davit
+// Data Import Routines for Davit
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtimport.h,v 1.2 2008/01/29 16:55:37 fredg Exp $
+// (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -19,14 +17,12 @@
 //   License along with this program; if not, write to the Free Software
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-//
 
 #ifndef DVTIMPORT_H
 #define DVTIMPORT_H
 
-#include <qstring.h>
-#include <qstringlist.h>
-
+#include <QString>
+#include <QStringList>
 
 QStringList DvtGetCommaList(const QString params,bool strip_quotes=false);
 bool DvtImportTable(const QString &srcfile,const QString &desttable,

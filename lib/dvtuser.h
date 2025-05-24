@@ -2,9 +2,7 @@
 //
 // Abstract a Davit user.
 //
-// (C) Copyright 2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtuser.h,v 1.2 2010/10/21 21:07:54 pcvs Exp $
+// (C) Copyright 2008-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -24,7 +22,7 @@
 #ifndef DVTUSER_H
 #define DVTUSER_H
 
-#include <qstring.h>
+#include <QString>
 
 class DvtUser
 {

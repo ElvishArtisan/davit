@@ -2,9 +2,7 @@
 //
 // List Davit Affiliates.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_affiliates.cpp,v 1.28 2011/08/19 19:58:49 pcvs Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,11 +18,14 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qpushbutton.h>
-#include <qlabel.h>
 #include <math.h>
-#include <qmessagebox.h>
-#include <qapplication.h>
+
+#include <QApplication>
+#include <QLabel>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QResizeEvent>
+#include <QSqlQuery>
 
 #ifndef WIN32
 #include <vmime/vmime.hpp>
@@ -34,11 +35,11 @@
 #include <dvtconfig.h>
 #include <dvtmail.h>
 
-#include <list_affiliates.h>
-#include <edit_affiliate.h>
-#include <add_affiliate.h>
-#include <generate_affadavit.h>
-#include <globals.h>
+#include "add_affiliate.h"
+#include "edit_affiliate.h"
+#include "generate_affadavit.h"
+#include "globals.h"
+#include "list_affiliates.h"
 
 //
 // Icons
@@ -47,9 +48,10 @@
 #include "../icons/redball.xpm"
 #include "../icons/whiteball.xpm"
 
-ListAffiliates::ListAffiliates(QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+ListAffiliates::ListAffiliates(QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   QDate today=QDate::currentDate();
 
   //
@@ -58,7 +60,7 @@ ListAffiliates::ListAffiliates(QWidget *parent,const char *name)
   setMinimumWidth(sizeHint().width());
   setMinimumHeight(sizeHint().height());
 
-  setCaption("Davit - Affiliates");
+  setWindowTitle("Davit - Affiliates");
 
   //
   // Create Fonts
@@ -78,85 +80,84 @@ ListAffiliates::ListAffiliates(QWidget *parent,const char *name)
   //
   // Email Progress Dialog
   //
+  /*
   list_email_progress=
     new QProgressDialog(tr("Generating e-mail, please wait..."),
 			tr("Cancel"),100,this);
   list_email_progress->setCaption("Davit");
-
+  */
   //
   // Filter Checkbox
   //
-  list_filter_box=new QCheckBox(this,"list_filter_box");
-  list_filter_label=new QLabel(list_filter_box,tr("Show Affiliates Only"),
-			       this,"list_filter_label");
+  list_filter_box=new QCheckBox(this);
+  list_filter_label=new QLabel(tr("Show Affiliates Only"),this);
   list_filter_label->setFont(font);
-  list_filter_label->setAlignment(AlignVCenter|AlignLeft);
+  list_filter_label->setAlignment(Qt::AlignVCenter|Qt::AlignLeft);
   connect(list_filter_box,SIGNAL(stateChanged(int)),
 	  this,SLOT(filterStateChangedData(int)));
 
   //
   // Missing Data
   //
-  list_missing_box=new QCheckBox(this,"list_missing_box");
+  list_missing_box=new QCheckBox(this);
   list_missing_label=
-    new QLabel(list_missing_box,tr("Show Affiliates Missing:"),
-	       this,"list_filter_label");
+    new QLabel(tr("Show Affiliates Missing:"),this);
   list_missing_label->setFont(font);
-  list_missing_label->setAlignment(AlignVCenter|AlignLeft);
+  list_missing_label->setAlignment(Qt::AlignVCenter|Qt::AlignLeft);
   connect(list_missing_box,SIGNAL(stateChanged(int)),
 	  this,SLOT(missingStateChangedData(int)));
-  list_month_box=new QComboBox(this,"list_month_box");
-  list_month_box->insertItem(tr("January"));
-  list_month_box->insertItem(tr("February"));
-  list_month_box->insertItem(tr("March"));
-  list_month_box->insertItem(tr("April"));
-  list_month_box->insertItem(tr("May"));
-  list_month_box->insertItem(tr("June"));
-  list_month_box->insertItem(tr("July"));
-  list_month_box->insertItem(tr("August"));
-  list_month_box->insertItem(tr("September"));
-  list_month_box->insertItem(tr("October"));
-  list_month_box->insertItem(tr("November"));
-  list_month_box->insertItem(tr("December"));
+  list_month_box=new QComboBox();
+  list_month_box->insertItem(0,tr("January"));
+  list_month_box->insertItem(1,tr("February"));
+  list_month_box->insertItem(2,tr("March"));
+  list_month_box->insertItem(3,tr("April"));
+  list_month_box->insertItem(4,tr("May"));
+  list_month_box->insertItem(5,tr("June"));
+  list_month_box->insertItem(6,tr("July"));
+  list_month_box->insertItem(7,tr("August"));
+  list_month_box->insertItem(8,tr("September"));
+  list_month_box->insertItem(9,tr("October"));
+  list_month_box->insertItem(10,tr("November"));
+  list_month_box->insertItem(11,tr("December"));
   connect(list_month_box,SIGNAL(activated(int)),
 	  this,SLOT(monthActivatedData(int)));
-  list_year_box=new QComboBox(this,"list_year_box");
+  list_year_box=new QComboBox(this);
+  int count=0;
   for(int i=2008;i<(today.year()+1);i++) {
-    list_year_box->insertItem(QString().sprintf("%d",i));
+    list_year_box->insertItem(count++,QString().sprintf("%d",i));
   }
   connect(list_year_box,SIGNAL(activated(int)),
 	  this,SLOT(yearActivatedData(int)));
   QDate last_month=QDate::currentDate().addMonths(-1);
-  list_month_box->setCurrentItem(last_month.month()-1);
-  list_year_box->setCurrentItem(last_month.year()-2008);
+  list_month_box->setCurrentIndex(last_month.month()-1);
+  list_year_box->setCurrentIndex(last_month.year()-2008);
 
   //
   // Call Filter
   //
-  list_callfilter_edit=new QLineEdit(this,"list_callfilter_edit");
-  list_callfilter_label=new QLabel(list_callfilter_edit,tr("Call Filter:"),
-				   this,"list_callfilter_label");
+  list_callfilter_edit=new QLineEdit(this);
+  list_callfilter_label=new QLabel(tr("Call Filter:"),this);
   list_callfilter_label->setFont(font);
-  list_callfilter_label->setAlignment(AlignVCenter|AlignRight);
+  list_callfilter_label->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
   connect(list_callfilter_edit,SIGNAL(textChanged(const QString &)),
 	  this,SLOT(filterTextChangedData(const QString &)));
 
   //
   // Counter
   //
-  list_showing_edit=new QLineEdit(this,"list_showing_edit");
+  list_showing_edit=new QLineEdit(this);
   list_showing_edit->setReadOnly(true);
-  list_showing_label=new QLabel(list_showing_edit,tr("Showing:"),
-				   this,"list_showing_label");
+  list_showing_label=new QLabel(tr("Showing:"),this);
   list_showing_label->setFont(font);
-  list_showing_label->setAlignment(AlignVCenter|AlignRight);
+  list_showing_label->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
   connect(list_showing_edit,SIGNAL(textChanged(const QString &)),
 	  this,SLOT(filterTextChangedData(const QString &)));
 
   //
   // Affiliates List
   //
-  list_affiliates_list=new QListView(this,"list_affiliates_list");
+  /*
+  list_affiliates_list=new QListView(this);
   list_affiliates_list->setMargin(5);
   list_affiliates_list->setAllColumnsShowFocus(true);
   connect(list_affiliates_list,
@@ -164,22 +165,22 @@ ListAffiliates::ListAffiliates(QWidget *parent,const char *name)
 	  this,
 	  SLOT(doubleClickedData(QListViewItem *,const QPoint &,int)));
   list_affiliates_list->addColumn(" ");
-  list_affiliates_list->setColumnAlignment(0,AlignCenter);
+  list_affiliates_list->setColumnAlignment(0,Qt::AlignCenter);
   list_affiliates_list->addColumn("Call");
-  list_affiliates_list->setColumnAlignment(1,AlignCenter);
+  list_affiliates_list->setColumnAlignment(1,Qt::AlignCenter);
   list_affiliates_list->addColumn("City of License");
-  list_affiliates_list->setColumnAlignment(2,AlignLeft|AlignVCenter);
+  list_affiliates_list->setColumnAlignment(2,Qt::AlignLeft|Qt::AlignVCenter);
   list_affiliates_list->addColumn("Type");
-  list_affiliates_list->setColumnAlignment(3,AlignCenter);
+  list_affiliates_list->setColumnAlignment(3,Qt::AlignCenter);
   list_affiliates_list->addColumn("DMA");
-  list_affiliates_list->setColumnAlignment(4,AlignLeft|AlignVCenter);
+  list_affiliates_list->setColumnAlignment(4,Qt::AlignLeft|Qt::AlignVCenter);
   list_affiliates_list->addColumn("Business Name");
-  list_affiliates_list->setColumnAlignment(5,AlignLeft|AlignVCenter);
-
+  list_affiliates_list->setColumnAlignment(5,Qt::AlignLeft|Qt::AlignVCenter);
+  */
   //
   //  Add Button
   //
-  list_add_button=new QPushButton(this,"list_add_button");
+  list_add_button=new QPushButton(this);
   list_add_button->setFont(font);
   list_add_button->setText("&Add");
   list_add_button->
@@ -189,7 +190,7 @@ ListAffiliates::ListAffiliates(QWidget *parent,const char *name)
   //
   //  Edit Button
   //
-  list_edit_button=new QPushButton(this,"list_edit_button");
+  list_edit_button=new QPushButton(this);
   list_edit_button->setFont(font);
   list_edit_button->setText("&Edit");
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
@@ -197,7 +198,7 @@ ListAffiliates::ListAffiliates(QWidget *parent,const char *name)
   //
   //  Delete Button
   //
-  list_delete_button=new QPushButton(this,"list_delete_button");
+  list_delete_button=new QPushButton(this);
   list_delete_button->setFont(font);
   list_delete_button->setText("&Delete");
   list_delete_button->
@@ -207,7 +208,7 @@ ListAffiliates::ListAffiliates(QWidget *parent,const char *name)
   //
   //  Generate Affidavit Button
   //
-  list_affadavit_button=new QPushButton(this,"list_affadavit_button");
+  list_affadavit_button=new QPushButton(this);
   list_affadavit_button->setFont(font);
   list_affadavit_button->setText("&Generate\nAffidavit");
   list_affadavit_button->
@@ -230,7 +231,7 @@ ListAffiliates::ListAffiliates(QWidget *parent,const char *name)
   //
   //  Close Button
   //
-  list_close_button=new QPushButton(this,"list_close_button");
+  list_close_button=new QPushButton(this);
   list_close_button->setDefault(true);
   list_close_button->setFont(font);
   list_close_button->setText("&Close");
@@ -298,12 +299,13 @@ void ListAffiliates::yearActivatedData(int index)
 
 void ListAffiliates::addData()
 {
+  /*
   QString call;
   QString type;
   QString sql;
   QSqlQuery *q;
 
-  AddAffiliate *add=new AddAffiliate(&call,&type,this,"add");
+  AddAffiliate *add=new AddAffiliate(&call,&type,this);
   if(add->exec()==0) {
     sql=QString().sprintf("insert into AFFILIATES set \
                            STATION_CALL=\"%s\",\
@@ -317,7 +319,7 @@ void ListAffiliates::addData()
 			  (const char *)call,(const char *)type);
     q=new QSqlQuery(sql);
     if(q->first()) {
-      EditAffiliate *edit=new EditAffiliate(q->value(0).toInt(),this,"edit");
+      EditAffiliate *edit=new EditAffiliate(q->value(0).toInt(),this);
       if(edit->exec()==0) {
 	DvtListViewItem *item=new DvtListViewItem(list_affiliates_list);
 	item->setText(0,call);
@@ -332,27 +334,31 @@ void ListAffiliates::addData()
     }
   }
   delete add;
+  */
 }
 
 
 void ListAffiliates::editData()
 {
+  /*
   DvtListViewItem *item=
     (DvtListViewItem *)list_affiliates_list->selectedItem();
   
   if(item==NULL) {
     return;
   }
-  EditAffiliate *edit=new EditAffiliate(item->id(),this,"edit");
+  EditAffiliate *edit=new EditAffiliate(item->id(),this);
   if(edit->exec()==0) {
     UpdateItem(item);
   }
   delete edit;
+  */
 }
 
 
 void ListAffiliates::deleteData()
 {
+  /*
   DvtListViewItem *item=
     (DvtListViewItem *)list_affiliates_list->selectedItem();
 
@@ -368,11 +374,13 @@ void ListAffiliates::deleteData()
   }
   DeleteAffiliate(item->id());
   delete item;
+  */
 }
 
 
 void ListAffiliates::affadavitData()
 {
+  /*
   DvtListViewItem *item=
     (DvtListViewItem *)list_affiliates_list->selectedItem();
   
@@ -384,26 +392,29 @@ void ListAffiliates::affadavitData()
 			  this,"edit");
   edit->exec();
   delete edit;
+  */
 }
 
 
 void ListAffiliates::affidavitReminderData()
 {
+  /*
   if(QMessageBox::question(this,"Davit - List Affiliates",
 			   tr("This will send an affidavit reminder e-mail to")+
 			   QString().sprintf(" %d ",list_affiliates_list->childCount())+tr("affiliates.\nProceed?"),QMessageBox::Yes,QMessageBox::No)!=QMessageBox::Yes) {
     return;
   }
   SendAffidavitReminder();
+  */
 }
 
-
+/*
 void ListAffiliates::doubleClickedData(QListViewItem *item,const QPoint &pt,
 				      int c)
 {
   editData();
 }
-
+*/
 
 void ListAffiliates::closeData()
 {
@@ -423,8 +434,8 @@ void ListAffiliates::resizeEvent(QResizeEvent *e)
   list_showing_label->setGeometry(505,8,60,20);
   list_callfilter_edit->setGeometry(e->size().width()-60,7,50,20);
   list_callfilter_label->setGeometry(e->size().width()-135,8,70,20);
-  list_affiliates_list->
-    setGeometry(10,32,size().width()-20,size().height()-102);
+  //  list_affiliates_list->
+  //    setGeometry(10,32,size().width()-20,size().height()-102);
   list_add_button->setGeometry(10,size().height()-60,80,50);
   list_edit_button->setGeometry(100,size().height()-60,80,50);
   list_delete_button->setGeometry(190,size().height()-60,80,50);
@@ -436,6 +447,7 @@ void ListAffiliates::resizeEvent(QResizeEvent *e)
 
 void ListAffiliates::SendAffidavitReminder()
 {
+  /*
 #ifndef WIN32
   QString sql;
   QSqlQuery *q;
@@ -447,7 +459,7 @@ void ListAffiliates::SendAffidavitReminder()
   unsigned errs=0;
   int count=0;
   int step=0;
-  int step_size=list_affiliates_list->childCount()/100;
+  //  int step_size=list_affiliates_list->childCount()/100;
   QString invalid_addrs;
 
   //
@@ -569,6 +581,7 @@ void ListAffiliates::SendAffidavitReminder()
 			     invalid_addrs);
   }
 #endif  // WIN32
+  */
 }
 
 
@@ -585,6 +598,7 @@ void ListAffiliates::DeleteAffiliate(int id)
 
 void ListAffiliates::RefreshList()
 {
+  /*
   QString sql;
   QSqlQuery *q;
   DvtListViewItem *item;
@@ -644,11 +658,6 @@ void ListAffiliates::RefreshList()
       item->setText(1,q->value(1).toString()+suffix);
       item->setText(2,DvtFormatCityState(q->value(2).toString(),
 					 q->value(3).toString()));
-      /*
-      if(q->value(4).toString().lower()!="us") {
-	item->setText(2,item->text(2)+", "+q->value(4).toString());
-      }
-      */
       if(q->value(7).toString().isEmpty()) {
 	item->setText(4,"[none]");
       }
@@ -662,11 +671,13 @@ void ListAffiliates::RefreshList()
   }
   delete q;
   list_showing_edit->setText(QString().sprintf("%d",count));
+*/
 }
 
 
 void ListAffiliates::UpdateItem(DvtListViewItem *item)
 {
+  /*
   QString sql;
   QSqlQuery *q;
   QString suffix;
@@ -691,11 +702,6 @@ void ListAffiliates::UpdateItem(DvtListViewItem *item)
     }
     item->setText(2,DvtFormatCityState(q->value(0).toString(),
 				       q->value(1).toString()));
-    /*
-    if(q->value(2).toString().lower()!="us") {
-      item->setText(2,item->text(1)+", "+q->value(2).toString());
-    }
-    */
     if(q->value(4).toString().lower()=="a") {
       item->setText(3,tr("AM"));
       suffix="-AM";
@@ -720,6 +726,7 @@ void ListAffiliates::UpdateItem(DvtListViewItem *item)
     item->setText(5,q->value(5).toString());
   }
   delete q;
+*/
 }
 
 
@@ -752,7 +759,7 @@ QString ListAffiliates::FilterSql(const QString &filter,bool affils_only,
   }
   else {
     ret+=QString().sprintf("(STATION_CALL like \"%%%s%%\")",
-			   (const char *)filter);
+			   filter.toUtf8().constData());
   }
   return ret;
 }

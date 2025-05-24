@@ -2,7 +2,7 @@
 //
 // Abstract a spreadsheet tab.
 //
-//   (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2014-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -18,7 +18,7 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qobject.h>
+#include <QObject>
 
 #include "spread_tab.h"
 
@@ -200,13 +200,13 @@ QString SpreadTab::WriteExcelXmlFormat()
   int rows=maximumRow();
   for(int i=0;i<cols;i++) {
     xml+="<Column ss:Width=\""+
-      QString().sprintf("%10.4lf",0.8*columnWidth(i+1)).stripWhiteSpace()+
+      QString().sprintf("%10.4lf",0.8*columnWidth(i+1)).trimmed()+
       "\"/>\n";
   }
 
   for(int i=0;i<rows;i++) {
     xml+="<Row ss:Height=\""+
-      QString().sprintf("%10.4lf",0.8*rowHeight(i+1)).stripWhiteSpace()+"\">\n";
+      QString().sprintf("%10.4lf",0.8*rowHeight(i+1)).trimmed()+"\">\n";
     for(int j=0;j<cols;j++) {
       if((c=cell(j+1,i+1))!=NULL) {
 	xml+="<Cell>\n";

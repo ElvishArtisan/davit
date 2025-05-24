@@ -18,8 +18,8 @@
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -DQTDIR=\"@QT_DIR@\" @QT_CXXFLAGS@ -I$(top_srcdir)/lib
-LIBS = @QT_LIBS@ -L$(top_srcdir)/lib
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" @QT4_CFLAGS@ -I$(top_srcdir)/lib
+LIBS = -L$(top_srcdir)/lib
 MOC = @QT_MOC@
 
 # QT's Meta Object Compiler (moc)
@@ -116,7 +116,7 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_preview.cpp\
                        moc_showaffidavits.cpp
 
-davit_LDADD = -ldvt @VMIME_LIBS@ @QT_LIBS@
+davit_LDADD = -ldvt @VMIME_LIBS@ @QT4_LIBS@
 
 EXTRA_DIST = davit.pro
 

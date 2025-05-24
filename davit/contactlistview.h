@@ -2,7 +2,7 @@
  *
  *   A QListViewItem class for the ListContacts widget.
  *
- *   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
+ *   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as
@@ -23,7 +23,7 @@
 #ifndef CONTACTLISTVIEW_H
 #define CONTACTLISTVIEW_H
 
-#include <qpopupmenu.h>
+//#include <qpopupmenu.h>
 
 #include <dvtlistviewitem.h>
 
@@ -41,7 +41,7 @@ class ContactListView : public QListView
   void contentsMousePressEvent(QMouseEvent *e);
 
  private:
-  QPopupMenu *item_menu;
+  //  QPopupMenu *item_menu;
   DvtListViewItem *item_menu_item;
   QWidget *item_parent;
 };

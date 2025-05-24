@@ -2,9 +2,7 @@
 //
 // A class to read an ini formatted configuration file.
 //
-// (C) Copyright 2002-2003 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtprofile.h,v 1.1 2007/11/19 16:53:36 fredg Exp $
+// (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -21,15 +19,12 @@
 //
 //
 
-
 #ifndef DVTPROFILE_H
 #define DVTPROFILE_H
 
-
 #include <vector>
-using namespace std;
 
-#include <qstring.h>
+#include <QString>
 
 #include <dvtprofilesection.h>
 
@@ -65,7 +60,7 @@ class DvtProfile
 
  private:
   QString profile_source;
-  vector<DvtProfileSection> profile_section;
+  std::vector<DvtProfileSection> profile_section;
 };
 
 

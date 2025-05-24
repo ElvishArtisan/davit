@@ -1,10 +1,8 @@
 // dvt_import.cpp
 //
-// A Batch Importer for Rivendell.
+// A Batch Importer for Davit
 //
-//   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: dvt_import.cpp,v 1.5 2008/03/10 13:30:12 fredg Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -29,18 +27,19 @@
 #include <fcntl.h>
 #include <ctype.h>
 
-#include <qapplication.h>
-#include <qdir.h>
+#include <QCoreApplication>
+#include <QDir>
+#include <QSqlQuery>
 
 #include <dvt.h>
 #include <dvtconf.h>
 #include <dvtimport.h>
 
-#include <dvt_import.h>
+#include "dvt_import.h"
 
 
-MainObject::MainObject(QObject *parent,const char *name)
-  :QObject(parent,name)
+MainObject::MainObject(QObject *parent)
+  :QObject(parent)
 {
   MainObject::TableType table=MainObject::NoTable;
   QString filename;
@@ -67,6 +66,7 @@ MainObject::MainObject(QObject *parent,const char *name)
   //
   // Open Database
   //
+  /*
   QSqlDatabase *db=QSqlDatabase::addDatabase(import_config->mysqlDbtype());
   if(!db) {
     fprintf(stderr,"rdimport: unable to initialize connection to database\n");
@@ -82,7 +82,7 @@ MainObject::MainObject(QObject *parent,const char *name)
     db->removeDatabase(import_config->mysqlDbname());
     exit(256);
   }
-
+  */
   //
   // Get Arguments
   //
@@ -152,7 +152,7 @@ void MainObject::ImportStationsTable(const QString &filename)
     fprintf(stderr,"dvt_import: invalid filename\n");
     exit(256);
   }
-  FILE *f=fopen(filename,"r");
+  FILE *f=fopen(filename.toUtf8(),"r");
   if(f==NULL) {
     perror("dvt_import");
     exit(256);
@@ -176,7 +176,7 @@ void MainObject::ImportStationsTable(const QString &filename)
       //
       if(!values[52].isEmpty()) {
 	sql1=QString().sprintf("select ID from NETWORKS where NAME=\"%s\"",
-			       (const char *)values[52]);
+			       values[52].toUtf8().constData());
 	q=new QSqlQuery(sql1);
 	if(q->first()) {
 	  second_network_id=q->value(0).toInt();
@@ -184,7 +184,8 @@ void MainObject::ImportStationsTable(const QString &filename)
 	else {
 	  second_network_id=new_network_id;
 	  sql1=QString().sprintf("insert into NETWORKS set ID=%d,NAME=\"%s\"",
-				 new_network_id,(const char *)values[52]);
+				 new_network_id,
+				 values[52].toUtf8().constData());
 	  delete q;
 	  q=new QSqlQuery(sql1);
 	  new_network_id++;
@@ -234,39 +235,39 @@ void MainObject::ImportStationsTable(const QString &filename)
                                TIME_ZONE=\"%s\",\
                                SECOND_NETWORK_ID=%d \
                                where ID=%d",
-			      (const char *)DvtEscapeString(values[2]),
-			      (const char *)DvtEscapeString(type),
+			      DvtEscapeString(values[2]).toUtf8().constData(),
+			      (const char *)DvtEscapeString(type).toUtf8().constData(),
 			      freq,
 			      values[19].toDouble(),
 			      values[20].toDouble(),
-			      (const char *)DvtEscapeString(values[4]),
-			      (const char *)DvtEscapeString(values[28]),
-			      (const char *)DvtEscapeString(values[29]),
-			      (const char *)DvtEscapeString(values[22]),
-			      (const char *)DvtEscapeString(values[6]),
-			      (const char *)DvtEscapeString(values[7]),
-			      (const char *)DvtEscapeString(values[8]),
-			      (const char *)DvtEscapeString(values[9]),
-			      (const char *)DvtEscapeString(values[14]),
-			      (const char *)DvtEscapeString(values[15]),
-			      (const char *)DvtEscapeString(values[23]),
-			      (const char *)DvtEscapeString(values[24]),
-			      (const char *)DvtEscapeString(values[26]),
+			      DvtEscapeString(values[4]).toUtf8().constData(),
+			      DvtEscapeString(values[28]).toUtf8().constData(),
+			      DvtEscapeString(values[29]).toUtf8().constData(),
+			      DvtEscapeString(values[22]).toUtf8().constData(),
+			      DvtEscapeString(values[6]).toUtf8().constData(),
+			      DvtEscapeString(values[7]).toUtf8().constData(),
+			      DvtEscapeString(values[8]).toUtf8().constData(),
+			      DvtEscapeString(values[9]).toUtf8().constData(),
+			      DvtEscapeString(values[14]).toUtf8().constData(),
+			      DvtEscapeString(values[15]).toUtf8().constData(),
+			      DvtEscapeString(values[23]).toUtf8().constData(),
+			      DvtEscapeString(values[24]).toUtf8().constData(),
+			      DvtEscapeString(values[26]).toUtf8().constData(),
 			      values[27].toDouble(),
 			      values[21].toDouble(),
-			      (const char *)DvtEscapeString(values[16]),
-			      (const char *)DvtEscapeString(values[17]),
-			      (const char *)DvtEscapeString(values[36]),
-			      (const char *)DvtEscapeString(values[37]),
-			      (const char *)DvtEscapeString(values[18]),
-			      (const char *)DvtEscapeString(values[38]),
-			      (const char *)DvtEscapeString(values[39]),
-			      (const char *)DvtEscapeString(values[40]),
-			      (const char *)DvtEscapeString(values[41]),
-			      (const char *)DvtEscapeString(values[42]),
-			      (const char *)DvtEscapeString(values[43]),
-			      (const char *)DvtEscapeString(biacode),
-                              (const char *)DvtEscapeString(values[48]),
+			      DvtEscapeString(values[16]).toUtf8().constData(),
+			      DvtEscapeString(values[17]).toUtf8().constData(),
+			      DvtEscapeString(values[36]).toUtf8().constData(),
+			      DvtEscapeString(values[37]).toUtf8().constData(),
+			      DvtEscapeString(values[18]).toUtf8().constData(),
+			      DvtEscapeString(values[38]).toUtf8().constData(),
+			      DvtEscapeString(values[39]).toUtf8().constData(),
+			      DvtEscapeString(values[40]).toUtf8().constData(),
+			      DvtEscapeString(values[41]).toUtf8().constData(),
+			      DvtEscapeString(values[42]).toUtf8().constData(),
+			      DvtEscapeString(values[43]).toUtf8().constData(),
+			      DvtEscapeString(biacode).toUtf8().constData(),
+                              DvtEscapeString(values[48]).toUtf8().constData(),
 			      second_network_id,
 			      values[0].toInt());
       }
@@ -310,41 +311,43 @@ void MainObject::ImportStationsTable(const QString &filename)
                                TIME_ZONE=\"%s\",\
                                SECOND_NETWORK_ID=%d",
 			      values[0].toInt(),
-			      (const char *)DvtEscapeString(values[2]),
-			      (const char *)DvtEscapeString(type),
-			      (const char *)DvtEscapeString(values[2].lower()),
-			      (const char *)DvtEscapeString(type.lower()),
+			      DvtEscapeString(values[2]).toUtf8().constData(),
+			      DvtEscapeString(type).toUtf8().constData(),
+			      DvtEscapeString(values[2].toLower()).
+			      toUtf8().constData(),
+			      DvtEscapeString(type.toLower()).
+			      toUtf8().constData(),
 			      freq,
 			      values[19].toDouble(),
 			      values[20].toDouble(),
-			      (const char *)DvtEscapeString(values[4]),
-			      (const char *)DvtEscapeString(values[28]),
-			      (const char *)DvtEscapeString(values[29]),
-			      (const char *)DvtEscapeString(values[22]),
-			      (const char *)DvtEscapeString(values[6]),
-			      (const char *)DvtEscapeString(values[7]),
-			      (const char *)DvtEscapeString(values[8]),
-			      (const char *)DvtEscapeString(values[9]),
-			      (const char *)DvtEscapeString(values[14]),
-			      (const char *)DvtEscapeString(values[15]),
-			      (const char *)DvtEscapeString(values[23]),
-			      (const char *)DvtEscapeString(values[24]),
-			      (const char *)DvtEscapeString(values[26]),
+			      DvtEscapeString(values[4]).toUtf8().constData(),
+			      DvtEscapeString(values[28]).toUtf8().constData(),
+			      DvtEscapeString(values[29]).toUtf8().constData(),
+			      DvtEscapeString(values[22]).toUtf8().constData(),
+			      DvtEscapeString(values[6]).toUtf8().constData(),
+			      DvtEscapeString(values[7]).toUtf8().constData(),
+			      DvtEscapeString(values[8]).toUtf8().constData(),
+			      DvtEscapeString(values[9]).toUtf8().constData(),
+			      DvtEscapeString(values[14]).toUtf8().constData(),
+			      DvtEscapeString(values[15]).toUtf8().constData(),
+			      DvtEscapeString(values[23]).toUtf8().constData(),
+			      DvtEscapeString(values[24]).toUtf8().constData(),
+			      DvtEscapeString(values[26]).toUtf8().constData(),
 			      values[27].toDouble(),
 			      values[21].toDouble(),
-			      (const char *)DvtEscapeString(values[16]),
-			      (const char *)DvtEscapeString(values[17]),
-			      (const char *)DvtEscapeString(values[36]),
-			      (const char *)DvtEscapeString(values[37]),
-			      (const char *)DvtEscapeString(values[18]),
-			      (const char *)DvtEscapeString(values[38]),
-			      (const char *)DvtEscapeString(values[39]),
-			      (const char *)DvtEscapeString(values[40]),
-			      (const char *)DvtEscapeString(values[41]),
-			      (const char *)DvtEscapeString(values[42]),
-			      (const char *)DvtEscapeString(values[43]),
-			      (const char *)DvtEscapeString(biacode),
-			      (const char *)DvtEscapeString(values[48]),
+			      DvtEscapeString(values[16]).toUtf8().constData(),
+			      DvtEscapeString(values[17]).toUtf8().constData(),
+			      DvtEscapeString(values[36]).toUtf8().constData(),
+			      DvtEscapeString(values[37]).toUtf8().constData(),
+			      DvtEscapeString(values[18]).toUtf8().constData(),
+			      DvtEscapeString(values[38]).toUtf8().constData(),
+			      DvtEscapeString(values[39]).toUtf8().constData(),
+			      DvtEscapeString(values[40]).toUtf8().constData(),
+			      DvtEscapeString(values[41]).toUtf8().constData(),
+			      DvtEscapeString(values[42]).toUtf8().constData(),
+			      DvtEscapeString(values[43]).toUtf8().constData(),
+			      DvtEscapeString(biacode).toUtf8().constData(),
+			      DvtEscapeString(values[48]).toUtf8().constData(),
 			      second_network_id);
       }
       delete q;
@@ -352,10 +355,10 @@ void MainObject::ImportStationsTable(const QString &filename)
       if(!q->isActive()) {
 	fprintf(stderr,"*************************************************\n");
 	fprintf(stderr,"Insert failed for %s-%s\n\n",
-		(const char *)values[2],(const char *)type);
+		values[2].toUtf8().constData(),type.toUtf8().constData());
 	fprintf(stderr,"  Line %d: %s",line,buf);
 	fprintf(stderr,"\n");
-	fprintf(stderr,"  Rejected SQL: %s\n\n",(const char *)sql);
+	fprintf(stderr,"  Rejected SQL: %s\n\n",sql.toUtf8().constData());
 	fprintf(stderr,"*************************************************\n");
       }
       delete q;
@@ -388,7 +391,7 @@ void MainObject::ImportProgramsTable(const QString &filename)
     fprintf(stderr,"dvt_import: invalid filename\n");
     exit(256);
   }
-  FILE *f=fopen(filename,"r");
+  FILE *f=fopen(filename.toUtf8(),"r");
   if(f==NULL) {
     perror("dvt_import");
     exit(256);
@@ -399,7 +402,7 @@ void MainObject::ImportProgramsTable(const QString &filename)
   while(fgets(buf,1024,f)!=NULL) {
     values=DvtGetCommaList(buf,true);
     sql=QString().sprintf("select ID from PROGRAMS where PROGRAM_NAME=\"%s\"",
-			  (const char *)DvtEscapeString(values[2]));
+			  DvtEscapeString(values[2]).toUtf8().constData());
     q=new QSqlQuery(sql);
     if(q->first()) {
       program_id=q->value(0).toInt();
@@ -407,13 +410,13 @@ void MainObject::ImportProgramsTable(const QString &filename)
     else {
       sql=QString().sprintf("insert into PROGRAMS set PROGRAM_NAME=\"%s\",\
                              PROVIDER_ID=1",
-			    (const char *)DvtEscapeString(values[2]));
+			    DvtEscapeString(values[2]).toUtf8().constData());
       delete q;
       q=new QSqlQuery(sql);
       delete q;
       sql=QString().sprintf("select ID from PROGRAMS where \
                              PROGRAM_NAME=\"%s\"",
-			    (const char *)DvtEscapeString(values[2]));
+			    DvtEscapeString(values[2]).toUtf8().constData());
       q=new QSqlQuery(sql);
       if(q->first()) {
 	program_id=q->value(0).toInt();
@@ -440,7 +443,8 @@ void MainObject::ImportProgramsTable(const QString &filename)
       sql=QString().sprintf("insert into AIRINGS set AFFILIATE_ID=%d,\
                              PROGRAM_ID=%d,AIR_TIME=\"%s\",AIR_LENGTH=%d,",
 			    values[1].toInt(),program_id,
-			    (const char *)start_time.toString("hh:mm:ss"),
+			    start_time.toString("hh:mm:ss").
+			    toUtf8().constData(),
 			    length);
       if(dow[0]) {
 	sql+="AIR_MON=\"Y\",";
@@ -476,7 +480,7 @@ void MainObject::ImportProgramsTable(const QString &filename)
 
 int main(int argc,char *argv[])
 {
-  QApplication a(argc,argv,false);
-  new MainObject(NULL,"main");
+  QCoreApplication a(argc,argv);
+  new MainObject();
   return a.exec();
 }

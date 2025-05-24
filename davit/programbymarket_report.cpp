@@ -2,7 +2,7 @@
 //
 // Generate a Program by Market report.
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,17 +20,17 @@
 
 #include <vector>
 
-#include <qfile.h>
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
+#include <QFile>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvttextfile.h>
 #include <dvtconf.h>
 #include <state_conv.h>
 
-#include <pick_fields.h>
-#include <list_reports.h>
-
+#include "list_reports.h"
+#include "pick_fields.h"
 
 bool ListReports::ProgramByMarketReport(PickFields::MarketType type,
 					SpreadSheet *sheet)
@@ -123,7 +123,7 @@ bool ListReports::ProgramByMarketReport(PickFields::MarketType type,
     tab->addCell(3,row)->setText(q->value(4).toString());
 
     // State
-    tab->addCell(4,row)->setText(q->value(5).toString().upper());
+    tab->addCell(4,row)->setText(q->value(5).toString().toUpper());
 
     // DMA Market
     tab->addCell(5,row)->setText(q->value(6).toString());

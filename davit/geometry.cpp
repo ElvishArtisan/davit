@@ -160,9 +160,9 @@ void Geometry::save()
   QDir dir(ConfigDir());
 
   if(!dir.exists()) {
-    mkdir(dir.absPath(),0700);
+    mkdir(dir.absolutePath().toUtf8(),0700);
   }
-  if((f=fopen(ConfigPath(),"w"))==NULL) {
+  if((f=fopen(ConfigPath().toUtf8(),"w"))==NULL) {
     fprintf(stderr,"davit: unable to save geometry\n");
     return;
   }

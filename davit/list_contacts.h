@@ -2,9 +2,7 @@
 //
 // List Davit Contacts.
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_contacts.h,v 1.3 2011/01/29 00:32:34 pcvs Exp $
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,19 +21,19 @@
 #ifndef LIST_CONTACTS_H
 #define LIST_CONTACTS_H
 
-#include <qdialog.h>
-#include <qlistview.h>
-#include <qpushbutton.h>
+#include <QDialog>
+#include <QListView>
+#include <QPushButton>
 
 #include <contactlistview.h>
 
-#include <edit_contact.h>
+#include "edit_contact.h"
 
 class ListContacts : public QDialog
 {
  Q_OBJECT
  public:
-  ListContacts(int id,QWidget *parent=0,const char *name=0);
+  ListContacts(int id,QWidget *parent=0);
   ~ListContacts();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -49,7 +47,7 @@ class ListContacts : public QDialog
   void addData();
   void editData();
   void deleteData();
-  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
+  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
 
  protected:
   void resizeEvent(QResizeEvent *e);
@@ -57,7 +55,7 @@ class ListContacts : public QDialog
  private:
   void RefreshList();
   void UpdateItem(DvtListViewItem *item,Contact *contact);
-  ContactListView *list_contacts_list;
+  //  ContactListView *list_contacts_list;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;

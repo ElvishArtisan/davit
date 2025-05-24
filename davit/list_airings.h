@@ -2,9 +2,7 @@
 //
 // List Davit Airings.
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_airings.h,v 1.1 2011/01/29 00:32:34 pcvs Exp $
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,21 +21,20 @@
 #ifndef LIST_AIRINGS_H
 #define LIST_AIRINGS_H
 
-#include <qdialog.h>
-#include <qlistview.h>
-#include <qpushbutton.h>
-#include <qlistview.h>
+#include <QDialog>
+#include <QListView>
+#include <QPushButton>
 
 #include <dvtlistviewitem.h>
 #include <dvtfeed.h>
 
-#include <edit_contact.h>
+#include "edit_contact.h"
 
 class ListAirings : public QDialog
 {
  Q_OBJECT
  public:
-  ListAirings(int id,QWidget *parent=0,const char *name=0);
+  ListAirings(int id,QWidget *parent=0);
   ~ListAirings();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -52,7 +49,7 @@ class ListAirings : public QDialog
   void addData();
   void editData();
   void deleteData();
-  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
+  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
 
  protected:
   void resizeEvent(QResizeEvent *e);
@@ -60,7 +57,7 @@ class ListAirings : public QDialog
  private:
   void RefreshList();
   void RefreshItem(DvtListViewItem *item,DvtFeed *airing);
-  QListView *list_airings_list;
+  //  QListView *list_airings_list;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;

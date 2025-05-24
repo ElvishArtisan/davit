@@ -1,8 +1,8 @@
 // opendb.h
 //
-// Open a CallCommander Database
+// Open a Davit Database
 //
-//   (C) Copyright 2002-2004 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -21,11 +21,11 @@
 #ifndef OPENDB_H
 #define OPENDB_H
 
-#include <qstring.h>
+#include <QString>
 
 
-bool OpenDb(QString,QString,QString,QString);
+bool OpenDb(QString dbname,QString login,QString pwd,QString host);
 
 
-#endif
+#endif  // OPENDB_H
 

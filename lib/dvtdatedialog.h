@@ -2,9 +2,7 @@
 //
 // A Dialog Box for using an DvtDatePicker widget.
 //
-//   (C) Copyright 2002-2003 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtdatedialog.h,v 1.1 2008/02/01 22:48:06 fredg Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -20,28 +18,25 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-
 #ifndef DVTDATEDIALOG_H
 #define DVTDATEDIALOG_H
 
-#include <qdialog.h>
-#include <qsize.h>
-#include <qsizepolicy.h>
-#include <qpushbutton.h>
-#include <qcolor.h>
-#include <qstring.h>
-#include <qdatetime.h>
-#include <qlabel.h>
+#include <QDialog>
+#include <QSize>
+#include <QSizePolicy>
+#include <QPushButton>
+#include <QColor>
+#include <QString>
+#include <QDateTime>
+#include <QLabel>
 
 #include <dvtdatepicker.h>
-
 
 class DvtDateDialog : public QDialog
 {
  Q_OBJECT
  public:
-  DvtDateDialog(int low_year,int high_year,QWidget *parent=0,
-	       const char *name=0);
+ DvtDateDialog(int low_year,int high_year,QWidget *parent=0);
   ~DvtDateDialog();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

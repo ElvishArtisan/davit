@@ -2,9 +2,7 @@
 //
 // Show an affiliates affidavit status.
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: showaffidavits.h,v 1.3 2011/04/29 22:13:25 pcvs Exp $
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,20 +21,20 @@
 #ifndef SHOWAFFIDAVITS_H
 #define SHOWAFFIDAVITS_H
 
-#include <qwidget.h>
-#include <qlistview.h>
-#include <qpushbutton.h>
+#include <QListView>
+#include <QPushButton>
+#include <QWidget>
 
 #include <dvtlistviewitem.h>
 
-#include <maildialog.h>
-#include <edit_contact.h>
+#include "edit_contact.h"
+#include "maildialog.h"
 
 class ShowAffidavits : public QWidget
 {
  Q_OBJECT
  public:
-  ShowAffidavits(int id,QWidget *parent=0,const char *name=0);
+  ShowAffidavits(int id,QWidget *parent);
   ~ShowAffidavits();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

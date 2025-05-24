@@ -2,9 +2,7 @@
 //
 // Utility for instantiating affiliate schedule data for Davit
 //
-//   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: dvtstamp.cpp,v 1.4 2013/02/26 19:06:17 pcvs Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -29,19 +27,19 @@
 #include <fcntl.h>
 #include <ctype.h>
 
-#include <qapplication.h>
-#include <qdir.h>
-#include <qstringlist.h>
+#include <QCoreApplication>
+#include <QDir>
+#include <QSqlQuery>
+#include <QStringList>
 
 #include <dvt.h>
 #include <dvtconf.h>
 #include <dvtimport.h>
 
-#include <dvtstamp.h>
+#include "dvtstamp.h"
 
-
-MainObject::MainObject(QObject *parent,const char *name)
-  :QObject(parent,name)
+MainObject::MainObject(QObject *parent)
+  :QObject(parent)
 {
   QString sql;
   QSqlQuery *q;
@@ -67,7 +65,7 @@ MainObject::MainObject(QObject *parent,const char *name)
       import_cmd->setProcessed(i,true);
     }
     if(import_cmd->key(i)=="--for-date") {
-      fields=fields.split("-",import_cmd->value(i));
+      fields=import_cmd->value(i).split("-");
       if(fields.size()==3) {
 	for_date=QDate(fields[0].toInt(),fields[1].toInt(),fields[2].toInt());
       }
@@ -91,7 +89,7 @@ MainObject::MainObject(QObject *parent,const char *name)
     }
     if(!import_cmd->processed(i)) {
       fprintf(stderr,"dvtstamp: unknown option %s\n",
-	      (const char *)import_cmd->key(i));
+	      import_cmd->key(i).toUtf8().constData());
       exit(256);
     }
   }
@@ -110,6 +108,7 @@ MainObject::MainObject(QObject *parent,const char *name)
   //
   // Open Database
   //
+  /*
   QSqlDatabase *db=QSqlDatabase::addDatabase(import_config->mysqlDbtype());
   if(!db) {
     fprintf(stderr,"rdimport: unable to initialize connection to database\n");
@@ -125,7 +124,7 @@ MainObject::MainObject(QObject *parent,const char *name)
     db->removeDatabase(import_config->mysqlDbname());
     exit(256);
   }
-
+  */
   //
   // Generate Date Structures
   //
@@ -181,12 +180,12 @@ void MainObject::GenerateSchedule(int affiliate_id,const QDate &date)
   QString sql;
   QSqlQuery *q;
   QSqlQuery *q1;
-  QString dow_field="AIR_"+date.toString("ddd").upper();
+  QString dow_field="AIR_"+date.toString("ddd").toUpper();
 
   sql=QString().sprintf("select PROGRAM_ID,AIR_TIME,AIR_LENGTH from AIRINGS \
                          where (AFFILIATE_ID=%d)&&(%s=\"Y\")",
 			affiliate_id,
-			(const char *)dow_field);
+			dow_field.toUtf8().constData());
   q=new QSqlQuery(sql);
   while(q->next()) {
     sql=QString().sprintf("insert into AIRED set \
@@ -199,9 +198,9 @@ void MainObject::GenerateSchedule(int affiliate_id,const QDate &date)
 			  affiliate_id,
 			  q->value(0).toInt(),
 			  Dvt::AiredStateScheduled,
-			  (const char *)date.toString("yyyy-MM-dd"),
-			  (const char *)q->value(1).toTime().
-			  toString("hh:mm:ss"),
+			  date.toString("yyyy-MM-dd").toUtf8().constData(),
+			  q->value(1).toTime().toString("hh:mm:ss").
+			  toUtf8().constData(),
 			  q->value(2).toInt());
     q1=new QSqlQuery(sql);
     delete q1;
@@ -212,7 +211,7 @@ void MainObject::GenerateSchedule(int affiliate_id,const QDate &date)
 
 int main(int argc,char *argv[])
 {
-  QApplication a(argc,argv,false);
-  new MainObject(NULL,"main");
+  QCoreApplication a(argc,argv);
+  new MainObject();
   return a.exec();
 }

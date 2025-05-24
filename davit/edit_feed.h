@@ -2,7 +2,7 @@
 //
 // Edit a Davit Feed
 //
-//   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -22,13 +22,13 @@
 #ifndef EDIT_FEED_H
 #define EDIT_FEED_H
 
-#include <qdialog.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qcheckbox.h>
-#include <qdatetimeedit.h>
-#include <qpushbutton.h>
+#include <QDialog>
+#include <QLabel>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QDateTimeEdit>
+#include <QPushButton>
 
 #include <dvtfeed.h>
 
@@ -36,7 +36,7 @@ class EditFeed : public QDialog
 {
  Q_OBJECT
  public:
-  EditFeed(DvtFeed *slot,QWidget *parent=0,const char *name=0);
+  EditFeed(DvtFeed *slot,QWidget *parent=0);
   ~EditFeed();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

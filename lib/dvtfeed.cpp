@@ -2,7 +2,7 @@
 //
 // A Container Class for Davit Feeds.
 //
-//   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -19,10 +19,11 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qsqldatabase.h>
+#include <QSqlQuery>
+#include <QSqlDatabase>
 
-#include <dvtfeed.h>
-#include <dvtconf.h>
+#include "dvtconf.h"
+#include "dvtfeed.h"
 
 DvtFeed::DvtFeed()
 {
@@ -107,7 +108,7 @@ int DvtFeed::addToAffiliate(int affiliate_id)
   int program_id=-1;
 
   sql=QString().sprintf("select ID from PROGRAMS where PROGRAM_NAME=\"%s\"",
-			(const char *)slot_name);
+			slot_name.toUtf8().constData());
   q=new QSqlQuery(sql);
   if(q->first()) {
     program_id=q->value(0).toInt();
@@ -143,7 +144,7 @@ int DvtFeed::modifyAffiliate(int airing_id)
   int program_id=-1;
 
   sql=QString().sprintf("select ID from PROGRAMS where PROGRAM_NAME=\"%s\"",
-			(const char *)slot_name);
+			slot_name.toUtf8().constData());
   q=new QSqlQuery(sql);
   if(q->first()) {
     program_id=q->value(0).toInt();
@@ -160,15 +161,16 @@ int DvtFeed::modifyAffiliate(int airing_id)
                            AIR_SAT=\"%s\" \
                            where ID=%d",
 			  program_id,
-			  (const char *)slot_start_time.toString("hh:mm:ss"),
+			  slot_start_time.toString("hh:mm:ss").
+			  toUtf8().constData(),
 			  slot_length,
-			  (const char *)DvtYesNo(slot_dow_active[6]),
-			  (const char *)DvtYesNo(slot_dow_active[0]),
-			  (const char *)DvtYesNo(slot_dow_active[1]),
-			  (const char *)DvtYesNo(slot_dow_active[2]),
-			  (const char *)DvtYesNo(slot_dow_active[3]),
-			  (const char *)DvtYesNo(slot_dow_active[4]),
-			  (const char *)DvtYesNo(slot_dow_active[5]),
+			  DvtYesNo(slot_dow_active[6]).toUtf8().constData(),
+			  DvtYesNo(slot_dow_active[0]).toUtf8().constData(),
+			  DvtYesNo(slot_dow_active[1]).toUtf8().constData(),
+			  DvtYesNo(slot_dow_active[2]).toUtf8().constData(),
+			  DvtYesNo(slot_dow_active[3]).toUtf8().constData(),
+			  DvtYesNo(slot_dow_active[4]).toUtf8().constData(),
+			  DvtYesNo(slot_dow_active[5]).toUtf8().constData(),
 			  airing_id);
     q1=new QSqlQuery(sql);
     delete q1;

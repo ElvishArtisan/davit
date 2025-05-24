@@ -2,9 +2,7 @@
 //
 // Edit a Davit Program.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: edit_program.cpp,v 1.4 2008/12/26 17:10:24 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -22,25 +20,27 @@
 
 #include <math.h>
 
-#include <qpushbutton.h>
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
-#include <qpainter.h>
-#include <qvalidator.h>
+#include <QMessageBox>
+#include <QPainter>
+#include <QPushButton>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QValidator>
 
 #include <dvtconf.h>
-
 #include <dvtlistviewitem.h>
 #include <dvtfeed.h>
-#include <edit_program.h>
-#include <edit_feed.h>
-#include <globals.h>
-#include <migrate_affiliates.h>
 
-EditProgram::EditProgram(const QString &pname,
-			     QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+#include "edit_feed.h"
+#include "edit_program.h"
+#include "globals.h"
+#include "migrate_affiliates.h"
+
+EditProgram::EditProgram(const QString &pname,QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
+
   //
   // Fix the Window Size
   //
@@ -49,7 +49,7 @@ EditProgram::EditProgram(const QString &pname,
   setMaximumWidth(sizeHint().width());
   setMaximumHeight(sizeHint().height());
 
-  setCaption("Davit - Edit Program");
+  setWindowTitle("Davit - Edit Program");
 
   //
   // Create Fonts
@@ -64,24 +64,22 @@ EditProgram::EditProgram(const QString &pname,
   //
   // Program Name
   //
-  edit_program_name_edit=new QLineEdit(this,"edit_program_name_edit");
+  edit_program_name_edit=new QLineEdit(this);
   edit_program_name_edit->setGeometry(125,10,360,20);
   edit_program_name_edit->setFont(font);
   edit_program_name_edit->setReadOnly(true);
-  QLabel *label=new QLabel(edit_program_name_edit,"Program Name:",
-			   this,"edit_program_name_label");
+  QLabel *label=new QLabel("Program Name:",this);
   label->setGeometry(20,10,100,20);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   label->setFont(label_font);
 
   //
   // Program Length
   //
-  edit_program_length_edit=new QTimeEdit(this,"edit_program_length_edit");
+  edit_program_length_edit=new QTimeEdit(this);
   edit_program_length_edit->setGeometry(550,10,sizeHint().width()-560,20);
-  edit_program_length_edit->setDisplay(QTimeEdit::Minutes|QTimeEdit::Seconds);
-  edit_program_length_lineedit=
-    new QLineEdit(this,"edit_program_length_lineedit");
+  edit_program_length_edit->setDisplayFormat("mm:ss");
+  edit_program_length_lineedit=new QLineEdit(this);
   edit_program_length_lineedit->setGeometry(550,10,sizeHint().width()-560,20);
   edit_program_length_lineedit->setFont(font);
   edit_program_length_lineedit->setReadOnly(true);
@@ -91,94 +89,89 @@ EditProgram::EditProgram(const QString &pname,
   else {
     edit_program_length_edit->hide();
   }
-  label=new QLabel(edit_program_length_edit,"Length:",
-		   this,"edit_program_length_label");
+  label=new QLabel("Length:",this);
   label->setGeometry(495,10,50,20);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   label->setFont(label_font);
 
   //
   // Contact Section Label
   //
-  label=new QLabel("Contact",this,"edit_contact_name_label");
+  label=new QLabel("Contact",this);
   label->setGeometry(50,35,70,20);
-  label->setAlignment(AlignCenter);
+  label->setAlignment(Qt::AlignCenter);
   label->setFont(big_font);
 
   //
   // Contact Name
   //
-  edit_contact_name_edit=new QLineEdit(this,"edit_contact_name_edit");
+  edit_contact_name_edit=new QLineEdit(this);
   edit_contact_name_edit->setGeometry(125,57,sizeHint().width()-275,20);
   edit_contact_name_edit->setFont(font);
   edit_contact_name_edit->setMaxLength(64);
   edit_contact_name_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProgramEdit));
-  label=new QLabel(edit_contact_name_edit,"Name:",
-		   this,"edit_contact_name_label");
+  label=new QLabel("Name:",this);
   label->setGeometry(20,57,100,20);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   label->setFont(label_font);
 
   //
   // Contact Phone
   //
-  edit_contact_phone_edit=new QLineEdit(this,"edit_contact_phone_edit");
+  edit_contact_phone_edit=new QLineEdit(this);
   edit_contact_phone_edit->setGeometry(125,79,150,20);
   edit_contact_phone_edit->setFont(font);
   edit_contact_phone_edit->setMaxLength(20);
   edit_contact_phone_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProgramEdit));
-  label=new QLabel(edit_contact_phone_edit,"Phone:",
-		   this,"edit_contact_phone_label");
+  label=new QLabel("Phone:",this);
   label->setGeometry(20,79,100,20);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   label->setFont(label_font);
 
   //
   // Contact Fax
   //
-  edit_contact_fax_edit=new QLineEdit(this,"edit_contact_fax_edit");
+  edit_contact_fax_edit=new QLineEdit(this);
   edit_contact_fax_edit->setGeometry(315,79,150,20);
   edit_contact_fax_edit->setFont(font);
   edit_contact_fax_edit->setMaxLength(20);
   edit_contact_fax_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProgramEdit));
-  label=new QLabel(edit_contact_fax_edit,"Fax:",
-		   this,"edit_contact_fax_label");
+  label=new QLabel("Fax:",this);
   label->setGeometry(280,79,30,20);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   label->setFont(label_font);
 
   //
   // Contact Email
   //
-  edit_contact_email_edit=new QLineEdit(this,"edit_contact_email_edit");
+  edit_contact_email_edit=new QLineEdit(this);
   edit_contact_email_edit->setGeometry(125,101,sizeHint().width()-275,20);
   edit_contact_email_edit->setFont(font);
   edit_contact_email_edit->setMaxLength(64);
   edit_contact_email_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProgramEdit));
-  label=new QLabel(edit_contact_email_edit,"E-Mail Address:",
-		   this,"edit_contact_email_label");
+  label=new QLabel("E-Mail Address:",this);
   label->setGeometry(20,101,100,20);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   label->setFont(label_font);
 
   //
   // Feeds Section Label
   //
-  label=new QLabel("Feeds",this,"edit_feeds_name_label");
+  label=new QLabel("Feeds",this);
   label->setGeometry(100,140,50,20);
-  label->setAlignment(AlignCenter);
+  label->setAlignment(Qt::AlignCenter);
   label->setFont(big_font);
 
   //
   // Feeds List
   //
-  edit_feeds_list=new QListView(this,"edit_feeds_list");
-  edit_feeds_list->
-    setGeometry(70,165,sizeHint().width()-200,100);
+  edit_feeds_list=new QListView(this);
+  edit_feeds_list->setGeometry(70,165,sizeHint().width()-200,100);
+  /*
   edit_feeds_list->setAllColumnsShowFocus(true);
   edit_feeds_list->setItemMargin(5);
   connect(edit_feeds_list,
@@ -186,37 +179,38 @@ EditProgram::EditProgram(const QString &pname,
 	  this,
 	  SLOT(doubleClickedData(QListViewItem *,const QPoint &,int)));
   edit_feeds_list->addColumn(tr("Start Time"));
-  edit_feeds_list->setColumnAlignment(0,AlignCenter);
+  edit_feeds_list->setColumnAlignment(0,Qt::AlignCenter);
   edit_feeds_list->addColumn(tr("Su"));
-  edit_feeds_list->setColumnAlignment(1,AlignCenter);
+  edit_feeds_list->setColumnAlignment(1,Qt::AlignCenter);
   edit_feeds_list->addColumn(tr("Mn"));
-  edit_feeds_list->setColumnAlignment(2,AlignCenter);
+  edit_feeds_list->setColumnAlignment(2,Qt::AlignCenter);
   edit_feeds_list->addColumn(tr("Tu"));
-  edit_feeds_list->setColumnAlignment(3,AlignCenter);
+  edit_feeds_list->setColumnAlignment(3,Qt::AlignCenter);
   edit_feeds_list->addColumn(tr("We"));
-  edit_feeds_list->setColumnAlignment(4,AlignCenter);
+  edit_feeds_list->setColumnAlignment(4,Qt::AlignCenter);
   edit_feeds_list->addColumn(tr("Th"));
-  edit_feeds_list->setColumnAlignment(5,AlignCenter);
+  edit_feeds_list->setColumnAlignment(5,Qt::AlignCenter);
   edit_feeds_list->addColumn(tr("Fr"));
-  edit_feeds_list->setColumnAlignment(6,AlignCenter);
+  edit_feeds_list->setColumnAlignment(6,Qt::AlignCenter);
   edit_feeds_list->addColumn(tr("Sa"));
-  edit_feeds_list->setColumnAlignment(7,AlignCenter);
+  edit_feeds_list->setColumnAlignment(7,Qt::AlignCenter);
+  */
 
-  QPushButton *button=new QPushButton(this,"edit_addfeed_button");
+  QPushButton *button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-120,165,50,30);
   button->setFont(label_font);
   button->setText(tr("Add"));
   button->setEnabled(global_dvtuser->privilege(DvtUser::PrivProgramEdit));
   connect(button,SIGNAL(clicked()),this,SLOT(addFeedData()));
 
-  button=new QPushButton(this,"edit_editfeed_button");
+  button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-120,200,50,30);
   button->setFont(label_font);
   button->setText(tr("Edit"));
   button->setEnabled(global_dvtuser->privilege(DvtUser::PrivProgramEdit));
   connect(button,SIGNAL(clicked()),this,SLOT(editFeedData()));
 
-  button=new QPushButton(this,"edit_deletefeed_button");
+  button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-120,235,50,30);
   button->setFont(label_font);
   button->setText(tr("Delete"));
@@ -226,15 +220,15 @@ EditProgram::EditProgram(const QString &pname,
   //
   // Primary ISDN Section Label
   //
-  label=new QLabel("Primary ISDN Parameters",this,"edit_isdn_name_label");
+  label=new QLabel("Primary ISDN Parameters",this);
   label->setGeometry(75,285,200,20);
-  label->setAlignment(AlignCenter);
+  label->setAlignment(Qt::AlignCenter);
   label->setFont(big_font);
 
   //
   // Primary ISDN Number
   //
-  edit_primary_number_edit=new QLineEdit(this,"edit_primary_number_edit");
+  edit_primary_number_edit=new QLineEdit(this);
   edit_primary_number_edit->setGeometry(175,310,110,20);
   edit_primary_number_edit->setFont(font);
   edit_primary_number_edit->setMaxLength(20);
@@ -242,18 +236,17 @@ EditProgram::EditProgram(const QString &pname,
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProgramEdit));
   connect(edit_primary_number_edit,SIGNAL(textChanged(const QString &)),
 	  this,SLOT(primaryIsdnChangedData(const QString &)));
-  label=new QLabel(edit_primary_number_edit,"Primary ISDN #:",
-		   this,"edit_primary_number_label");
+  label=new QLabel("Primary ISDN #:",this);
   label->setGeometry(70,310,100,20);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   label->setFont(label_font);
 
   //
   // Primary Transmit Algorithm
   //
-  edit_primary_tx_algo_box=new AlgoComboBox(this,"edit_primary_tx_algo_box");
+  edit_primary_tx_algo_box=new AlgoComboBox(this);
   edit_primary_tx_algo_box->setGeometry(175,332,110,20);
-  edit_primary_tx_algo_edit=new QLineEdit(this,"edit_primary_tx_algo_edit");
+  edit_primary_tx_algo_edit=new QLineEdit(this);
   edit_primary_tx_algo_edit->setGeometry(175,332,110,20);
   edit_primary_tx_algo_edit->setFont(font);
   edit_primary_tx_algo_edit->setReadOnly(true);
@@ -264,18 +257,17 @@ EditProgram::EditProgram(const QString &pname,
     edit_primary_tx_algo_box->hide();
   }
   edit_primary_tx_algo_label=
-    new QLabel(edit_primary_tx_algo_box,"Transmit Format:",
-	       this,"edit_primary_tx_algo_label");
+    new QLabel("Transmit Format:",this);
   edit_primary_tx_algo_label->setGeometry(70,332,100,20);
-  edit_primary_tx_algo_label->setAlignment(AlignRight|AlignVCenter);
+  edit_primary_tx_algo_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_primary_tx_algo_label->setFont(label_font);
 
   //
   // Primary Receive Transmit Algorithm
   //
-  edit_primary_rx_algo_box=new AlgoComboBox(this,"edit_primary_rx_algo_box");
+  edit_primary_rx_algo_box=new AlgoComboBox(this);
   edit_primary_rx_algo_box->setGeometry(175,354,110,20);
-  edit_primary_rx_algo_edit=new QLineEdit(this,"edit_primary_tx_algo_edit");
+  edit_primary_rx_algo_edit=new QLineEdit(this);
   edit_primary_rx_algo_edit->setGeometry(175,354,110,20);
   edit_primary_rx_algo_edit->setFont(font);
   edit_primary_rx_algo_edit->setReadOnly(true);
@@ -286,21 +278,19 @@ EditProgram::EditProgram(const QString &pname,
     edit_primary_rx_algo_box->hide();
   }
   edit_primary_rx_algo_label=
-    new QLabel(edit_primary_rx_algo_box,"Receive Format:",
-	       this,"edit_primary_rx_algo_label");
+    new QLabel("Receive Format:",this);
   edit_primary_rx_algo_label->setGeometry(70,354,100,20);
-  edit_primary_rx_algo_label->setAlignment(AlignRight|AlignVCenter);
+  edit_primary_rx_algo_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_primary_rx_algo_label->setFont(label_font);
 
   //
   // Primary Bitrate
   //
-  edit_primary_bitrate_box=new QComboBox(this,"edit_primary_bitrate_box");
+  edit_primary_bitrate_box=new QComboBox(this);
   edit_primary_bitrate_box->setGeometry(175,376,60,20);
-  edit_primary_bitrate_box->insertItem("56000");
-  edit_primary_bitrate_box->insertItem("64000");
-  edit_primary_bitrate_edit=
-    new QLineEdit(this,"edit_primary_bitrate_edit");
+  edit_primary_bitrate_box->insertItem(0,"56000");
+  edit_primary_bitrate_box->insertItem(1,"64000");
+  edit_primary_bitrate_edit=new QLineEdit(this);
   edit_primary_bitrate_edit->setGeometry(175,376,60,20);
   edit_primary_bitrate_edit->setFont(font);
   edit_primary_bitrate_edit->setReadOnly(true);
@@ -310,23 +300,21 @@ EditProgram::EditProgram(const QString &pname,
   else {
     edit_primary_bitrate_box->hide();
   }
-  edit_primary_bitrate_label=new QLabel(edit_primary_bitrate_box,"Bit Rate:",
-		   this,"edit_primary_bitrate_label");
+  edit_primary_bitrate_label=
+    new QLabel("Bit Rate:",this);
   edit_primary_bitrate_label->setGeometry(70,376,100,20);
-  edit_primary_bitrate_label->setAlignment(AlignRight|AlignVCenter);
+  edit_primary_bitrate_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_primary_bitrate_label->setFont(label_font);
 
   //
   // Primary Samplerate
   //
-  edit_primary_samplerate_box=
-    new QComboBox(this,"edit_primary_samplerate_box");
+  edit_primary_samplerate_box=new QComboBox(this);
   edit_primary_samplerate_box->setGeometry(175,398,60,20);
-  edit_primary_samplerate_box->insertItem("32000");
-  edit_primary_samplerate_box->insertItem("44100");
-  edit_primary_samplerate_box->insertItem("48000");
-  edit_primary_samplerate_edit=
-    new QLineEdit(this,"edit_primary_samplerate_edit");
+  edit_primary_samplerate_box->insertItem(0,"32000");
+  edit_primary_samplerate_box->insertItem(1,"44100");
+  edit_primary_samplerate_box->insertItem(2,"48000");
+  edit_primary_samplerate_edit=new QLineEdit(this);
   edit_primary_samplerate_edit->setGeometry(175,398,60,20);
   edit_primary_samplerate_edit->setFont(font);
   edit_primary_samplerate_edit->setReadOnly(true);
@@ -337,21 +325,19 @@ EditProgram::EditProgram(const QString &pname,
     edit_primary_samplerate_box->hide();
   }
   edit_primary_samplerate_label=
-    new QLabel(edit_primary_samplerate_box,"Sample Rate:",
-	       this,"edit_primary_samplerate_label");
+    new QLabel("Sample Rate:",this);
   edit_primary_samplerate_label->setGeometry(70,398,100,20);
-  edit_primary_samplerate_label->setAlignment(AlignRight|AlignVCenter);
+  edit_primary_samplerate_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_primary_samplerate_label->setFont(label_font);
 
   //
   // Primary Channels
   //
-  edit_primary_channels_box=
-    new QComboBox(this,"edit_primary_channels_box");
+  edit_primary_channels_box=new QComboBox(this);
   edit_primary_channels_box->setGeometry(175,420,40,20);
-  edit_primary_channels_box->insertItem("1");
-  edit_primary_channels_box->insertItem("2");
-  edit_primary_channels_edit=new QLineEdit(this,"edit_primary_channels_edit");
+  edit_primary_channels_box->insertItem(0,"1");
+  edit_primary_channels_box->insertItem(1,"2");
+  edit_primary_channels_edit=new QLineEdit(this);
   edit_primary_channels_edit->setGeometry(175,420,40,20);
   edit_primary_channels_edit->setFont(font);
   edit_primary_channels_edit->setReadOnly(true);
@@ -362,24 +348,23 @@ EditProgram::EditProgram(const QString &pname,
     edit_primary_channels_box->hide();
   }
   edit_primary_channels_label=
-    new QLabel(edit_primary_channels_box,"Channels:",
-	       this,"edit_primary_channels_label");
+    new QLabel("Channels:",this);
   edit_primary_channels_label->setGeometry(70,420,100,20);
-  edit_primary_channels_label->setAlignment(AlignRight|AlignVCenter);
+  edit_primary_channels_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_primary_channels_label->setFont(label_font);
 
   //
   // Secondary ISDN Section Label
   //
-  label=new QLabel("Secondary ISDN Parameters",this,"edit_isdn_name_label");
+  label=new QLabel("Secondary ISDN Parameters",this);
   label->setGeometry(315,285,220,20);
-  label->setAlignment(AlignCenter);
+  label->setAlignment(Qt::AlignCenter);
   label->setFont(big_font);
 
   //
   // Secondary ISDN Number
   //
-  edit_secondary_number_edit=new QLineEdit(this,"edit_secondary_number_edit");
+  edit_secondary_number_edit=new QLineEdit(this);
   edit_secondary_number_edit->setGeometry(425,310,110,20);
   edit_secondary_number_edit->setFont(font);
   edit_secondary_number_edit->setMaxLength(70);
@@ -387,18 +372,17 @@ EditProgram::EditProgram(const QString &pname,
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProgramEdit));
   connect(edit_secondary_number_edit,SIGNAL(textChanged(const QString &)),
 	  this,SLOT(secondaryIsdnChangedData(const QString &)));
-  label=new QLabel(edit_secondary_number_edit,"Secondary ISDN #:",
-		   this,"edit_secondary_number_label");
+  label=new QLabel("Secondary ISDN #:",this);
   label->setGeometry(315,310,105,20);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   label->setFont(label_font);
 
   //
   // Secondary Transmit Algorithm
   //
-  edit_secondary_tx_algo_box=new AlgoComboBox(this,"edit_secondary_tx_algo_box");
+  edit_secondary_tx_algo_box=new AlgoComboBox(this);
   edit_secondary_tx_algo_box->setGeometry(425,332,110,20);
-  edit_secondary_tx_algo_edit=new QLineEdit(this,"edit_secondary_tx_algo_edit");
+  edit_secondary_tx_algo_edit=new QLineEdit(this);
   edit_secondary_tx_algo_edit->setGeometry(425,332,110,20);
   edit_secondary_tx_algo_edit->setFont(font);
   edit_secondary_tx_algo_edit->setReadOnly(true);
@@ -409,18 +393,17 @@ EditProgram::EditProgram(const QString &pname,
     edit_secondary_tx_algo_box->hide();
   }
   edit_secondary_tx_algo_label=
-    new QLabel(edit_secondary_tx_algo_box,"Transmit Format:",
-	       this,"edit_secondary_tx_algo_label");
+    new QLabel("Transmit Format:",this);
   edit_secondary_tx_algo_label->setGeometry(320,332,100,20);
-  edit_secondary_tx_algo_label->setAlignment(AlignRight|AlignVCenter);
+  edit_secondary_tx_algo_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_secondary_tx_algo_label->setFont(label_font);
 
   //
   // Secondary Receive Transmit Algorithm
   //
-  edit_secondary_rx_algo_box=new AlgoComboBox(this,"edit_secondary_rx_algo_box");
+  edit_secondary_rx_algo_box=new AlgoComboBox(this);
   edit_secondary_rx_algo_box->setGeometry(425,354,110,20);
-  edit_secondary_rx_algo_edit=new QLineEdit(this,"edit_secondary_rx_algo_edit");
+  edit_secondary_rx_algo_edit=new QLineEdit(this);
   edit_secondary_rx_algo_edit->setGeometry(425,354,110,20);
   edit_secondary_rx_algo_edit->setFont(font);
   edit_secondary_rx_algo_edit->setReadOnly(true);
@@ -431,20 +414,19 @@ EditProgram::EditProgram(const QString &pname,
     edit_secondary_rx_algo_box->hide();
   }
   edit_secondary_rx_algo_label=
-    new QLabel(edit_secondary_rx_algo_box,"Receive Format:",
-	       this,"edit_secondary_rx_algo_label");
+    new QLabel("Receive Format:",this);
   edit_secondary_rx_algo_label->setGeometry(320,354,100,20);
-  edit_secondary_rx_algo_label->setAlignment(AlignRight|AlignVCenter);
+  edit_secondary_rx_algo_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_secondary_rx_algo_label->setFont(label_font);
 
   //
   // Secondary Bitrate
   //
-  edit_secondary_bitrate_box=new QComboBox(this,"edit_secondary_bitrate_box");
+  edit_secondary_bitrate_box=new QComboBox(this);
   edit_secondary_bitrate_box->setGeometry(425,376,60,20);
-  edit_secondary_bitrate_box->insertItem("56000");
-  edit_secondary_bitrate_box->insertItem("64000");
-  edit_secondary_bitrate_edit=new QLineEdit(this,"edit_secondary_bitrate_edit");
+  edit_secondary_bitrate_box->insertItem(0,"56000");
+  edit_secondary_bitrate_box->insertItem(1,"64000");
+  edit_secondary_bitrate_edit=new QLineEdit(this);
   edit_secondary_bitrate_edit->setGeometry(425,376,60,20);
   edit_secondary_bitrate_edit->setFont(font);
   edit_secondary_bitrate_edit->setReadOnly(true);
@@ -454,23 +436,21 @@ EditProgram::EditProgram(const QString &pname,
   else {
     edit_secondary_bitrate_box->hide();
   }
-  edit_secondary_bitrate_label=new QLabel(edit_secondary_bitrate_box,"Bit Rate:",
-		   this,"edit_secondary_bitrate_label");
+  edit_secondary_bitrate_label=
+    new QLabel("Bit Rate:",this);
   edit_secondary_bitrate_label->setGeometry(320,376,100,20);
-  edit_secondary_bitrate_label->setAlignment(AlignRight|AlignVCenter);
+  edit_secondary_bitrate_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_secondary_bitrate_label->setFont(label_font);
 
   //
   // Secondary Samplerate
   //
-  edit_secondary_samplerate_box=
-    new QComboBox(this,"edit_secondary_samplerate_box");
+  edit_secondary_samplerate_box=new QComboBox(this);
   edit_secondary_samplerate_box->setGeometry(425,398,60,20);
-  edit_secondary_samplerate_box->insertItem("32000");
-  edit_secondary_samplerate_box->insertItem("44100");
-  edit_secondary_samplerate_box->insertItem("48000");
-  edit_secondary_samplerate_edit=
-    new QLineEdit(this,"edit_secondary_samplerate_edit");
+  edit_secondary_samplerate_box->insertItem(0,"32000");
+  edit_secondary_samplerate_box->insertItem(1,"44100");
+  edit_secondary_samplerate_box->insertItem(2,"48000");
+  edit_secondary_samplerate_edit=new QLineEdit(this);
   edit_secondary_samplerate_edit->setGeometry(425,398,60,20);
   edit_secondary_samplerate_edit->setFont(font);
   edit_secondary_samplerate_edit->setReadOnly(true);
@@ -480,23 +460,19 @@ EditProgram::EditProgram(const QString &pname,
   else {
     edit_secondary_samplerate_box->hide();
   }
-  edit_secondary_samplerate_label=
-    new QLabel(edit_secondary_samplerate_box,"Sample Rate:",
-	       this,"edit_secondary_samplerate_label");
+  edit_secondary_samplerate_label=new QLabel("Sample Rate:",this);
   edit_secondary_samplerate_label->setGeometry(320,398,100,20);
-  edit_secondary_samplerate_label->setAlignment(AlignRight|AlignVCenter);
+  edit_secondary_samplerate_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_secondary_samplerate_label->setFont(label_font);
 
   //
   // Secondary Channels
   //
-  edit_secondary_channels_box=
-    new QComboBox(this,"edit_secondary_channels_box");
+  edit_secondary_channels_box=new QComboBox(this);
   edit_secondary_channels_box->setGeometry(425,420,40,20);
-  edit_secondary_channels_box->insertItem("1");
-  edit_secondary_channels_box->insertItem("2");
-  edit_secondary_channels_edit=
-    new QLineEdit(this,"edit_secondary_channels_edit");
+  edit_secondary_channels_box->insertItem(0,"1");
+  edit_secondary_channels_box->insertItem(1,"2");
+  edit_secondary_channels_edit=new QLineEdit(this);
   edit_secondary_channels_edit->setGeometry(425,420,40,20);
   edit_secondary_channels_edit->setFont(font);
   edit_secondary_channels_edit->setReadOnly(true);
@@ -506,30 +482,27 @@ EditProgram::EditProgram(const QString &pname,
   else {
     edit_secondary_channels_box->hide();
   }
-  edit_secondary_channels_label=
-    new QLabel(edit_secondary_channels_box,"Channels:",
-	       this,"edit_secondary_channels_label");
+  edit_secondary_channels_label=new QLabel("Channels:",this);
   edit_secondary_channels_label->setGeometry(320,420,100,20);
-  edit_secondary_channels_label->setAlignment(AlignRight|AlignVCenter);
+  edit_secondary_channels_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_secondary_channels_label->setFont(label_font);
 
   //
   // Remarks
   //
-  edit_remarks_edit=new QTextEdit(this,"edit_remarks_edit");
+  edit_remarks_edit=new QTextEdit(this);
   edit_remarks_edit->setGeometry(10,485,sizeHint().width()-20,100);
   edit_remarks_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProgramEdit));
-  label=new QLabel(edit_program_length_edit,"Remarks",
-		   this,"edit_remarks_label");
+  label=new QLabel("Remarks",this);
   label->setGeometry(20,463,100,20);
-  label->setAlignment(AlignLeft|AlignVCenter);
+  label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
   label->setFont(big_font);
 
   //
   //  Migrate Affiliates Button
   //
-  button=new QPushButton(this,"migrate_button");
+  button=new QPushButton(this);
   button->setGeometry(10,sizeHint().height()-60,80,50);
   button->setFont(label_font);
   button->setText("&Migrate\nAffiliates");
@@ -540,7 +513,7 @@ EditProgram::EditProgram(const QString &pname,
   //
   //  OK Button
   //
-  button=new QPushButton(this,"ok_button");
+  button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
   button->setDefault(true);
   button->setFont(label_font);
@@ -550,7 +523,7 @@ EditProgram::EditProgram(const QString &pname,
   //
   //  Cancel Button
   //
-  button=new QPushButton(this,"cancel_button");
+  button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
   button->setFont(label_font);
   button->setText("&Cancel");
@@ -571,7 +544,7 @@ EditProgram::EditProgram(const QString &pname,
                                  SECONDARY_ISDN_SAMPLERATE,\
                                  SECONDARY_ISDN_CHANNELS,REMARKS,AIR_LENGTH \
                                  from PROGRAMS where PROGRAM_NAME=\"%s\"",
-				(const char *)pname);
+				pname.toUtf8().constData());
   QSqlQuery *q=new QSqlQuery(sql);
   if(q->first()) {
     edit_id=q->value(0).toInt();
@@ -591,20 +564,20 @@ EditProgram::EditProgram(const QString &pname,
     edit_primary_rx_algo_edit->
       setText(edit_primary_rx_algo_box->currentText());
     for(int i=0;i<edit_primary_bitrate_box->count();i++) {
-      if(edit_primary_bitrate_box->text(i).toInt()==q->value(8).toInt()) {
-	edit_primary_bitrate_box->setCurrentItem(i);
+      if(edit_primary_bitrate_box->itemText(i).toInt()==q->value(8).toInt()) {
+	edit_primary_bitrate_box->setCurrentIndex(i);
 	edit_primary_bitrate_edit->
 	  setText(edit_primary_bitrate_box->currentText());
       }
     }
     for(int i=0;i<edit_primary_samplerate_box->count();i++) {
-      if(edit_primary_samplerate_box->text(i).toInt()==q->value(9).toInt()) {
-	edit_primary_samplerate_box->setCurrentItem(i);
+      if(edit_primary_samplerate_box->itemText(i).toInt()==q->value(9).toInt()) {
+	edit_primary_samplerate_box->setCurrentIndex(i);
 	edit_primary_samplerate_edit->
 	  setText(edit_primary_samplerate_box->currentText());
       }
     }
-    edit_primary_channels_box->setCurrentItem(q->value(10).toInt()-1);
+    edit_primary_channels_box->setCurrentIndex(q->value(10).toInt()-1);
     edit_primary_channels_edit->
       setText(edit_primary_channels_box->currentText());
     primaryIsdnChangedData(edit_primary_number_edit->text());
@@ -616,20 +589,20 @@ EditProgram::EditProgram(const QString &pname,
     edit_secondary_rx_algo_edit->
       setText(edit_secondary_rx_algo_box->currentText());
     for(int i=0;i<edit_secondary_bitrate_box->count();i++) {
-      if(edit_secondary_bitrate_box->text(i).toInt()==q->value(14).toInt()) {
-	edit_secondary_bitrate_box->setCurrentItem(i);
+      if(edit_secondary_bitrate_box->itemText(i).toInt()==q->value(14).toInt()) {
+	edit_secondary_bitrate_box->setCurrentIndex(i);
 	edit_secondary_bitrate_edit->
 	  setText(edit_secondary_bitrate_box->currentText());
       }
     }
     for(int i=0;i<edit_secondary_samplerate_box->count();i++) {
-      if(edit_secondary_samplerate_box->text(i).toInt()==q->value(15).toInt()) {
-	edit_secondary_samplerate_box->setCurrentItem(i);
+      if(edit_secondary_samplerate_box->itemText(i).toInt()==q->value(15).toInt()) {
+	edit_secondary_samplerate_box->setCurrentIndex(i);
 	edit_secondary_samplerate_edit->
 	  setText(edit_secondary_samplerate_box->currentText());
       }
     }
-    edit_secondary_channels_box->setCurrentItem(q->value(16).toInt()-1);
+    edit_secondary_channels_box->setCurrentIndex(q->value(16).toInt()-1);
 	edit_secondary_channels_edit->
 	  setText(edit_secondary_channels_box->currentText());
     secondaryIsdnChangedData(edit_secondary_number_edit->text());
@@ -677,13 +650,14 @@ void EditProgram::addFeedData()
   }
   DvtListViewItem *item=new DvtListViewItem(edit_feeds_list);
   RefreshItem(item,&feed);
-  edit_feeds_list->ensureItemVisible(item);
+  //  edit_feeds_list->ensureItemVisible(item);
   delete edit_feed;
 }
 
 
 void EditProgram::editFeedData()
 {
+  /*
   DvtListViewItem *item=(DvtListViewItem *)edit_feeds_list->selectedItem();
   if(item==NULL) {
     return;
@@ -704,19 +678,22 @@ void EditProgram::editFeedData()
   }
   RefreshItem(item,&feed);
   delete edit_feed;
+  */
 }
 
 
 void EditProgram::deleteFeedData()
 {
+  /*
   DvtListViewItem *item=(DvtListViewItem *)edit_feeds_list->selectedItem();
   if(item==NULL) {
     return;
   }
   delete item;
+  */
 }
 
-
+/*
 void EditProgram::doubleClickedData(QListViewItem *item,const QPoint &pt,
 				    int col)
 {
@@ -724,7 +701,7 @@ void EditProgram::doubleClickedData(QListViewItem *item,const QPoint &pt,
     editFeedData();
   }
 }
-
+*/
 
 void EditProgram::primaryIsdnChangedData(const QString &str)
 {
@@ -768,6 +745,7 @@ void EditProgram::secondaryIsdnChangedData(const QString &str)
 
 void EditProgram::okData()
 {
+  /*
   QString sql;
   QSqlQuery *q;
 
@@ -846,7 +824,7 @@ void EditProgram::okData()
     delete q;
     item=(DvtListViewItem *)item->nextSibling();
   }
-
+  */
   done(0);
 }
 
@@ -860,7 +838,7 @@ void EditProgram::cancelData()
 void EditProgram::paintEvent(QPaintEvent *e)
 {
   QPainter *p=new QPainter(this);
-  p->setPen(black);
+  p->setPen(Qt::black);
   p->drawRect(10,43,sizeHint().width()-20,86);
   p->drawRect(60,150,sizeHint().width()-120,125);
   p->drawRect(60,295,235,155);
@@ -872,6 +850,7 @@ void EditProgram::paintEvent(QPaintEvent *e)
 
 void EditProgram::RefreshList()
 {
+  /*
   QString sql;
   QSqlQuery *q;
 
@@ -910,11 +889,13 @@ void EditProgram::RefreshList()
     }
   }
   delete q;
+  */
 }
 
 
 void EditProgram::RefreshItem(DvtListViewItem *item,DvtFeed *feed)
 {
+  /*
   item->setText(0,feed->startTime().toString("hh:mm:ss"));
   if(feed->dowActive(7)) {
     item->setText(1,tr("Su"));
@@ -958,4 +939,5 @@ void EditProgram::RefreshItem(DvtListViewItem *item,DvtFeed *feed)
   else {
     item->setText(7,"");
   }
+  */
 }

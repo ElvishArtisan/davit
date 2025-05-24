@@ -2,9 +2,7 @@
 //
 // List Davit Networks.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_networks.cpp,v 1.2 2011/06/14 21:47:07 pcvs Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,29 +18,33 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qsqldatabase.h>
 #include <math.h>
-#include <qmessagebox.h>
+
+#include <QLabel>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvtconf.h>
 #include <dvtconfig.h>
-#include <list_networks.h>
-#include <edit_network.h>
-#include <globals.h>
 
+#include "edit_network.h"
+#include "globals.h"
+#include "list_networks.h"
 
-ListNetworks::ListNetworks(QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+ListNetworks::ListNetworks(QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
+
   //
   // Fix the Window Size
   //
   setMinimumWidth(sizeHint().width());
   setMinimumHeight(sizeHint().height());
 
-  setCaption("Davit - Networks");
+  setWindowTitle("Davit - Networks");
 
   //
   // Create Fonts
@@ -55,6 +57,7 @@ ListNetworks::ListNetworks(QWidget *parent,const char *name)
   //
   // Networks List
   //
+  /*
   list_networks_list=new QListView(this,"list_networks_list");
   list_networks_list->setMargin(5);
   list_networks_list->setAllColumnsShowFocus(true);
@@ -63,12 +66,12 @@ ListNetworks::ListNetworks(QWidget *parent,const char *name)
 	  this,
 	  SLOT(doubleClickedData(QListViewItem *,const QPoint &,int)));
   list_networks_list->addColumn("Name");
-  list_networks_list->setColumnAlignment(0,AlignLeft|AlignVCenter);
-
+  list_networks_list->setColumnAlignment(0,Qt::AlignLeft|Qt::AlignVCenter);
+  */
   //
   //  Add Button
   //
-  list_add_button=new QPushButton(this,"list_add_button");
+  list_add_button=new QPushButton(this);
   list_add_button->setFont(font);
   list_add_button->setText("&Add");
   connect(list_add_button,SIGNAL(clicked()),this,SLOT(addData()));
@@ -76,7 +79,7 @@ ListNetworks::ListNetworks(QWidget *parent,const char *name)
   //
   //  Edit Button
   //
-  list_edit_button=new QPushButton(this,"list_edit_button");
+  list_edit_button=new QPushButton(this);
   list_edit_button->setFont(font);
   list_edit_button->setText("&Edit");
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
@@ -84,7 +87,7 @@ ListNetworks::ListNetworks(QWidget *parent,const char *name)
   //
   //  Delete Button
   //
-  list_delete_button=new QPushButton(this,"list_delete_button");
+  list_delete_button=new QPushButton(this);
   list_delete_button->setFont(font);
   list_delete_button->setText("&Delete");
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
@@ -92,7 +95,7 @@ ListNetworks::ListNetworks(QWidget *parent,const char *name)
   //
   //  Close Button
   //
-  list_close_button=new QPushButton(this,"list_close_button");
+  list_close_button=new QPushButton(this);
   list_close_button->setDefault(true);
   list_close_button->setFont(font);
   list_close_button->setText("&Close");
@@ -121,11 +124,12 @@ QSizePolicy ListNetworks::sizePolicy() const
 
 void ListNetworks::addData()
 {
+  /*
   QString network="[new network]";
   QString sql;
   QSqlQuery *q;
 
-  EditNetwork *add=new EditNetwork(&network,this,"add");
+  EditNetwork *add=new EditNetwork(&network,this);
   if(add->exec()==0) {
     sql=QString().sprintf("insert into NETWORKS set NAME=\"%s\"",
 			  (const char *)DvtEscapeString(network));
@@ -138,11 +142,13 @@ void ListNetworks::addData()
     list_networks_list->ensureItemVisible(item);
   }
   delete add;
+  */
 }
 
 
 void ListNetworks::editData()
 {
+  /*
   DvtListViewItem *item=(DvtListViewItem *)list_networks_list->selectedItem();
   
   if(item==NULL) {
@@ -154,11 +160,13 @@ void ListNetworks::editData()
     UpdateItem(item,name);
   }
   delete edit;
+  */
 }
 
 
 void ListNetworks::deleteData()
 {
+  /*
   QString sql;
   QSqlQuery *q;
   QListViewItem *item=list_networks_list->selectedItem();
@@ -188,15 +196,16 @@ void ListNetworks::deleteData()
   }
   delete q;
   delete item;
+  */
 }
 
-
+/*
 void ListNetworks::doubleClickedData(QListViewItem *item,const QPoint &pt,
 				      int c)
 {
   editData();
 }
-
+*/
 
 void ListNetworks::closeData()
 {
@@ -206,7 +215,7 @@ void ListNetworks::closeData()
 
 void ListNetworks::resizeEvent(QResizeEvent *e)
 {
-  list_networks_list->setGeometry(10,10,size().width()-20,size().height()-80);
+  //  list_networks_list->setGeometry(10,10,size().width()-20,size().height()-80);
   list_add_button->setGeometry(10,size().height()-60,80,50);
   list_edit_button->setGeometry(100,size().height()-60,80,50);
   list_delete_button->setGeometry(190,size().height()-60,80,50);
@@ -216,6 +225,7 @@ void ListNetworks::resizeEvent(QResizeEvent *e)
 
 void ListNetworks::RefreshList()
 {
+  /*
   QSqlQuery *q;
   DvtListViewItem *item;
 
@@ -227,14 +237,17 @@ void ListNetworks::RefreshList()
     item->setText(0,q->value(1).toString());
   }
   delete q;
+  */
 }
 
 
 void ListNetworks::UpdateItem(DvtListViewItem *item,const QString &name)
 {
+  /*
   item->setText(0,name);
   QString sql=QString().sprintf("update NETWORKS set NAME=\"%s\" where ID=%d",
 				(const char *)name,item->id());
   QSqlQuery *q=new QSqlQuery(sql);
   delete q;
+  */
 }

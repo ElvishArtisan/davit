@@ -2,9 +2,7 @@
 //
 // List Davit Programs.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_programs.h,v 1.3 2010/10/15 19:43:08 pcvs Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,9 +21,9 @@
 #ifndef LIST_PROGRAMS_H
 #define LIST_PROGRAMS_H
 
-#include <qdialog.h>
-#include <qlistview.h>
-#include <qpushbutton.h>
+#include <QDialog>
+#include <QListView>
+#include <QPushButton>
 
 #include <dvtlistviewitem.h>
 
@@ -33,7 +31,7 @@ class ListPrograms : public QDialog
 {
  Q_OBJECT
  public:
-  ListPrograms(int provider_id=-1,QWidget *parent=0,const char *name=0);
+  ListPrograms(int provider_id=-1,QWidget *parent=0);
   ~ListPrograms();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -43,7 +41,7 @@ class ListPrograms : public QDialog
   void editData();
   void deleteData();
   void affadavitData();
-  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
+  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
   void closeData();
 
  protected:
@@ -53,7 +51,7 @@ class ListPrograms : public QDialog
   void DeleteProgram(int pid);
   void RefreshList();
   void UpdateItem(DvtListViewItem *item);
-  QListView *list_programs_list;
+  //  QListView *list_programs_list;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;

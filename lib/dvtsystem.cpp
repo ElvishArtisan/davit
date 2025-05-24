@@ -2,7 +2,7 @@
 //
 // Abstract system-wide Davit settings.
 //
-// (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //    $Id: dvtsystem.cpp,v 1.1 2010/10/22 20:55:01 pcvs Exp $
 //
@@ -21,10 +21,11 @@
 //
 //
 
-#include <qsqldatabase.h>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
-#include <dvtconf.h>
-#include <dvtsystem.h>
+#include "dvtconf.h"
+#include "dvtsystem.h"
 
 DvtSystem::DvtSystem()
 {
@@ -95,9 +96,9 @@ void DvtSystem::save()
              ORIGIN_EMAIL=\"%s\",\
              AFFIDAVIT_EMAIL_SUBJECT=\"%s\",\
              AFFIDAVIT_EMAIL_TEMPLATE=\"%s\"",
-	    (const char *)DvtEscapeString(sys_origin_email),
-	    (const char *)DvtEscapeString(sys_affidavit_email_subject),
-	    (const char *)DvtEscapeString(sys_affidavit_email_template));
+	    DvtEscapeString(sys_origin_email).toUtf8().constData(),
+	    DvtEscapeString(sys_affidavit_email_subject).toUtf8().constData(),
+	    DvtEscapeString(sys_affidavit_email_template).toUtf8().constData());
   q=new QSqlQuery(sql);
   delete q;
 }

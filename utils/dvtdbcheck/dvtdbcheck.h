@@ -2,9 +2,7 @@
 //
 // A Database Check/Repair Tool for Davit
 //
-//   (C) Copyright 2011 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: dvtdbcheck.h,v 1.1 2011/04/29 21:04:59 pcvs Exp $
+//   (C) Copyright 2011-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -26,8 +24,8 @@
 
 #include <list>
 
-#include <qobject.h>
-#include <qsqldatabase.h>
+#include <QObject>
+#include <QSqlDatabase>
 
 #include <dvtconfig.h>
 #include <dvtcmdswitch.h>
@@ -42,7 +40,7 @@ DvtConfig *dvtconfig;
 class MainObject : public QObject
 {
  public:
-  MainObject(QObject *parent=0,const char *name=0);
+  MainObject(QObject *parent=0);
 
  private:
   void CheckDuplicateAffiliates();

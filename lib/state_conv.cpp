@@ -2,7 +2,7 @@
 //
 // Conversion functions for state abreviations.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -18,13 +18,13 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qobject.h>
+#include <QObject>
 
-#include <state_conv.h>
+#include "state_conv.h"
 
 QString StateToAbbreviation(const QString &str)
 {
-  QString state=str.lower();
+  QString state=str.toLower();
   if(state==QObject::tr("all")) {
     return "aa";
   }
@@ -211,7 +211,7 @@ QString StateToAbbreviation(const QString &str)
 
 QString AbbreviationToState(const QString &str)
 {
-  QString state=str.lower();
+  QString state=str.toLower();
   if(state=="aa") {
     return QObject::tr("ALL");
   }

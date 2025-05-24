@@ -2,9 +2,7 @@
 //
 // Set Password widget for Davit.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: change_password.cpp,v 1.3 2007/11/19 16:53:32 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,27 +18,29 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qdialog.h>
-#include <qstring.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qlineedit.h>
-#include <qtextedit.h>
-#include <qlabel.h>
-#include <qpainter.h>
-#include <qevent.h>
-#include <qmessagebox.h>
-#include <qbuttongroup.h>
 #include <math.h>
 
-#include <change_password.h>
+#include <QButtonGroup>
+#include <QDialog>
+#include <QEvent>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPainter>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QString>
+#include <QTextEdit>
+
+#include "change_password.h"
 
 
-ChangePassword::ChangePassword(QString *password,QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+ChangePassword::ChangePassword(QString *password,QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   passwd_password=password;
-  setCaption("Change Password");
+  setWindowTitle("Change Password");
 
   //
   // Fix the Window Size
@@ -59,7 +59,7 @@ ChangePassword::ChangePassword(QString *password,QWidget *parent,const char *nam
   //
   // OK Button
   //
-  QPushButton *ok_button=new QPushButton(this,"ok_button");
+  QPushButton *ok_button=new QPushButton(this);
   ok_button->setGeometry(10,60,100,55);
   ok_button->setFont(font);
   ok_button->setText("&OK");
@@ -69,7 +69,7 @@ ChangePassword::ChangePassword(QString *password,QWidget *parent,const char *nam
   //
   // CANCEL Button
   //
-  QPushButton *cancel_button=new QPushButton(this,"cancel_button");
+  QPushButton *cancel_button=new QPushButton(this);
   cancel_button->setGeometry(120,60,100,55);
   cancel_button->setFont(font);
   cancel_button->setText("&CANCEL");
@@ -78,27 +78,25 @@ ChangePassword::ChangePassword(QString *password,QWidget *parent,const char *nam
   //
   // Password
   //
-  passwd_password_1_edit=new QLineEdit(this,"passwd_password_1_edit");
+  passwd_password_1_edit=new QLineEdit(this);
   passwd_password_1_edit->setGeometry(90,11,100,19);
   passwd_password_1_edit->setMaxLength(16);
   passwd_password_1_edit->setEchoMode(QLineEdit::Password);
   passwd_password_1_edit->setFocus();
-  QLabel *passwd_password_1_label=new QLabel(passwd_password_1_edit,"&Password:",this,
-				       "passwd_password_1_label");
+  QLabel *passwd_password_1_label=new QLabel("&Password:",this);
   passwd_password_1_label->setGeometry(10,13,75,19);
-  passwd_password_1_label->setAlignment(AlignRight|ShowPrefix);
+  passwd_password_1_label->setAlignment(Qt::AlignRight);
 
   //
   // Confirm Password
   //
-  passwd_password_2_edit=new QLineEdit(this,"passwd_password_2_edit");
+  passwd_password_2_edit=new QLineEdit(this);
   passwd_password_2_edit->setGeometry(90,32,100,19);
   passwd_password_2_edit->setMaxLength(16);
   passwd_password_2_edit->setEchoMode(QLineEdit::Password);
-  QLabel *passwd_password_2_label=new QLabel(passwd_password_2_edit,"C&onfirm:",this,
-				       "passwd_password_2_label");
+  QLabel *passwd_password_2_label=new QLabel("C&onfirm:",this);
   passwd_password_2_label->setGeometry(10,34,75,19);
-  passwd_password_2_label->setAlignment(AlignRight|ShowPrefix);
+  passwd_password_2_label->setAlignment(Qt::AlignRight);
 
 }
 

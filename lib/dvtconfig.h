@@ -2,7 +2,7 @@
 //
 // A container class for CallCommander mld(8) Configuration
 //
-//   (C) Copyright 2002-2004 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,10 +23,9 @@
 
 #include <vector>
 
-#include <qstring.h>
+#include <QString>
 
-#include <dvt.h>
-
+#include "dvt.h"
 
 class DvtConfig
 {

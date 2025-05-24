@@ -2,9 +2,7 @@
 //
 // Routines for processing e-mail messages on POSIX architectures.
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtmail.cpp,v 1.10 2011/03/22 15:12:53 pcvs Exp $
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -27,18 +25,19 @@
 #include <stdio.h>
 #include <syslog.h>
 
-#include <qmessagebox.h>
-#include <qsqldatabase.h>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
-#include <dvt.h>
-#include <dvtconf.h>
-#include <dvtweb.h>
-#include <dvtmail.h>
+#include "dvt.h"
+#include "dvtconf.h"
+#include "dvtweb.h"
+#include "dvtmail.h"
 
 void __MailError(QString msg,QWidget *parent)
 {
   if(parent==NULL) {
-    syslog(LOG_ERR,msg);
+    syslog(LOG_ERR,"%s",msg.toUtf8().constData());
   }
   else {
     QMessageBox::warning(parent,"Davit - Davit Error",msg);
@@ -62,21 +61,21 @@ bool DvtSendMail(const QStringList &to_addrs,const QStringList &cc_addrs,
     //
     vmime::messageBuilder mb;
     
-    mb.setExpeditor(vmime::mailbox(from_addr));
-    for(unsigned i=0;i<to_addrs.size();i++) {
+    mb.setExpeditor(vmime::mailbox(from_addr.toUtf8().constData()));
+    for(int i=0;i<to_addrs.size();i++) {
       mb.getRecipients().
-	appendAddress(vmime::create<vmime::mailbox>(to_addrs[i]));
+	appendAddress(vmime::create<vmime::mailbox>(to_addrs[i].toUtf8().constData()));
     }
-    for(unsigned i=0;i<cc_addrs.size();i++) {
+    for(int i=0;i<cc_addrs.size();i++) {
       mb.getCopyRecipients().
-	appendAddress(vmime::create<vmime::mailbox>(cc_addrs[i]));
+	appendAddress(vmime::create<vmime::mailbox>(cc_addrs[i].toUtf8().constData()));
     }
-    for(unsigned i=0;i<bcc_addrs.size();i++) {
+    for(int i=0;i<bcc_addrs.size();i++) {
       mb.getBlindCopyRecipients().
-	appendAddress(vmime::create<vmime::mailbox>(bcc_addrs[i]));
+	appendAddress(vmime::create<vmime::mailbox>(bcc_addrs[i].toUtf8().constData()));
     }
-    mb.setSubject(vmime::text(subj));
-    mb.getTextPart()->setText(vmime::create<vmime::stringContentHandler>(msg));
+    mb.setSubject(vmime::text(subj.toUtf8().constData()));
+    mb.getTextPart()->setText(vmime::create<vmime::stringContentHandler>(msg.toUtf8().constData()));
     vmime::ref<vmime::message> vmsg=mb.construct();
     vmime::utility::outputStreamAdapter out(std::cout);
     vmime::headerFieldFactory *factory=
@@ -84,7 +83,7 @@ bool DvtSendMail(const QStringList &to_addrs,const QStringList &cc_addrs,
 
     vmime::ref<vmime::headerField> replyto=
       factory->create(vmime::fields::REPLY_TO);
-    replyto->setValue(vmime::mailbox(reply_addr));
+    replyto->setValue(vmime::mailbox(reply_addr.toUtf8().constData()));
     vmsg->getHeader()->appendField(replyto);
     vmsg->getHeader()->
       getField("X-Davit-Message")->setValue(vmime::text("yes"));
@@ -109,8 +108,8 @@ bool DvtSendMail(const QStringList &to_addrs,const QStringList &cc_addrs,
       vmime::ref<vmime::net::session> sess=
 	vmime::create<vmime::net::session>();
       sess->getProperties()["transport.smtp.server.port"]=q->value(1).toInt();
-      vmime::utility::url url((const char *)QString().sprintf("smtp://%s",
-				(const char *)q->value(0).toString()));
+      vmime::utility::url url(QString().sprintf("smtp://%s",
+						q->value(0).toString().toUtf8().constData()).toUtf8().constData());
       vmime::ref<vmime::net::transport> trans=sess->getTransport(url); 
       trans->connect();
       trans->send(vmsg);

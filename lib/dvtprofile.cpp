@@ -2,9 +2,7 @@
 //
 // A class to read an ini formatted configuration file.
 //
-// (C) Copyright 2002-2003 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtprofile.cpp,v 1.1 2007/11/19 16:53:35 fredg Exp $
+// (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -19,13 +17,11 @@
 //   License along with this program; if not, write to the Free Software
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-//
 
-#include <qfile.h>
-#include <qtextstream.h>
+#include <QFile>
+#include <QTextStream>
 
-#include <dvtprofile.h>
-
+#include "dvtprofile.h"
 
 DvtProfile::DvtProfile()
 {
@@ -48,12 +44,13 @@ bool DvtProfile::setSource(QString filename)
   profile_section.push_back(DvtProfileSection());
   profile_section.back().setName("");
   QFile *file=new QFile(filename);
-  if(!file->open(IO_ReadOnly)) {
+  //  if(!file->open(IO_ReadOnly)) {
+  if(!file->open(QIODevice::ReadOnly)) {
     delete file;
     return false;
   }
   QTextStream *text=new QTextStream(file);
-  QString line=text->readLine().stripWhiteSpace();
+  QString line=text->readLine().trimmed();
   while(!line.isNull()) {
     if((line.left(1)!=";")&&(line.left(1)!="#")) {
       if((line.left(1)=="[")&&(line.right(1)=="]")) {
@@ -61,14 +58,14 @@ bool DvtProfile::setSource(QString filename)
 	profile_section.push_back(DvtProfileSection());
 	profile_section.back().setName(section);
       }
-      else if(((offset=line.find('='))!=-1)) {
+      else if(((offset=line.indexOf('='))!=-1)) {
 //      else if(((offset=line.find('='))!=-1)&&(!section.isEmpty())) {
 	profile_section.back().
 	  addValue(line.left(offset),
-		   line.right(line.length()-offset-1).stripWhiteSpace());
+		   line.right(line.length()-offset-1).trimmed());
       }
     }
-    line=text->readLine().stripWhiteSpace();
+    line=text->readLine().trimmed();
   }
   delete text;
   delete file;
@@ -127,7 +124,7 @@ int DvtProfile::hexValue(QString section,QString tag,
   bool valid;
 
   QString str=stringValue(section,tag);
-  if(str.left(2).lower()=="0x") {
+  if(str.left(2).toLower()=="0x") {
     str=str.right(str.length()-2);
   }
   int result=str.toInt(&valid,16);
@@ -187,7 +184,7 @@ bool DvtProfile::boolValue(QString section,QString tag,
 {
   bool valid;
 
-  QString str=stringValue(section,tag,"",&valid).lower();
+  QString str=stringValue(section,tag,"",&valid).toLower();
   if(!valid) {
     if(ok!=NULL) {
       *ok=false;

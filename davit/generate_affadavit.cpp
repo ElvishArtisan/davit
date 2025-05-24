@@ -2,9 +2,7 @@
 //
 // Select a Set of Dates for an Affidavit
 //
-//   (C) Copyright 2002-2006 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: generate_affadavit.cpp,v 1.10 2011/03/29 15:38:51 pcvs Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,40 +18,37 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qlabel.h>
-#include <qmessagebox.h>
-#include <qfile.h>
-#include <qsqldatabase.h>
-#include <qprinter.h>
-#include <qpainter.h>
-#include <qfontmetrics.h>
-#include <qpaintdevicemetrics.h>
+#include <QFile>
+#include <QFontMetrics>
+#include <QLabel>
+#include <QMessageBox>
+#include <QPrinter>
+#include <QPainter>
+//#include <QPaintDeviceMetrics>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvt.h>
 #include <dvtdatedialog.h>
 #include <dvttextfile.h>
 #include <dvtconf.h>
 
-#include "preview.h"
 #include "generate_affadavit.h"
+#include "preview.h"
 
-GenerateAffadavit::GenerateAffadavit(ReportType type,int id,
-				     QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+GenerateAffadavit::GenerateAffadavit(ReportType type,int id,QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
+
   QString sql;
   QSqlQuery *q;
 
   QDate this_month=QDate::currentDate();
   QDate last_month=this_month.addMonths(-1);
-  QDate start_date=QDate(last_month.year(),last_month.month(),1);
-  QDate end_date=QDate(last_month.year(),last_month.month(),
-		       QDate(this_month.year(),
-			     this_month.month(),1).addDays(-1).day());
-
   edit_id=id;
   edit_type=type;
-  setCaption(tr("Generate Affidavit"));
+  setWindowTitle(tr("Generate Affidavit"));
 
   //
   // Fix the Window Size
@@ -78,46 +73,48 @@ GenerateAffadavit::GenerateAffadavit(ReportType type,int id,
   edit_month_box->setGeometry(115,10,100,19);
   connect(edit_month_box,SIGNAL(activated(int)),
 	  this,SLOT(validateDateData(int)));
-  edit_month_box->insertItem(tr("January"));
-  edit_month_box->insertItem(tr("February"));
-  edit_month_box->insertItem(tr("March"));
-  edit_month_box->insertItem(tr("April"));
-  edit_month_box->insertItem(tr("May"));
-  edit_month_box->insertItem(tr("June"));
-  edit_month_box->insertItem(tr("July"));
-  edit_month_box->insertItem(tr("August"));
-  edit_month_box->insertItem(tr("September"));
-  edit_month_box->insertItem(tr("October"));
-  edit_month_box->insertItem(tr("November"));
-  edit_month_box->insertItem(tr("December"));
-  edit_month_box->setCurrentItem(last_month.month()-1);
+  edit_month_box->insertItem(0,tr("January"));
+  edit_month_box->insertItem(1,tr("February"));
+  edit_month_box->insertItem(2,tr("March"));
+  edit_month_box->insertItem(3,tr("April"));
+  edit_month_box->insertItem(4,tr("May"));
+  edit_month_box->insertItem(5,tr("June"));
+  edit_month_box->insertItem(6,tr("July"));
+  edit_month_box->insertItem(7,tr("August"));
+  edit_month_box->insertItem(8,tr("September"));
+  edit_month_box->insertItem(9,tr("October"));
+  edit_month_box->insertItem(10,tr("November"));
+  edit_month_box->insertItem(11,tr("December"));
+  edit_month_box->setCurrentIndex(last_month.month()-1);
   edit_year_box=new QComboBox(this);
   edit_year_box->setGeometry(220,10,70,19);
   connect(edit_year_box,SIGNAL(activated(int)),
 	  this,SLOT(validateDateData(int)));
+  int count=0;
   for(int i=DVT_ORIGIN_YEAR;i<(last_month.year()+1);i++) {
-    edit_year_box->insertItem(QString().sprintf("%d",i));
+    edit_year_box->insertItem(count++,QString().sprintf("%d",i));
   }
-  edit_year_box->setCurrentItem(edit_year_box->count()-1);
-  QLabel *label=new QLabel(edit_month_box,tr("&Date:"),this);
+  edit_year_box->setCurrentIndex(edit_year_box->count()-1);
+  QLabel *label=new QLabel(tr("&Date:"),this);
   label->setGeometry(40,10,70,19);
   label->setFont(bold_font);
-  label->setAlignment(AlignRight|AlignVCenter|ShowPrefix);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   
   //
   // Program List
   //
   edit_program_box=new QComboBox(this);
   edit_program_box->setGeometry(85,35,sizeHint().width()-95,19);
-  label=new QLabel(edit_program_box,tr("&Program:"),this);
+  label=new QLabel(tr("&Program:"),this);
   label->setGeometry(10,35,70,19);
   label->setFont(bold_font);
-  label->setAlignment(AlignRight|AlignVCenter|ShowPrefix);
-  edit_program_box->insertItem("[All Scheduled Programs]");
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  edit_program_box->insertItem(0,"[All Scheduled Programs]");
   sql="select PROGRAM_NAME from PROGRAMS order by PROGRAM_NAME";
   q=new QSqlQuery(sql);
+  count=1;
   while(q->next()) {
-    edit_program_box->insertItem(q->value(0).toString());
+    edit_program_box->insertItem(count++,q->value(0).toString());
   }
   delete q;
 
@@ -126,10 +123,10 @@ GenerateAffadavit::GenerateAffadavit(ReportType type,int id,
   //
   edit_airings_check=new QCheckBox(this);
   edit_airings_check->setGeometry(85,59,15,15);
-  label=new QLabel(edit_airings_check,tr("Include Airings List"),this);
+  label=new QLabel(tr("Include Airings List"),this);
   label->setGeometry(105,55,200,19);
   label->setFont(bold_font);
-  label->setAlignment(AlignLeft|AlignVCenter|ShowPrefix);
+  label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
   
 
   //
@@ -173,7 +170,7 @@ QSizePolicy GenerateAffadavit::sizePolicy() const
 void GenerateAffadavit::validateDateData(int index)
 {
   QDate start_date=QDate(edit_year_box->
-		    currentText().toInt(),edit_month_box->currentItem()+1,1);
+		    currentText().toInt(),edit_month_box->currentIndex()+1,1);
   QDate end_date=start_date.addMonths(1).addDays(-1);
   edit_generate_button->setEnabled(end_date<QDate::currentDate());
 }
@@ -189,9 +186,9 @@ void GenerateAffadavit::generateData()
   // Generate Date
   //
   QDate date=QDate(edit_year_box->currentText().toInt(),
-		   edit_month_box->currentItem()+1,1);
+		   edit_month_box->currentIndex()+1,1);
 
-  if(edit_program_box->currentItem()==0) {  // All Programs
+  if(edit_program_box->currentIndex()==0) {  // All Programs
     Preview *p=new Preview(this);
     p->exec(edit_id,date,edit_airings_check->isChecked());
     delete p;
@@ -209,11 +206,12 @@ void GenerateAffadavit::generateData()
                          (AIRED.AIR_DATETIME<\"%s-01 00:00:00\")&&\
                          ((AIRED.STATE=%d)||(AIRED.STATE=%d)) \
                          order by AIRED.AIR_DATETIME",
-			(const char *)DvtEscapeString(edit_program_box->
-						      currentText()),
+			DvtEscapeString(edit_program_box->
+					currentText()).toUtf8().constData(),
 			edit_id,
-			(const char *)date.toString("yyyy-MM"),
-			(const char *)date.addMonths(1).toString("yyyy-MM"),
+			date.toString("yyyy-MM").toUtf8().constData(),
+			date.addMonths(1).toString("yyyy-MM").
+			toUtf8().constData(),
 			Dvt::AiredStateConfirmed,
 			Dvt::AiredStateDenied);
   q=new QSqlQuery(sql);

@@ -2,9 +2,7 @@
 //
 // Process Davit Command-Line Switches
 //
-//   (C) Copyright 2002-2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: dvtcmdswitch.cpp,v 1.3 2013/02/26 19:06:17 pcvs Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,10 +18,12 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <stdio.h>
 #include <stdlib.h>
 
-#include <dvtcmdswitch.h>
 #include <qmessagebox.h>
+
+#include "dvtcmdswitch.h"
 
 DvtCmdSwitch::DvtCmdSwitch(int argc,char *argv[],const char *modname,
 			   const char *usage)

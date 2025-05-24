@@ -2,7 +2,7 @@
 //
 // The AffiliatesByProgram Report for Davit
 //
-//   (C) Copyright 2008,2010,2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2008-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -18,15 +18,16 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qdatetime.h>
-#include <qsqldatabase.h>
+#include <QDateTime>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvtconf.h>
 #include <spread_sheet.h>
 
-#include <pick_fields.h>
-#include <pick_daypart.h>
-#include <list_reports.h>
+#include "list_reports.h"
+#include "pick_daypart.h"
+#include "pick_fields.h"
 
 bool ListReports::AllAffiliatesReport(SpreadSheet *sheet)
 {
@@ -97,7 +98,7 @@ bool ListReports::AllAffiliateContacts(SpreadSheet *sheet)
     tab->addCell(3,row)->
       setText(DvtFormatFrequency(q->value(3).toDouble()));
     tab->addCell(4,row)->setText(q->value(4).toString());
-    tab->addCell(5,row)->setText(q->value(5).toString().upper());
+    tab->addCell(5,row)->setText(q->value(5).toString().toUpper());
     tab->addCell(6,row)->setText(q->value(6).toString());
     if(q->value(7).toInt()==0) {
       tab->addCell(7,row);
@@ -163,7 +164,7 @@ bool ListReports::AffiliatesByNetworkReport(SpreadSheet *sheet)
   where+=" order by AFFILIATES.STATION_CALL,AFFILIATES.STATION_TYPE";
   return RenderAffiliateReport(tab,where,tr("Affiliates by Network Report"),
 			       QString().sprintf("Network: %s",
-					   (const char *)network_name),true,0);
+					   network_name.toUtf8().constData()),true,0);
 }
 
 
@@ -213,7 +214,7 @@ bool ListReports::AffiliatesByProgramReport(int contacts,SpreadSheet *sheet)
   }
   return RenderAffiliateReport(tab,where,tr("Affiliates by Program Report"),
 			       QString().sprintf("Program: %s",
-					  (const char *)program_name),false,
+					  program_name.toUtf8().constData()),false,
 			contacts);
 }
 
@@ -238,12 +239,12 @@ bool ListReports::AffiliatesByDaypartReport(SpreadSheet *sheet)
   tab->setName(tr("Affiliates by Daypart"));
 
   subtitle=QString().sprintf("Start Time: %s, End Time: %s, Days Selected: ",
-			     (const char *)start_time.toString("hh:mm:ss"),
-			     (const char *)end_time.toString("hh:mm:ss"));
+			     start_time.toString("hh:mm:ss").toUtf8().constData(),
+			     end_time.toString("hh:mm:ss").toUtf8().constData());
   where=QString().sprintf("where (AIRINGS.AIR_TIME>=\"%s\")&&\
                           (AIRINGS.AIR_TIME<\"%s\")",
-			  (const char *)start_time.toString("hh:mm:ss"),
-			  (const char *)end_time.toString("hh:mm:ss"));
+			  start_time.toString("hh:mm:ss").toUtf8().constData(),
+			  end_time.toString("hh:mm:ss").toUtf8().constData());
   if(dows[0]) {
     where+="&&(AIRINGS.AIR_MON=\"Y\")";
     subtitle+="Mo";
@@ -344,7 +345,7 @@ bool ListReports::RenderAffiliateReport(SpreadTab *tab,const QString &where,
                          left join PROGRAMS on (AIRINGS.PROGRAM_ID=PROGRAMS.ID)\
                          left join NETWORKS on \
                          (AFFILIATES.SECOND_NETWORK_ID=NETWORKS.ID)\
-                         %s",(const char *)where);
+                         %s",where.toUtf8().constData());
   //  printf("SQL: %s\n",(const char *)sql);
   q=new QSqlQuery(sql);
   while(q->next()) {
@@ -353,13 +354,13 @@ bool ListReports::RenderAffiliateReport(SpreadTab *tab,const QString &where,
       row++;
     }
     prev_id=q->value(16).toInt();
-    tab->addCell(col++,row)->setText(q->value(0).toString().upper());
+    tab->addCell(col++,row)->setText(q->value(0).toString().toUpper());
     tab->addCell(col++,row)->
       setText(DvtStationTypeString(q->value(1).toString()));
     tab->addCell(col++,row)->
       setText(DvtFormatFrequency(q->value(2).toDouble()));
     tab->addCell(col++,row)->setText(q->value(3).toString());
-    tab->addCell(col++,row)->setText(q->value(4).toString().upper());
+    tab->addCell(col++,row)->setText(q->value(4).toString().toUpper());
     tab->addCell(col++,row)->setText(q->value(5).toString());
     tab->addCell(col++,row)->
       setText(DvtMarketRankString(q->value(6).toInt()));

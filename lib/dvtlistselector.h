@@ -2,9 +2,7 @@
 //
 //   An listselector widget with word wrap.
 //
-//   (C) Copyright 2002,2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtlistselector.h,v 1.2 2008/12/19 17:36:55 fredg Exp $
+//   (C) Copyright 20022025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -19,25 +17,24 @@
 //   License along with this program; if not, write to the Free Software
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-//
 
 #ifndef DVTLISTSELECTOR_H
 #define DVTLISTSELECTOR_H
 
-#include <qwidget.h>
-#include <qlabel.h>
-#include <qhbox.h>
-#include <qcolor.h>
-#include <qlistbox.h>
-#include <qpushbutton.h>
+#include <QWidget>
+#include <QLabel>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+//#include <QListBox>
+#include <QPushButton>
 
 
-class DvtListSelector : public QHBox
+class DvtListSelector : public QHBoxLayout
 {
   Q_OBJECT
 
  public:
-  DvtListSelector(QWidget *parent=0,const char *name=0);
+  DvtListSelector(QWidget *parent=0);
   uint sourceCount() const;
   uint destCount() const;
   void sourceSetLabel(QString label);
@@ -58,10 +55,12 @@ class DvtListSelector : public QHBox
   QString destCurrentText() const;
   void sourceSetCurrentItem(int item);
   void destSetCurrentItem(int item);
+  /*
   QListBoxItem *sourceFindItem(const QString &text,
 			       ComparisonFlags compare=ExactMatch) const;
   QListBoxItem *destFindItem(const QString &text,
 			     ComparisonFlags compare=ExactMatch) const;
+  */
   void clear();
   
  private slots:
@@ -72,9 +71,9 @@ class DvtListSelector : public QHBox
 
  private:
   void CheckButtons();
-  QListBox *list_source_box;
+  //QListBox *list_source_box;
   QLabel *list_source_label;
-  QListBox *list_dest_box;
+  //QListBox *list_dest_box;
   QLabel *list_dest_label;
   QPushButton *list_add_button;
   QPushButton *list_addall_button;

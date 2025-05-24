@@ -2,9 +2,7 @@
 //
 // Preview a print job
 //
-//   (C) Copyright 2011 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: preview.h,v 1.2 2011/03/29 15:38:51 pcvs Exp $
+//   (C) Copyright 2011-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -25,12 +23,12 @@
 
 #include <vector>
 
-#include <qdialog.h>
-#include <qpixmap.h>
-#include <qlabel.h>
-#include <qdatetime.h>
-#include <qprinter.h>
-#include <qpaintdevicemetrics.h>
+#include <QDialog>
+#include <QPixmap>
+#include <QLabel>
+#include <QDateTime>
+#include <QPrinter>
+//#include <qpaintdevicemetrics.h>
 
 #include <dvttransportbutton.h>
 
@@ -38,7 +36,7 @@ class Preview : public QDialog
 {
  Q_OBJECT
  public:
-  Preview(QWidget *parent=0,const char *name=0);
+  Preview(QWidget *parent=0);
   ~Preview();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -65,7 +63,7 @@ class Preview : public QDialog
   int preview_program_id;
   bool preview_show_airings;
   QDate preview_date;
-  QPaintDeviceMetrics *preview_pdm;
+  //  QPaintDeviceMetrics *preview_pdm;
   QPushButton *preview_print_button;
   DvtTransportButton *preview_next_button;
   DvtTransportButton *preview_prev_button;

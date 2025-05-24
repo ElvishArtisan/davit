@@ -2,9 +2,7 @@
 //
 // Abstract a Davit user.
 //
-// (C) Copyright 2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtuser.cpp,v 1.2 2010/10/21 21:07:54 pcvs Exp $
+// (C) Copyright 2008-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -21,10 +19,11 @@
 //
 //
 
-#include <qsqldatabase.h>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
-#include <dvtuser.h>
-#include <dvtconf.h>
+#include "dvtuser.h"
+#include "dvtconf.h"
 
 DvtUser::DvtUser(const QString &username)
 {
@@ -111,7 +110,7 @@ void DvtUser::load()
                          PROVIDER_VIEW_PRIV,PROVIDER_EDIT_PRIV,\
                          PROGRAM_VIEW_PRIV,PROGRAM_EDIT_PRIV,\
                          REPORT_VIEW_PRIV from USERS where USER_NAME=\"%s\"",
-			(const char *)DvtEscapeString(user_name));
+			DvtEscapeString(user_name).toUtf8().constData());
   q=new QSqlQuery(sql);
   if(q->first()) {
     user_full_name=q->value(0).toString();
@@ -158,21 +157,21 @@ void DvtUser::save()
                          PROGRAM_EDIT_PRIV=\"%s\",\
                          REPORT_VIEW_PRIV=\"%s\" \
                          where USER_NAME=\"%s\"",
-			(const char *)DvtEscapeString(user_full_name),
-			(const char *)DvtEscapeString(user_description),
-			(const char *)DvtEscapeString(user_phone_number),
-			(const char *)DvtEscapeString(user_email),
-			(const char *)DvtYesNo(user_privilege[0]),
-			(const char *)DvtYesNo(user_privilege[1]),
-			(const char *)DvtYesNo(user_privilege[2]),
-			(const char *)DvtYesNo(user_privilege[3]),
-			(const char *)DvtYesNo(user_privilege[4]),
-			(const char *)DvtYesNo(user_privilege[5]),
-			(const char *)DvtYesNo(user_privilege[6]),
-			(const char *)DvtYesNo(user_privilege[7]),
-			(const char *)DvtYesNo(user_privilege[8]),
-			(const char *)DvtYesNo(user_privilege[9]),
-			(const char *)DvtEscapeString(user_name));
+			DvtEscapeString(user_full_name).toUtf8().constData(),
+			DvtEscapeString(user_description).toUtf8().constData(),
+			DvtEscapeString(user_phone_number).toUtf8().constData(),
+			DvtEscapeString(user_email).toUtf8().constData(),
+			DvtYesNo(user_privilege[0]).toUtf8().constData(),
+			DvtYesNo(user_privilege[1]).toUtf8().constData(),
+			DvtYesNo(user_privilege[2]).toUtf8().constData(),
+			DvtYesNo(user_privilege[3]).toUtf8().constData(),
+			DvtYesNo(user_privilege[4]).toUtf8().constData(),
+			DvtYesNo(user_privilege[5]).toUtf8().constData(),
+			DvtYesNo(user_privilege[6]).toUtf8().constData(),
+			DvtYesNo(user_privilege[7]).toUtf8().constData(),
+			DvtYesNo(user_privilege[8]).toUtf8().constData(),
+			DvtYesNo(user_privilege[9]).toUtf8().constData(),
+			DvtEscapeString(user_name).toUtf8().constData());
   q=new QSqlQuery(sql);
   delete q;
 }

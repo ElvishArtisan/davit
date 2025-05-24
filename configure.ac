@@ -3,9 +3,7 @@ dnl
 dnl Autoconf configuration for Davit.
 dnl Use autoconf to process this into a configure script
 dnl
-dnl   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-dnl
-dnl     $Id: configure.in,v 1.14 2013/02/26 19:06:17 pcvs Exp $
+dnl   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 dnl
 dnl   This program is free software; you can redistribute it and/or modify
 dnl   it under the terms of the GNU General Public License version 2 as
@@ -20,7 +18,7 @@ dnl   You should have received a copy of the GNU General Public
 dnl   License along with this program; if not, write to the Free Software
 dnl   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl
-dnl Use autoconf to process this into a configure script
+
 AC_INIT(davit,m4_esyscmd(cat PACKAGE_VERSION))
 AM_INIT_AUTOMAKE
 AC_SUBST(RPM_RELEASE,1)
@@ -59,10 +57,9 @@ esac
 #
 # Check for Qt
 #
-BNV_HAVE_QT
-if test $have_qt = "no" ; then
-  AC_MSG_ERROR([*** Qt toolkit not found, unable to continue ***])
-fi
+PKG_CHECK_MODULES(QT4,QtCore QtGui QtNetwork QtSql,,[AC_MSG_ERROR([*** Qt4 not found ***])])
+AC_CHECK_PROG(MOC_NAME,moc-qt4,[moc-qt4],[moc])
+AC_SUBST(QT_MOC,$MOC_NAME)
 
 #
 # Check for VMime
@@ -78,6 +75,20 @@ AC_SUBST(VENDOR,$ar_gcc_distro)
 AC_SUBST(ARCH,$ar_gcc_arch)
 
 #
+# Determine number of available CPU cores for building packages
+#
+AX_COUNT_CPUS([],[])
+if test $CPU_COUNT -lt 2 ; then
+   AC_SUBST(CPUS_AVAIL,1)
+else
+   if test $CPU_COUNT -gt 16 ; then
+      AC_SUBST(CPUS_AVAIL,16)
+   else
+      AC_SUBST(CPUS_AVAIL,$(($CPU_COUNT-1)))
+   fi
+fi
+
+
 # Determine Distro
 #
 AR_GET_DISTRO()

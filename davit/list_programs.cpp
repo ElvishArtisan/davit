@@ -2,9 +2,7 @@
 //
 // List Davit Programs.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_programs.cpp,v 1.8 2013/02/26 19:06:17 pcvs Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,23 +18,26 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qsqldatabase.h>
 #include <math.h>
-#include <qmessagebox.h>
+
+#include <QPushButton>
+#include <QLabel>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvtconfig.h>
-#include <list_programs.h>
-#include <edit_program.h>
-#include <add_program.h>
-#include <globals.h>
-#include <generate_affadavit.h>
 
+#include "add_program.h"
+#include "edit_program.h"
+#include "generate_affadavit.h"
+#include "globals.h"
+#include "list_programs.h"
 
-ListPrograms::ListPrograms(int provider_id,QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+ListPrograms::ListPrograms(int provider_id,QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   list_provider_id=provider_id;
 
   //
@@ -45,7 +46,7 @@ ListPrograms::ListPrograms(int provider_id,QWidget *parent,const char *name)
   setMinimumWidth(sizeHint().width());
   setMinimumHeight(sizeHint().height());
 
-  setCaption("Davit - Programs");
+  setWindowTitle("Davit - Programs");
 
   //
   // Create Fonts
@@ -58,7 +59,8 @@ ListPrograms::ListPrograms(int provider_id,QWidget *parent,const char *name)
   //
   // Programs List
   //
-  list_programs_list=new QListView(this,"list_programs_list");
+  /*
+  list_programs_list=new QListView(this);
   list_programs_list->setItemMargin(5);
   list_programs_list->setAllColumnsShowFocus(true);
   connect(list_programs_list,
@@ -75,11 +77,11 @@ ListPrograms::ListPrograms(int provider_id,QWidget *parent,const char *name)
   list_programs_list->setColumnAlignment(3,AlignLeft|AlignVCenter);
   list_programs_list->addColumn("E-Mail");
   list_programs_list->setColumnAlignment(4,AlignLeft|AlignVCenter);
-
+  */
   //
   //  Add Button
   //
-  list_add_button=new QPushButton(this,"list_add_button");
+  list_add_button=new QPushButton(this);
   list_add_button->setFont(font);
   list_add_button->setText("&Add");
   list_add_button->
@@ -89,7 +91,7 @@ ListPrograms::ListPrograms(int provider_id,QWidget *parent,const char *name)
   //
   //  Edit Button
   //
-  list_edit_button=new QPushButton(this,"list_edit_button");
+  list_edit_button=new QPushButton(this);
   list_edit_button->setFont(font);
   list_edit_button->setText("&Edit");
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
@@ -97,7 +99,7 @@ ListPrograms::ListPrograms(int provider_id,QWidget *parent,const char *name)
   //
   //  Delete Button
   //
-  list_delete_button=new QPushButton(this,"list_delete_button");
+  list_delete_button=new QPushButton(this);
   list_delete_button->setFont(font);
   list_delete_button->setText("&Delete");
   list_delete_button->
@@ -107,7 +109,7 @@ ListPrograms::ListPrograms(int provider_id,QWidget *parent,const char *name)
   //
   //  Affidavit Button
   //
-  list_affadavit_button=new QPushButton(this,"list_affadavit_button");
+  list_affadavit_button=new QPushButton(this);
   list_affadavit_button->setFont(font);
   list_affadavit_button->setText("&Generate\nAffidavit");
   list_affadavit_button->
@@ -117,7 +119,7 @@ ListPrograms::ListPrograms(int provider_id,QWidget *parent,const char *name)
   //
   //  Close Button
   //
-  list_close_button=new QPushButton(this,"list_close_button");
+  list_close_button=new QPushButton(this);
   list_close_button->setDefault(true);
   list_close_button->setFont(font);
   list_close_button->setText("&Close");
@@ -146,6 +148,7 @@ QSizePolicy ListPrograms::sizePolicy() const
 
 void ListPrograms::addData()
 {
+  /*
   QString bname;
   QString pname;
   int pid=0;
@@ -186,11 +189,13 @@ void ListPrograms::addData()
     }
   }
   delete add;
+  */
 }
 
 
 void ListPrograms::editData()
 {
+  /*
   DvtListViewItem *item=(DvtListViewItem *)list_programs_list->selectedItem();
   
   if(item==NULL) {
@@ -201,11 +206,13 @@ void ListPrograms::editData()
     UpdateItem(item);
   }
   delete edit;
+  */
 }
 
 
 void ListPrograms::deleteData()
 {
+  /*
   DvtListViewItem *item=(DvtListViewItem *)list_programs_list->selectedItem();
 
   if(item==NULL) {
@@ -220,11 +227,13 @@ void ListPrograms::deleteData()
   }
   DeleteProgram(item->id());
   delete item;
+  */
 }
 
 
 void ListPrograms::affadavitData()
 {
+  /*
   DvtListViewItem *item=
     (DvtListViewItem *)list_programs_list->selectedItem();
   
@@ -236,15 +245,16 @@ void ListPrograms::affadavitData()
 			  this,"edit");
   edit->exec();
   delete edit;
+  */
 }
 
-
+/*
 void ListPrograms::doubleClickedData(QListViewItem *item,const QPoint &pt,
 				      int c)
 {
   editData();
 }
-
+*/
 
 void ListPrograms::closeData()
 {
@@ -254,8 +264,8 @@ void ListPrograms::closeData()
 
 void ListPrograms::resizeEvent(QResizeEvent *e)
 {
-  list_programs_list->
-    setGeometry(10,10,size().width()-20,size().height()-80);
+  //  list_programs_list->
+  //    setGeometry(10,10,size().width()-20,size().height()-80);
   list_add_button->setGeometry(10,size().height()-60,80,50);
   list_edit_button->setGeometry(100,size().height()-60,80,50);
   list_delete_button->setGeometry(190,size().height()-60,80,50);
@@ -289,6 +299,7 @@ void ListPrograms::DeleteProgram(int pid)
 
 void ListPrograms::RefreshList()
 {
+  /*
   QString sql;
   QSqlQuery *q;
   DvtListViewItem *item;
@@ -313,11 +324,13 @@ void ListPrograms::RefreshList()
     item->setText(4,q->value(4).toString());
   }
   delete q;
+  */
 }
 
 
 void ListPrograms::UpdateItem(DvtListViewItem *item)
 {
+  /*
   QString sql;
   QSqlQuery *q;
 
@@ -332,4 +345,5 @@ void ListPrograms::UpdateItem(DvtListViewItem *item)
     item->setText(4,q->value(2).toString());
   }
   delete q;
+  */
 }

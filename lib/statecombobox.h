@@ -2,9 +2,7 @@
 //
 // QComboBox for choosing a US state.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: statecombobox.h,v 1.1 2007/03/16 19:10:54 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,14 +21,13 @@
 #ifndef STATECOMBOBOX_H
 #define STATECOMBOBOX_H
 
-#include <qcombobox.h>
-
+#include <QComboBox>
 
 class StateComboBox : public QComboBox
 {
  Q_OBJECT
  public:
-  StateComboBox(bool incl_all,QWidget *parent=0,const char *name=0);
+  StateComboBox(bool incl_all,QWidget *parent=0);
   QString currentStateCode() const;
 
  signals:

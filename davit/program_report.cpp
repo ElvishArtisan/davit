@@ -2,9 +2,7 @@
 //
 // Generate a Program Affidavit Report
 //
-//   (C) Copyright 2002-2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: program_report.cpp,v 1.2 2011/03/29 18:43:49 pcvs Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,15 +18,15 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qfile.h>
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
+#include <QFile>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvttextfile.h>
 #include <dvtconf.h>
 
-#include <generate_affadavit.h>
-
+#include "generate_affadavit.h"
 
 void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
 				      const QDate &end_date,bool affiliates)
@@ -77,16 +75,16 @@ void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
     s+="\n";
   }
   s+=Center(QString().sprintf("%s, %s %s",
-			      (const char *)q->value(4).toString(),
-			      (const char *)q->value(5).toString(),
-			      (const char *)q->value(6).toString()));
+			      q->value(4).toString().toUtf8().constData(),
+			      q->value(5).toString().toUtf8().constData(),
+			      q->value(6).toString().toUtf8().constData()));
   s+="\n";
   s+=Center(q->value(7).toString());
   s+="\n";
   s+="\n";
   s+=Center(QString().sprintf("%s through %s",
-			      (const char *)start_date.toString("MMMM d, yyyy"),
-			      (const char *)end_date.toString("MMMM d, yyyy")));
+	      start_date.toString("MMMM d, yyyy").toUtf8().constData(),
+	      end_date.toString("MMMM d, yyyy").toUtf8().constData()));
   s+="\n";
   s+="\n";
 
@@ -112,14 +110,13 @@ void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
   q1=new QSqlQuery(sql);
   while(q1->next()) {
     p+=QString().sprintf("          %-17s %s  ",
-			 (const char *)q1->value(9).toString().left(17),
-			 (const char *)QTime().
-			 addMSecs(q->value(9).toInt()).
-			 toString("mm:ss"));
+			 q1->value(9).toString().left(17).toUtf8().constData(),
+			 QTime().addMSecs(q->value(9).toInt()).
+			 toString("mm:ss").toUtf8().constData());
     for(int i=0;i<7;i++) {
       if(q1->value(i).toString()=="Y") {
-	p+=QString().sprintf("%5s ",(const char *)q1->value(7).toTime().
-			     toString("h ap"));
+	p+=QString().sprintf("%5s ",q1->value(7).toTime().toString("h ap").
+			     toUtf8().constData());
 	date=start_date;
 	while(date<=end_date) {
 	  if(date.dayOfWeek()==(i+1)) {
@@ -129,20 +126,21 @@ void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
                                      (AIR_DATETIME=\"%s %s\")",
 				  id,
 				  q1->value(10).toInt(),
-				  (const char *)date.toString("yyyy-MM-dd"),
-				  (const char *)q1->value(7).toTime().
-				  toString("hh:mm:ss"));
+				  date.toString("yyyy-MM-dd").toUtf8().constData(),
+				  q1->value(7).toTime().
+				  toString("hh:mm:ss").toUtf8().constData());
 	    q2=new QSqlQuery(sql);
 	    if(q2->first()) {
 	      signature_datetime=q2->value(0).toDateTime();
 	    }
 	    else {
 	      e+=QString().sprintf("          %-40s -- %5s %s",
-				   (const char *)q1->value(9).
-				   toString().left(40),
-				   (const char *)date.toString("MM/dd/yyyy"),
-				   (const char *)q1->value(7).toTime().
-				   toString("hh:mm:ss"));
+				   q1->value(9).toString().left(40).
+				   toUtf8().constData(),
+				   date.toString("MM/dd/yyyy").
+				   toUtf8().constData(),
+				   q1->value(7).toTime().toString("hh:mm:ss").
+				   toUtf8().constData());
 	      e+="\n";
 	    }
 	    delete q2;
@@ -174,8 +172,8 @@ void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
       signame=q->value(0).toString();
     }
     s+=QString().sprintf("          %s certifies that the %s\n",
-			 (const char *)signame,
-			 (const char *)q->value(1).toString());
+			 signame.toUtf8().constData(),
+			 q->value(1).toString().toUtf8().constData());
     s+=QString().
       sprintf("          program was aired on RadioAmerica at the times indicated.\n");
     s+="          and all network commercials run within the programs\n";
@@ -203,8 +201,9 @@ void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
     // Signature Section
     //
     s+=QString().sprintf("                                    Executed %s\n",
-			 (const char *)signature_datetime.
-			 toString("MM/dd/yyyy - h:mm:ss ap"));
+			 signature_datetime.
+			 toString("MM/dd/yyyy - h:mm:ss ap").
+			 toUtf8().constData());
     s+="\n";
   }
   else {

@@ -3,7 +3,7 @@
 // 
 // Adopted from conflib
 //
-//   (C) Copyright 1996-2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 1996-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -25,12 +25,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
-#include <qhostaddress.h>
-#include <qobject.h>
-#include <qvariant.h>
-#include <qmessagebox.h>
-#include <qdir.h>
-#include <dvtconf.h>
+
 #ifdef WIN32
 #include <windows.h>
 #include <tchar.h>
@@ -40,8 +35,17 @@
 #include <sys/timex.h>
 #endif
 
-#include <dvt.h>
-#include <spread_sheet.h>
+
+#include <QDir>
+#include <QHostAddress>
+#include <QMessageBox>
+#include <QObject>
+#include <QVariant>
+#include <QSqlQuery>
+
+#include "dvtconf.h"
+#include "dvt.h"
+#include "spread_sheet.h"
 
 #define BUFFER_SIZE 1024
 
@@ -362,27 +366,17 @@ void ClearLock(const char *sLockname)
 
 QString DvtGetPathPart(QString path)
 {
-  int c;
-
-  c=path.findRev('/');
-  if(c<0) {
-    return QString("");
-  }
-  path.truncate(c+1);
-  return path;
+  QStringList f0=path.split("/",QString::KeepEmptyParts);
+  f0.removeLast();
+  return f0.join("/");
 }
 
 
 QString DvtGetBasePart(QString path)
 {
-  int c;
+  QStringList f0=path.split("/",QString::KeepEmptyParts);
 
-  c=path.findRev('/');
-  if(c<0) {
-    return path;
-  }
-  path.remove(0,c+1);
-  return path;
+  return f0.last();
 }
 
 
@@ -417,19 +411,19 @@ QString DvtGetShortDayNameEN(int weekday)
 
 QFont::Weight DvtGetFontWeight(QString string)
 {
-  if(string.contains("Light",false)) {
+  if(string.contains("Light",Qt::CaseInsensitive)) {
     return QFont::Light;
   }
-  if(string.contains("Normal",false)) {
+  if(string.contains("Normal",Qt::CaseInsensitive)) {
     return QFont::Normal;
   }
-  if(string.contains("DemiBold",false)) {
+  if(string.contains("DemiBold",Qt::CaseInsensitive)) {
     return QFont::DemiBold;
   }
-  if(string.contains("Bold",false)) {
+  if(string.contains("Bold",Qt::CaseInsensitive)) {
     return QFont::Bold;
   }
-  if(string.contains("Black",false)) {
+  if(string.contains("Black",Qt::CaseInsensitive)) {
     return QFont::Black;
   }
   return QFont::Normal;
@@ -449,7 +443,7 @@ bool DvtDetach()
 
 bool DvtBool(QString string)
 {
-  if(string.contains("Y",false)) {
+  if(string.contains("Y",Qt::CaseInsensitive)) {
     return true;
   }
   return false;
@@ -486,7 +480,7 @@ QHostAddress DvtGetHostAddr()
     65536*(host_ent->h_addr_list[0][1]&0xff)+
     256*(host_ent->h_addr_list[0][2]&0xff)+
     (host_ent->h_addr_list[0][3]&0xff);
-  return QHostAddress((Q_UINT32)host_address);
+  return QHostAddress((uint32_t)host_address);
 }
 #endif  // WIN32
 
@@ -500,7 +494,8 @@ QString DvtGetDisplay(bool strip_point)
   int l;
 
   if(getenv("DISPLAY")[0]==':') {
-    display=QString().sprintf("%s%s",(const char *)DvtGetHostAddr().toString(),
+    display=QString().sprintf("%s%s",(const char *)DvtGetHostAddr().toString().
+			      toUtf8().constData(),
 			     getenv("DISPLAY"));
   }
   else {
@@ -525,11 +520,11 @@ bool DvtDoesRowExist(QString table,QString name,QString test,QSqlDatabase *db)
   QString sql;
 
   sql=QString().sprintf("SELECT %s FROM %s WHERE %s=\"%s\"",
-			(const char *)name,
-			(const char *)table,
-			(const char *)name,
-			(const char *)test);
-  q=new QSqlQuery(sql,db);
+			name.toUtf8().constData(),
+			table.toUtf8().constData(),
+			name.toUtf8().constData(),
+			test.toUtf8().constData());
+  q=new QSqlQuery(sql);
   if(q->size()>0) {
     delete q;
     return true;
@@ -545,11 +540,11 @@ bool DvtDoesRowExist(QString table,QString name,unsigned test,QSqlDatabase *db)
   QString sql;
 
   sql=QString().sprintf("SELECT %s FROM %s WHERE %s=%d",
-			(const char *)name,
-			(const char *)table,
-			(const char *)name,
+			name.toUtf8().constData(),
+			table.toUtf8().constData(),
+			name.toUtf8().constData(),
 			test);
-  q=new QSqlQuery(sql,db);
+  q=new QSqlQuery(sql);
   if(q->size()>0) {
     delete q;
     return true;
@@ -567,11 +562,11 @@ QVariant DvtGetSqlValue(QString table,QString name,QString test,
   QVariant v;
 
   sql=QString().sprintf("SELECT %s FROM %s WHERE %s=\"%s\"",
-			(const char *)param,
-			(const char *)table,
-			(const char *)name,
-			(const char *)test);
-  q=new QSqlQuery(sql,db);
+			param.toUtf8().constData(),
+			table.toUtf8().constData(),
+			name.toUtf8().constData(),
+			test.toUtf8().constData());
+  q=new QSqlQuery(sql);
   if(q->isActive()) {
     q->first();
     v=q->value(0);
@@ -593,11 +588,11 @@ bool DvtIsSqlNull(QString table,QString name,QString test,
   QString sql;
 
   sql=QString().sprintf("SELECT %s FROM %s WHERE %s=\"%s\"",
-			(const char *)param,
-			(const char *)table,
-			(const char *)name,
-			(const char *)test);
-  q=new QSqlQuery(sql,db);
+			param.toUtf8().constData(),
+			table.toUtf8().constData(),
+			name.toUtf8().constData(),
+			test.toUtf8().constData());
+  q=new QSqlQuery(sql);
   if(q->isActive()) {
     q->first();
     if(q->isNull(0)) {
@@ -621,11 +616,11 @@ bool DvtIsSqlNull(QString table,QString name,unsigned test,
   QString sql;
 
   sql=QString().sprintf("SELECT %s FROM %s WHERE %s=%d",
-			(const char *)param,
-			(const char *)table,
-			(const char *)name,
+			param.toUtf8().constData(),
+			table.toUtf8().constData(),
+			name.toUtf8().constData(),
 			test);
-  q=new QSqlQuery(sql,db);
+  q=new QSqlQuery(sql);
   if(q->isActive()) {
     q->first();
     if(q->isNull(0)) {
@@ -650,11 +645,11 @@ QVariant DvtGetSqlValue(QString table,QString name,unsigned test,
   QVariant v;
 
   sql=QString().sprintf("SELECT %s FROM %s WHERE %s=%u",
-			(const char *)param,
-			(const char *)table,
-			(const char *)name,
+			param.toUtf8().constData(),
+			table.toUtf8().constData(),
+			name.toUtf8().constData(),
 			test);
-  q=new QSqlQuery(sql,db);
+  q=new QSqlQuery(sql);
   if(q->first()) {
     v=q->value(0);
     if(valid!=NULL) {
@@ -719,12 +714,11 @@ int DvtSetTimeLength(QString str)
   int istate=2;
   QString field;
   int res=0;
-  bool decimalpt=false;
 
   if(str.isEmpty()) {
     return -1;
   }
-  for(unsigned i=0;i<str.length();i++) {
+  for(int i=0;i<str.length();i++) {
     if(str.at(i)==':') {
       istate--;
     }
@@ -732,7 +726,7 @@ int DvtSetTimeLength(QString str)
   if(istate<0) {
     return -1;
   }
-  for(unsigned i=0;i<str.length();i++) {
+  for(int i=0;i<str.length();i++) {
     if(str.at(i).isNumber()) {
       field+=str.at(i);
     }
@@ -753,9 +747,6 @@ int DvtSetTimeLength(QString str)
 	    case 2:
 	      res+=1000*field.toInt();
 	      break;
-	}
-	if(str.at(i)=='.') {
-	  decimalpt=true;
 	}
 	istate++;
 	field="";
@@ -799,7 +790,7 @@ QTime DvtSetTime(const QString &str)
   int hour=0;
   int minute=0;
 
-  for(unsigned i=0;i<str.length();i++) {
+  for(int i=0;i<str.length();i++) {
     switch(istate) {
       case 0:  // Hour
 	if(str.at(i)==':') {
@@ -844,14 +835,14 @@ bool DvtCopy(QString srcfile,QString destfile)
   char *buf=NULL;
   int n;
 
-  if((src_fd=open((const char *)srcfile,O_RDONLY))<0) {
+  if((src_fd=open(srcfile.toUtf8(),O_RDONLY))<0) {
     return false;
   }
   if(fstat(src_fd,&src_stat)<0) {
     close(src_fd);
     return false;
   }
-  if((dest_fd=open((const char *)destfile,O_RDWR|O_CREAT,src_stat.st_mode))
+  if((dest_fd=open(destfile.toUtf8(),O_RDWR|O_CREAT,src_stat.st_mode))
      <0) {
     close(src_fd);
     return false;
@@ -880,18 +871,18 @@ bool DvtWritePid(QString dirname,QString filename,int owner,int group)
   FILE *file;
   mode_t prev_mask;
   QString pathname=QString().sprintf("%s/%s",
-				     (const char *)dirname,
-				     (const char *)filename);
+				     dirname.toUtf8().constData(),
+				     filename.toUtf8().constData());
 
   prev_mask = umask(0113);      // Set umask so pid files are user and group writable.
-  file=fopen((const char *)pathname,"w");
+  file=fopen(pathname.toUtf8(),"w");
   umask(prev_mask);
   if(file==NULL) {
     return false;
   }
   fprintf(file,"%d",getpid());
   fclose(file);
-  chown((const char *)pathname,owner,group);
+  chown(pathname.toUtf8().constData(),owner,group);
 
   return true;
 }
@@ -900,9 +891,9 @@ bool DvtWritePid(QString dirname,QString filename,int owner,int group)
 void DvtDeletePid(QString dirname,QString filename)
 {
   QString pid=QString().sprintf("%s/%s",
-				(const char *)dirname,
-				(const char *)filename);
-  unlink((const char *)pid);
+				dirname.toUtf8().constData(),
+				filename.toUtf8().constData());
+  unlink(pid.toUtf8());
 }
 
 
@@ -922,7 +913,7 @@ pid_t DvtGetPid(QString pidfile)
   FILE *handle;
   pid_t ret;
 
-  if((handle=fopen((const char *)pidfile,"r"))==NULL) {
+  if((handle=fopen(pidfile.toUtf8(),"r"))==NULL) {
     return -1;
   }
   if(fscanf(handle,"%d",&ret)!=1) {
@@ -963,11 +954,11 @@ QString DvtGetHomeDir(bool *found)
 
 QString DvtTruncateAfterWord(QString str,int word,bool add_dots)
 {
-  QString simple=str.simplifyWhiteSpace();
+  QString simple=str.simplified();
   int quan=0;
   int point;
 
-  for(unsigned i=0;i<simple.length();i++) {
+  for(int i=0;i<simple.length();i++) {
     if(simple.at(i).isSpace()) {
       quan++;
       point=i;
@@ -1029,9 +1020,9 @@ QString DvtTempName(const QString &ext)
 int DvtDeleteFile(const QString &filename)
 {
 #ifdef WIN32
-  return remove(filename);
+  return remove(filename.toUtf8());
 #else
-  return unlink(filename);
+  return unlink(filename.toUtf8());
 #endif
 }
 
@@ -1041,8 +1032,8 @@ QString DvtEscapeString(const QString &str)
 {
   QString res;
 
-  for(unsigned i=0;i<str.length();i++) {
-    switch(((const char *)str)[i]) {
+  for(int i=0;i<str.length();i++) {
+    switch((str.toUtf8())[i]) {
 	case '(':
 	  res+=QString("\\\(");
 	  break;
@@ -1088,7 +1079,7 @@ QString DvtEscapeString(const QString &str)
 	  break;
 
 	default:
-	  res+=((const char *)str)[i];
+	  res+=(str.toUtf8())[i];
 	  break;
     }
   }
@@ -1098,9 +1089,9 @@ QString DvtEscapeString(const QString &str)
 
 QString DvtFormatCityState(const QString &city,const QString &state)
 {
-  QString ret=city+", "+state.upper();
+  QString ret=city+", "+state.toUpper();
   if(city.isEmpty()) {
-    ret=state.upper();
+    ret=state.toUpper();
   }
   if(state.isEmpty()) {
     ret=city;
@@ -1116,8 +1107,8 @@ bool DvtNormalizeAddresses(QString str,QStringList *list)
 {
   str.replace("\n",";");
   str.replace(",",";");
-  *list=list->split(";",str);
-  for(unsigned i=0;i<list->size();i++) {
+  *list=str.split(";");
+  for(int i=0;i<list->size();i++) {
     if(!DvtIsFullEmailAddress((*list)[i])) { 
       return false;
     }
@@ -1149,7 +1140,7 @@ bool DvtIsFullEmailAddress(QString str)
     if(str.contains("\"")!=2) {
       return false;
     }
-    return DvtIsEmailAddress(str.right(str.length()-str.findRev("\"")-1));
+    return DvtIsEmailAddress(str.right(str.length()-str.lastIndexOf("\"")-1));
   }
 
   //
@@ -1179,7 +1170,7 @@ QString DvtFormatPhoneNumber(const QString &str)
   if(str.isEmpty()) {
     return str;
   }
-  QString pnum=str.stripWhiteSpace();
+  QString pnum=str.trimmed();
   if(pnum.length()==10) {
     return QString("(")+pnum.left(3)+QString(") ")+
       pnum.mid(3,3)+QString("-")+pnum.right(4);
@@ -1244,13 +1235,13 @@ int DvtCreateNewAffiliateRecord()
 
 QString DvtStationTypeString(const QString &type)
 {
-  return type.upper()+"M";
+  return type.toUpper()+"M";
 }
 
 
 QString DvtStationCallString(const QString &call,const QString &type)
 {
-  return call.upper()+"-"+DvtStationTypeString(type);
+  return call.toUpper()+"-"+DvtStationTypeString(type);
 }
 
 
@@ -1305,8 +1296,8 @@ bool DvtAffidavitNeeded(int affiliate_id,const QDate &date)
                          (AIR_DATETIME<=\"%s-%02d 23:59:59\")",
 			affiliate_id,
 			Dvt::AiredStateScheduled,
-			(const char *)date.toString("yyyy-MM"),
-			(const char *)date.toString("yyyy-MM"),
+			date.toString("yyyy-MM").toUtf8().constData(),
+			date.toString("yyyy-MM").toUtf8().constData(),
 			date.daysInMonth());
   q=new QSqlQuery(sql);
   if(q->first()) {
@@ -1483,19 +1474,19 @@ unsigned DvtContactInfo(QString *name,QString *title,QString *email,
   }
   delete q;
   if(name!=NULL) {
-    *name=(*name).left((*name).length()-2).stripWhiteSpace();
+    *name=(*name).left((*name).length()-2).trimmed();
   }
   if(title!=NULL) {
-    *title=(*name).left((*title).length()-2).stripWhiteSpace();
+    *title=(*name).left((*title).length()-2).trimmed();
   }
   if(phone!=NULL) {
-    *phone=(*phone).left((*phone).length()-2).stripWhiteSpace();
+    *phone=(*phone).left((*phone).length()-2).trimmed();
   }
   if(email!=NULL) {
-    *email=(*email).left((*email).length()-2).stripWhiteSpace();
+    *email=(*email).left((*email).length()-2).trimmed();
   }
   if(fax!=NULL) {
-    *fax=(*fax).left((*fax).length()-2).stripWhiteSpace();
+    *fax=(*fax).left((*fax).length()-2).trimmed();
   }
 
   return ret;
@@ -1510,31 +1501,31 @@ QFont DvtGetFont(const QString &base_name)
   bool ok=false;
   int n;
 
-  if(getenv(base_name+"_FONT_FACE")!=NULL) {
-    face=getenv(base_name+"_FONT_FACE");
+  if(getenv((base_name+"_FONT_FACE").toUtf8())!=NULL) {
+    face=getenv((base_name+"_FONT_FACE").toUtf8());
   }
-  if(getenv(base_name+"_FONT_SIZE")!=NULL) {
-    n=QString(getenv(base_name+"_FONT_SIZE")).toInt(&ok);
+  if(getenv((base_name+"_FONT_SIZE").toUtf8())!=NULL) {
+    n=QString(getenv((base_name+"_FONT_SIZE").toUtf8())).toInt(&ok);
     if(ok) {
       size=n;
     }
     else {
       fprintf(stderr,"davit: %s_FONT_SIZE value is malformatted\n",
-	      (const char *)base_name);
+	      base_name.toUtf8().constData());
     }
   }
-  if(getenv(base_name+"_FONT_WEIGHT")!=NULL) {
-    QString wt=getenv(base_name+"_FONT_WEIGHT");
-    if(wt.lower()=="normal") {
+  if(getenv((base_name+"_FONT_WEIGHT").toUtf8())!=NULL) {
+    QString wt=getenv((base_name+"_FONT_WEIGHT").toUtf8());
+    if(wt.toLower()=="normal") {
       weight=QFont::Normal;
     }
     else {
-      if(wt.lower()=="bold") {
+      if(wt.toLower()=="bold") {
 	weight=QFont::Bold;
       }
       else {
 	fprintf(stderr,"davit: %s_FONT_WEIGHT value is malformatted\n",
-		(const char *)base_name);
+		base_name.toUtf8().constData());
       }
     }
   }
@@ -1547,8 +1538,8 @@ Spread::FileFormat DvtGetSpreadSheetFileFormat(const QString &base_name)
 {
   Spread::FileFormat ret=SpreadSheet::ExcelXmlFormat;
 
-  if(getenv(base_name+"_FORMAT")!=NULL) {
-    QString str=QString(getenv(base_name+"_FORMAT")).lower();
+  if(getenv((base_name+"_FORMAT").toUtf8())!=NULL) {
+    QString str=QString(getenv((base_name+"_FORMAT").toUtf8())).toLower();
     if(str=="slk") {
       ret=Spread::SlkFormat;
     }
@@ -1558,7 +1549,7 @@ Spread::FileFormat DvtGetSpreadSheetFileFormat(const QString &base_name)
       }
       else {
 	fprintf(stderr,"davit: %s_FORMAT value is malformatted\n",
-		(const char *)base_name);
+		base_name.toUtf8().constData());
       }
     }
   }
@@ -1579,7 +1570,7 @@ QStringList DvtReportViewerCommand(const QString &filename,
     ret.push_back(filename);
   }
   else {
-    ret=ret.split(" ",QString(getenv("DAVIT_REPORT_COMMAND")));
+    ret=QString(getenv("DAVIT_REPORT_COMMAND")).split(" ");
     ret.push_back(filename);
   }
   /*

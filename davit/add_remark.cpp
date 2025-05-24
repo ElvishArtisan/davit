@@ -29,9 +29,10 @@
 #include <add_remark.h>
 
 
-AddRemark::AddRemark(QString *remark,QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+AddRemark::AddRemark(QString *remark,QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   add_remark=remark;
 
   //
@@ -40,7 +41,7 @@ AddRemark::AddRemark(QString *remark,QWidget *parent,const char *name)
   setMinimumWidth(sizeHint().width());
   setMinimumHeight(sizeHint().height());
 
-  setCaption("Davit - Add Remark");
+  setWindowTitle("Davit - Add Remark");
 
   //
   // Create Fonts
@@ -53,14 +54,14 @@ AddRemark::AddRemark(QString *remark,QWidget *parent,const char *name)
   //
   // Station Call
   //
-  add_remark_edit=new QTextEdit(this,"add_remark_edit");
+  add_remark_edit=new QTextEdit(this);
   add_remark_edit->setFont(font);
-  add_remark_edit->setTextFormat(Qt::PlainText);
+  add_remark_edit->setAcceptRichText(false);
 
   //
   //  OK Button
   //
-  add_ok_button=new QPushButton(this,"add_ok_button");
+  add_ok_button=new QPushButton(this);
   add_ok_button->setDefault(true);
   add_ok_button->setFont(label_font);
   add_ok_button->setText("&OK");
@@ -69,7 +70,7 @@ AddRemark::AddRemark(QString *remark,QWidget *parent,const char *name)
   //
   //  Cancel Button
   //
-  add_cancel_button=new QPushButton(this,"add_cancel_button");
+  add_cancel_button=new QPushButton(this);
   add_cancel_button->setFont(label_font);
   add_cancel_button->setText("&Cancel");
   connect(add_cancel_button,SIGNAL(clicked()),this,SLOT(cancelData()));
@@ -103,7 +104,7 @@ void AddRemark::resizeEvent(QResizeEvent *e)
 
 void AddRemark::okData()
 {
-  *add_remark=add_remark_edit->text().simplifyWhiteSpace().stripWhiteSpace();
+  *add_remark=add_remark_edit->toPlainText().simplified().trimmed();
   done(0);
 }
 

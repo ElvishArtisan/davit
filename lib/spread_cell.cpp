@@ -2,7 +2,7 @@
 //
 // Abstract a spreadhsheet cell.
 //
-//   (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2014-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -137,7 +137,7 @@ QString SpreadCell::WriteSlkFormat()
     ret+="K\""+cell_text+"\"\n";
   }
   else {
-    fprintf(stderr,"SpreadCell::write() -- attempting to write non-anchored cell, text: %s\n",(const char *)cell_text.utf8());
+    fprintf(stderr,"SpreadCell::write() -- attempting to write non-anchored cell, text: %s\n",(const char *)cell_text.toUtf8());
   }
 
   return ret;

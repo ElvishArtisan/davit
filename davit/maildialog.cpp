@@ -2,9 +2,7 @@
 //
 // Compose an e-mail message.
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: maildialog.cpp,v 1.7 2013/02/26 19:06:17 pcvs Exp $
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -25,18 +23,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <qmessagebox.h>
+#include <QMessageBox>
 
 #include <dvtconf.h>
 #include <dvtmail.h>
 
-#include <globals.h>
-#include <maildialog.h>
+#include "globals.h"
+#include "maildialog.h"
 
-MailDialog::MailDialog(QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+MailDialog::MailDialog(QWidget *parent)
+  : QDialog(parent)
 {
-  setCaption(tr("Davit - Compose Mail"));
+  setModal(true);
+  setWindowTitle(tr("Davit - Compose Mail"));
   
   //
   // Fix the Window Size
@@ -51,24 +50,24 @@ MailDialog::MailDialog(QWidget *parent,const char *name)
   label_font.setPixelSize(12);
 
   edit_to_edit=new QTextEdit(this);
-  edit_to_label=new QLabel(edit_to_edit,tr("To:"),this);
+  edit_to_label=new QLabel(tr("To:"),this);
   edit_to_label->setFont(label_font);
-  edit_to_label->setAlignment(AlignRight|AlignVCenter);
+  edit_to_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   edit_cc_edit=new QTextEdit(this);
-  edit_cc_label=new QLabel(edit_cc_edit,tr("Cc:"),this);
+  edit_cc_label=new QLabel(tr("Cc:"),this);
   edit_cc_label->setFont(label_font);
-  edit_cc_label->setAlignment(AlignRight|AlignVCenter);
+  edit_cc_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   edit_bcc_edit=new QTextEdit(this);
-  edit_bcc_label=new QLabel(edit_bcc_edit,tr("Bcc:"),this);
+  edit_bcc_label=new QLabel(tr("Bcc:"),this);
   edit_bcc_label->setFont(label_font);
-  edit_bcc_label->setAlignment(AlignRight|AlignVCenter);
+  edit_bcc_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   edit_subject_edit=new QLineEdit(this);
-  edit_subject_label=new QLabel(edit_subject_edit,tr("Subject:"),this);
+  edit_subject_label=new QLabel(tr("Subject:"),this);
   edit_subject_label->setFont(label_font);
-  edit_subject_label->setAlignment(AlignRight|AlignVCenter);
+  edit_subject_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   edit_body_edit=new QTextEdit(this);
 
@@ -107,28 +106,29 @@ int MailDialog::exec(const QStringList &to_addrs,const QStringList &cc_addrs,
   edit_to_edit->setText("");
   edit_cc_edit->setText("");
   edit_bcc_edit->setText("");
-  for(unsigned i=0;i<to_addrs.size();i++) {
+  for(int i=0;i<to_addrs.size();i++) {
     if(!to_addrs[i].isEmpty()) {
-      edit_to_edit->setText(edit_to_edit->text()+to_addrs[i]+"\n");
+      edit_to_edit->setText(edit_to_edit->toPlainText()+to_addrs[i]+"\n");
     }
   }
   edit_to_edit->
-    setText(edit_to_edit->text().left(edit_to_edit->text().length()-1));
-  for(unsigned i=0;i<cc_addrs.size();i++) {
+    setText(edit_to_edit->toPlainText().left(edit_to_edit->toPlainText().length()-1));
+  for(int i=0;i<cc_addrs.size();i++) {
     if(!cc_addrs[i].isEmpty()) {
-      edit_cc_edit->setText(edit_cc_edit->text()+cc_addrs[i]+"\n");
+      edit_cc_edit->setText(edit_cc_edit->toPlainText()+cc_addrs[i]+"\n");
     }
   }
   edit_cc_edit->
-    setText(edit_cc_edit->text().left(edit_cc_edit->text().length()-1));
+    setText(edit_cc_edit->toPlainText().left(edit_cc_edit->toPlainText().length()-1));
   edit_bcc_edit->setText(reply_addr+"\n");
-  for(unsigned i=0;i<bcc_addrs.size();i++) {
+  for(int i=0;i<bcc_addrs.size();i++) {
     if(!bcc_addrs[i].isEmpty()) {
-      edit_bcc_edit->setText(edit_bcc_edit->text()+bcc_addrs[i]+"\n");
+      edit_bcc_edit->setText(edit_bcc_edit->toPlainText()+bcc_addrs[i]+"\n");
     }
   }
   edit_bcc_edit->
-    setText(edit_bcc_edit->text().left(edit_bcc_edit->text().length()-1));
+    setText(edit_bcc_edit->toPlainText().
+	    left(edit_bcc_edit->toPlainText().length()-1));
   edit_subject_edit->setText(subj);
   edit_body_edit->setText(msg);
   edit_from_address=from_addr;
@@ -157,17 +157,17 @@ void MailDialog::sendData()
 			 tr("Invalid address in Reply-To: field!"));
     return;
   }
-  if(!DvtNormalizeAddresses(edit_to_edit->text(),&to_addrs)) {
+  if(!DvtNormalizeAddresses(edit_to_edit->toPlainText(),&to_addrs)) {
     QMessageBox::warning(this,"Davit - Compose Mail",
 			 tr("Invalid address in To: field!"));
     return;
   }
-  if(!DvtNormalizeAddresses(edit_cc_edit->text(),&cc_addrs)) {
+  if(!DvtNormalizeAddresses(edit_cc_edit->toPlainText(),&cc_addrs)) {
     QMessageBox::warning(this,"Davit - Compose Mail",
 			 tr("Invalid address in Cc: field!"));
     return;
   }
-  if(!DvtNormalizeAddresses(edit_bcc_edit->text(),&bcc_addrs)) {
+  if(!DvtNormalizeAddresses(edit_bcc_edit->toPlainText(),&bcc_addrs)) {
     QMessageBox::warning(this,"Davit - Compose Mail",
 			 tr("Invalid address in Bcc: field!"));
     return;
@@ -175,7 +175,7 @@ void MailDialog::sendData()
 
   if(!DvtSendMail(to_addrs,cc_addrs,bcc_addrs,edit_from_address,
 		  edit_reply_address,edit_subject_edit->text(),
-		  edit_body_edit->text())) {
+		  edit_body_edit->toPlainText())) {
     QMessageBox::warning(this,"Davit - Compose Mail",
 		   tr("Mailer system returned an error, message not sent!"));
     return;

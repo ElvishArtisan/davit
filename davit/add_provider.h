@@ -2,9 +2,7 @@
 //
 // Add a Davit Provider.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: add_provider.h,v 1.1 2007/03/21 13:38:37 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,16 +21,15 @@
 #ifndef ADD_PROVIDER_H
 #define ADD_PROVIDER_H
 
-#include <qdialog.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-
+#include <QDialog>
+#include <QLineEdit>
+#include <QComboBox>
 
 class AddProvider : public QDialog
 {
  Q_OBJECT
  public:
-  AddProvider(QString *bname,QWidget *parent=0,const char *name=0);
+  AddProvider(QString *bname,QWidget *parent=0);
   ~AddProvider();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

@@ -2,9 +2,7 @@
 //
 // Compose an e-mail message.
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: maildialog.h,v 1.3 2011/02/02 18:06:32 pcvs Exp $
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -24,11 +22,11 @@
 #ifndef MAILDIALOG_H
 #define MAILDIALOG_H
 
-#include <qdialog.h>
-#include <qlineedit.h>
-#include <qtextedit.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
+#include <QDialog>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QTextEdit>
 
 #include <contact.h>
 
@@ -36,7 +34,7 @@ class MailDialog : public QDialog
 {
  Q_OBJECT
  public:
-  MailDialog(QWidget *parent=0,const char *name=0);
+  MailDialog(QWidget *parent=0);
   ~MailDialog();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

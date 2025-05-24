@@ -2,9 +2,7 @@
 //
 // Routines for process e-mail messages.
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtmail.h,v 1.4 2011/03/22 15:12:53 pcvs Exp $
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -27,8 +25,8 @@
 #include <vmime/vmime.hpp>
 #endif  // WIN32
 
-#include <qstring.h>
-#include <qstringlist.h>
+#include <QString>
+#include <QStringList>
 
 #ifdef WIN32
 bool DvtSendMail(const QStringList &to_addrs,const QStringList &cc_addrs,

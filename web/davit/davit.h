@@ -2,9 +2,7 @@
 //
 // Web-Based Affiliate Manager
 //
-//   (C) Copyright 2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: davit.h,v 1.8 2011/04/21 12:55:33 pcvs Exp $
+//   (C) Copyright 2008-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -24,9 +22,9 @@
 #ifndef DAVIT_H
 #define DAVIT_H
 
-#include <qobject.h>
-#include <qsqldatabase.h>
-#include <qhostaddress.h>
+#include <QObject>
+#include <QSqlDatabase>
+#include <QHostAddress>
 
 //
 // CGI Values
@@ -44,7 +42,7 @@
 class MainObject : public QObject
 {
  public:
-  MainObject(QObject *parent=0,const char *name=0);
+  MainObject(QObject *parent=0);
 
  private:
   int AuthenticatePost();

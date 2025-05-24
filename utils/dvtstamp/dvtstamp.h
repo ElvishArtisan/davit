@@ -2,9 +2,7 @@
 //
 // Utility for instantiating affiliate schedule data for Davit
 //
-//   (C) Copyright 2002-2006,2011 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: dvtstamp.h,v 1.2 2011/03/22 17:34:01 pcvs Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,15 +18,14 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-
 #ifndef DVTSTAMP_H
 #define DVTSTAMP_H
 
 #include <list>
 
-#include <qobject.h>
-#include <qsqldatabase.h>
-#include <qfileinfo.h>
+#include <QObject>
+#include <QSqlDatabase>
+#include <QFileInfo>
 
 #include <dvtconfig.h>
 #include <dvtcmdswitch.h>
@@ -38,7 +35,7 @@
 class MainObject : public QObject
 {
  public:
-  MainObject(QObject *parent=0,const char *name=0);
+  MainObject(QObject *parent=0);
   DvtConfig *import_config;
   DvtCmdSwitch *import_cmd;
 

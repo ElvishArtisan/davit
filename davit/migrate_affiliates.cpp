@@ -2,9 +2,7 @@
 //
 // Migrate a Davit Affiliates.
 //
-//   (C) Copyright 2007-2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: migrate_affiliates.cpp,v 1.2 2008/12/26 17:10:27 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -22,13 +20,14 @@
 
 #include <math.h>
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
-#include <qpainter.h>
-#include <qvalidator.h>
-#include <qradiobutton.h>
+#include <QLabel>
+#include <QMessageBox>
+#include <QPainter>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QValidator>
 
 #include <globals.h>
 #include <dvt.h>
@@ -37,9 +36,10 @@
 #include <migrate_affiliates.h>
 
 MigrateAffiliates::MigrateAffiliates(int pgm_id,const QString &pgm_name,
-				     QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+				     QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   edit_id=pgm_id;
   edit_program_name=pgm_name;
   QString sql;
@@ -53,7 +53,7 @@ MigrateAffiliates::MigrateAffiliates(int pgm_id,const QString &pgm_name,
   setMaximumWidth(sizeHint().width());
   setMaximumHeight(sizeHint().height());
 
-  setCaption("Davit - Migrate Affiliates");
+  setWindowTitle("Davit - Migrate Affiliates");
 
   //
   // Create Fonts
@@ -68,28 +68,27 @@ MigrateAffiliates::MigrateAffiliates(int pgm_id,const QString &pgm_name,
   //
   // Source Program
   //
-  edit_program_box=new QComboBox(this,"edit_program_box");
+  edit_program_box=new QComboBox(this);
   edit_program_box->setGeometry(200,10,sizeHint().width()-210,20);
-  QLabel *label=new QLabel(edit_program_box,tr("Migrate Affiliates From:"),
-			   this,"edit_program_label");
+  QLabel *label=new QLabel(tr("Migrate Affiliates From:"),this);
   label->setGeometry(10,10,185,20);
   label->setFont(label_font);
-  label->setAlignment(AlignVCenter|AlignRight);
+  label->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
   connect(edit_program_box,SIGNAL(activated(const QString &)),
 	  this,SLOT(programActivatedData(const QString &)));
 
   //
   // Affiliate Selector
   //
-  edit_affiliates_sel=new DvtListSelector(this,"edit_affiliates_sel");
-  edit_affiliates_sel->
-    setGeometry(10,40,sizeHint().width()-20,sizeHint().height()-110);
+  edit_affiliates_sel=new DvtListSelector(this);
+  //  edit_affiliates_sel->
+  //    setGeometry(10,40,sizeHint().width()-20,sizeHint().height()-110);
   edit_affiliates_sel->destSetLabel(pgm_name);
 
   //
   //  OK Button
   //
-  QPushButton *button=new QPushButton(this,"ok_button");
+  QPushButton *button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
   button->setDefault(true);
   button->setFont(label_font);
@@ -99,7 +98,7 @@ MigrateAffiliates::MigrateAffiliates(int pgm_id,const QString &pgm_name,
   //
   //  Cancel Button
   //
-  button=new QPushButton(this,"cancel_button");
+  button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
   button->setFont(label_font);
   button->setText("&Cancel");
@@ -110,9 +109,10 @@ MigrateAffiliates::MigrateAffiliates(int pgm_id,const QString &pgm_name,
   //
   sql=QString().sprintf("select PROGRAM_NAME from PROGRAMS where ID!=%d \
                          order by PROGRAM_NAME",edit_id);
+  int count=0;
   q=new QSqlQuery(sql);
   while(q->next()) {
-    edit_program_box->insertItem(q->value(0).toString());
+    edit_program_box->insertItem(count++,q->value(0).toString());
   }
   delete q;
   programActivatedData(edit_program_box->currentText());
@@ -156,16 +156,16 @@ void MigrateAffiliates::programActivatedData(const QString &str)
       q2=new QSqlQuery(sql);
       if(q2->size()>0) {
 	QString station=q1->value(1).toString();
-	if(q1->value(2).toString().lower()=="a") {
+	if(q1->value(2).toString().toLower()=="a") {
 	  station+="-AM";
 	}
-	if(q1->value(2).toString().lower()=="f") {
+	if(q1->value(2).toString().toLower()=="f") {
 	  station+="-FM";
 	}
 	station+=" ";
 	station+=q1->value(3).toString();
 	station+=", ";
-	station+=q1->value(4).toString().upper();
+	station+=q1->value(4).toString().toUpper();
 	edit_affiliates_sel->sourceInsertItem(station);
       }
       delete q2;
@@ -197,12 +197,12 @@ void MigrateAffiliates::okData()
                            PROGRAM_ID=%d,\
                            USER_NAME=\"%s\",\
                            REMARK=\"Deleted an airing of %s.\"",
-			  (const char *)dt,
+			  dt.toUtf8().constData(),
 			  Dvt::RemarkProgramDelete,
 			  affiliate_id,
 			  pgm_id,
-			  (const char *)global_dvtuser->name(),
-			  (const char *)edit_program_box->currentText());
+			  global_dvtuser->name().toUtf8().constData(),
+			  edit_program_box->currentText().toUtf8().constData());
     q=new QSqlQuery(sql);
     delete q;
     sql=QString().sprintf("insert into AFFILIATE_REMARKS set \
@@ -212,12 +212,12 @@ void MigrateAffiliates::okData()
                            PROGRAM_ID=%d,\
                            USER_NAME=\"%s\",\
                            REMARK=\"Added an airing of %s.\"",
-			  (const char *)dt,
+			  dt.toUtf8().constData(),
 			  Dvt::RemarkProgramAdd,
 			  affiliate_id,
 			  edit_id,
-			  (const char *)global_dvtuser->name(),
-			  (const char *)edit_program_name);
+			  global_dvtuser->name().toUtf8().constData(),
+			  edit_program_name.toUtf8().constData());
     q=new QSqlQuery(sql);
     delete q;
     sql=QString().sprintf("select AIR_SUN,AIR_MON,AIR_TUE,AIR_WED,AIR_THU,\
@@ -238,19 +238,19 @@ void MigrateAffiliates::okData()
                              AIR_LENGTH=%d,\
                              PROGRAM_ID=%d,\
                              AFFILIATE_ID=%d",
-			    (const char *)q->value(0).toString(),
-			    (const char *)q->value(1).toString(),
-			    (const char *)q->value(2).toString(),
-			    (const char *)q->value(3).toString(),
-			    (const char *)q->value(4).toString(),
-			    (const char *)q->value(5).toString(),
-			    (const char *)q->value(6).toString(),
-			    (const char *)q->value(7).toTime().
-			    toString("hh:mm:ss"),
+			    q->value(0).toString().toUtf8().constData(),
+			    q->value(1).toString().toUtf8().constData(),
+			    q->value(2).toString().toUtf8().constData(),
+			    q->value(3).toString().toUtf8().constData(),
+			    q->value(4).toString().toUtf8().constData(),
+			    q->value(5).toString().toUtf8().constData(),
+			    q->value(6).toString().toUtf8().constData(),
+			    q->value(7).toTime().
+			    toString("hh:mm:ss").toUtf8().constData(),
 			    q->value(8).toInt(),
 			    edit_id,
 			    affiliate_id);
-//      printf("SQL: %s\n",(const char *)sql);
+//      printf("SQL: %s\n",sql);
       q1=new QSqlQuery(sql);
       delete q1;
       sql=QString().sprintf("delete from AIRINGS \
@@ -277,7 +277,7 @@ int MigrateAffiliates::GetProgramId(const QString &str) const
   QSqlQuery *q;
   int id=0;
   sql=QString().sprintf("select ID from PROGRAMS where PROGRAM_NAME=\"%s\"",
-			(const char *)DvtEscapeString(str));
+			DvtEscapeString(str).toUtf8().constData());
   q=new QSqlQuery(sql);
   if(q->first()) {
     id=q->value(0).toInt();
@@ -292,12 +292,12 @@ int MigrateAffiliates::GetAffiliateId(const QString &str) const
   QString sql;
   QSqlQuery *q;
   int id=0;
-  QString name=str.left(str.find(" "));
-  int n=name.find("-");
+  QString name=str.left(str.indexOf(" "));
+  int n=name.indexOf("-");
   if(n<0) {
-    printf("SQL: %s\n",(const char *)sql);
+    //    printf("SQL: %s\n",sql.toUtf8().constData());
     sql=QString().sprintf("select ID from AFFILIATES where STATION_CALL=\"%s\"",
-			  (const char *)DvtEscapeString(name));
+			  DvtEscapeString(name).toUtf8().constData());
     q=new QSqlQuery(sql);
     if(q->first()) {
       id=q->value(0).toInt();
@@ -307,8 +307,8 @@ int MigrateAffiliates::GetAffiliateId(const QString &str) const
   }
   sql=QString().sprintf("select ID from AFFILIATES where (STATION_CALL=\"%s\")\
                          &&(STATION_TYPE=\"%s\")",
-			(const char *)DvtEscapeString(name.left(n)),
-			(const char *)name.right(2).left(1).lower());
+			DvtEscapeString(name.left(n)).toUtf8().constData(),
+			name.right(2).left(1).toLower().toUtf8().constData());
   q=new QSqlQuery(sql);
   if(q->first()) {
     id=q->value(0).toInt();

@@ -2,7 +2,7 @@
 //
 // Generate an Affiliate Affidavit Contact List Report
 //
-//   (C) Copyright 2010-2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,17 +20,17 @@
 
 #include <vector>
 
-#include <qfile.h>
-#include <qfontmetrics.h>
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
+#include <QFile>
+#include <QFontMetrics>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvttextfile.h>
 #include <dvtconf.h>
 #include <spread_sheet.h>
 
-#include <list_reports.h>
-
+#include "list_reports.h"
 
 bool ListReports::AffidavitReport(SpreadSheet *sheet)
 {

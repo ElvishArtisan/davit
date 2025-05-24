@@ -2,9 +2,7 @@
 //
 // mySQL Administrative Login widget for Davit.
 //
-//   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: mysql_login.cpp,v 1.2 2007/11/19 16:53:32 fredg Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -19,30 +17,21 @@
 //   License along with this program; if not, write to the Free Software
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-
-#include <qdialog.h>
-#include <qstring.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qlineedit.h>
-#include <qtextedit.h>
-#include <qlabel.h>
-#include <qpainter.h>
-#include <qevent.h>
-#include <qmessagebox.h>
-#include <qbuttongroup.h>
 #include <math.h>
+
+#include <QPainter>
+#include <QPushButton>
 
 #include <dvtlabel.h>
 
-#include <mysql_login.h>
+#include "mysql_login.h"
 
 
 MySqlLogin::MySqlLogin(QString msg,QString *username,QString *password,
-		       QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+		       QWidget *parent)
+  : QDialog(parent)
 {
-  setCaption("mySQL Admin");
+  setWindowTitle("mySQL Admin");
   login_name=username;
   login_password=password;
 
@@ -55,44 +44,42 @@ MySqlLogin::MySqlLogin(QString msg,QString *username,QString *password,
   //
   // Message Label
   //
-  DvtLabel *label=new DvtLabel(msg,this,"message_label");
+  DvtLabel *label=new DvtLabel(msg,this);
   label->setFont(font);
   label->setGeometry(10,10,sizeHint().width()-20,sizeHint().height()-130);
-  label->setAlignment(AlignCenter);
+  label->setAlignment(Qt::AlignCenter);
   
 
   //
   // MySql Login Name
   //
-  login_name_edit=new QLineEdit(this,"login_name_edit");
+  login_name_edit=new QLineEdit(this);
   login_name_edit->setFont(font);
   login_name_edit->setGeometry(100,sizeHint().height()-110,100,19);
   login_name_edit->setMaxLength(16);
   login_name_edit->setFocus();
-  QLabel *login_name_label=new QLabel(login_name_edit,"User &Name:",this,
-				       "login_name_label");
+  QLabel *login_name_label=new QLabel("User &Name:",this);
   login_name_label->setFont(font);
   login_name_label->setGeometry(10,sizeHint().height()-109,85,19);
-  login_name_label->setAlignment(AlignRight|ShowPrefix);
+  login_name_label->setAlignment(Qt::AlignRight);
 
   //
   // MySql Login Password
   //
-  login_password_edit=new QLineEdit(this,"login_password_edit");
+  login_password_edit=new QLineEdit(this);
   login_password_edit->setFont(font);
   login_password_edit->setGeometry(100,sizeHint().height()-90,100,19);
   login_password_edit->setMaxLength(16);
   login_password_edit->setEchoMode(QLineEdit::Password);
-  QLabel *login_password_label=new QLabel(login_password_edit,"&Password:",
-					  this,"login_password_label");
+  QLabel *login_password_label=new QLabel("&Password:",this);
   login_password_label->setFont(font);
   login_password_label->setGeometry(10,sizeHint().height()-88,85,19);
-  login_password_label->setAlignment(AlignRight|ShowPrefix);
+  login_password_label->setAlignment(Qt::AlignRight);
 
   //
   // OK Button
   //
-  QPushButton *ok_button=new QPushButton(this,"ok_button");
+  QPushButton *ok_button=new QPushButton(this);
   ok_button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
   ok_button->setFont(font);
   ok_button->setText("&OK");
@@ -100,9 +87,9 @@ MySqlLogin::MySqlLogin(QString msg,QString *username,QString *password,
   connect(ok_button,SIGNAL(clicked()),this,SLOT(okData()));
 
   //
-  // CANCEL Button
+  // Cancel Button
   //
-  QPushButton *cancel_button=new QPushButton(this,"cancel_button");
+  QPushButton *cancel_button=new QPushButton(this);
   cancel_button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,
 			     80,50);
   cancel_button->setFont(font);

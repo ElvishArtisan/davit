@@ -2,7 +2,7 @@
 //
 // Login Widget for Davit.
 //
-//   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -21,19 +21,18 @@
 #ifndef LOGIN_H
 #define LOGIN_H
 
-#include <qdialog.h>
-#include <qlineedit.h>
-#include <qtextedit.h>
-#include <qpixmap.h>
-#include <qradiobutton.h>
+#include <QDialog>
+#include <QLineEdit>
+#include <QTextEdit>
+#include <QPixmap>
+#include <QRadioButton>
 
 
 class Login : public QDialog
 {
  Q_OBJECT
  public:
-  Login(QString *username,QString *password,
-	QWidget *parent=0,const char *name=0);
+ Login(QString *username,QString *password,QWidget *parent=0);
   ~Login();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

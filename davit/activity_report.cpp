@@ -2,9 +2,7 @@
 //
 // The RadioAmerica Affiliate Report for Davit
 //
-//   (C) Copyright 2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: activity_report.cpp,v 1.4 2011/03/29 18:10:33 pcvs Exp $
+//   (C) Copyright 2008-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,15 +18,16 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qdatetime.h>
-#include <qfontmetrics.h>
-#include <qsqldatabase.h>
+#include <QDateTime>
+#include <QFontMetrics>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvt.h>
 #include <dvtconf.h>
 
-#include <pick_fields.h>
-#include <list_reports.h>
+#include "list_reports.h"
+#include "pick_fields.h"
 
 bool ListReports::ActivityReport(SpreadSheet *sheet)
 {
@@ -81,10 +80,10 @@ bool ListReports::ActivityReport(SpreadSheet *sheet)
 			  q->value(0).toInt());
     sql+=QString().
       sprintf("(AFFILIATE_REMARKS.REMARK_DATETIME>=\"%s 00:00:00\")&&",
-	      (const char *)start_date.toString("yyyy-MM-dd"));
+	      start_date.toString("yyyy-MM-dd").toUtf8().constData());
     sql+=QString().
       sprintf("(AFFILIATE_REMARKS.REMARK_DATETIME<=\"%s 23:59:59\")",
-	      (const char *)end_date.toString("yyyy-MM-dd"));
+	      end_date.toString("yyyy-MM-dd").toUtf8().constData());
     sql+=" order by AFFILIATE_REMARKS.REMARK_DATETIME";
     q1=new QSqlQuery(sql);
     if(q1->size()>0) {

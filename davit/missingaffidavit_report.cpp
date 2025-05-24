@@ -2,7 +2,7 @@
 //
 // Generate an Affiliate Missing Affidavit List Report
 //
-//   (C) Copyright 2010-2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -21,16 +21,17 @@
 #include <map>
 #include <vector>
 
-#include <qfile.h>
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
+#include <QFile>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvttextfile.h>
 #include <dvtconf.h>
 #include <spread_sheet.h>
 
-#include <affidavit_picker.h>
-#include <list_reports.h>
+#include "affidavit_picker.h"
+#include "list_reports.h"
 
 
 bool ListReports::MissingAffidavitReport(SpreadSheet *sheet)
@@ -179,7 +180,7 @@ bool ListReports::MissingAffidavitReport(SpreadSheet *sheet)
       date_str=date_str.left(date_str.length()-2);
     }
     tab->addCell(5,row)->setText(date_str);
-    tab->addCell(6,row)->setText(q->value(3).toString().upper());  // State of License
+    tab->addCell(6,row)->setText(q->value(3).toString().toUpper());  // State of License
     tab->addCell(7,row)->setText(q->value(4).toString());    // DMA Market
     tab->addCell(8,row)->setText(q->value(5).toString());    // MSA Market
 

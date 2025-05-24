@@ -2,7 +2,7 @@
 //
 // Login widget for Davit.
 //
-//   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -18,26 +18,27 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qdialog.h>
-#include <qstring.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qlineedit.h>
-#include <qtextedit.h>
-#include <qlabel.h>
-#include <qpainter.h>
-#include <qevent.h>
-#include <qmessagebox.h>
-#include <qbuttongroup.h>
 #include <math.h>
 
+#include <QDialog>
+#include <QString>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QLineEdit>
+#include <QTextEdit>
+#include <QLabel>
+#include <QPainter>
+#include <QEvent>
+#include <QMessageBox>
+#include <QButtonGroup>
 
-#include <login.h>
+#include "login.h"
 
-
-Login::Login(QString *username,QString *password,QWidget *parent,
-	     const char *name)  : QDialog(parent,name,true)
+Login::Login(QString *username,QString *password,QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
+
   //
   // Fix the Window Size
   //
@@ -46,7 +47,7 @@ Login::Login(QString *username,QString *password,QWidget *parent,
   setMinimumHeight(sizeHint().height());
   setMaximumHeight(sizeHint().height());
 
-  setCaption("Login");
+  setWindowTitle("Login");
   login_name=username;
   login_password=password;
 
@@ -59,7 +60,7 @@ Login::Login(QString *username,QString *password,QWidget *parent,
   //
   // OK Button
   //
-  QPushButton *ok_button=new QPushButton(this,"ok_button");
+  QPushButton *ok_button=new QPushButton(this);
   ok_button->setGeometry(10,60,100,55);
   ok_button->setFont(font);
   ok_button->setText("&OK");
@@ -69,7 +70,7 @@ Login::Login(QString *username,QString *password,QWidget *parent,
   //
   // Cancel Button
   //
-  QPushButton *cancel_button=new QPushButton(this,"cancel_button");
+  QPushButton *cancel_button=new QPushButton(this);
   cancel_button->setGeometry(120,60,100,55);
   cancel_button->setFont(font);
   cancel_button->setText("&Cancel");
@@ -78,28 +79,26 @@ Login::Login(QString *username,QString *password,QWidget *parent,
   //
   // Login Name
   //
-  login_name_edit=new QLineEdit(this,"login_name_edit");
+  login_name_edit=new QLineEdit(this);
   login_name_edit->setGeometry(100,10,100,20);
   login_name_edit->setMaxLength(16);
   login_name_edit->setFocus();
-  QLabel *login_name_label=new QLabel(login_name_edit,"User &Name:",this,
-				       "login_name_label");
+  QLabel *login_name_label=new QLabel("User &Name:",this);
   login_name_label->setGeometry(10,10,85,20);
   login_name_label->setFont(font);
-  login_name_label->setAlignment(AlignRight|AlignVCenter|ShowPrefix);
+  login_name_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   //
   // Login Password
   //
-  login_password_edit=new QLineEdit(this,"login_password_edit");
+  login_password_edit=new QLineEdit(this);
   login_password_edit->setGeometry(100,31,100,19);
   login_password_edit->setMaxLength(16);
   login_password_edit->setEchoMode(QLineEdit::Password);
-  QLabel *login_password_label=new QLabel(login_password_edit,"&Password:",this,
-				       "login_password_label");
+  QLabel *login_password_label=new QLabel("&Password:",this);
   login_password_label->setGeometry(10,31,85,19);
   login_password_label->setFont(font);
-  login_password_label->setAlignment(AlignRight|AlignVCenter|ShowPrefix);
+  login_password_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 }
 
 

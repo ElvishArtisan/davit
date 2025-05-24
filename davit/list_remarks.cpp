@@ -2,9 +2,7 @@
 //
 // List Davit Remarks.
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_remarks.cpp,v 1.1 2011/01/29 00:32:34 pcvs Exp $
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,20 +18,22 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvtconf.h>
 
-#include <globals.h>
-#include <add_remark.h>
-#include <list_remarks.h>
+#include "add_remark.h"
+#include "globals.h"
+#include "list_remarks.h"
 
-ListRemarks::ListRemarks(int id,QWidget *parent,const char *name)
-  : QDialog(parent,name,false)
+ListRemarks::ListRemarks(int id,QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   list_id=id;
-  setCaption(tr("Davit - Affiliate History for ")+DvtStationCallString(id));
+  setWindowTitle(tr("Davit - Affiliate History for ")+DvtStationCallString(id));
 
   //
   // Create Fonts
@@ -41,11 +41,11 @@ ListRemarks::ListRemarks(int id,QWidget *parent,const char *name)
   QFont label_font=QFont("Helvetica",12,QFont::Bold);
   label_font.setPixelSize(12);
 
-  list_remarks_edit=new QTextEdit(this,"list_remarks_edit");
+  list_remarks_edit=new QTextEdit(this);
   list_remarks_edit->setReadOnly(true);
-  list_remarks_edit->setTextFormat(Qt::RichText);
+  list_remarks_edit->setAcceptRichText(true);
 
-  list_add_button=new QPushButton(this,"edit_addremark_button");
+  list_add_button=new QPushButton(this);
   list_add_button->setFont(label_font);
   list_add_button->setText(tr("Add"));
   list_add_button->
@@ -109,8 +109,9 @@ void ListRemarks::addData()
                            REMARK=\"%s\"",
 			  list_id,
 			  Dvt::RemarkNarrative,
-			  (const char *)DvtEscapeString(global_dvtuser->name()),
-			  (const char *)DvtEscapeString(remark));
+			  DvtEscapeString(global_dvtuser->name()).
+			  toUtf8().constData(),
+			  DvtEscapeString(remark).toUtf8().constData());
     q=new QSqlQuery(sql);
     delete q;
   }

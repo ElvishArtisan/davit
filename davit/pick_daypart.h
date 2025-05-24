@@ -2,9 +2,7 @@
 //
 // Pick a daypart for a Davit report.
 //
-//   (C) Copyright 2008,2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: pick_daypart.h,v 1.1 2010/11/05 16:22:39 pcvs Exp $
+//   (C) Copyright 2008-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -25,9 +23,9 @@
 
 #include <vector>
 
-#include <qdialog.h>
-#include <qdatetimeedit.h>
-#include <qlabel.h>
+#include <QDialog>
+#include <QDateTimeEdit>
+#include <QLabel>
 
 #include <daypicker.h>
 
@@ -35,8 +33,7 @@ class PickDaypart : public QDialog
 {
  Q_OBJECT
  public:
-  PickDaypart(QTime *start_time,QTime *end_time,bool dows[7],
-	     QWidget *parent=0,const char *name=0);
+  PickDaypart(QTime *start_time,QTime *end_time,bool dows[7],QWidget *parent=0);
   ~PickDaypart();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

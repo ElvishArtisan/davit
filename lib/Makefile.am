@@ -18,7 +18,7 @@
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
 
-AM_CPPFLAGS = -Wall @QT_CXXFLAGS@
+AM_CPPFLAGS = -Wall @QT4_CFLAGS@
 MOC = @QT_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)

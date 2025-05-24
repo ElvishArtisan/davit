@@ -3,7 +3,7 @@
 // Functions for interfacing with web components using the
 // Common Gateway Interface (CGI) Standard 
 //
-//   (C) Copyright 1996-2007 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 1996-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -22,8 +22,8 @@
 #ifndef DVTWEB_H
 #define DVTWEB_H
 
-#include <qstring.h>
-#include <qhostaddress.h>
+#include <QString>
+#include <QHostAddress>
 
 //
 // Data Structure Sizes

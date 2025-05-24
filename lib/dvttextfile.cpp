@@ -2,9 +2,7 @@
 //
 // Spawn an external text file viewer.
 //
-//   (C) Copyright 2002-2014 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: dvttextfile.cpp,v 1.3 2011/02/02 18:06:32 pcvs Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -26,8 +24,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <qmessagebox.h>
-#include <qprocess.h>
+#include <QMessageBox>
+#include <QProcess>
 
 #include <dvtconf.h>
 #include <dvt.h>
@@ -76,10 +74,11 @@ bool DvtTextFile(const QString &data)
     return false;
   }
   else {
-    write(fd,data,data.length());
+    QByteArray bytes=data.toUtf8();
+    write(fd,bytes,bytes.length());
     ::close(fd);
     if(fork()==0) {
-      system(QString().sprintf("%s %s",(const char *)editor,tmpfile));
+      system(QString().sprintf("%s %s",editor.toUtf8().constData(),tmpfile).toUtf8());
       unlink(tmpfile);
       exit(0);
     }

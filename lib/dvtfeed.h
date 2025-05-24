@@ -2,7 +2,7 @@
 //
 // A Container Class for Davit Feeds
 //
-//   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -22,8 +22,7 @@
 #ifndef DVTFEED_H
 #define DVTFEED_H
 
-#include <qdatetime.h>
-
+#include <QDateTime>
 
 class DvtFeed
 {

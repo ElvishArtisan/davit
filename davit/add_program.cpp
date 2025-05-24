@@ -1,10 +1,8 @@
 // add_program.cpp
 //
-// Edit a Davit Program.
+// Add a Davit Program.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: add_program.cpp,v 1.2 2007/11/19 16:53:29 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,20 +18,21 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
-
 #include <math.h>
 
-#include <add_program.h>
+#include <QPushButton>
+#include <QLabel>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+
+#include "add_program.h"
 
 
-AddProgram::AddProgram(QString *bname,QString *pname,
-		       QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+AddProgram::AddProgram(QString *bname,QString *pname,QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   QString sql;
   QSqlQuery *q;
 
@@ -48,7 +47,7 @@ AddProgram::AddProgram(QString *bname,QString *pname,
   setMaximumWidth(sizeHint().width());
   setMaximumHeight(sizeHint().height());
 
-  setCaption("Davit - Add Program");
+  setWindowTitle("Davit - Add Program");
 
   //
   // Create Fonts
@@ -61,41 +60,40 @@ AddProgram::AddProgram(QString *bname,QString *pname,
   //
   // Business Name
   //
-  add_business_name_box=new QComboBox(this,"add_business_name_box");
+  add_business_name_box=new QComboBox(this);
   add_business_name_box->setGeometry(110,10,sizeHint().width()-120,20);
   add_business_name_box->setFont(font);
   sql="select BUSINESS_NAME from PROVIDERS order by BUSINESS_NAME";
   q=new QSqlQuery(sql);
+  int count=0;
   while(q->next()) {
-    add_business_name_box->insertItem(q->value(0).toString());
+    add_business_name_box->insertItem(count++,q->value(0).toString());
     if(*bname==q->value(0).toString()) {
-      add_business_name_box->setCurrentItem(add_business_name_box->count()-1);
+      add_business_name_box->setCurrentIndex(add_business_name_box->count()-1);
     }
   }
   delete q;
-  QLabel *label=new QLabel(add_business_name_box,"Provider:",
-			   this,"add_business_name_label");
+  QLabel *label=new QLabel("Provider:",this);
   label->setGeometry(10,10,95,20);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   label->setFont(label_font);
 
   //
   // Program Name
   //
-  add_program_name_edit=new QLineEdit(this,"add_program_name_edit");
+  add_program_name_edit=new QLineEdit(this);
   add_program_name_edit->setGeometry(110,32,sizeHint().width()-120,20);
   add_program_name_edit->setFont(font);
   add_program_name_edit->setMaxLength(64);
-  label=new QLabel(add_program_name_edit,"Program Name:",
-		   this,"add_program_name_label");
+  label=new QLabel("Program Name:",this);
   label->setGeometry(10,32,95,20);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   label->setFont(label_font);
 
   //
   //  OK Button
   //
-  QPushButton *button=new QPushButton(this,"ok_button");
+  QPushButton *button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
   button->setDefault(true);
   button->setFont(label_font);
@@ -105,7 +103,7 @@ AddProgram::AddProgram(QString *bname,QString *pname,
   //
   //  Cancel Button
   //
-  button=new QPushButton(this,"cancel_button");
+  button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
   button->setFont(label_font);
   button->setText("&Cancel");
@@ -135,7 +133,7 @@ void AddProgram::okData()
   QString sql=
     QString().sprintf("select PROGRAM_NAME from PROGRAMS \
                        where PROGRAM_NAME=\"%s\"",
-		      (const char *)add_program_name_edit->text());
+		      add_program_name_edit->text().toUtf8().constData());
   QSqlQuery *q=new QSqlQuery(sql);
   if(q->first()) {
     QMessageBox::warning(this,"Program Exists",

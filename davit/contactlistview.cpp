@@ -2,7 +2,7 @@
  *
  *   A QListView class for the ListContacts widget.
  *
- *   (C) Copyright 2002-2004,2010 Fred Gleason <fredg@paravelsystems.com>
+ *   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as
@@ -20,19 +20,19 @@
  *
  */
 
-#include <qheader.h>
+//#include <QHeader>
 
 #include <dvtconf.h>
 
-#include <globals.h>
-#include <contactlistview.h>
+#include "contactlistview.h"
+#include "globals.h"
 
 ContactListView::ContactListView(QWidget *parent) 
   : QListView(parent)
 {
   item_parent=parent;
   item_menu_item=NULL;
-
+/*
   //
   // Right Button Menu
   //
@@ -40,25 +40,31 @@ ContactListView::ContactListView(QWidget *parent)
   connect(item_menu,SIGNAL(aboutToShow()),this,SLOT(aboutToShowData()));
   item_menu->
     insertItem(tr("Email this contact"),this,SLOT(mailContactData()),0,0);
+*/
 }
 
 
 void ContactListView::aboutToShowData()
 {
+/*
   item_menu->setItemEnabled(0,(item_menu_item!=NULL)&&
 			    DvtIsEmailAddress(item_menu_item->text(4)));
+*/
 }
 
 
 void ContactListView::mailContactData()
 {
+/*
   mail_dialog->exec(item_menu_item->text(4),"","",global_dvtuser->email(),
 		    global_dvtuser->email(),"","");
+*/
 }
 
 
 void ContactListView::contentsMousePressEvent(QMouseEvent *e)
 {
+/*
   QListView::contentsMousePressEvent(e);
   item_menu_item=(DvtListViewItem *)selectedItem();
   switch(e->button()) {
@@ -74,5 +80,6 @@ void ContactListView::contentsMousePressEvent(QMouseEvent *e)
 	e->ignore();
 	break;
   }
+*/
 }
 

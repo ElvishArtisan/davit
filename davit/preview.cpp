@@ -2,9 +2,7 @@
 //
 // Preview a print job
 //
-//   (C) Copyright 2011 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: preview.cpp,v 1.2 2011/03/29 15:38:51 pcvs Exp $
+//   (C) Copyright 2011-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,21 +18,24 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qpaintdevicemetrics.h>
-#include <qsqldatabase.h>
-#include <qpainter.h>
-#include <qstringlist.h>
+//#include <qpaintdevicemetrics.h>
+#include <QSqlDatabase>
+#include <QPainter>
+#include <QStringList>
 
 #include <dvtconf.h>
 #include <dvt.h>
 
 #include "preview.h"
 
-Preview::Preview(QWidget *parent,const char *name)
-  : QDialog(parent,name,false)
+Preview::Preview(QWidget *parent)
+  : QDialog(parent)
 {
-  setCaption(tr("Davit - Affidavit Preview"));
-
+  setModal(true);
+  setWindowTitle(tr("Davit - Affidavit Preview"));
+  /*
+   * FIXME: Port to Qt6
+   *
   //
   // Fonts
   //
@@ -55,7 +56,7 @@ Preview::Preview(QWidget *parent,const char *name)
   preview_printer->setOptionEnabled(QPrinter::PrintToFile,true);
   preview_printer->setOptionEnabled(QPrinter::PrintSelection,false);
   preview_printer->setOptionEnabled(QPrinter::PrintPageRange,true);
-  preview_pdm=new QPaintDeviceMetrics(preview_printer);
+  //  preview_pdm=new QPaintDeviceMetrics(preview_printer);
 
   //
   // Display Canvas
@@ -85,7 +86,7 @@ Preview::Preview(QWidget *parent,const char *name)
   QLabel *label=new QLabel("Print To:",this);
   label->setGeometry(80,sizeHint().height()-35,50,30);
   label->setFont(font);
-  label->setAlignment(AlignVCenter|AlignRight);
+  label->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
   preview_printer_name_label=new QLabel("[none]",this);
   preview_printer_name_label->setGeometry(135,sizeHint().height()-35,160,30);
   preview_printer_name_label->setFont(name_font);
@@ -117,12 +118,13 @@ Preview::Preview(QWidget *parent,const char *name)
   button->setGeometry(sizeHint().width()-70,sizeHint().height()-35,60,30);
   button->setFont(font);
   connect(button,SIGNAL(clicked()),this,SLOT(cancelData()));
+  */
 }
 
 
 Preview::~Preview()
 {
-  delete preview_pdm;
+  //  delete preview_pdm;
 }
 
 
@@ -160,14 +162,18 @@ int Preview::exec(int affiliate_id,int pgm_id,const QDate &date,
 
 void Preview::setupData()
 {
+  /*
+   * FIXME: Port to Qt6
+   *
   preview_printer->setup(this);
   if(!preview_printer->printerName().isEmpty()) {
     preview_printer_name_label->setText(preview_printer->printerName());
     preview_print_button->setEnabled(true);
   }
-  delete preview_pdm;
-  preview_pdm=new QPaintDeviceMetrics(preview_printer);
+  //  delete preview_pdm;
+  //  preview_pdm=new QPaintDeviceMetrics(preview_printer);
   Render(false);
+  */
 }
 
 
@@ -202,6 +208,9 @@ void Preview::cancelData()
 
 void Preview::Render(bool print)
 {
+  /*
+   * FIXME: Port to Qt6
+   *
   QString msg;
   QString station;
   QString signature;
@@ -248,7 +257,7 @@ void Preview::Render(bool print)
   q=new QSqlQuery(sql);
   if(!q->first()) {
     p->drawText(QRect(0,ypos,preview_pdm->width(),title_metrics.height()),
-		AlignTop|AlignHCenter,
+		Qt::AlignTop|Qt::AlignHCenter,
 		"No Affiliate Data Found!");
     delete q;
     return;
@@ -257,31 +266,31 @@ void Preview::Render(bool print)
     station=DvtStationCallString(q->value(0).toString(),
 				 q->value(1).toString());
     p->drawText(QRect(0,ypos,preview_pdm->width(),title_metrics.height()),
-		AlignTop|AlignHCenter,
+		Qt::AlignTop|Qt::AlignHCenter,
 		"RadioAmerica Program Affidavit");
     p=NewLine(title_metrics.lineSpacing(),p,&ypos,print);
     p->drawText(QRect(0,ypos,preview_pdm->width(),title_metrics.height()),
-		AlignTop|AlignHCenter,"Affiliate "+station);
+		Qt::AlignTop|Qt::AlignHCenter,"Affiliate "+station);
     p=NewLine(title_metrics.lineSpacing(),p,&ypos,print);
     if(!q->value(2).toString().isEmpty()) {
       p->drawText(QRect(0,ypos,preview_pdm->width(),title_metrics.height()),
-		  AlignTop|AlignHCenter,q->value(2).toString());
+		  Qt::AlignTop|Qt::AlignHCenter,q->value(2).toString());
       p=NewLine(title_metrics.lineSpacing(),p,&ypos,print);
     }
     if(!q->value(3).toString().isEmpty()) {
       p->drawText(QRect(0,ypos,preview_pdm->width(),title_metrics.height()),
-		  AlignTop|AlignHCenter,q->value(3).toString());
+		  Qt::AlignTop|Qt::AlignHCenter,q->value(3).toString());
       p=NewLine(title_metrics.lineSpacing(),p,&ypos,print);
     }
     p->drawText(QRect(0,ypos,preview_pdm->width(),title_metrics.height()),
-		AlignTop|AlignHCenter,q->value(4).toString()+", "+
+		Qt::AlignTop|Qt::AlignHCenter,q->value(4).toString()+", "+
 		q->value(5).toString().upper()+" "+q->value(6).toString());
     p=NewLine(title_metrics.lineSpacing(),p,&ypos,print);
     p->drawText(QRect(0,ypos,preview_pdm->width(),title_metrics.height()),
-		AlignTop|AlignHCenter,QString("DMA: ")+q->value(7).toString());
+		Qt::AlignTop|Qt::AlignHCenter,QString("DMA: ")+q->value(7).toString());
     p=NewLine(title_metrics.lineSpacing(),p,&ypos,print);
     p->drawText(QRect(0,ypos,preview_pdm->width(),title_metrics.height()),
-		AlignTop|AlignHCenter,
+		Qt::AlignTop|Qt::AlignHCenter,
 		preview_date.toString("MMMM")+" 1 - "+
 		preview_date.toString("MMMM")+" "+
 		QString().sprintf("%d",preview_date.daysInMonth())+
@@ -344,7 +353,7 @@ void Preview::Render(bool print)
   else {
     p->drawText(QRect(preview_pdm->logicalDpiX(),ypos,preview_pdm->width(),
 		      title_metrics.height()),
-		AlignTop|AlignHCenter,
+		Qt::AlignTop|Qt::AlignHCenter,
 		"No Affidavit Data Found!");
     delete q;
     return;
@@ -365,17 +374,17 @@ void Preview::Render(bool print)
       int end_width=line_metrics.width("End Time");
       p->setFont(title_font);
       p->drawText(QRect(preview_pdm->logicalDpiX(),ypos,title_width,
-			line_metrics.height()),AlignCenter,"Program");
+			line_metrics.height()),Qt::AlignCenter,"Program");
       p->drawText(QRect(preview_pdm->logicalDpiX()+4*preview_pdm->width()/9,
 			ypos,date_width,
-			line_metrics.height()),AlignCenter,"Date");
+			line_metrics.height()),Qt::AlignCenter,"Date");
       p->drawText(QRect(preview_pdm->logicalDpiX()+5*preview_pdm->width()/9,
 			ypos,preview_pdm->width()/3,
 			line_metrics.height()),
-		  AlignLeft,"Start Time");
+		  Qt::AlignLeft,"Start Time");
       p->drawText(QRect(preview_pdm->logicalDpiX()+6*preview_pdm->width()/9,
 			ypos,preview_pdm->width()/3,line_metrics.height()),
-		  AlignLeft,"End Time");
+		  Qt::AlignLeft,"End Time");
       p=NewLine(line_metrics.lineSpacing(),p,&ypos,print);
 
       //
@@ -393,17 +402,17 @@ void Preview::Render(bool print)
 	}
 	p->drawText(QRect(preview_pdm->logicalDpiX(),
 			  ypos,4*preview_pdm->width()/9,line_metrics.height()),
-		    AlignLeft,q->value(4).toString()+star);
+		    Qt::AlignLeft,q->value(4).toString()+star);
 	p->drawText(QRect(preview_pdm->logicalDpiX()+4*preview_pdm->width()/9,
 			  ypos,preview_pdm->width()/3,line_metrics.height()),
-		    AlignLeft,q->value(0).toDateTime().
+		    Qt::AlignLeft,q->value(0).toDateTime().
 		    toString("MM/dd/yy"));
 	p->drawText(QRect(preview_pdm->logicalDpiX()+5*preview_pdm->width()/9,
 			  ypos,start_width,line_metrics.height()),
-		    AlignCenter,q->value(0).toDateTime().toString("h:mm AP"));
+		    Qt::AlignCenter,q->value(0).toDateTime().toString("h:mm AP"));
 	p->drawText(QRect(preview_pdm->logicalDpiX()+6*preview_pdm->width()/9,
 			  ypos,end_width,line_metrics.height()),
-		    AlignCenter,q->value(0).toDateTime().
+		    Qt::AlignCenter,q->value(0).toDateTime().
 		    addSecs(q->value(1).toInt()).toString("h:mm AP"));
 	p=NewLine(line_metrics.lineSpacing(),p,&ypos,print);
       }
@@ -418,14 +427,14 @@ void Preview::Render(bool print)
       int end_width=line_metrics.width("End Time");
       p->setFont(title_font);
       p->drawText(QRect(preview_pdm->logicalDpiX(),ypos,date_width,
-			line_metrics.height()),AlignCenter,"Date");
+			line_metrics.height()),Qt::AlignCenter,"Date");
       p->drawText(QRect(preview_pdm->logicalDpiX()+preview_pdm->width()/2,
 			ypos,preview_pdm->width()/3,
 			line_metrics.height()),
-		  AlignLeft,"Start Time");
+		  Qt::AlignLeft,"Start Time");
       p->drawText(QRect(preview_pdm->logicalDpiX()+2*preview_pdm->width()/3,
 			ypos,preview_pdm->width()/3,line_metrics.height()),
-		  AlignLeft,"End Time");
+		  Qt::AlignLeft,"End Time");
       p=NewLine(line_metrics.lineSpacing(),p,&ypos,print);
 
       //
@@ -436,14 +445,14 @@ void Preview::Render(bool print)
       while(q->next()) {
 	p->drawText(QRect(preview_pdm->logicalDpiX(),
 			  ypos,preview_pdm->width()/3,line_metrics.height()),
-		    AlignLeft,q->value(0).toDateTime().
+		    Qt::AlignLeft,q->value(0).toDateTime().
 		    toString("dddd, MMMM d, yyyy"));
 	p->drawText(QRect(preview_pdm->logicalDpiX()+preview_pdm->width()/2,
 			  ypos,start_width,line_metrics.height()),
-		    AlignCenter,q->value(0).toDateTime().toString("h:mm AP"));
+		    Qt::AlignCenter,q->value(0).toDateTime().toString("h:mm AP"));
 	p->drawText(QRect(preview_pdm->logicalDpiX()+2*preview_pdm->width()/3,
 			  ypos,end_width,line_metrics.height()),
-		    AlignCenter,q->value(0).toDateTime().
+		    Qt::AlignCenter,q->value(0).toDateTime().
 		    addSecs(q->value(1).toInt()).toString("h:mm AP"));
 	ypos+=line_metrics.lineSpacing();
       }
@@ -483,12 +492,12 @@ void Preview::Render(bool print)
     if(q->first()) {
       p->setFont(title_font);
       p->drawText(QRect(0,ypos,preview_pdm->width(),title_metrics.height()),
-		  AlignTop|AlignHCenter,
+		  Qt::AlignTop|Qt::AlignHCenter,
 		  "Exceptions");
       p=NewLine(title_metrics.lineSpacing(),p,&ypos,print);
       p->setFont(line_font);
       p->drawText(QRect(0,ypos,preview_pdm->width(),title_metrics.height()),
-		  AlignTop|AlignHCenter,
+		  Qt::AlignTop|Qt::AlignHCenter,
 		  "The following program instances were NOT aired:");
       p=NewLine(title_metrics.lineSpacing(),p,&ypos,print);
       q->seek(-1);
@@ -503,17 +512,17 @@ void Preview::Render(bool print)
       int end_width=line_metrics.width("End Time");
       p->setFont(title_font);
       p->drawText(QRect(preview_pdm->logicalDpiX(),ypos,title_width,
-			line_metrics.height()),AlignCenter,"Program");
+			line_metrics.height()),Qt::AlignCenter,"Program");
       p->drawText(QRect(preview_pdm->logicalDpiX()+4*preview_pdm->width()/9,
 			ypos,date_width,
-			line_metrics.height()),AlignCenter,"Date");
+			line_metrics.height()),Qt::AlignCenter,"Date");
       p->drawText(QRect(preview_pdm->logicalDpiX()+5*preview_pdm->width()/9,
 			ypos,preview_pdm->width()/3,
 			line_metrics.height()),
-		  AlignLeft,"Start Time");
+		  Qt::AlignLeft,"Start Time");
       p->drawText(QRect(preview_pdm->logicalDpiX()+6*preview_pdm->width()/9,
 			ypos,preview_pdm->width()/3,line_metrics.height()),
-		  AlignLeft,"End Time");
+		  Qt::AlignLeft,"End Time");
       p=NewLine(line_metrics.lineSpacing(),p,&ypos,print);
       
       //
@@ -524,17 +533,17 @@ void Preview::Render(bool print)
       while(q->next()) {
 	p->drawText(QRect(preview_pdm->logicalDpiX(),
 			  ypos,4*preview_pdm->width()/9,line_metrics.height()),
-		    AlignLeft,q->value(4).toString());
+		    Qt::AlignLeft,q->value(4).toString());
 	p->drawText(QRect(preview_pdm->logicalDpiX()+4*preview_pdm->width()/9,
 			  ypos,preview_pdm->width()/3,line_metrics.height()),
-		    AlignLeft,q->value(0).toDateTime().
+		    Qt::AlignLeft,q->value(0).toDateTime().
 		    toString("MM/dd/yy"));
 	p->drawText(QRect(preview_pdm->logicalDpiX()+5*preview_pdm->width()/9,
 			  ypos,start_width,line_metrics.height()),
-		    AlignCenter,q->value(0).toDateTime().toString("h:mm AP"));
+		    Qt::AlignCenter,q->value(0).toDateTime().toString("h:mm AP"));
 	p->drawText(QRect(preview_pdm->logicalDpiX()+6*preview_pdm->width()/9,
 			  ypos,end_width,line_metrics.height()),
-		    AlignCenter,q->value(0).toDateTime().
+		    Qt::AlignCenter,q->value(0).toDateTime().
 		    addSecs(q->value(1).toInt()).toString("h:mm AP"));
 	p=NewLine(line_metrics.lineSpacing(),p,&ypos,print);
       }
@@ -547,7 +556,7 @@ void Preview::Render(bool print)
   // Signature
   //
   p->drawText(QRect(preview_pdm->logicalDpiX(),ypos,preview_pdm->width(),
-		    line_metrics.height()),AlignLeft,signature);
+		    line_metrics.height()),Qt::AlignLeft,signature);
 
   //
   // Finish Up
@@ -560,11 +569,13 @@ void Preview::Render(bool print)
     preview_prev_button->setDisabled(true);
     preview_next_button->setEnabled(preview_maps.size()>1);
   }
+  */
 }
 
 
 QPainter *Preview::NewLine(int spacing,QPainter *p,int *ypos,bool print)
 {
+  /*
   *ypos+=spacing;
   if(*ypos>preview_pdm->height()-preview_pdm->logicalDpiY()) {
     if(print) {
@@ -582,31 +593,36 @@ QPainter *Preview::NewLine(int spacing,QPainter *p,int *ypos,bool print)
   }
 
   return p;
+  */
+  return NULL;
 }
 
 
 int Preview::PrintText(int ypos,QFontMetrics *fm,const QString &str,QPainter *p)
 {
+  /*
   QString line;
   QStringList strs=strs.split(" ",str);
 
-  for(unsigned i=0;i<strs.size();i++) {
+  for(int i=0;i<strs.size();i++) {
     if(fm->width(line+" "+strs[i])<
        preview_pdm->width()-2*preview_pdm->logicalDpiX()) {
       line+=" "+strs[i];
     }
     else {
       p->drawText(QRect(preview_pdm->logicalDpiX(),ypos,preview_pdm->width(),
-			fm->height()),AlignLeft,line);
+			fm->height()),Qt::AlignLeft,line);
       line=strs[i];
       ypos+=fm->height();
     }
   }
   if(!line.isEmpty()) {
     p->drawText(QRect(preview_pdm->logicalDpiX(),ypos,preview_pdm->width(),
-		      fm->height()),AlignLeft,line);
+		      fm->height()),Qt::AlignLeft,line);
     ypos+=fm->height();
   }
 
   return ypos;
+  */
+  return 0;
 }

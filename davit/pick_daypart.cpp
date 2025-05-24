@@ -2,9 +2,7 @@
 //
 // Pick a daypart for a Davit report.
 //
-//   (C) Copyright 2008,2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: pick_daypart.cpp,v 1.1 2010/11/05 16:22:39 pcvs Exp $
+//   (C) Copyright 2008-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,18 +18,19 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qpushbutton.h>
+#include <QPushButton>
 
-#include <pick_daypart.h>
+#include "pick_daypart.h"
 
 PickDaypart::PickDaypart(QTime *start_time,QTime *end_time,bool dows[7],
-			 QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+			 QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   report_start_time=start_time;
   report_end_time=end_time;
   report_dows=dows;
-  setCaption(tr("Davit - Select Daypart"));
+  setWindowTitle(tr("Davit - Select Daypart"));
 
   //
   // Fix the Window Size
@@ -52,20 +51,20 @@ PickDaypart::PickDaypart(QTime *start_time,QTime *end_time,bool dows[7],
   //
   report_start_edit=new QTimeEdit(this);
   report_start_edit->setGeometry(115,10,90,20);
-  QLabel *label=new QLabel(report_start_edit,tr("Start Time:"),this);
+  QLabel *label=new QLabel(tr("Start Time:"),this);
   label->setGeometry(10,10,100,20);
   label->setFont(label_font);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   //
   // End Time
   //
   report_end_edit=new QTimeEdit(this);
   report_end_edit->setGeometry(115,32,90,20);
-  label=new QLabel(report_end_edit,tr("End Time:"),this);
+  label=new QLabel(tr("End Time:"),this);
   label->setGeometry(10,32,100,20);
   label->setFont(label_font);
-  label->setAlignment(AlignRight|AlignVCenter);
+  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   //
   // Day of the Week Picker

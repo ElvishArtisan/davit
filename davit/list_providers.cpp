@@ -2,9 +2,7 @@
 //
 // List Davit Providers.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_providers.cpp,v 1.6 2013/02/26 19:06:17 pcvs Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,29 +18,31 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qsqldatabase.h>
 #include <math.h>
-#include <qmessagebox.h>
+
+#include <QPushButton>
+#include <QLabel>
+#include <QSqlDatabase>
+#include <QMessageBox>
 
 #include <dvtconfig.h>
-#include <list_providers.h>
-#include <edit_provider.h>
-#include <add_provider.h>
-#include <globals.h>
 
+#include "add_provider.h"
+#include "edit_provider.h"
+#include "globals.h"
+#include "list_providers.h"
 
-ListProviders::ListProviders(QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+ListProviders::ListProviders(QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
   //
   // Fix the Window Size
   //
   setMinimumWidth(sizeHint().width());
   setMinimumHeight(sizeHint().height());
 
-  setCaption("Davit - Providers");
+  setWindowTitle("Davit - Providers");
 
   //
   // Create Fonts
@@ -55,6 +55,7 @@ ListProviders::ListProviders(QWidget *parent,const char *name)
   //
   // Providers List
   //
+  /*
   list_providers_list=new QListView(this,"list_providers_list");
   list_providers_list->setMargin(5);
   list_providers_list->setAllColumnsShowFocus(true);
@@ -70,11 +71,11 @@ ListProviders::ListProviders(QWidget *parent,const char *name)
   list_providers_list->setColumnAlignment(2,AlignLeft|AlignVCenter);
   list_providers_list->addColumn("E-Mail");
   list_providers_list->setColumnAlignment(3,AlignLeft|AlignVCenter);
-
+  */
   //
   //  Add Button
   //
-  list_add_button=new QPushButton(this,"list_add_button");
+  list_add_button=new QPushButton(this);
   list_add_button->setFont(font);
   list_add_button->setText("&Add");
   list_add_button->
@@ -84,7 +85,7 @@ ListProviders::ListProviders(QWidget *parent,const char *name)
   //
   //  Edit Button
   //
-  list_edit_button=new QPushButton(this,"list_edit_button");
+  list_edit_button=new QPushButton(this);
   list_edit_button->setFont(font);
   list_edit_button->setText("&Edit");
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
@@ -92,7 +93,7 @@ ListProviders::ListProviders(QWidget *parent,const char *name)
   //
   //  Delete Button
   //
-  list_delete_button=new QPushButton(this,"list_delete_button");
+  list_delete_button=new QPushButton(this);
   list_delete_button->setFont(font);
   list_delete_button->setText("&Delete");
   list_delete_button->
@@ -102,7 +103,7 @@ ListProviders::ListProviders(QWidget *parent,const char *name)
   //
   //  Close Button
   //
-  list_close_button=new QPushButton(this,"list_close_button");
+  list_close_button=new QPushButton(this);
   list_close_button->setDefault(true);
   list_close_button->setFont(font);
   list_close_button->setText("&Close");
@@ -131,12 +132,13 @@ QSizePolicy ListProviders::sizePolicy() const
 
 void ListProviders::addData()
 {
+  /*
   QString bname;
   QString sql;
   QSqlQuery *q;
   int pid=0;
 
-  AddProvider *add=new AddProvider(&bname,this,"add");
+  AddProvider *add=new AddProvider(&bname,this);
   if(add->exec()==0) {
     sql=QString().sprintf("insert into PROVIDERS set BUSINESS_NAME=\"%s\"",
 			  (const char *)bname);
@@ -162,11 +164,13 @@ void ListProviders::addData()
     delete edit;
   }
   delete add;
+  */
 }
 
 
 void ListProviders::editData()
 {
+  /*
   DvtListViewItem *item=(DvtListViewItem *)list_providers_list->selectedItem();
   
   if(item==NULL) {
@@ -177,11 +181,13 @@ void ListProviders::editData()
     UpdateItem(item);
   }
   delete edit;
+  */
 }
 
 
 void ListProviders::deleteData()
 {
+  /*
   DvtListViewItem *item=(DvtListViewItem *)list_providers_list->selectedItem();
 
   if(item==NULL) {
@@ -196,15 +202,16 @@ void ListProviders::deleteData()
   }
   DeleteProvider(item->id());
   delete item;
+  */
 }
 
-
+/*
 void ListProviders::doubleClickedData(QListViewItem *item,const QPoint &pt,
 				      int c)
 {
   editData();
 }
-
+*/
 
 void ListProviders::closeData()
 {
@@ -214,8 +221,8 @@ void ListProviders::closeData()
 
 void ListProviders::resizeEvent(QResizeEvent *e)
 {
-  list_providers_list->
-    setGeometry(10,10,size().width()-20,size().height()-80);
+  //  list_providers_list->
+  //    setGeometry(10,10,size().width()-20,size().height()-80);
   list_add_button->setGeometry(10,size().height()-60,80,50);
   list_edit_button->setGeometry(100,size().height()-60,80,50);
   list_delete_button->setGeometry(190,size().height()-60,80,50);
@@ -225,6 +232,7 @@ void ListProviders::resizeEvent(QResizeEvent *e)
 
 void ListProviders::DeleteProvider(int pid)
 {
+  /*
   QString sql;
   QSqlQuery *q;
   QSqlQuery *q1;
@@ -256,11 +264,13 @@ void ListProviders::DeleteProvider(int pid)
   sql=QString().sprintf("delete from PROVIDERS where ID=%d",pid);
   q=new QSqlQuery(sql);
   delete q;
+  */
 }
 
 
 void ListProviders::RefreshList()
 {
+  /*
   QSqlQuery *q;
   DvtListViewItem *item;
 
@@ -276,11 +286,13 @@ void ListProviders::RefreshList()
     item->setText(3,q->value(3).toString());
   }
   delete q;
+  */
 }
 
 
 void ListProviders::UpdateItem(DvtListViewItem *item)
 {
+  /*
   QString sql;
   QSqlQuery *q;
 
@@ -295,4 +307,5 @@ void ListProviders::UpdateItem(DvtListViewItem *item)
     item->setText(3,q->value(2).toString());
   }
   delete q;
+  */
 }

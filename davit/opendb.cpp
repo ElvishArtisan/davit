@@ -2,7 +2,7 @@
 //
 // Open a Davit Database
 //
-//   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -22,19 +22,22 @@
 #ifndef WIN32
 #include <unistd.h>
 #endif  // WIN32
-#include <qsqldatabase.h>
-#include <qsqldriver.h>
-#include <qmessagebox.h>
 
-#include <globals.h>
-#include <opendb.h>
-#include <createdb.h>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlDriver>
+
 #include <dvt.h>
-#include <mysql_login.h>
+
+#include "createdb.h"
+#include "globals.h"
+#include "mysql_login.h"
+#include "opendb.h"
 
 
 bool OpenDb(QString dbname,QString login,QString pwd,QString host)
 {
+  /*
   QString admin_name;
   QString admin_pwd;
   QString sql;
@@ -180,4 +183,6 @@ and we will try to get this straightened out.";
     QMessageBox::information(NULL,"Database Updated",msg);
   }
   return true;
+  */
+  return false;
 }

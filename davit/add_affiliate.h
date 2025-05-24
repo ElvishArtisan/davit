@@ -2,9 +2,7 @@
 //
 // Add a Davit Affiliate.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: add_affiliate.h,v 1.2 2008/01/29 16:55:33 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,17 +21,15 @@
 #ifndef ADD_AFFILIATE_H
 #define ADD_AFFILIATE_H
 
-#include <qdialog.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-
+#include <QDialog>
+#include <QLineEdit>
+#include <QComboBox>
 
 class AddAffiliate : public QDialog
 {
  Q_OBJECT
  public:
-  AddAffiliate(QString *call,QString *type,
-	       QWidget *parent=0,const char *name=0);
+  AddAffiliate(QString *call,QString *type,QWidget *parent=0);
   ~AddAffiliate();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

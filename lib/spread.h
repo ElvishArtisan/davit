@@ -2,7 +2,7 @@
 //
 // Abstract base class for a spreadsheet object.
 //
-//   (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2014-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -21,9 +21,9 @@
 #ifndef SPREAD_H
 #define SPREAD_H
 
-#include <qfont.h>
-#include <qfontmetrics.h>
-#include <qstring.h>
+#include <QFont>
+#include <QFontMetrics>
+#include <QString>
 
 #define SPREAD_DEFAULT_FONT_FACE "arial"
 #define SPREAD_DEFAULT_FONT_SIZE 10

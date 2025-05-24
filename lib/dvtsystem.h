@@ -2,9 +2,7 @@
 //
 // Abstract system-wide Davit settings.
 //
-// (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtsystem.h,v 1.1 2010/10/22 20:55:01 pcvs Exp $
+// (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -19,12 +17,11 @@
 //   License along with this program; if not, write to the Free Software
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-//
 
 #ifndef DVTSYSTEM_H
 #define DVTSYSTEM_H
 
-#include <qstring.h>
+#include <QString>
 
 class DvtSystem
 {

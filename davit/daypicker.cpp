@@ -2,9 +2,7 @@
 //
 // A Widget for selecting days of the week.
 //
-//   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: daypicker.cpp,v 1.1 2010/11/05 16:22:39 pcvs Exp $
+//   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,15 +18,15 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <daypicker.h>
+#include "daypicker.h"
 
-DayPicker::DayPicker(QWidget *parent,const char *name)
-  : QWidget(parent,name)
+DayPicker::DayPicker(QWidget *parent)
+  : QWidget(parent)
 {
   for(int i=0;i<7;i++) {
     dow_box[i]=new QCheckBox(this);
-    dow_label[i]=new QLabel(dow_box[i],"",this);
-    dow_label[i]->setAlignment(AlignLeft|AlignVCenter);
+    dow_label[i]=new QLabel(this);
+    dow_label[i]->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
     //dow_label[i]->setBackgroundColor(red);
     //dow_label[i]->hide();
   }

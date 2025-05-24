@@ -2,7 +2,7 @@
 //
 // The Arbitron Report for Davit
 //
-//   (C) Copyright 2008-2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2008-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -18,13 +18,14 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qdatetime.h>
-#include <qsqldatabase.h>
+#include <QDateTime>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvtconf.h>
 
-#include <pick_fields.h>
-#include <list_reports.h>
+#include "list_reports.h"
+#include "pick_fields.h"
 
 bool ListReports::ArbitronReport(SpreadSheet *sheet)
 {

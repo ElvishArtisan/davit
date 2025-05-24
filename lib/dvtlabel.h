@@ -2,9 +2,7 @@
 //
 //   An label widget with word wrap.
 //
-//   (C) Copyright 2002 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtlabel.h,v 1.1 2007/11/19 16:53:35 fredg Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -19,19 +17,16 @@
 //   License along with this program; if not, write to the Free Software
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-//
 
 #ifndef DVTLABEL_H
 #define DVTLABEL_H
 
-#include <qwidget.h>
-#include <qlabel.h>
-#include <qrangecontrol.h>
-#include <qcolor.h>
-#include <qpalette.h>
-#include <qsize.h>
-#include <qpixmap.h>
-
+#include <QWidget>
+#include <QLabel>
+#include <QColor>
+#include <QPalette>
+#include <QSize>
+#include <QPixmap>
 
 /**
  * @short A label widget with word wrap.
@@ -52,7 +47,7 @@ class DvtLabel : public QLabel
    * @param name The name of the widget
    * @param f The widget flags
    **/
-   DvtLabel(QWidget *parent,const char *name,WFlags f=0);
+   DvtLabel(QWidget *parent);
 
   /**
    * Create an RSlider with the following parameters:
@@ -61,18 +56,7 @@ class DvtLabel : public QLabel
    * @param name The name of the widget
    * @param f The widget flags
    **/
-   DvtLabel(const QString &text,QWidget *parent,const char *name,WFlags f=0);
-
-  /**
-   * Create an RSlider with the following parameters:
-   * @param buddy The buddy widget
-   * @param text The text of the label
-   * @param parent The parent widget
-   * @param name The name of the widget
-   * @param f The widget flags
-   **/
-   DvtLabel(QWidget *buddy,const QString &text,QWidget *parent,const char *name,
-	   WFlags f=0);
+   DvtLabel(const QString &text,QWidget *parent);
 
    /**
     * Returns the label text.

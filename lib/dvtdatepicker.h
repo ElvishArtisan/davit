@@ -2,9 +2,7 @@
 //
 // A Calendar Widget.
 //
-//   (C) Copyright 2002-2004 Fred Gleason <fredg@paravelsystems.com>
-//
-//    $Id: dvtdatepicker.h,v 1.1 2008/02/01 22:48:07 fredg Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -20,20 +18,19 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-
 #ifndef DVTDATEPICKER_H
 #define DVTDATEPICKER_H
 
-#include <qwidget.h>
-#include <qsize.h>
-#include <qsizepolicy.h>
-#include <qpushbutton.h>
-#include <qcolor.h>
-#include <qstring.h>
-#include <qdatetime.h>
-#include <qlabel.h>
-#include <qcombobox.h>
-#include <qspinbox.h>
+#include <QWidget>
+#include <QSize>
+#include <QSizePolicy>
+#include <QPushButton>
+#include <QColor>
+#include <QString>
+#include <QDateTime>
+#include <QLabel>
+#include <QComboBox>
+#include <QSpinBox>
 
 //
 // Display Settings
@@ -47,8 +44,7 @@ class DvtDatePicker : public QWidget
 {
   Q_OBJECT
  public:
-  DvtDatePicker(int low_year,int high_year,QWidget *parent=0,
-	       const char *name=0);
+  DvtDatePicker(int low_year,int high_year,QWidget *parent=0);
   ~DvtDatePicker();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

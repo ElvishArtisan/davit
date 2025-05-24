@@ -2,9 +2,7 @@
 //
 // List Davit Reports.
 //
-//   (C) Copyright 2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: list_reports.cpp,v 1.20 2014/01/02 19:49:13 pcvs Exp $
+//   (C) Copyright 2008-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -26,6 +24,7 @@
 
 #include <stdlib.h>
 #include <errno.h>
+#include <math.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -33,31 +32,34 @@
 #include <unistd.h>
 #endif  // WIN32
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qsqldatabase.h>
-#include <math.h>
-#include <qmessagebox.h>
-#include <qprocess.h>
+#include <QLabel>
+#include <QProcess>
+#include <QPushButton>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include <dvtconfig.h>
-#include <list_reports.h>
-#include <edit_provider.h>
-#include <add_provider.h>
-#include <globals.h>
 #include <dvtconf.h>
-#include <spread_sheet.h>
 
-ListReports::ListReports(QWidget *parent,const char *name)
-  : QDialog(parent,name,true)
+#include "add_provider.h"
+#include "edit_provider.h"
+#include "globals.h"
+#include "list_reports.h"
+#include "spread_sheet.h"
+
+ListReports::ListReports(QWidget *parent)
+  : QDialog(parent)
 {
+  setModal(true);
+
   //
   // Fix the Window Size
   //
   setMinimumWidth(sizeHint().width());
   setMinimumHeight(sizeHint().height());
 
-  setCaption("Davit - Reports");
+  setWindowTitle("Davit - Reports");
 
   //
   // Create Fonts
@@ -70,7 +72,8 @@ ListReports::ListReports(QWidget *parent,const char *name)
   //
   // Reports List
   //
-  list_reports_list=new QListView(this,"list_reports_list");
+  /*
+  list_reports_list=new QListView(this);
   list_reports_list->setMargin(5);
   list_reports_list->setAllColumnsShowFocus(true);
   connect(list_reports_list,
@@ -118,11 +121,11 @@ ListReports::ListReports(QWidget *parent,const char *name)
   item->setText(0,tr("Programs by MSA Market"));
   item=new QListViewItem(list_reports_list);
   item->setText(0,tr("Programs by City/State"));
-
+  */
   //
   //  Run Button
   //
-  list_run_button=new QPushButton(this,"list_run_button");
+  list_run_button=new QPushButton(this);
   list_run_button->setFont(font);
   list_run_button->setText("&Run");
   connect(list_run_button,SIGNAL(clicked()),this,SLOT(runData()));
@@ -130,7 +133,7 @@ ListReports::ListReports(QWidget *parent,const char *name)
   //
   //  Close Button
   //
-  list_close_button=new QPushButton(this,"list_close_button");
+  list_close_button=new QPushButton(this);
   list_close_button->setDefault(true);
   list_close_button->setFont(font);
   list_close_button->setText("&Close");
@@ -157,6 +160,7 @@ QSizePolicy ListReports::sizePolicy() const
 
 void ListReports::runData()
 {
+  /*
   SpreadSheet *sheet=new SpreadSheet();
   bool ok=false;
 
@@ -234,15 +238,16 @@ void ListReports::runData()
 	       sheet->write(DvtGetSpreadSheetFileFormat("DAVIT_REPORT")));
     // printf("out: %s\n",(const char *)outfile);
   }
+  */
 }
 
-
+/*
 void ListReports::doubleClickedData(QListViewItem *item,const QPoint &pt,
 				      int c)
 {
   runData();
 }
-
+*/
 
 void ListReports::closeData()
 {
@@ -252,8 +257,8 @@ void ListReports::closeData()
 
 void ListReports::resizeEvent(QResizeEvent *e)
 {
-  list_reports_list->
-    setGeometry(10,10,size().width()-20,size().height()-80);
+  //  list_reports_list->
+  //    setGeometry(10,10,size().width()-20,size().height()-80);
   list_run_button->setGeometry(10,size().height()-60,80,50);
   list_close_button->setGeometry(size().width()-90,size().height()-60,80,50);
 }
@@ -261,6 +266,7 @@ void ListReports::resizeEvent(QResizeEvent *e)
 
 void ListReports::ForkViewer(const QString &filename,const QString &data)
 {
+  /*
   if(!data.isEmpty()) {
     FILE *f=NULL;
 
@@ -279,6 +285,7 @@ void ListReports::ForkViewer(const QString &filename,const QString &data)
     QMessageBox::warning(this,"Davit - "+tr("Error"),
 			 tr("Unable to launch report viewer!"));
   }
+  */
 }
 
 
@@ -306,7 +313,7 @@ void ListReports::ContactFields(int affiliate_id,ContactType type,int fields,
   }
   sql=QString().sprintf("select NAME,PHONE,FAX,EMAIL from CONTACTS \
                          where (AFFILIATE_ID=%d)&&(%s=\"Y\")",
-			affiliate_id,(const char *)field);
+			affiliate_id,field.toUtf8().constData());
   q=new QSqlQuery(sql);
   if(q->first()) {
     if((fields&FieldName)!=0) {

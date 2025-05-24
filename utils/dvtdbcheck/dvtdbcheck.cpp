@@ -2,9 +2,7 @@
 //
 // A Database Check/Repair Tool for Davit
 //
-//   (C) Copyright 2011 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: dvtdbcheck.cpp,v 1.1 2011/04/29 21:04:59 pcvs Exp $
+//   (C) Copyright 2011-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -28,15 +26,16 @@
 #include <unistd.h>
 #include <sys/types.h>
 
-#include <qapplication.h>
-#include <qdir.h>
-#include <qfileinfo.h>
+#include <QCoreApplication>
+#include <QDir>
+#include <QFileInfo>
+#include <QSqlQuery>
 
 #include <dvtconf.h>
 #include <dvtdbcheck.h>
 
-MainObject::MainObject(QObject *parent,const char *name)
-  :QObject(parent,name)
+MainObject::MainObject(QObject *parent)
+  :QObject(parent)
 {
   check_yes=false;
   check_no=false;
@@ -76,9 +75,7 @@ MainObject::MainObject(QObject *parent,const char *name)
   //
   // Open Database
   //
-  //
-  // Open Database
-  //
+  /*
   QSqlDatabase *db=QSqlDatabase::addDatabase(dvtconfig->mysqlDbtype());
   if(!db) {
     fprintf(stderr,"rdimport: unable to initialize connection to database\n");
@@ -93,7 +90,7 @@ MainObject::MainObject(QObject *parent,const char *name)
     db->removeDatabase(dvtconfig->mysqlDbname());
     exit(256);
   }
-
+  */
   CheckDuplicateAffiliates();
 
   exit(0);
@@ -172,18 +169,19 @@ void MainObject::CheckDuplicateAffiliates()
 	printf("\n");
 	printf("1: %2d %3d %4d: %s %6.1lf  %s, %s\n",
 	       curr_contacts,curr_remarks,curr_aired,
-	       (const char *)DvtStationCallString(q->value(1).toString(),
-						  q->value(2).toString()),
+	       DvtStationCallString(q->value(1).toString().toUtf8().constData(),
+				    q->value(2).toString()).
+	       toUtf8().constData(),
 	       q->value(3).toDouble(),
-	       (const char *)q->value(4).toString(),
-	       (const char *)q->value(5).toString());
+	       q->value(4).toString().toUtf8().constData(),
+	       q->value(5).toString().toUtf8().constData());
 
 	printf("2: %2d %3d %4d: %s %6.1lf  %s, %s\n",
 	       last_contacts,last_remarks,last_aired,
-	       (const char *)DvtStationCallString(last_call,last_type),
+	       DvtStationCallString(last_call,last_type).toUtf8().constData(),
 	       last_frequency,
-	       (const char *)last_city,
-	       (const char *)last_state);
+	       last_city.toUtf8().constData(),
+	       last_state.toUtf8().constData());
 	printf("Found duplicate affiliate entry.  Merge? (y/N) ");
 	fflush(NULL);
 	if(UserResponse()) {
@@ -223,8 +221,8 @@ void MainObject::MergeAffiliates(int dest_id,int src_id)
                            (AFFILIATE_ID=%d)&&(PROGRAM_ID=%d)&&\
                            (AIR_DATETIME=\"%s\")&&(AIR_LENGTH=%d)",
 			  dest_id,q->value(4).toInt(),
-			  (const char *)q->value(2).toDateTime().
-			  toString("yyyy-MM-dd hh:mm:ss"),
+			  q->value(2).toDateTime().
+			  toString("yyyy-MM-dd hh:mm:ss").toUtf8().constData(),
 			  q->value(3).toInt());
     q1=new QSqlQuery(sql);
     if(q1->first()) {
@@ -268,8 +266,8 @@ void MainObject::MergeAffiliates(int dest_id,int src_id)
                            where (AFFILIATE_ID=%d)&&(PROGRAM_ID=%d)&&\
                            (AIR_TIME=\"%s\")",
 			  dest_id,q->value(1).toInt(),
-			  (const char *)q->value(2).toTime().
-			  toString("hh:mm:ss"));
+			  q->value(2).toTime().toString("hh:mm:ss").
+			  toUtf8().constData());
     q1=new QSqlQuery(sql);
     if(q1->first()) {
       sql=QString().sprintf("delete from AIRINGS where ID=%d",
@@ -358,7 +356,7 @@ bool MainObject::UserResponse()
 
 int main(int argc,char *argv[])
 {
-  QApplication a(argc,argv,false);
-  new MainObject(NULL,"main");
+  QCoreApplication a(argc,argv);
+  new MainObject(NULL);
   return a.exec();
 }

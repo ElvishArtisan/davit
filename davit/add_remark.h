@@ -2,9 +2,7 @@
 //
 // Add a Davit Remark.
 //
-//   (C) Copyright 2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: add_remark.h,v 1.1 2008/12/13 00:44:27 fredg Exp $
+//   (C) Copyright 2008-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,16 +21,15 @@
 #ifndef ADD_REMARK_H
 #define ADD_REMARK_H
 
-#include <qdialog.h>
-#include <qtextedit.h>
-#include <qpushbutton.h>
-
+#include <QDialog>
+#include <QPushButton>
+#include <QTextEdit>
 
 class AddRemark : public QDialog
 {
  Q_OBJECT
  public:
-  AddRemark(QString *remark,QWidget *parent=0,const char *name=0);
+AddRemark(QString *remark,QWidget *parent=0);
   ~AddRemark();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

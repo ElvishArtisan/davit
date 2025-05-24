@@ -2,9 +2,7 @@
 //
 // Migrate Davit Affiliates.
 //
-//   (C) Copyright 2007,2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: migrate_affiliates.h,v 1.1 2008/12/19 17:03:01 fredg Exp $
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -25,8 +23,8 @@
 
 #include <vector>
 
-#include <qdialog.h>
-#include <qcombobox.h>
+#include <QComboBox>
+#include <QDialog>
 
 #include <dvtlistselector.h>
 
@@ -34,8 +32,7 @@ class MigrateAffiliates : public QDialog
 {
  Q_OBJECT
  public:
-  MigrateAffiliates(int pgm_id,const QString &pgm_name,
-		    QWidget *parent=0,const char *name=0);
+ MigrateAffiliates(int pgm_id,const QString &pgm_name,QWidget *parent=0);
   ~MigrateAffiliates();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
