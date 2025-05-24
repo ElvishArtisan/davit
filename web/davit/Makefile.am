@@ -19,14 +19,14 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" @QT4_CFLAGS@ -I$(top_srcdir)/lib
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing -std=c++17 -fPIC -I$(top_srcdir)/lib @QT6_CFLAGS@
 LIBS = -L$(top_srcdir)/lib
-MOC = @QT_MOC@
+MOC = @QT6_MOC@
 
 libexec_PROGRAMS = davit.cgi
 
 dist_davit_cgi_SOURCES = davit.cpp davit.h
-davit_cgi_LDADD = @QT4_LIBS@ @VMIME_LIBS@ -ldvt
+davit_cgi_LDADD = @QT6_LIBS@ @VMIME_LIBS@ -ldvt
 
 EXTRA_DIST = davit.pro
 

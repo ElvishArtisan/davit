@@ -181,13 +181,13 @@ void MainWidget::ProcessMarketRecord(const QString &table,QString &name,
     return;
   }
 
-  sql=QString().sprintf("select ID from %s where NAME=\"%s\"",
+  sql=QString::asprintf("select ID from %s where NAME=\"%s\"",
 			table.toUtf8().constData(),
 			DvtEscapeString(name.trimmed()).toUtf8().constData());
   q=new QSqlQuery(sql);
   if(!q->first()) {
     delete q;
-    sql=QString().sprintf("insert into %s set NAME=\"%s\",RANK=%d",
+    sql=QString::asprintf("insert into %s set NAME=\"%s\",RANK=%d",
 			  table.toUtf8().constData(),
 			  name.trimmed().toUtf8().constData(),
 			  rank);
@@ -206,7 +206,7 @@ int MainWidget::GetMarketRank(const QString &table,const QString &name,
   if(rank>0) {
     return rank;
   }
-  sql=QString().sprintf("select RANK from %s where NAME=\"%s\"",
+  sql=QString::asprintf("select RANK from %s where NAME=\"%s\"",
 			DvtEscapeString(table).toUtf8().constData(),
 			DvtEscapeString(name.trimmed()).toUtf8().constData());
   q=new QSqlQuery(sql);
@@ -246,7 +246,7 @@ void MainWidget::ImportPrecisionTrakRecord(const QStringList &cols)
   //
   // Find (or Create) Matching Affiliate Record
   //
-  sql=QString().sprintf("select ID from AFFILIATES where \
+  sql=QString::asprintf("select ID from AFFILIATES where \
                          (STATION_FREQUENCY=%6.1f)&&\
                          (LICENSE_CITY=\"%s\")&&\
                          (LICENSE_STATE=\"%s\")",
@@ -262,7 +262,7 @@ void MainWidget::ImportPrecisionTrakRecord(const QStringList &cols)
       cols[3]+", "+cols[4]+"\n"+tr("Couldn't be matched exactly.\n\n");
 
     // Try to find a near fit
-    sql=QString().sprintf("select ID,STATION_CALL,STATION_FREQUENCY,\
+    sql=QString::asprintf("select ID,STATION_CALL,STATION_FREQUENCY,\
                            LICENSE_CITY,LICENSE_STATE from AFFILIATES \
                            where (STATION_CALL=\"%s\")&&(STATION_TYPE=\"%s\")",
 			  cols[2].toUtf8().constData(),
@@ -271,7 +271,7 @@ void MainWidget::ImportPrecisionTrakRecord(const QStringList &cols)
     if(q1->first()) {
       /*
       msg+=tr("Apply it to this record?\n     ")+q1->value(1).toString()+
-	", "+QString().sprintf("%6.1lf",q1->value(2).toDouble())+" - "+
+	", "+QString::asprintf("%6.1lf",q1->value(2).toDouble())+" - "+
 	q1->value(3).toString()+", "+q1->value(4).toString();
       if(QMessageBox::question(this,tr("Davit - External Data Import"),
 			       msg,QMessageBox::Yes,QMessageBox::No)==
@@ -311,7 +311,7 @@ void MainWidget::ImportPrecisionTrakRecord(const QStringList &cols)
   //
   sql=QString("update AFFILIATES set ")+
     "STATION_TYPE=\""+type+"\","+
-    QString().sprintf("STATION_FREQUENCY=%6.1lf,",cols[1].toDouble())+
+    QString::asprintf("STATION_FREQUENCY=%6.1lf,",cols[1].toDouble())+
     "STATION_CALL=\""+DvtEscapeString(cols[2])+"\","+
     "LICENSE_CITY=\""+DvtEscapeString(cols[3])+"\","+
     "LICENSE_STATE=\""+DvtEscapeString(cols[4])+"\","+
@@ -319,9 +319,9 @@ void MainWidget::ImportPrecisionTrakRecord(const QStringList &cols)
     "FAX=\""+DvtEscapeString(cols[6])+"\","+
     "WEB_URL=\""+DvtEscapeString(cols[7])+"\","+
     "MARKET_NAME=\""+DvtEscapeString(cols[8])+"\","+
-    QString().sprintf("MARKET_RANK=%d,",msa_rank)+
+    QString::asprintf("MARKET_RANK=%d,",msa_rank)+
     "DMA_NAME=\""+DvtEscapeString(cols[10])+"\","+
-    QString().sprintf("DMA_RANK=%d,",dma_rank)+
+    QString::asprintf("DMA_RANK=%d,",dma_rank)+
     "COUNTRY=\""+DvtEscapeString(cols[12])+"\","+
     "STATION_FORMAT=\""+DvtEscapeString(cols[13])+"\","+
     "BUSINESS_NAME=\""+DvtEscapeString(cols[14])+"\","+
@@ -330,9 +330,9 @@ void MainWidget::ImportPrecisionTrakRecord(const QStringList &cols)
     "CITY=\""+DvtEscapeString(cols[17])+"\","+
     "STATE=\""+DvtEscapeString(cols[18])+"\","+
     "ZIPCODE=\""+DvtEscapeString(cols[19])+"\","+
-    QString().sprintf("STATION_POWER=%d,",cols[29].toInt())+
-    QString().sprintf("STATION_NIGHT_POWER=%d ",cols[30].toInt())+
-    QString().sprintf("where ID=%d",affiliate_id);
+    QString::asprintf("STATION_POWER=%d,",cols[29].toInt())+
+    QString::asprintf("STATION_NIGHT_POWER=%d ",cols[30].toInt())+
+    QString::asprintf("where ID=%d",affiliate_id);
   q=new QSqlQuery(sql);
   delete q;
 
@@ -345,7 +345,7 @@ void MainWidget::ImportPrecisionTrakRecord(const QStringList &cols)
   QString program_director="N";
   QString title;
 
-  sql=QString().sprintf("delete from CONTACTS where \
+  sql=QString::asprintf("delete from CONTACTS where \
                          (AFFILIATE_ID=%d)&&(LOCKED=\"N\")",affiliate_id);
   q=new QSqlQuery(sql);
   delete q;
@@ -372,7 +372,7 @@ void MainWidget::ImportPrecisionTrakRecord(const QStringList &cols)
       break;
     }
     sql=QString("insert into CONTACTS set ")+
-      QString().sprintf("AFFILIATE_ID=%d,",affiliate_id)+
+      QString::asprintf("AFFILIATE_ID=%d,",affiliate_id)+
       "NAME=\""+DvtEscapeString(cols[20+i*3])+"\","+
       "TITLE=\""+DvtEscapeString(title)+"\","+
       "EMAIL=\""+DvtEscapeString(cols[20+i*3+2])+"\","+
@@ -415,7 +415,7 @@ QString MainWidget::GetNextLine(FILE *f)
 	if((c>=0)&&(c<32)) {
 	  c=' ';
 	}
-	ret+=c;
+	ret+=QChar(c);
       }
       break;
 
@@ -423,7 +423,7 @@ QString MainWidget::GetNextLine(FILE *f)
       if(c==10) {
 	return ret;
       }
-      ret+=c;
+      ret+=QChar(c);
       istate=0;
       break;
     }

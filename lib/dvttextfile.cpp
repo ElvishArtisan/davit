@@ -68,8 +68,8 @@ bool DvtTextFile(const QString &data)
   strcpy(tmpfile,"/tmp/dvtreportXXXXXX");
   int fd=mkstemp(tmpfile);
   if(fd<0) {
-    QMessageBox::warning(NULL,"File Error",QString().
-			 sprintf("Unable to create temporary file \"%s\".",
+    QMessageBox::warning(NULL,"File Error",
+		   QString::asprintf("Unable to create temporary file \"%s\".",
 				 (const char *)tmpfile));
     return false;
   }
@@ -78,7 +78,8 @@ bool DvtTextFile(const QString &data)
     write(fd,bytes,bytes.length());
     ::close(fd);
     if(fork()==0) {
-      system(QString().sprintf("%s %s",editor.toUtf8().constData(),tmpfile).toUtf8());
+      system(QString::asprintf("%s %s",
+			       editor.toUtf8().constData(),tmpfile).toUtf8());
       unlink(tmpfile);
       exit(0);
     }

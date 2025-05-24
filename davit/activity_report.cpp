@@ -67,22 +67,22 @@ bool ListReports::ActivityReport(SpreadSheet *sheet)
        on AFFILIATES.ID=CONTACTS.AFFILIATE_ID \
        where (CONTACTS.PROGRAM_DIRECTOR=\"Y\")";
   if(affiliate_id>0) {
-    sql+=QString().sprintf("&& (AFFILIATES.ID=%d)",affiliate_id);
+    sql+=QString::asprintf("&& (AFFILIATES.ID=%d)",affiliate_id);
   }
   sql+=" order by AFFILIATES.STATION_CALL";
   q=new QSqlQuery(sql);
   while(q->next()) {
-    sql=QString().sprintf("select AFFILIATE_REMARKS.REMARK_DATETIME,\
+    sql=QString::asprintf("select AFFILIATE_REMARKS.REMARK_DATETIME,\
                            AFFILIATE_REMARKS.USER_NAME,\
                            AFFILIATE_REMARKS.REMARK \
                            from AFFILIATE_REMARKS \
                            where (AFFILIATE_REMARKS.AFFILIATE_ID=%d)&&",
 			  q->value(0).toInt());
-    sql+=QString().
-      sprintf("(AFFILIATE_REMARKS.REMARK_DATETIME>=\"%s 00:00:00\")&&",
+    sql+=
+     QString::asprintf("(AFFILIATE_REMARKS.REMARK_DATETIME>=\"%s 00:00:00\")&&",
 	      start_date.toString("yyyy-MM-dd").toUtf8().constData());
-    sql+=QString().
-      sprintf("(AFFILIATE_REMARKS.REMARK_DATETIME<=\"%s 23:59:59\")",
+    sql+=
+      QString::asprintf("(AFFILIATE_REMARKS.REMARK_DATETIME<=\"%s 23:59:59\")",
 	      end_date.toString("yyyy-MM-dd").toUtf8().constData());
     sql+=" order by AFFILIATE_REMARKS.REMARK_DATETIME";
     q1=new QSqlQuery(sql);

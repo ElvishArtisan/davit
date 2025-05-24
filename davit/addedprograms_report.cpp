@@ -86,18 +86,17 @@ bool ListReports::AddedProgramsReport(Dvt::RemarkType type,SpreadSheet *sheet)
        from AFFILIATES left join AFFILIATE_REMARKS \
        on (AFFILIATES.ID=AFFILIATE_REMARKS.AFFILIATE_ID) where";
   if(affiliate_id>0) {
-    sql+=QString().sprintf("(AFFILIATES.ID=%d)&&",affiliate_id);
+    sql+=QString::asprintf("(AFFILIATES.ID=%d)&&",affiliate_id);
   }
   if(pgm_id>0) {
-    sql+=QString().sprintf("(AFFILIATE_REMARKS.PROGRAM_ID=%d)&&",
+    sql+=QString::asprintf("(AFFILIATE_REMARKS.PROGRAM_ID=%d)&&",
 			   pgm_id);
   }
-  sql+=QString().sprintf("(AFFILIATE_REMARKS.EVENT_TYPE=%d)&&",type);
-  sql+=QString().
-    sprintf("(AFFILIATE_REMARKS.REMARK_DATETIME>=\"%s 00:00:00\")&&",
-	    start_date.toString("yyyy-MM-dd").toUtf8().constData());
-  sql+=QString().
-    sprintf("(AFFILIATE_REMARKS.REMARK_DATETIME<=\"%s 23:59:59\")",
+  sql+=QString::asprintf("(AFFILIATE_REMARKS.EVENT_TYPE=%d)&&",type);
+  sql+=
+    QString::asprintf("(AFFILIATE_REMARKS.REMARK_DATETIME>=\"%s 00:00:00\")&&",
+		      start_date.toString("yyyy-MM-dd").toUtf8().constData());
+  sql+=QString::asprintf("(AFFILIATE_REMARKS.REMARK_DATETIME<=\"%s 23:59:59\")",
 	    end_date.toString("yyyy-MM-dd").toUtf8().constData());
   sql+=" order by AFFILIATES.STATION_CALL";
   q=new QSqlQuery(sql);
@@ -107,15 +106,15 @@ bool ListReports::AddedProgramsReport(Dvt::RemarkType type,SpreadSheet *sheet)
       "AFFILIATE_REMARKS.REMARK_DATETIME "+
       "from AFFILIATE_REMARKS right join PROGRAMS "+
       "on (AFFILIATE_REMARKS.PROGRAM_ID=PROGRAMS.ID) where "+
-      QString().sprintf("(AFFILIATE_REMARKS.EVENT_TYPE=%d)&&",type)+
-      QString().sprintf("(AFFILIATE_REMARKS.AFFILIATE_ID=%d)&&",
+      QString::asprintf("(AFFILIATE_REMARKS.EVENT_TYPE=%d)&&",type)+
+      QString::asprintf("(AFFILIATE_REMARKS.AFFILIATE_ID=%d)&&",
 			q->value(0).toInt())+
       "(AFFILIATE_REMARKS.REMARK_DATETIME>=\""+
       start_date.toString("yyyy-MM-dd")+" 00:00:00\")&&"+
       "(AFFILIATE_REMARKS.REMARK_DATETIME<\""+
       end_date.addDays(1).toString("yyyy-MM-dd")+" 00:00:00\")";
     if(pgm_id>0) {
-      sql+=QString().sprintf("&&(AFFILIATE_REMARKS.PROGRAM_ID=%d)",pgm_id);
+      sql+=QString::asprintf("&&(AFFILIATE_REMARKS.PROGRAM_ID=%d)",pgm_id);
     }
     q1=new QSqlQuery(sql);
     if(q1->size()>0) {

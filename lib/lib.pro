@@ -54,7 +54,7 @@ SOURCES += spread_sheet.cpp
 SOURCES += spread_tab.cpp
 SOURCES += statecombobox.cpp
 SOURCES += state_conv.cpp
-SOURCES += dvtmail-win32.cpp
+#SOURCES += dvtmail-win32.cpp
 SOURCES += dvtsystem.cpp
 SOURCES += dvttransportbutton.cpp
 x11 {
@@ -86,7 +86,7 @@ HEADERS += spread_sheet.h
 HEADERS += spread_tab.h
 HEADERS += statecombobox.h
 HEADERS += state_conv.h
-HEADERS += dvtmail.h
+#HEADERS += dvtmail.h
 HEADERS += dvtsystem.h
 HEADERS += dvttransportbutton.h
 x11 {

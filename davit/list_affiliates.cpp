@@ -33,7 +33,7 @@
 
 #include <dvtconf.h>
 #include <dvtconfig.h>
-#include <dvtmail.h>
+//#include <dvtmail.h>
 
 #include "add_affiliate.h"
 #include "edit_affiliate.h"
@@ -124,7 +124,7 @@ ListAffiliates::ListAffiliates(QWidget *parent)
   list_year_box=new QComboBox(this);
   int count=0;
   for(int i=2008;i<(today.year()+1);i++) {
-    list_year_box->insertItem(count++,QString().sprintf("%d",i));
+    list_year_box->insertItem(count++,QString::asprintf("%d",i));
   }
   connect(list_year_box,SIGNAL(activated(int)),
 	  this,SLOT(yearActivatedData(int)));
@@ -307,14 +307,14 @@ void ListAffiliates::addData()
 
   AddAffiliate *add=new AddAffiliate(&call,&type,this);
   if(add->exec()==0) {
-    sql=QString().sprintf("insert into AFFILIATES set \
+    sql=QString::asprintf("insert into AFFILIATES set \
                            STATION_CALL=\"%s\",\
                            STATION_TYPE=\"%s\"",
 			  (const char *)call,
 			  (const char *)type);
     q=new QSqlQuery(sql);
     delete q;
-    sql=QString().sprintf("select ID from AFFILIATES where \
+    sql=QString::asprintf("select ID from AFFILIATES where \
                           (STATION_CALL=\"%s\")&&(STATION_TYPE=\"%s\")",
 			  (const char *)call,(const char *)type);
     q=new QSqlQuery(sql);
@@ -366,7 +366,7 @@ void ListAffiliates::deleteData()
     return;
   }
   if(QMessageBox::question(this,"Delete Affiliate",
-      QString().sprintf("Are you sure you want to delete the affiliate \"%s\"",
+      QString::asprintf("Are you sure you want to delete the affiliate \"%s\"",
 			   (const char *)item->text(0)),
 			   QMessageBox::Yes,
 			   QMessageBox::No)==QMessageBox::No) {
@@ -401,7 +401,7 @@ void ListAffiliates::affidavitReminderData()
   /*
   if(QMessageBox::question(this,"Davit - List Affiliates",
 			   tr("This will send an affidavit reminder e-mail to")+
-			   QString().sprintf(" %d ",list_affiliates_list->childCount())+tr("affiliates.\nProceed?"),QMessageBox::Yes,QMessageBox::No)!=QMessageBox::Yes) {
+			   QString::asprintf(" %d ",list_affiliates_list->childCount())+tr("affiliates.\nProceed?"),QMessageBox::Yes,QMessageBox::No)!=QMessageBox::Yes) {
     return;
   }
   SendAffidavitReminder();
@@ -484,7 +484,7 @@ void ListAffiliates::SendAffidavitReminder()
     }
     sess=vmime::create<vmime::net::session>();
     sess->getProperties()["transport.smtp.server.port"]=q->value(1).toInt();
-    vmime::utility::url url((const char *)QString().sprintf("smtp://%s",
+    vmime::utility::url url((const char *)QString::asprintf("smtp://%s",
 				   (const char *)q->value(0).toString()));
     trans=sess->getTransport(url); 
     trans->connect();
@@ -505,7 +505,7 @@ void ListAffiliates::SendAffidavitReminder()
   list_email_progress->setProgress(0);
   DvtListViewItem *item=(DvtListViewItem *)list_affiliates_list->firstChild();
   while((item!=NULL)&&(!list_email_progress->wasCancelled())) {
-    sql=QString().sprintf("select STATION_CALL,STATION_TYPE,USER_PASSWORD \
+    sql=QString::asprintf("select STATION_CALL,STATION_TYPE,USER_PASSWORD \
                            from AFFILIATES where ID=%d",item->id());
     q=new QSqlQuery(sql);
     while(q->next()) {
@@ -522,7 +522,7 @@ void ListAffiliates::SendAffidavitReminder()
 		  q->value(1).toString().lower()+"m");
     }
     delete q;
-    sql=QString().sprintf("select NAME,EMAIL from CONTACTS where \
+    sql=QString::asprintf("select NAME,EMAIL from CONTACTS where \
                            (AFFILIATE_ID=%d)&&(AFFIDAVIT=\"Y\")",item->id());
     q=new QSqlQuery(sql);
     to_addrs.clear();
@@ -571,12 +571,12 @@ void ListAffiliates::SendAffidavitReminder()
   catch(vmime::exception &e) {
   }
   if(errs==0) {
-    QMessageBox::information(this,"Davit",QString().sprintf("%d ",count-errs)+
+    QMessageBox::information(this,"Davit",QString::asprintf("%d ",count-errs)+
 			     tr("messages sent!"));
   }
   else {
     QMessageBox::information(this,"Davit",
-			     QString().sprintf("%d ",errs)+
+			     QString::asprintf("%d ",errs)+
 			     tr("e-mail addresses were invalid:")+"\n\n"+
 			     invalid_addrs);
   }
@@ -590,7 +590,7 @@ void ListAffiliates::DeleteAffiliate(int id)
   QString sql;
   QSqlQuery *q;
 
-  sql=QString().sprintf("delete from AFFILIATES where ID=%d",id);
+  sql=QString::asprintf("delete from AFFILIATES where ID=%d",id);
   q=new QSqlQuery(sql);
   delete q;
 }
@@ -613,7 +613,7 @@ void ListAffiliates::RefreshList()
     affidavit_date=QDate(list_year_box->currentText().toInt(),
 			 list_month_box->currentItem()+1,1);
   }
-  sql=QString().sprintf("select AFFILIATES.ID,AFFILIATES.STATION_CALL,\
+  sql=QString::asprintf("select AFFILIATES.ID,AFFILIATES.STATION_CALL,\
                          AFFILIATES.LICENSE_CITY,AFFILIATES.LICENSE_STATE,\
                          AFFILIATES.LICENSE_COUNTRY,AFFILIATES.STATION_TYPE,\
                          AFFILIATES.BUSINESS_NAME,\
@@ -670,7 +670,7 @@ void ListAffiliates::RefreshList()
     }
   }
   delete q;
-  list_showing_edit->setText(QString().sprintf("%d",count));
+  list_showing_edit->setText(QString::asprintf("%d",count));
 */
 }
 
@@ -682,7 +682,7 @@ void ListAffiliates::UpdateItem(DvtListViewItem *item)
   QSqlQuery *q;
   QString suffix;
 
-  sql=QString().sprintf("select LICENSE_CITY,LICENSE_STATE,LICENSE_COUNTRY,\
+  sql=QString::asprintf("select LICENSE_CITY,LICENSE_STATE,LICENSE_COUNTRY,\
                          STATION_CALL,STATION_TYPE,BUSINESS_NAME,\
                          DMA_NAME,\
                          IS_AFFILIATE,AFFIDAVIT_ACTIVE \
@@ -749,7 +749,7 @@ QString ListAffiliates::FilterSql(const QString &filter,bool affils_only,
     q=new QSqlQuery(sql);
     while(q->next()) {
       if(!DvtAffidavitNeeded(q->value(0).toInt(),affidavit_date)) {
-	ret+=QString().sprintf("(ID!=%d)&&",q->value(0).toInt());
+	ret+=QString::asprintf("(ID!=%d)&&",q->value(0).toInt());
       }
     }
     delete q;
@@ -758,7 +758,7 @@ QString ListAffiliates::FilterSql(const QString &filter,bool affils_only,
     ret=ret.left(ret.length()-2);
   }
   else {
-    ret+=QString().sprintf("(STATION_CALL like \"%%%s%%\")",
+    ret+=QString::asprintf("(STATION_CALL like \"%%%s%%\")",
 			   filter.toUtf8().constData());
   }
   return ret;

@@ -236,7 +236,7 @@ void ListUsers::DeleteUser (QString lname)
   QString sql;
   QSqlQuery *q;
 
-  sql=QString().sprintf("delete from USERS where USER_NAME=\"%s\"",
+  sql=QString::asprintf("delete from USERS where USER_NAME=\"%s\"",
 			lname.toUtf8().constData());
   q=new QSqlQuery(sql);
   delete q;
@@ -274,7 +274,7 @@ void ListUsers::RefreshList()
 void ListUsers::UpdateItem(QListViewItem *item)
 {
   QSqlQuery *q=new 
-    QSqlQuery(QString().sprintf("select FULL_NAME,DESCRIPTION,PHONE_NUMBER,\
+    QSqlQuery(QString::asprintf("select FULL_NAME,DESCRIPTION,PHONE_NUMBER,\
                                  EMAIL,ADMIN_PRIV from USERS \
                                  where USER_NAME=\"%s\"",
 				(const char *)item->text(1)));

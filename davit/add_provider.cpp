@@ -105,7 +105,7 @@ QSizePolicy AddProvider::sizePolicy() const
 void AddProvider::okData()
 {
   QString sql=
-    QString().sprintf("select BUSINESS_NAME from PROVIDERS \
+    QString::asprintf("select BUSINESS_NAME from PROVIDERS \
                        where BUSINESS_NAME=\"%s\"",
 		      add_business_name_edit->text().toUtf8().constData());
   QSqlQuery *q=new QSqlQuery(sql);

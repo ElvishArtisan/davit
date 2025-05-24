@@ -823,3 +823,5 @@
 	* Cleaned up makefiles.
 2025-05-24 Fred Gleason <fredg@paravelsystems.com>
 	* Completed rough port to Qt4.
+2025-05-24 Fred Gleason <fredg@paravelsystems.com>
+	* Completed rough port to Qt6.

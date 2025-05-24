@@ -311,7 +311,7 @@ void ListReports::ContactFields(int affiliate_id,ContactType type,int fields,
     field="GENERAL_MANAGER";
     break;
   }
-  sql=QString().sprintf("select NAME,PHONE,FAX,EMAIL from CONTACTS \
+  sql=QString::asprintf("select NAME,PHONE,FAX,EMAIL from CONTACTS \
                          where (AFFILIATE_ID=%d)&&(%s=\"Y\")",
 			affiliate_id,field.toUtf8().constData());
   q=new QSqlQuery(sql);

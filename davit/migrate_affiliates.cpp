@@ -107,7 +107,7 @@ MigrateAffiliates::MigrateAffiliates(int pgm_id,const QString &pgm_name,
   //
   // Load Data
   //
-  sql=QString().sprintf("select PROGRAM_NAME from PROGRAMS where ID!=%d \
+  sql=QString::asprintf("select PROGRAM_NAME from PROGRAMS where ID!=%d \
                          order by PROGRAM_NAME",edit_id);
   int count=0;
   q=new QSqlQuery(sql);
@@ -150,7 +150,7 @@ void MigrateAffiliates::programActivatedData(const QString &str)
               from AFFILIATES order by STATION_CALL,STATION_TYPE";
     q1=new QSqlQuery(sql);
     while(q1->next()) {
-      sql=QString().sprintf("select ID from AIRINGS \
+      sql=QString::asprintf("select ID from AIRINGS \
                            where (AFFILIATE_ID=%d)&&(PROGRAM_ID=%d)",
 			    q1->value(0).toInt(),pgm_id);
       q2=new QSqlQuery(sql);
@@ -190,7 +190,7 @@ void MigrateAffiliates::okData()
   }
   for(unsigned i=0;i<edit_affiliates_sel->destCount();i++) {
     affiliate_id=GetAffiliateId(edit_affiliates_sel->destText(i));
-    sql=QString().sprintf("insert into AFFILIATE_REMARKS set \
+    sql=QString::asprintf("insert into AFFILIATE_REMARKS set \
                            REMARK_DATETIME=\"%s\",\
                            EVENT_TYPE=%d,\
                            AFFILIATE_ID=%d,\
@@ -205,7 +205,7 @@ void MigrateAffiliates::okData()
 			  edit_program_box->currentText().toUtf8().constData());
     q=new QSqlQuery(sql);
     delete q;
-    sql=QString().sprintf("insert into AFFILIATE_REMARKS set \
+    sql=QString::asprintf("insert into AFFILIATE_REMARKS set \
                            REMARK_DATETIME=\"%s\",\
                            EVENT_TYPE=%d,\
                            AFFILIATE_ID=%d,\
@@ -220,13 +220,13 @@ void MigrateAffiliates::okData()
 			  edit_program_name.toUtf8().constData());
     q=new QSqlQuery(sql);
     delete q;
-    sql=QString().sprintf("select AIR_SUN,AIR_MON,AIR_TUE,AIR_WED,AIR_THU,\
+    sql=QString::asprintf("select AIR_SUN,AIR_MON,AIR_TUE,AIR_WED,AIR_THU,\
                            AIR_FRI,AIR_SAT,AIR_TIME,AIR_LENGTH from AIRINGS \
                            where (PROGRAM_ID=%d)&&(AFFILIATE_ID=%d)",
 			  pgm_id,affiliate_id);
     q=new QSqlQuery(sql);
     while(q->next()) {
-      sql=QString().sprintf("insert into AIRINGS set \
+      sql=QString::asprintf("insert into AIRINGS set \
                              AIR_SUN=\"%s\",\
                              AIR_MON=\"%s\",\
                              AIR_TUE=\"%s\",\
@@ -253,7 +253,7 @@ void MigrateAffiliates::okData()
 //      printf("SQL: %s\n",sql);
       q1=new QSqlQuery(sql);
       delete q1;
-      sql=QString().sprintf("delete from AIRINGS \
+      sql=QString::asprintf("delete from AIRINGS \
                              where (PROGRAM_ID=%d)&&(AFFILIATE_ID=%d)",
 			    pgm_id,affiliate_id);
       q1=new QSqlQuery(sql);
@@ -276,7 +276,7 @@ int MigrateAffiliates::GetProgramId(const QString &str) const
   QString sql;
   QSqlQuery *q;
   int id=0;
-  sql=QString().sprintf("select ID from PROGRAMS where PROGRAM_NAME=\"%s\"",
+  sql=QString::asprintf("select ID from PROGRAMS where PROGRAM_NAME=\"%s\"",
 			DvtEscapeString(str).toUtf8().constData());
   q=new QSqlQuery(sql);
   if(q->first()) {
@@ -296,7 +296,7 @@ int MigrateAffiliates::GetAffiliateId(const QString &str) const
   int n=name.indexOf("-");
   if(n<0) {
     //    printf("SQL: %s\n",sql.toUtf8().constData());
-    sql=QString().sprintf("select ID from AFFILIATES where STATION_CALL=\"%s\"",
+    sql=QString::asprintf("select ID from AFFILIATES where STATION_CALL=\"%s\"",
 			  DvtEscapeString(name).toUtf8().constData());
     q=new QSqlQuery(sql);
     if(q->first()) {
@@ -305,7 +305,7 @@ int MigrateAffiliates::GetAffiliateId(const QString &str) const
     delete q;
     return id;
   }
-  sql=QString().sprintf("select ID from AFFILIATES where (STATION_CALL=\"%s\")\
+  sql=QString::asprintf("select ID from AFFILIATES where (STATION_CALL=\"%s\")\
                          &&(STATION_TYPE=\"%s\")",
 			DvtEscapeString(name.left(n)).toUtf8().constData(),
 			name.right(2).left(1).toLower().toUtf8().constData());

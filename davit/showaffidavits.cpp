@@ -119,7 +119,7 @@ void ShowAffidavits::mailClickedData()
   QString affidavit_email_subject=global_dvtsystem->affidavitEmailSubject();
   QString affidavit_email_template=global_dvtsystem->affidavitEmailTemplate();
 
-  sql=QString().sprintf("select STATION_CALL,STATION_TYPE,USER_PASSWORD \
+  sql=QString::asprintf("select STATION_CALL,STATION_TYPE,USER_PASSWORD \
                          from AFFILIATES where ID=%d",show_id);
   q=new QSqlQuery(sql);
   if(q->first()) {
@@ -136,7 +136,7 @@ void ShowAffidavits::mailClickedData()
   }
   delete q;
 
-  sql=QString().sprintf("select NAME,EMAIL from CONTACTS \
+  sql=QString::asprintf("select NAME,EMAIL from CONTACTS \
                          where (AFFILIATE_ID=%d)&&(AFFIDAVIT=\"Y\")",
 			show_id);
   q=new QSqlQuery(sql);
@@ -150,8 +150,7 @@ void ShowAffidavits::mailClickedData()
 		       origin_email,global_dvtuser->email(),
 		       affidavit_email_subject,
 		       affidavit_email_template)==0) {
-    sql=QString().
-      sprintf("insert into AFFILIATE_REMARKS set \
+    sql=QString::asprintf("insert into AFFILIATE_REMARKS set \
                EVENT_TYPE=%d,	 \
                AFFILIATE_ID=%d,\
                REMARK_DATETIME=now(),\

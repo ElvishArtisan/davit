@@ -116,17 +116,17 @@ void Geometry::load()
   for(unsigned i=0;i<Geometry::LastWidget;i++) {
     geo_visible[i]=
       p->boolValue("DavitGeometry",
-		   QString().sprintf("Widget%dVisible",i+1),false);
+		   QString::asprintf("Widget%dVisible",i+1),false);
     geo_rects[i].
-      setX(p->intValue("DavitGeometry",QString().sprintf("Widget%dX",i+1),0));
+      setX(p->intValue("DavitGeometry",QString::asprintf("Widget%dX",i+1),0));
     geo_rects[i].
-      setY(p->intValue("DavitGeometry",QString().sprintf("Widget%dY",i+1),0));
+      setY(p->intValue("DavitGeometry",QString::asprintf("Widget%dY",i+1),0));
     geo_rects[i].
       setWidth(p->intValue("DavitGeometry",
-			   QString().sprintf("Widget%dWidth",i+1),0));
+			   QString::asprintf("Widget%dWidth",i+1),0));
     geo_rects[i].
       setHeight(p->intValue("DavitGeometry",
-			   QString().sprintf("Widget%dHeight",i+1),0));
+			   QString::asprintf("Widget%dHeight",i+1),0));
     openoffice_path=p->stringValue("DavitGeometry","OpenofficePath","soffice");
   }
   delete p;
@@ -140,19 +140,19 @@ void Geometry::save()
   QSettings settings;
   settings.setPath("Paravel Systems","Davit",QSettings::User);
   settings.insertSearchPath(QSettings::Windows,"/Paravel Systems/");
-  QString key=QString().sprintf("/Davit/Geometry");
+  QString key=QString::asprintf("/Davit/Geometry");
   for(int i=0;i<Geometry::LastWidget;i++) {
     settings.
-      writeEntry(key+QString().sprintf("Widget%dVisible",i+1),geo_visible[i]);
+      writeEntry(key+QString::asprintf("Widget%dVisible",i+1),geo_visible[i]);
     settings.
-      writeEntry(key+QString().sprintf("Widget%dX",i+1),geo_rects[i].x());
+      writeEntry(key+QString::asprintf("Widget%dX",i+1),geo_rects[i].x());
     settings.
-      writeEntry(key+QString().sprintf("Widget%dY",i+1),geo_rects[i].y());
+      writeEntry(key+QString::asprintf("Widget%dY",i+1),geo_rects[i].y());
     settings.
-      writeEntry(key+QString().sprintf("Widget%dWidth",i+1),
+      writeEntry(key+QString::asprintf("Widget%dWidth",i+1),
 		 geo_rects[i].width());
     settings.
-      writeEntry(key+QString().sprintf("Widget%dHeight",i+1),
+      writeEntry(key+QString::asprintf("Widget%dHeight",i+1),
 		 geo_rects[i].height());
   }
 #else

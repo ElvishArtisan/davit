@@ -277,7 +277,7 @@ bool InitDb(QString name,QString pwd)
   //
   // Create Default User
   //
-  sql=QString().sprintf("insert into USERS set\
+  sql=QString::asprintf("insert into USERS set\
                          USER_NAME=\"%s\",\
                          FULL_NAME=\"%s\",\
                          DESCRIPTION=\"%s\",\
@@ -634,7 +634,7 @@ bool UpdateDb(int ver)
          on AIRINGS.PROGRAM_ID=PROGRAMS.ID where PROGRAMS.ID is null";
     q=new QSqlQuery(sql);
     while(q->next()) {
-      sql=QString().sprintf("delete from AIRINGS where ID=%u",
+      sql=QString::asprintf("delete from AIRINGS where ID=%u",
 			    q->value(0).toUInt());
       q1=new QSqlQuery(sql);
       delete q1;
@@ -644,8 +644,8 @@ bool UpdateDb(int ver)
     sql="select AFFILIATE_ID from AIRINGS";
     q=new QSqlQuery(sql);
     while(q->next()) {
-      sql=QString().
-	sprintf("update AFFILIATES set AFFIDAVIT_ACTIVE=\"Y\" where ID=%u",
+      sql=QString::
+	asprintf("update AFFILIATES set AFFIDAVIT_ACTIVE=\"Y\" where ID=%u",
 		q->value(0).toUInt());
       q1=new QSqlQuery(sql);
       delete q1;
@@ -687,7 +687,7 @@ bool UpdateDb(int ver)
 	  if(q->value(1).toInt()==i) {
 	    affidavit='Y';
 	  }
-	  sql=QString().sprintf("insert into CONTACTS set AFFILIATE_ID=%d,\
+	  sql=QString::asprintf("insert into CONTACTS set AFFILIATE_ID=%d,\
                                  NAME=\"%s\",\
                                  TITLE=\"%s\",\
                                  PHONE=\"%s\",\
@@ -735,8 +735,8 @@ bool UpdateDb(int ver)
     sql="select ID,STATION_CALL,STATION_TYPE from AFFILIATES";
     q=new QSqlQuery(sql);
     while(q->next()) {
-      sql=QString().
-	sprintf("update AFFILIATES set USER_PASSWORD=\"%s-%sm\" where ID=%d",
+      sql=QString::
+	asprintf("update AFFILIATES set USER_PASSWORD=\"%s-%sm\" where ID=%d",
 		DvtEscapeString(q->value(1).toString().toLower()).toUtf8().constData(),
 		q->value(2).toString().toLower().toUtf8().constData(),
 		q->value(0).toInt());
@@ -839,9 +839,9 @@ bool UpdateDb(int ver)
     sql="select ID,AIR_LENGTH from PROGRAMS";
     q=new QSqlQuery(sql);
     while(q->next()) {
-      sql=QString().
-	sprintf("update AIRED set AIR_LENGTH=%d where PROGRAM_ID=%d",
-		q->value(1).toInt(),q->value(0).toInt());
+      sql=
+	QString::asprintf("update AIRED set AIR_LENGTH=%d where PROGRAM_ID=%d",
+			  q->value(1).toInt(),q->value(0).toInt());
       q1=new QSqlQuery(sql);
       delete q1;
     }
@@ -849,8 +849,7 @@ bool UpdateDb(int ver)
     sql="select AFFILIATE_ID,PROGRAM_ID,AIR_LENGTH from AIRINGS";
     q=new QSqlQuery(sql);
     while(q->next()) {
-      sql=QString().
-	sprintf("update AIRED set AIR_LENGTH=%d \
+      sql=QString::asprintf("update AIRED set AIR_LENGTH=%d \
                  where (PROGRAM_ID=%d)&&(AFFILIATE_ID=%d)",
 		q->value(2).toInt(),
 		q->value(1).toInt(),
@@ -881,7 +880,7 @@ bool UpdateDb(int ver)
 	if(date<first) {
 	  q->seek(-1);
 	  while(q->next()) {
-	    sql=QString().sprintf("select ID from AIRED where \
+	    sql=QString::asprintf("select ID from AIRED where \
                                (AFFILIATE_ID=%d)&&(PROGRAM_ID=-1)&&	\
                                ((AIR_DATETIME>=\"%s 00:00:00\")&&\
                                 (AIR_DATETIME<\"%s 00:00:00\"))",
@@ -891,8 +890,8 @@ bool UpdateDb(int ver)
 				  toString("yyyy-MM-dd").toUtf8().constData());
 	    q1=new QSqlQuery(sql);
 	    if(!q1->first()) {   // Synthesize "Old" affidavit data
-	      QString cmd=QString().
-		sprintf("dvtstamp --for-date=%s --for-affiliate-id=%d",
+	      QString cmd=
+	       QString::asprintf("dvtstamp --for-date=%s --for-affiliate-id=%d",
 			date.toString("yyyy-MM").toUtf8().constData(),
 			q->value(0).toInt());
 	      system(cmd.toUtf8());
@@ -1051,7 +1050,7 @@ bool UpdateDb(int ver)
   //
   // Update Version Field
   //
-  q=new QSqlQuery(QString().sprintf("update VERSION set DB=%d",
+  q=new QSqlQuery(QString::asprintf("update VERSION set DB=%d",
 				    DVT_VERSION_DATABASE));
   delete q;
   return true;

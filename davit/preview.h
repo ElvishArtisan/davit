@@ -27,7 +27,7 @@
 #include <QPixmap>
 #include <QLabel>
 #include <QDateTime>
-#include <QPrinter>
+//#include <QPrinter>
 //#include <qpaintdevicemetrics.h>
 
 #include <dvttransportbutton.h>
@@ -58,7 +58,7 @@ class Preview : public QDialog
   unsigned preview_current_map;
   QLabel *preview_label;
   QLabel *preview_printer_name_label;
-  QPrinter *preview_printer;
+  //  QPrinter *preview_printer;
   int preview_affiliate_id;
   int preview_program_id;
   bool preview_show_airings;

@@ -131,7 +131,7 @@ QSizePolicy AddProgram::sizePolicy() const
 void AddProgram::okData()
 {
   QString sql=
-    QString().sprintf("select PROGRAM_NAME from PROGRAMS \
+    QString::asprintf("select PROGRAM_NAME from PROGRAMS \
                        where PROGRAM_NAME=\"%s\"",
 		      add_program_name_edit->text().toUtf8().constData());
   QSqlQuery *q=new QSqlQuery(sql);

@@ -36,6 +36,7 @@
 
 class MainObject : public QObject
 {
+  Q_OBJECT;
  public:
   enum TableType {NoTable=0,StationsTable=1,ProgramsTable=2};
   MainObject(QObject *parent=0);

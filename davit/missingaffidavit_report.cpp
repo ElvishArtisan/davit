@@ -50,7 +50,7 @@ bool ListReports::MissingAffidavitReport(SpreadSheet *sheet)
   // Get Parameters
   //
   QDate end_date=QDate::currentDate();
-  end_date.setYMD(end_date.year(),end_date.month(),1);
+  end_date.setDate(end_date.year(),end_date.month(),1);
   QDate start_date=end_date.addYears(-1);
   AffidavitPicker *d=new AffidavitPicker(&filter,&sort_type,&program_id,this);
   if(d->exec()!=0) {
@@ -82,7 +82,7 @@ bool ListReports::MissingAffidavitReport(SpreadSheet *sheet)
 
   case Dvt::Program:
     sql=QString("select PROGRAM_NAME from PROGRAMS ")+
-      QString().sprintf("where ID=%d",program_id);
+      QString::asprintf("where ID=%d",program_id);
     q=new QSqlQuery(sql);
     if(q->first()) {
       tab->addCell(1,3)->setText(q->value(0).toString());
@@ -111,7 +111,7 @@ bool ListReports::MissingAffidavitReport(SpreadSheet *sheet)
     "from AFFILIATES "+
     "where ";
   for(unsigned i=0;i<affiliate_ids.size();i++) {
-    sql+=QString().sprintf("(AFFILIATES.ID=%d)||",affiliate_ids[i]);
+    sql+=QString::asprintf("(AFFILIATES.ID=%d)||",affiliate_ids[i]);
   }
   sql=sql.left(sql.length()-2)+" order by LICENSE_STATE";
   q=new QSqlQuery(sql);

@@ -91,8 +91,7 @@ void DvtSystem::save()
   QString sql;
   QSqlQuery *q;
 
-  sql=QString().
-    sprintf("update SYSTEM set \
+  sql=QString::asprintf("update SYSTEM set \
              ORIGIN_EMAIL=\"%s\",\
              AFFIDAVIT_EMAIL_SUBJECT=\"%s\",\
              AFFIDAVIT_EMAIL_TEMPLATE=\"%s\"",

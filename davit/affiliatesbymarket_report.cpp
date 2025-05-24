@@ -84,7 +84,7 @@ bool ListReports::AffiliatesByMarketReport(PickFields::MarketType type,
   }
   tab->addCell(2,1)->setText(tr("Report Date")+": "+
 			     QDate::currentDate().toString("MMMM dd, yyyy"));
-  sql=QString().sprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",
+  sql=QString::asprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",
 			pgm_id);
   q=new QSqlQuery(sql);
   if(q->first()) {
@@ -102,7 +102,7 @@ bool ListReports::AffiliatesByMarketReport(PickFields::MarketType type,
   tab->addCell(8,5)->setText(tr("THU"));
   tab->addCell(9,5)->setText(tr("FRI"));
   tab->addCell(10,5)->setText(tr("SAT"));
-  sql=QString().sprintf("select AIRINGS.AIR_SUN,\
+  sql=QString::asprintf("select AIRINGS.AIR_SUN,\
                                 AIRINGS.AIR_MON,\
                                 AIRINGS.AIR_TUE,\
                                 AIRINGS.AIR_WED,\

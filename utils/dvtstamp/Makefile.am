@@ -19,14 +19,19 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" @QT4_CFLAGS@ -I$(top_srcdir)/lib
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -std=c++17 -fPIC -I$(top_srcdir)/lib @QT6_CFLAGS@
 LIBS = -L$(top_srcdir)/lib
-MOC = @QT_MOC@
+MOC = @QT6_MOC@
+
+# QT's Meta Object Compiler (moc)
+moc_%.cpp:	%.h
+	$(MOC) $< -o $@
 
 sbin_PROGRAMS = dvtstamp
 
 dist_dvtstamp_SOURCES = dvtstamp.cpp dvtstamp.h
-dvtstamp_LDADD = @QT4_LIBS@ @VMIME_LIBS@ -ldvt
+nodist_dvtstamp_SOURCES = moc_dvtstamp.cpp
+dvtstamp_LDADD = -ldvt @VMIME_LIBS@ @QT6_LIBS@
 
 EXTRA_DIST = dvtstamp.pro
 

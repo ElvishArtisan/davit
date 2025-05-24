@@ -1,6 +1,6 @@
 // dvtcmdswitch.h
 //
-// Process Davit Command-Line Switches
+// Process Command-Line Switches
 //
 //   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -21,24 +21,29 @@
 #ifndef DVTCMDSWITCH_H
 #define DVTCMDSWITCH_H
 
-#include <vector>
-
+#include <QList>
 #include <QString>
+#include <QStringList>
 
 class DvtCmdSwitch
 {
  public:
-  DvtCmdSwitch(int argc,char *argv[],const char *modname,const char *usage);
-  unsigned keys() const;
+  DvtCmdSwitch(const QString &modname,const QString &usage);
+  DvtCmdSwitch(int argc,char *argv[],const QString &modname,
+  	      const QString &usage);
+  int keys() const;
   QString key(unsigned n) const;
   QString value(unsigned n) const;
   bool processed(unsigned n) const;
   void setProcessed(unsigned n,bool state);
+  bool allProcessed() const;
+  bool debugActive() const;
 
  private:
-  std::vector<QString> switch_keys;
-  std::vector<QString> switch_values;
-  std::vector<bool> switch_processed;
+  QStringList switch_keys;
+  QStringList switch_values;
+  QList<bool> switch_processed;
+  bool switch_debug;
 };
 
 

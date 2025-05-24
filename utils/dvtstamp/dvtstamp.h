@@ -34,6 +34,7 @@
 
 class MainObject : public QObject
 {
+  Q_OBJECT;
  public:
   MainObject(QObject *parent=0);
   DvtConfig *import_config;

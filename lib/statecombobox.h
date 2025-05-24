@@ -27,7 +27,7 @@ class StateComboBox : public QComboBox
 {
  Q_OBJECT
  public:
-  StateComboBox(bool incl_all,QWidget *parent=0);
+  StateComboBox(bool incl_all,QWidget *parent);
   QString currentStateCode() const;
 
  signals:

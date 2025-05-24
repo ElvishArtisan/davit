@@ -47,8 +47,7 @@ MainObject::MainObject(QObject *parent)
   //
   // Read Command Options
   //
-  import_cmd=
-    new DvtCmdSwitch(qApp->argc(),qApp->argv(),"dvt_import",DVT_IMPORT_USAGE);
+  import_cmd=new DvtCmdSwitch("dvt_import",DVT_IMPORT_USAGE);
   if(import_cmd->keys()<1) {
     fprintf(stderr,"\n");
     fprintf(stderr,"%s",DVT_IMPORT_USAGE);
@@ -86,7 +85,7 @@ MainObject::MainObject(QObject *parent)
   //
   // Get Arguments
   //
-  for(unsigned i=0;i<import_cmd->keys();i++) {
+  for(int i=0;i<import_cmd->keys();i++) {
     if(import_cmd->key(i)=="--station-table") {
       table=MainObject::StationsTable;
       filename=import_cmd->value(i);
@@ -168,14 +167,14 @@ void MainObject::ImportStationsTable(const QString &filename)
     biacode=values[1];
     freq=values[5].toDouble();
     fflush(stdout);
-    sql=QString().sprintf("select ID from AFFILIATES where ID=%d",
+    sql=QString::asprintf("select ID from AFFILIATES where ID=%d",
 			  values[0].toInt(&ok));
     if(ok) {
       //
       // Process Second Network Entry
       //
       if(!values[52].isEmpty()) {
-	sql1=QString().sprintf("select ID from NETWORKS where NAME=\"%s\"",
+	sql1=QString::asprintf("select ID from NETWORKS where NAME=\"%s\"",
 			       values[52].toUtf8().constData());
 	q=new QSqlQuery(sql1);
 	if(q->first()) {
@@ -183,7 +182,7 @@ void MainObject::ImportStationsTable(const QString &filename)
 	}
 	else {
 	  second_network_id=new_network_id;
-	  sql1=QString().sprintf("insert into NETWORKS set ID=%d,NAME=\"%s\"",
+	  sql1=QString::asprintf("insert into NETWORKS set ID=%d,NAME=\"%s\"",
 				 new_network_id,
 				 values[52].toUtf8().constData());
 	  delete q;
@@ -198,7 +197,7 @@ void MainObject::ImportStationsTable(const QString &filename)
       //
       q=new QSqlQuery(sql);
       if(q->first()) {
-	sql=QString().sprintf("update AFFILIATES set\
+	sql=QString::asprintf("update AFFILIATES set\
                                STATION_CALL=\"%s\",\
                                STATION_TYPE=\"%s\",\
                                STATION_FREQUENCY=%6.1lf,\
@@ -272,7 +271,7 @@ void MainObject::ImportStationsTable(const QString &filename)
 			      values[0].toInt());
       }
       else {
-	sql=QString().sprintf("insert into AFFILIATES set\
+	sql=QString::asprintf("insert into AFFILIATES set\
                                ID=%d,\
                                STATION_CALL=\"%s\",\
                                STATION_TYPE=\"%s\",\
@@ -364,7 +363,7 @@ void MainObject::ImportStationsTable(const QString &filename)
       delete q;
     }
     else {
-      fprintf(stderr,buf);
+      fprintf(stderr,"%s",buf);
       fprintf(stderr,"\n");
       fprintf(stderr,"*************************************************\n");
       fprintf(stderr,"Rejected import (invalid key value)\n");
@@ -401,20 +400,20 @@ void MainObject::ImportProgramsTable(const QString &filename)
   //
   while(fgets(buf,1024,f)!=NULL) {
     values=DvtGetCommaList(buf,true);
-    sql=QString().sprintf("select ID from PROGRAMS where PROGRAM_NAME=\"%s\"",
+    sql=QString::asprintf("select ID from PROGRAMS where PROGRAM_NAME=\"%s\"",
 			  DvtEscapeString(values[2]).toUtf8().constData());
     q=new QSqlQuery(sql);
     if(q->first()) {
       program_id=q->value(0).toInt();
     }
     else {
-      sql=QString().sprintf("insert into PROGRAMS set PROGRAM_NAME=\"%s\",\
+      sql=QString::asprintf("insert into PROGRAMS set PROGRAM_NAME=\"%s\",\
                              PROVIDER_ID=1",
 			    DvtEscapeString(values[2]).toUtf8().constData());
       delete q;
       q=new QSqlQuery(sql);
       delete q;
-      sql=QString().sprintf("select ID from PROGRAMS where \
+      sql=QString::asprintf("select ID from PROGRAMS where \
                              PROGRAM_NAME=\"%s\"",
 			    DvtEscapeString(values[2]).toUtf8().constData());
       q=new QSqlQuery(sql);
@@ -440,7 +439,7 @@ void MainObject::ImportProgramsTable(const QString &filename)
       }
     }
     if(!start_time.isNull()) {
-      sql=QString().sprintf("insert into AIRINGS set AFFILIATE_ID=%d,\
+      sql=QString::asprintf("insert into AIRINGS set AFFILIATE_ID=%d,\
                              PROGRAM_ID=%d,AIR_TIME=\"%s\",AIR_LENGTH=%d,",
 			    values[1].toInt(),program_id,
 			    start_time.toString("hh:mm:ss").

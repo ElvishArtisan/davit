@@ -53,9 +53,8 @@ MainObject::MainObject(QObject *parent)
   //
   // Read Command Options
   //
-  import_cmd=
-    new DvtCmdSwitch(qApp->argc(),qApp->argv(),"dvtstamp",DVTSTAMP_USAGE);
-  for(unsigned i=0;i<import_cmd->keys();i++) {
+  import_cmd=new DvtCmdSwitch("dvtstamp",DVTSTAMP_USAGE);
+  for(int i=0;i<import_cmd->keys();i++) {
     if(import_cmd->key(i)=="--date-offset") {
       date_offset=import_cmd->value(i).toInt(&ok);
       if(!ok) {
@@ -182,13 +181,13 @@ void MainObject::GenerateSchedule(int affiliate_id,const QDate &date)
   QSqlQuery *q1;
   QString dow_field="AIR_"+date.toString("ddd").toUpper();
 
-  sql=QString().sprintf("select PROGRAM_ID,AIR_TIME,AIR_LENGTH from AIRINGS \
+  sql=QString::asprintf("select PROGRAM_ID,AIR_TIME,AIR_LENGTH from AIRINGS \
                          where (AFFILIATE_ID=%d)&&(%s=\"Y\")",
 			affiliate_id,
 			dow_field.toUtf8().constData());
   q=new QSqlQuery(sql);
   while(q->next()) {
-    sql=QString().sprintf("insert into AIRED set \
+    sql=QString::asprintf("insert into AIRED set \
                            AFFILIATE_ID=%d,\
                            PROGRAM_ID=%d,\
                            STATE=%d,\

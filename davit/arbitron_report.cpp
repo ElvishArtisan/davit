@@ -48,7 +48,7 @@ bool ListReports::ArbitronReport(SpreadSheet *sheet)
 
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Arbitron"));
-  sql=QString().sprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",pgm_id);
+  sql=QString::asprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",pgm_id);
   q=new QSqlQuery(sql);
   if(q->first()) {
     tab->addCell(1,row++)->setText(q->value(0).toString());
@@ -56,7 +56,7 @@ bool ListReports::ArbitronReport(SpreadSheet *sheet)
   delete q;
   tab->addCell(1,row++)->setText(tr("Arbitron Listing")+" - "+
 				 dt.toString("MM/dd/yyyy hh:mm:ss"));
-  sql=QString().sprintf("select AFFILIATES.STATION_CALL,\
+  sql=QString::asprintf("select AFFILIATES.STATION_CALL,\
                          AFFILIATES.STATION_TYPE,AIRINGS.AIR_TIME,\
                          AIRINGS.AIR_LENGTH,AIRINGS.AIR_SUN,AIRINGS.AIR_MON,\
                          AIRINGS.AIR_TUE,AIRINGS.AIR_WED,AIRINGS.AIR_THU,\
@@ -67,7 +67,7 @@ bool ListReports::ArbitronReport(SpreadSheet *sheet)
                          where PROGRAMS.ID=%d",pgm_id);
   q=new QSqlQuery(sql);
   tab->addCell(1,row++)->setText(tr("Listings Generated")+": "+
-				 QString().sprintf("%d",q->size()));
+				 QString::asprintf("%d",q->size()));
   while(q->next()) {
     QString str=DvtStationCallString(q->value(0).toString(),
 				     q->value(1).toString());
@@ -102,19 +102,19 @@ bool ListReports::ArbitronReport(SpreadSheet *sheet)
     }
     if(!dow.isEmpty()) {
       if(q->value(2).toTime().hour()<12) {
-	dow+=QString().sprintf("%d",q->value(2).toTime().hour());
+	dow+=QString::asprintf("%d",q->value(2).toTime().hour());
 	dow+="a-";
       }
       else {
-	dow+=QString().sprintf("%d",q->value(2).toTime().hour()-12);
+	dow+=QString::asprintf("%d",q->value(2).toTime().hour()-12);
 	dow+="p-";
       }
       if(q->value(2).toTime().hour()<12) {
-	dow+=QString().sprintf("%d",q->value(2).toTime().hour()+1);
+	dow+=QString::asprintf("%d",q->value(2).toTime().hour()+1);
 	dow+="a";
       }
       else {
-	dow+=QString().sprintf("%d",q->value(2).toTime().hour()-11);
+	dow+=QString::asprintf("%d",q->value(2).toTime().hour()-11);
 	dow+="p";
       }
       tab->addCell(1,row++)->setText(str+" "+dow);

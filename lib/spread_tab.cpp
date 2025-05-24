@@ -34,7 +34,7 @@ SpreadTab::SpreadTab(int tab)
   : Spread()
 {
   tab_tab=tab;
-  tab_name=QObject::tr("Sheet")+QString().sprintf("%d",tab);
+  tab_name=QObject::tr("Sheet")+QString::asprintf("%d",tab);
 }
 
 
@@ -200,13 +200,13 @@ QString SpreadTab::WriteExcelXmlFormat()
   int rows=maximumRow();
   for(int i=0;i<cols;i++) {
     xml+="<Column ss:Width=\""+
-      QString().sprintf("%10.4lf",0.8*columnWidth(i+1)).trimmed()+
+      QString::asprintf("%10.4lf",0.8*columnWidth(i+1)).trimmed()+
       "\"/>\n";
   }
 
   for(int i=0;i<rows;i++) {
     xml+="<Row ss:Height=\""+
-      QString().sprintf("%10.4lf",0.8*rowHeight(i+1)).trimmed()+"\">\n";
+      QString::asprintf("%10.4lf",0.8*rowHeight(i+1)).trimmed()+"\">\n";
     for(int j=0;j<cols;j++) {
       if((c=cell(j+1,i+1))!=NULL) {
 	xml+="<Cell>\n";

@@ -279,19 +279,19 @@ void ListPrograms::DeleteProgram(int pid)
   QString sql;
   QSqlQuery *q;
 
-  sql=QString().sprintf("delete from PROGRAMS where ID=%d",pid);
+  sql=QString::asprintf("delete from PROGRAMS where ID=%d",pid);
   q=new QSqlQuery(sql);
   delete q;
 
-  sql=QString().sprintf("delete from FEEDS where PROGRAM_ID=%d",pid);
+  sql=QString::asprintf("delete from FEEDS where PROGRAM_ID=%d",pid);
   q=new QSqlQuery(sql);
   delete q;
 
-  sql=QString().sprintf("delete from AIRINGS where PROGRAM_ID=%d",pid);
+  sql=QString::asprintf("delete from AIRINGS where PROGRAM_ID=%d",pid);
   q=new QSqlQuery(sql);
   delete q;
 
-  sql=QString().sprintf("delete from AIRED where PROGRAM_ID=%d",pid);
+  sql=QString::asprintf("delete from AIRED where PROGRAM_ID=%d",pid);
   q=new QSqlQuery(sql);
   delete q;
 }
@@ -311,7 +311,7 @@ void ListPrograms::RefreshList()
               from PROVIDERS left join PROGRAMS \
               on PROVIDERS.ID=PROGRAMS.PROVIDER_ID";
   if(list_provider_id>=0) {
-    sql+=QString().sprintf(" where PROGRAMS.PROVIDER_ID=%d",list_provider_id);
+    sql+=QString::asprintf(" where PROGRAMS.PROVIDER_ID=%d",list_provider_id);
   }
   q=new QSqlQuery(sql);
   while (q->next()) {
@@ -334,7 +334,7 @@ void ListPrograms::UpdateItem(DvtListViewItem *item)
   QString sql;
   QSqlQuery *q;
 
-  sql=QString().sprintf("select CONTACT_NAME,CONTACT_PHONE,CONTACT_EMAIL,ID \
+  sql=QString::asprintf("select CONTACT_NAME,CONTACT_PHONE,CONTACT_EMAIL,ID \
                          from PROGRAMS where PROGRAM_NAME=\"%s\"",
 			(const char *)item->text(0));
   q=new QSqlQuery(sql);

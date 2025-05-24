@@ -120,7 +120,7 @@ QSizePolicy AddAffiliate::sizePolicy() const
 void AddAffiliate::okData()
 {
   QString sql=
-    QString().sprintf("select STATION_CALL from AFFILIATES \
+    QString::asprintf("select STATION_CALL from AFFILIATES \
                        where (STATION_CALL=\"%s\")&&(STATION_TYPE=\"%s\")",
 		      add_call_edit->text().toUtf8().constData(),
 		      add_type_box->currentText().left(1).toUtf8().constData());

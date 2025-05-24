@@ -22,7 +22,7 @@
 #include <QFontMetrics>
 #include <QLabel>
 #include <QMessageBox>
-#include <QPrinter>
+//#include <QPrinter>
 #include <QPainter>
 //#include <QPaintDeviceMetrics>
 #include <QSqlDatabase>
@@ -92,7 +92,7 @@ GenerateAffadavit::GenerateAffadavit(ReportType type,int id,QWidget *parent)
 	  this,SLOT(validateDateData(int)));
   int count=0;
   for(int i=DVT_ORIGIN_YEAR;i<(last_month.year()+1);i++) {
-    edit_year_box->insertItem(count++,QString().sprintf("%d",i));
+    edit_year_box->insertItem(count++,QString::asprintf("%d",i));
   }
   edit_year_box->setCurrentIndex(edit_year_box->count()-1);
   QLabel *label=new QLabel(tr("&Date:"),this);
@@ -198,7 +198,7 @@ void GenerateAffadavit::generateData()
   //
   // Check for Affidavit Data
   //
-  sql=QString().sprintf("select PROGRAMS.ID from AIRED left join PROGRAMS \
+  sql=QString::asprintf("select PROGRAMS.ID from AIRED left join PROGRAMS \
                          on AIRED.PROGRAM_ID=PROGRAMS.ID \
                          where (PROGRAMS.PROGRAM_NAME=\"%s\")&&\
                          (AIRED.AFFILIATE_ID=%d)&&\

@@ -154,16 +154,16 @@ bool ListReports::AffiliatesByNetworkReport(SpreadSheet *sheet)
 
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Affiliates by Network"));
-  sql=QString().sprintf("select NAME from NETWORKS where ID=%d",network_id);
+  sql=QString::asprintf("select NAME from NETWORKS where ID=%d",network_id);
   q=new QSqlQuery(sql);
   if(q->first()) {
     network_name=q->value(0).toString();
   }
   delete q;
-  where=QString().sprintf("where (NETWORKS.ID=%d) ",network_id);
+  where=QString::asprintf("where (NETWORKS.ID=%d) ",network_id);
   where+=" order by AFFILIATES.STATION_CALL,AFFILIATES.STATION_TYPE";
   return RenderAffiliateReport(tab,where,tr("Affiliates by Network Report"),
-			       QString().sprintf("Network: %s",
+			       QString::asprintf("Network: %s",
 					   network_name.toUtf8().constData()),true,0);
 }
 
@@ -191,13 +191,13 @@ bool ListReports::AffiliatesByProgramReport(int contacts,SpreadSheet *sheet)
 
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Affiliates by Program"));
-  sql=QString().sprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",pgm_id);
+  sql=QString::asprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",pgm_id);
   q=new QSqlQuery(sql);
   if(q->first()) {
     program_name=q->value(0).toString();
   }
   delete q;
-  where=QString().sprintf("where (PROGRAMS.ID=%d) ",pgm_id);
+  where=QString::asprintf("where (PROGRAMS.ID=%d) ",pgm_id);
   switch(sort) {
     case PickFields::SortAffiliate:
       where+=" order by AFFILIATES.STATION_CALL,AFFILIATES.STATION_TYPE";
@@ -213,7 +213,7 @@ bool ListReports::AffiliatesByProgramReport(int contacts,SpreadSheet *sheet)
       break;
   }
   return RenderAffiliateReport(tab,where,tr("Affiliates by Program Report"),
-			       QString().sprintf("Program: %s",
+			       QString::asprintf("Program: %s",
 					  program_name.toUtf8().constData()),false,
 			contacts);
 }
@@ -238,10 +238,10 @@ bool ListReports::AffiliatesByDaypartReport(SpreadSheet *sheet)
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Affiliates by Daypart"));
 
-  subtitle=QString().sprintf("Start Time: %s, End Time: %s, Days Selected: ",
+  subtitle=QString::asprintf("Start Time: %s, End Time: %s, Days Selected: ",
 			     start_time.toString("hh:mm:ss").toUtf8().constData(),
 			     end_time.toString("hh:mm:ss").toUtf8().constData());
-  where=QString().sprintf("where (AIRINGS.AIR_TIME>=\"%s\")&&\
+  where=QString::asprintf("where (AIRINGS.AIR_TIME>=\"%s\")&&\
                           (AIRINGS.AIR_TIME<\"%s\")",
 			  start_time.toString("hh:mm:ss").toUtf8().constData(),
 			  end_time.toString("hh:mm:ss").toUtf8().constData());
@@ -330,7 +330,7 @@ bool ListReports::RenderAffiliateReport(SpreadTab *tab,const QString &where,
   }
   row++;
 
-  sql=QString().sprintf("select AFFILIATES.STATION_CALL,\
+  sql=QString::asprintf("select AFFILIATES.STATION_CALL,\
                          AFFILIATES.STATION_TYPE,AFFILIATES.STATION_FREQUENCY,\
                          AFFILIATES.CITY,AFFILIATES.STATE,\
                          AFFILIATES.MARKET_NAME,AFFILIATES.MARKET_RANK,\

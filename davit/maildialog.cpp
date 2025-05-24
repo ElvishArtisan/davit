@@ -26,7 +26,7 @@
 #include <QMessageBox>
 
 #include <dvtconf.h>
-#include <dvtmail.h>
+//#include <dvtmail.h>
 
 #include "globals.h"
 #include "maildialog.h"
@@ -172,7 +172,9 @@ void MailDialog::sendData()
 			 tr("Invalid address in Bcc: field!"));
     return;
   }
-
+  /*
+   * FIXME: Upgrade mail system
+   *
   if(!DvtSendMail(to_addrs,cc_addrs,bcc_addrs,edit_from_address,
 		  edit_reply_address,edit_subject_edit->text(),
 		  edit_body_edit->toPlainText())) {
@@ -180,7 +182,7 @@ void MailDialog::sendData()
 		   tr("Mailer system returned an error, message not sent!"));
     return;
   }
-
+  */
   done(0);
 }
 

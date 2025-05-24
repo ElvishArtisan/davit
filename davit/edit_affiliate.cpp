@@ -51,7 +51,7 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent)
   setMaximumWidth(sizeHint().width());
   setMaximumHeight(sizeHint().height());
 
-  setWindowTitle(QString().sprintf("Davit - Edit Affiliate [id=%d]",id));
+  setWindowTitle(QString::asprintf("Davit - Edit Affiliate [id=%d]",id));
 
   //
   // Create Fonts
@@ -346,7 +346,7 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent)
   //
   // State
   //
-  edit_state_box=new StateComboBox(this);
+  edit_state_box=new StateComboBox(false,this);
   edit_state_box->setGeometry(370,186,200,20);
   edit_state_box->setFont(font);
   edit_state_edit=new QLineEdit(this);
@@ -535,7 +535,7 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent)
   //
   // Load Data
   //
-  QString sql=QString().sprintf("select STATION_TYPE,\
+  QString sql=QString::asprintf("select STATION_TYPE,\
                                  STATION_POWER,LICENSE_CITY,LICENSE_STATE,\
                                  BUSINESS_NAME,ADDRESS1,ADDRESS2,CITY,STATE,\
                                  ZIPCODE,STATION_NIGHT_POWER,MARKET_NAME,\
@@ -614,12 +614,12 @@ EditAffiliate::EditAffiliate(int id,QWidget *parent)
     edit_station_prev_call_edit->setText(q->value(17).toString());
     if(q->value(18).toDouble()<520) {
       edit_station_frequency_edit->
-	setText(QString().sprintf("%5.1lf",q->value(18).toDouble()).
+	setText(QString::asprintf("%5.1lf",q->value(18).toDouble()).
 		trimmed());
     }
     else {
       edit_station_frequency_edit->
-	setText(QString().sprintf("%4.0lf",q->value(18).toDouble()).
+	setText(QString::asprintf("%4.0lf",q->value(18).toDouble()).
 		trimmed());
     }
   }
@@ -774,8 +774,7 @@ void EditAffiliate::okData()
   if(edit_market_box->currentText()!="[none]") {
     msa_name=edit_market_box->currentText();
   }
-  sql=QString().
-    sprintf("update AFFILIATES set LICENSE_CITY=\"%s\",\
+  sql=QString::asprintf("update AFFILIATES set LICENSE_CITY=\"%s\",\
              LICENSE_STATE=\"%s\",\
              STATION_CALL=\"%s\",\
              STATION_PREV_CALL=\"%s\",\

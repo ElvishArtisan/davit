@@ -404,7 +404,7 @@ void EditUser::okData()
   //
   if(edit_password_changed) {
     QString sql;
-    sql=QString().sprintf("update USERS set USER_PASSWORD=password(\"%s\")\
+    sql=QString::asprintf("update USERS set USER_PASSWORD=password(\"%s\")\
                            where USER_NAME=\"%s\"",
 			  edit_password.toUtf8().constData(),
 			  edit_loginname.toUtf8().constData());    

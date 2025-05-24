@@ -39,27 +39,27 @@ fi
 # Basic Compiler Checks
 #
 AC_PROG_CXX
-AC_PROG_LIBTOOL
+#AC_PROG_LIBTOOL
 AC_LANG(C++)
+LT_INIT
 
 # to avoid rpath usage :
 # http://wiki.debian.net/index.cgi?RpathIssue
-case ${host} in
-  *-pc-linux-gnu)
-    AC_MSG_RESULT([Fixing libtool for -rpath problems.])
-    sed < libtool > libtool-2 \
-    's/^hardcode_libdir_flag_spec.*$/hardcode_libdir_flag_spec=" -D__LIBTOOL_IS_A_FOOL__ "/'
-    mv libtool-2 libtool
-    chmod 755 libtool
-  ;;
-esac
+#case ${host} in
+#  *-pc-linux-gnu)
+#    AC_MSG_RESULT([Fixing libtool for -rpath problems.])
+#    sed < libtool > libtool-2 \
+#    's/^hardcode_libdir_flag_spec.*$/hardcode_libdir_flag_spec=" -D__LIBTOOL_IS_A_FOOL__ "/'
+#    mv libtool-2 libtool
+#    chmod 755 libtool
+#  ;;
+#esac
 
 #
 # Check for Qt
 #
-PKG_CHECK_MODULES(QT4,QtCore QtGui QtNetwork QtSql,,[AC_MSG_ERROR([*** Qt4 not found ***])])
-AC_CHECK_PROG(MOC_NAME,moc-qt4,[moc-qt4],[moc])
-AC_SUBST(QT_MOC,$MOC_NAME)
+#PKG_CHECK_MODULES(QT4,QtCore QtGui QtNetwork QtSql,,[AC_MSG_ERROR([*** Qt4 not found ***])])
+AQ_FIND_QT6(QT6,Core Gui Widgets Network Sql,[],[AC_MSG_ERROR([*** Qt6 not found ***])])
 
 #
 # Check for VMime
@@ -113,7 +113,7 @@ else
   AC_SUBST(DAVIT_LIB_PATH,lib)
 fi
 
-AC_OUTPUT(Makefile \
+AC_CONFIG_FILES(Makefile \
   helpers/Makefile \
   scripts/Makefile \
   lib/Makefile \
@@ -130,8 +130,9 @@ AC_OUTPUT(Makefile \
   docs/Makefile \
   icons/Makefile \
   davit.spec \
-  dvt-bin.conf \
+  dvt-bin.conf
 ) 
-
+AC_OUTPUT()
 chmod 755 utils/vnc/davit.xinitrc
 chmod 755 utils/vnc/start_davit.sh
+

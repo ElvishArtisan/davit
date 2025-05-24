@@ -105,7 +105,7 @@ QSizePolicy AddUser::sizePolicy() const
 void AddUser::okData()
 {
   QString sql=
-    QString().sprintf("select USER_NAME from USERS where USER_NAME=\"%s\"",
+    QString::asprintf("select USER_NAME from USERS where USER_NAME=\"%s\"",
 		      add_loginname_edit->text().toUtf8().constData());
   QSqlQuery *q=new QSqlQuery(sql);
   if(q->first()) {

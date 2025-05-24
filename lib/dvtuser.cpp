@@ -103,7 +103,7 @@ void DvtUser::load()
   QString sql;
   QSqlQuery *q;
 
-  sql=QString().sprintf("select FULL_NAME,DESCRIPTION,PHONE_NUMBER,EMAIL,\
+  sql=QString::asprintf("select FULL_NAME,DESCRIPTION,PHONE_NUMBER,EMAIL,\
                          ADMIN_PRIV,\
                          AFFILIATE_VIEW_PRIV,AFFILIATE_EDIT_PRIV,\
                          AFFILIATE_SCHEDULE_PRIV,AFFILIATE_REMARK_PRIV,\
@@ -141,7 +141,7 @@ void DvtUser::save()
   if(!user_privilege[DvtUser::PrivProgramView]) {
     user_privilege[DvtUser::PrivProgramEdit]=false;
   }
-  sql=QString().sprintf("update USERS set \
+  sql=QString::asprintf("update USERS set \
                          FULL_NAME=\"%s\",\
                          DESCRIPTION=\"%s\",\
                          PHONE_NUMBER=\"%s\",\

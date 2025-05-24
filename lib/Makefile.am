@@ -18,14 +18,14 @@
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
 
-AM_CPPFLAGS = -Wall @QT4_CFLAGS@
-MOC = @QT_MOC@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" @QT6_CFLAGS@ -std=c++17 -fPIC
+MOC = @QT6_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
 moc_%.cpp:	%.h
 	$(MOC) $< -o $@
 
-instdir = @LOCAL_PREFIX@/lib
+#instdir = @LOCAL_PREFIX@/lib
 
 lib_LTLIBRARIES = libdvt.la
 dist_libdvt_la_SOURCES = algocombobox.cpp algocombobox.h\
@@ -41,7 +41,6 @@ dist_libdvt_la_SOURCES = algocombobox.cpp algocombobox.h\
                          dvtlabel.cpp dvtlabel.h\
                          dvtlistselector.cpp dvtlistselector.h\
                          dvtlistviewitem.cpp dvtlistviewitem.h\
-                         dvtmail.cpp dvtmail.h\
                          dvtprofile.cpp dvtprofile.h\
                          dvtprofileline.cpp dvtprofileline.h\
                          dvtprofilesection.cpp dvtprofilesection.h\

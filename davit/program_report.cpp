@@ -43,7 +43,7 @@ void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
   QString signame;
   QString sigtitle;
 
-  sql=QString().sprintf("select PROVIDERS.BUSINESS_NAME,PROGRAMS.PROGRAM_NAME,\
+  sql=QString::asprintf("select PROVIDERS.BUSINESS_NAME,PROGRAMS.PROGRAM_NAME,\
                          PROVIDERS.ADDRESS1,PROVIDERS.ADDRESS2,PROVIDERS.CITY,\
                          PROVIDERS.STATE,PROVIDERS.ZIPCODE,\
                          PROVIDERS.CONTACT_PHONE,PROVIDERS.CONTACT_NAME, \
@@ -74,7 +74,7 @@ void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
     s+=Center(q->value(3).toString());
     s+="\n";
   }
-  s+=Center(QString().sprintf("%s, %s %s",
+  s+=Center(QString::asprintf("%s, %s %s",
 			      q->value(4).toString().toUtf8().constData(),
 			      q->value(5).toString().toUtf8().constData(),
 			      q->value(6).toString().toUtf8().constData()));
@@ -82,7 +82,7 @@ void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
   s+=Center(q->value(7).toString());
   s+="\n";
   s+="\n";
-  s+=Center(QString().sprintf("%s through %s",
+  s+=Center(QString::asprintf("%s through %s",
 	      start_date.toString("MMMM d, yyyy").toUtf8().constData(),
 	      end_date.toString("MMMM d, yyyy").toUtf8().constData()));
   s+="\n";
@@ -97,7 +97,7 @@ void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
   p+="\n";
   p+="          -----------------------------------------------------------------";
   p+="\n";
-  sql=QString().sprintf("select AIRINGS.AIR_MON,AIRINGS.AIR_TUE,\
+  sql=QString::asprintf("select AIRINGS.AIR_MON,AIRINGS.AIR_TUE,\
                            AIRINGS.AIR_WED,AIRINGS.AIR_THU,AIRINGS.AIR_FRI, \
                            AIRINGS.AIR_SAT,AIRINGS.AIR_SUN,		\
                            AIRINGS.AIR_TIME,AIRINGS.AIR_LENGTH,		\
@@ -109,18 +109,18 @@ void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
 			id);
   q1=new QSqlQuery(sql);
   while(q1->next()) {
-    p+=QString().sprintf("          %-17s %s  ",
+    p+=QString::asprintf("          %-17s %s  ",
 			 q1->value(9).toString().left(17).toUtf8().constData(),
 			 QTime().addMSecs(q->value(9).toInt()).
 			 toString("mm:ss").toUtf8().constData());
     for(int i=0;i<7;i++) {
       if(q1->value(i).toString()=="Y") {
-	p+=QString().sprintf("%5s ",q1->value(7).toTime().toString("h ap").
+	p+=QString::asprintf("%5s ",q1->value(7).toTime().toString("h ap").
 			     toUtf8().constData());
 	date=start_date;
 	while(date<=end_date) {
 	  if(date.dayOfWeek()==(i+1)) {
-	    sql=QString().sprintf("select ORIGIN_DATETIME from AIRED where \
+	    sql=QString::asprintf("select ORIGIN_DATETIME from AIRED where \
                                      (PROGRAM_ID=%d)&&\
                                      (AFFILIATE_ID=%d)&&\
                                      (AIR_DATETIME=\"%s %s\")",
@@ -134,7 +134,7 @@ void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
 	      signature_datetime=q2->value(0).toDateTime();
 	    }
 	    else {
-	      e+=QString().sprintf("          %-40s -- %5s %s",
+	      e+=QString::asprintf("          %-40s -- %5s %s",
 				   q1->value(9).toString().left(40).
 				   toUtf8().constData(),
 				   date.toString("MM/dd/yyyy").
@@ -171,11 +171,10 @@ void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
     if(signame.isEmpty()) {
       signame=q->value(0).toString();
     }
-    s+=QString().sprintf("          %s certifies that the %s\n",
+    s+=QString::asprintf("          %s certifies that the %s\n",
 			 signame.toUtf8().constData(),
 			 q->value(1).toString().toUtf8().constData());
-    s+=QString().
-      sprintf("          program was aired on RadioAmerica at the times indicated.\n");
+    s+=QString::asprintf("          program was aired on RadioAmerica at the times indicated.\n");
     s+="          and all network commercials run within the programs\n";
     s+="          as per contract";
     if(e.isEmpty()) {
@@ -200,7 +199,7 @@ void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
     //
     // Signature Section
     //
-    s+=QString().sprintf("                                    Executed %s\n",
+    s+=QString::asprintf("                                    Executed %s\n",
 			 signature_datetime.
 			 toString("MM/dd/yyyy - h:mm:ss ap").
 			 toUtf8().constData());

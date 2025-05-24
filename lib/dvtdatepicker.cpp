@@ -32,6 +32,7 @@
 DvtDatePicker::DvtDatePicker(int low_year,int high_year,QWidget *parent)
   :QWidget(parent)
 {
+  QLocale locale;
   pick_low_year=low_year;
   pick_high_year=high_year;
 
@@ -49,7 +50,7 @@ DvtDatePicker::DvtDatePicker(int low_year,int high_year,QWidget *parent)
   pick_month_box=new QComboBox(this);
   pick_month_box->setGeometry(0,0,120,26);
   for(int i=1;i<13;i++) {
-    pick_month_box->insertItem(i-1,QDate::longMonthName(i));
+    pick_month_box->insertItem(i-1,locale.monthName(i,QLocale::LongFormat));
   }
   connect(pick_month_box,SIGNAL(activated(int)),
 	  this,SLOT(monthActivatedData(int)));
@@ -61,7 +62,7 @@ DvtDatePicker::DvtDatePicker(int low_year,int high_year,QWidget *parent)
     pick_year_box=new QComboBox(this);
     pick_year_box->setGeometry(130,0,90,26);
     for(int i=low_year;i<(high_year+1);i++) {
-      pick_year_box->insertItem(i-low_year,QString().sprintf("%04d",i));
+      pick_year_box->insertItem(i-low_year,QString::asprintf("%04d",i));
     }
     connect(pick_year_box,SIGNAL(activated(int)),
 	    this,SLOT(yearActivatedData(int)));
@@ -80,9 +81,9 @@ DvtDatePicker::DvtDatePicker(int low_year,int high_year,QWidget *parent)
   // Date Labels
   //
   QPalette weekend_palette=palette();
-  weekend_palette.setColor(QPalette::Active,QPalette::Background,
+  weekend_palette.setColor(QPalette::Active,QPalette::Window,
 			   palette().color(QPalette::Active,QPalette::Mid));
-  weekend_palette.setColor(QPalette::Inactive,QPalette::Background,
+  weekend_palette.setColor(QPalette::Inactive,QPalette::Window,
 			   palette().color(QPalette::Active,
 					   QPalette::Mid));
 
@@ -262,10 +263,10 @@ void DvtDatePicker::PrintDays()
   // Clear Days
   //
   QPalette weekend_palette=palette();
-  weekend_palette.setColor(QPalette::Active,QPalette::Background,
+  weekend_palette.setColor(QPalette::Active,QPalette::Window,
 			   palette().color(QPalette::Active,
 					   QPalette::Mid));
-  weekend_palette.setColor(QPalette::Inactive,QPalette::Background,
+  weekend_palette.setColor(QPalette::Inactive,QPalette::Window,
 			   palette().color(QPalette::Active,
 					   QPalette::Mid));
   for(int i=0;i<6;i++) {
@@ -310,7 +311,7 @@ void DvtDatePicker::PrintDay(int day,int dow_offset)
   int slot=day+dow_offset-1;
   int week=slot/7;
   int dow=slot-7*week;
-  pick_date_label[week][dow]->setText(QString().sprintf("%d",day));
+  pick_date_label[week][dow]->setText(QString::asprintf("%d",day));
 }
 
 
@@ -321,26 +322,26 @@ void DvtDatePicker::SelectDay(int day,int dow_offset,bool state)
   int dow=slot-7*week;
   QPalette pal=palette();
   if(state) {
-    pal.setColor(QPalette::Active,QPalette::Foreground,
+    pal.setColor(QPalette::Active,QPalette::WindowText,
 		 palette().
 		 color(QPalette::Active,QPalette::HighlightedText));
-    pal.setColor(QPalette::Active,QPalette::Background,
+    pal.setColor(QPalette::Active,QPalette::Window,
 		 palette().color(QPalette::Active,QPalette::Highlight));
-    pal.setColor(QPalette::Inactive,QPalette::Foreground,
+    pal.setColor(QPalette::Inactive,QPalette::WindowText,
 		 palette().
 		 color(QPalette::Active,QPalette::HighlightedText));
-    pal.setColor(QPalette::Inactive,QPalette::Background,
+    pal.setColor(QPalette::Inactive,QPalette::Window,
 		 palette().color(QPalette::Active,QPalette::Highlight));
   }
   else {
-    pal.setColor(QPalette::Active,QPalette::Foreground,
+    pal.setColor(QPalette::Active,QPalette::WindowText,
 		 palette().color(QPalette::Active,QPalette::Text));
-    pal.setColor(QPalette::Active,QPalette::Background,
-		 palette().color(QPalette::Active,QPalette::Background));
-    pal.setColor(QPalette::Inactive,QPalette::Foreground,
+    pal.setColor(QPalette::Active,QPalette::Window,
+		 palette().color(QPalette::Active,QPalette::Window));
+    pal.setColor(QPalette::Inactive,QPalette::WindowText,
 		 palette().color(QPalette::Active,QPalette::Text));
-    pal.setColor(QPalette::Inactive,QPalette::Background,
-		 palette().color(QPalette::Active,QPalette::Background));
+    pal.setColor(QPalette::Inactive,QPalette::Window,
+		 palette().color(QPalette::Active,QPalette::Window));
   }
   pick_date_label[week][dow]->setPalette(pal);
 }

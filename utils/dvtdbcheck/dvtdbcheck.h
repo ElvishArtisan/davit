@@ -32,15 +32,11 @@
 
 #define DVTDBCHECK_USAGE "[options]\n\nCheck the Davit database for consistency and correctness.\n\n--yes\n     Answer all questions with 'yes'\n\n--no\n     Answer all questions with 'no'\n"
 
-//
-// Global Variables
-//
-DvtConfig *dvtconfig;
-
 class MainObject : public QObject
 {
+  Q_OBJECT;
  public:
-  MainObject(QObject *parent=0);
+  MainObject();
 
  private:
   void CheckDuplicateAffiliates();
@@ -48,6 +44,7 @@ class MainObject : public QObject
   bool UserResponse();
   bool check_yes;
   bool check_no;
+  DvtConfig *dvtconfig;
 };
 
 

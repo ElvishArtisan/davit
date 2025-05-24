@@ -107,12 +107,12 @@ int DvtFeed::addToAffiliate(int affiliate_id)
   QSqlQuery *q1;
   int program_id=-1;
 
-  sql=QString().sprintf("select ID from PROGRAMS where PROGRAM_NAME=\"%s\"",
+  sql=QString::asprintf("select ID from PROGRAMS where PROGRAM_NAME=\"%s\"",
 			slot_name.toUtf8().constData());
   q=new QSqlQuery(sql);
   if(q->first()) {
     program_id=q->value(0).toInt();
-    sql=QString().sprintf("insert into AIRINGS set \
+    sql=QString::asprintf("insert into AIRINGS set \
                            AFFILIATE_ID=%d,\
                            PROGRAM_ID=%d",
 			  affiliate_id,
@@ -125,7 +125,7 @@ int DvtFeed::addToAffiliate(int affiliate_id)
       modifyAffiliate(q1->value(0).toInt());
     }
     delete q1;
-    sql=QString().sprintf("update AFFILIATES set IS_AFFILIATE=\"Y\" \
+    sql=QString::asprintf("update AFFILIATES set IS_AFFILIATE=\"Y\" \
                            where ID=%d",affiliate_id);
     q1=new QSqlQuery(sql);
     delete q1;
@@ -143,12 +143,12 @@ int DvtFeed::modifyAffiliate(int airing_id)
   QSqlQuery *q1;
   int program_id=-1;
 
-  sql=QString().sprintf("select ID from PROGRAMS where PROGRAM_NAME=\"%s\"",
+  sql=QString::asprintf("select ID from PROGRAMS where PROGRAM_NAME=\"%s\"",
 			slot_name.toUtf8().constData());
   q=new QSqlQuery(sql);
   if(q->first()) {
     program_id=q->value(0).toInt();
-    sql=QString().sprintf("update AIRINGS set \
+    sql=QString::asprintf("update AIRINGS set \
                            PROGRAM_ID=%d,\
                            AIR_TIME=\"%s\",\
                            AIR_LENGTH=%d,\

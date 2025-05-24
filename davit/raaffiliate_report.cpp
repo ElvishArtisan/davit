@@ -87,10 +87,10 @@ bool ListReports::RAAffiliateReport(SpreadSheet *sheet)
     "right join PROGRAMS on PROGRAMS.ID=AIRINGS.PROGRAM_ID "+
     "where AFFILIATES.STATION_CALL is not null ";
   if(affiliate_id>0) {
-    sql+=QString().sprintf("&&(AFFILIATES.ID=%d)",affiliate_id);
+    sql+=QString::asprintf("&&(AFFILIATES.ID=%d)",affiliate_id);
   }
   if(pgm_id>0) {
-    sql+=QString().sprintf("&&(PROGRAMS.ID=%d)",pgm_id);
+    sql+=QString::asprintf("&&(PROGRAMS.ID=%d)",pgm_id);
   }
   sql+=" order by AFFILIATES.STATE,AFFILIATES.CITY,AFFILIATES.STATION_CALL";
   q=new QSqlQuery(sql);

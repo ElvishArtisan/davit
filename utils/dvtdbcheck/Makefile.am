@@ -19,18 +19,21 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" @QT4_CFLAGS@ -I$(top_srcdir)/lib
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -std=c++17 -fPIC -I$(top_srcdir)/lib @QT6_CFLAGS@
 LIBS = -L$(top_srcdir)/lib
-MOC = @QT_MOC@
+MOC = @QT6_MOC@
 
-# The dependency for qt's Meta Object Compiler (moc)
+# QT's Meta Object Compiler (moc)
 moc_%.cpp:	%.h
 	$(MOC) $< -o $@
 
 sbin_PROGRAMS = dvtdbcheck
 
 dist_dvtdbcheck_SOURCES = dvtdbcheck.cpp dvtdbcheck.h
-dvtdbcheck_LDADD = @QT4_LIBS@ @VMIME_LIBS@ -ldvt
+
+nodist_dvtdbcheck_SOURCES = moc_dvtdbcheck.cpp
+
+dvtdbcheck_LDADD =  -ldvt @VMIME_LIBS@ @QT6_LIBS@
 
 CLEANFILES = *~\
              *.idb\

@@ -253,7 +253,7 @@ int IncrementIndex(char *sPathname,int dMaxIndex)
   strcat(sLockname,".LCK");
   i=0;
   while(dLockname<0 && i<MAX_RETRIES) {
-    dLockname=open(sLockname,O_WRONLY|O_EXCL|O_CREAT|S_IRUSR|S_IWUSR);
+    dLockname=open(sLockname,O_WRONLY|O_EXCL|O_CREAT,S_IRUSR|S_IWUSR);
     i++;
   }
   if(dLockname<0) {
@@ -366,7 +366,7 @@ void ClearLock(const char *sLockname)
 
 QString DvtGetPathPart(QString path)
 {
-  QStringList f0=path.split("/",QString::KeepEmptyParts);
+  QStringList f0=path.split("/",Qt::KeepEmptyParts);
   f0.removeLast();
   return f0.join("/");
 }
@@ -374,7 +374,7 @@ QString DvtGetPathPart(QString path)
 
 QString DvtGetBasePart(QString path)
 {
-  QStringList f0=path.split("/",QString::KeepEmptyParts);
+  QStringList f0=path.split("/",Qt::KeepEmptyParts);
 
   return f0.last();
 }
@@ -382,7 +382,7 @@ QString DvtGetBasePart(QString path)
 
 QString DvtGetShortDate(QDate date)
 {
-  return QString().sprintf("%02d/%02d/%04d",
+  return QString::asprintf("%02d/%02d/%04d",
 			   date.month(),date.day(),date.year());
 }
 
@@ -494,7 +494,7 @@ QString DvtGetDisplay(bool strip_point)
   int l;
 
   if(getenv("DISPLAY")[0]==':') {
-    display=QString().sprintf("%s%s",(const char *)DvtGetHostAddr().toString().
+    display=QString::asprintf("%s%s",(const char *)DvtGetHostAddr().toString().
 			      toUtf8().constData(),
 			     getenv("DISPLAY"));
   }
@@ -519,7 +519,7 @@ bool DvtDoesRowExist(QString table,QString name,QString test,QSqlDatabase *db)
   QSqlQuery *q;
   QString sql;
 
-  sql=QString().sprintf("SELECT %s FROM %s WHERE %s=\"%s\"",
+  sql=QString::asprintf("SELECT %s FROM %s WHERE %s=\"%s\"",
 			name.toUtf8().constData(),
 			table.toUtf8().constData(),
 			name.toUtf8().constData(),
@@ -539,7 +539,7 @@ bool DvtDoesRowExist(QString table,QString name,unsigned test,QSqlDatabase *db)
   QSqlQuery *q;
   QString sql;
 
-  sql=QString().sprintf("SELECT %s FROM %s WHERE %s=%d",
+  sql=QString::asprintf("SELECT %s FROM %s WHERE %s=%d",
 			name.toUtf8().constData(),
 			table.toUtf8().constData(),
 			name.toUtf8().constData(),
@@ -561,7 +561,7 @@ QVariant DvtGetSqlValue(QString table,QString name,QString test,
   QString sql;
   QVariant v;
 
-  sql=QString().sprintf("SELECT %s FROM %s WHERE %s=\"%s\"",
+  sql=QString::asprintf("SELECT %s FROM %s WHERE %s=\"%s\"",
 			param.toUtf8().constData(),
 			table.toUtf8().constData(),
 			name.toUtf8().constData(),
@@ -587,7 +587,7 @@ bool DvtIsSqlNull(QString table,QString name,QString test,
   QSqlQuery *q;
   QString sql;
 
-  sql=QString().sprintf("SELECT %s FROM %s WHERE %s=\"%s\"",
+  sql=QString::asprintf("SELECT %s FROM %s WHERE %s=\"%s\"",
 			param.toUtf8().constData(),
 			table.toUtf8().constData(),
 			name.toUtf8().constData(),
@@ -615,7 +615,7 @@ bool DvtIsSqlNull(QString table,QString name,unsigned test,
   QSqlQuery *q;
   QString sql;
 
-  sql=QString().sprintf("SELECT %s FROM %s WHERE %s=%d",
+  sql=QString::asprintf("SELECT %s FROM %s WHERE %s=%d",
 			param.toUtf8().constData(),
 			table.toUtf8().constData(),
 			name.toUtf8().constData(),
@@ -644,7 +644,7 @@ QVariant DvtGetSqlValue(QString table,QString name,unsigned test,
   QString sql;
   QVariant v;
 
-  sql=QString().sprintf("SELECT %s FROM %s WHERE %s=%u",
+  sql=QString::asprintf("SELECT %s FROM %s WHERE %s=%u",
 			param.toUtf8().constData(),
 			table.toUtf8().constData(),
 			name.toUtf8().constData(),
@@ -683,29 +683,29 @@ QString DvtGetTimeLength(int mseconds,bool leadzero,bool tenths)
   tenthsecs=mseconds/100;
   if(leadzero) {
     if(tenths) {
-     return QString().sprintf("%s%d:%02d:%02d.%d",negative,hour,min,seconds,
+     return QString::asprintf("%s%d:%02d:%02d.%d",negative,hour,min,seconds,
 			      tenthsecs);
     }
-    return QString().sprintf("%s%d:%02d:%02d",negative,hour,min,seconds);
+    return QString::asprintf("%s%d:%02d:%02d",negative,hour,min,seconds);
   }
   if((hour==0)&&(min==0)) {
     if(tenths) {
-      return QString().sprintf("%s:%02d.%d",negative,seconds,tenthsecs);
+      return QString::asprintf("%s:%02d.%d",negative,seconds,tenthsecs);
     }
-    return QString().sprintf("%s:%02d",negative,seconds);
+    return QString::asprintf("%s:%02d",negative,seconds);
   }
   if(hour==0) {
     if(tenths) {
-      return QString().sprintf("%s%2d:%02d.%d",negative,min,seconds,
+      return QString::asprintf("%s%2d:%02d.%d",negative,min,seconds,
 			       tenthsecs);
     }
-    return QString().sprintf("%s%2d:%02d",negative,min,seconds);
+    return QString::asprintf("%s%2d:%02d",negative,min,seconds);
   }
   if(tenths) {
-    return QString().sprintf("%s%2d:%02d:%02d.%d",negative,hour,min,seconds,
+    return QString::asprintf("%s%2d:%02d:%02d.%d",negative,hour,min,seconds,
 			     tenthsecs);
   }
-  return QString().sprintf("%s%2d:%02d:%02d",negative,hour,min,seconds);
+  return QString::asprintf("%s%2d:%02d:%02d",negative,hour,min,seconds);
 }
 
 
@@ -870,7 +870,7 @@ bool DvtWritePid(QString dirname,QString filename,int owner,int group)
 {
   FILE *file;
   mode_t prev_mask;
-  QString pathname=QString().sprintf("%s/%s",
+  QString pathname=QString::asprintf("%s/%s",
 				     dirname.toUtf8().constData(),
 				     filename.toUtf8().constData());
 
@@ -890,7 +890,7 @@ bool DvtWritePid(QString dirname,QString filename,int owner,int group)
 
 void DvtDeletePid(QString dirname,QString filename)
 {
-  QString pid=QString().sprintf("%s/%s",
+  QString pid=QString::asprintf("%s/%s",
 				dirname.toUtf8().constData(),
 				filename.toUtf8().constData());
   unlink(pid.toUtf8());
@@ -902,7 +902,7 @@ bool DvtCheckPid(QString dirname,QString filename)
   QDir dir;
   QString path;
   path=QString("/proc/")+
-    QString().sprintf("%d",DvtGetPid(dirname+QString("/")+filename));
+    QString::asprintf("%d",DvtGetPid(dirname+QString("/")+filename));
   dir.setPath(path);
   return dir.exists();
 }
@@ -1136,8 +1136,8 @@ bool DvtIsFullEmailAddress(QString str)
   //
   // "Name" someone@somewhere.com
   //
-  if(str.contains("\"")>0) {
-    if(str.contains("\"")!=2) {
+  if(str.count("\"")>0) {
+    if(str.count("\"")!=2) {
       return false;
     }
     return DvtIsEmailAddress(str.right(str.length()-str.lastIndexOf("\"")-1));
@@ -1184,10 +1184,10 @@ QString DvtFormatFrequency(double freq)
   QString ret="["+QObject::tr("unknown")+"]";
 
   if(freq>=530.0) {
-    ret=QString().sprintf("%d kHz",(int)freq);
+    ret=QString::asprintf("%d kHz",(int)freq);
   }
   if(freq<108.0) {
-    ret=QString().sprintf("%5.1lf MHz",freq);
+    ret=QString::asprintf("%5.1lf MHz",freq);
   }
   if(freq==0.0) {
     ret=QObject::tr("N/A");
@@ -1251,7 +1251,7 @@ QString DvtStationCallString(int affiliate_id)
   QSqlQuery *q;
   QString ret;
 
-  sql=QString().sprintf("select STATION_CALL,STATION_TYPE \
+  sql=QString::asprintf("select STATION_CALL,STATION_TYPE \
                          from AFFILIATES where ID=%d",affiliate_id);
   q=new QSqlQuery(sql);
   if(q->first()) {
@@ -1268,7 +1268,7 @@ QString DvtMarketRankString(int rank)
   QString ret="";
 
   if(rank>0) {
-    ret=QString().sprintf("%d",rank);
+    ret=QString::asprintf("%d",rank);
   }
   return ret;
 }
@@ -1280,7 +1280,7 @@ bool DvtAffidavitNeeded(int affiliate_id,const QDate &date)
   QSqlQuery *q;
   bool ret=false;
 
-  sql=QString().sprintf("select ID from AFFILIATES \
+  sql=QString::asprintf("select ID from AFFILIATES \
                          where (ID=%d)&&(IS_AFFILIATE=\"Y\")",
 			affiliate_id);
   q=new QSqlQuery(sql);
@@ -1289,7 +1289,7 @@ bool DvtAffidavitNeeded(int affiliate_id,const QDate &date)
     return false;
   }
   delete q;
-  sql=QString().sprintf("select ID from AIRED \
+  sql=QString::asprintf("select ID from AIRED \
                          where (AFFILIATE_ID=%d)&&\
                          (STATE=%d)&&\
                          (AIR_DATETIME>=\"%s-01 00:00:00\")&&\
@@ -1323,12 +1323,12 @@ bool DvtAffidavitNeeded(std::vector<int> *ids,std::map<int,int> *counts,
   ids->clear();
   counts->clear();
   sql=QString("select AFFILIATE_ID,AIR_DATETIME from AIRED where ")+
-    QString().sprintf("(STATE=%d)&&",Dvt::AiredStateScheduled)+
+    QString::asprintf("(STATE=%d)&&",Dvt::AiredStateScheduled)+
     "(AIR_DATETIME>=\""+start_date.toString("yyyy-MM")+"-01 00:00:00\")&&"+
     "(AIR_DATETIME<\""+end_date.addDays(1).
     toString("yyyy-MM")+"-01 00:00:00\")&&";
   if(filter==Dvt::Program) {
-    sql+=QString().sprintf("(PROGRAM_ID=%d)&&",program_id);
+    sql+=QString::asprintf("(PROGRAM_ID=%d)&&",program_id);
   }
   sql=sql.left(sql.length()-2);
   sql+=" order by AFFILIATE_ID";
@@ -1362,8 +1362,8 @@ unsigned DvtAffidavitNeededDates(std::vector<QDate> *dates,int affiliate_id,
 
   dates->clear();
   sql=QString("select AIR_DATETIME from AIRED where ")+
-    QString().sprintf("(AFFILIATE_ID=%d)&&",affiliate_id)+
-    QString().sprintf("(STATE=%d)&&",Dvt::AiredStateScheduled)+
+    QString::asprintf("(AFFILIATE_ID=%d)&&",affiliate_id)+
+    QString::asprintf("(STATE=%d)&&",Dvt::AiredStateScheduled)+
     "(AIR_DATETIME>=\""+start_date.toString("yyyy-MM")+"-01 00:00:00\")&&"+
     "(AIR_DATETIME<\""+end_date.addDays(1).
     toString("yyyy-MM")+"-01 00:00:00\") "+
@@ -1393,11 +1393,11 @@ void DvtUpdateIsAffiliateField()
   sql="select ID from AFFILIATES";
   q=new QSqlQuery(sql);
   while(q->next()) {
-    sql=QString().sprintf("select ID from AIRINGS where AFFILIATE_ID=%d",
+    sql=QString::asprintf("select ID from AIRINGS where AFFILIATE_ID=%d",
 			  q->value(0).toInt());
     q1=new QSqlQuery(sql);
     if(q1->first()) {
-      sql=QString().sprintf("update AFFILIATES set IS_AFFILIATE=\"Y\",\
+      sql=QString::asprintf("update AFFILIATES set IS_AFFILIATE=\"Y\",\
                              AFFIDAVIT_ACTIVE=\"Y\"			\
                              where ID=%d",q->value(0).toInt());
       q2=new QSqlQuery(sql);
@@ -1430,7 +1430,7 @@ unsigned DvtContactInfo(QString *name,QString *title,QString *email,
     *fax=" ";
   }
   sql=QString("select NAME,TITLE,EMAIL,PHONE,FAX from CONTACTS where ")+
-    QString().sprintf("(AFFILIATE_ID=%d)&&",affiliate_id);
+    QString::asprintf("(AFFILIATE_ID=%d)&&",affiliate_id);
   switch(type) {
   case Dvt::AffidavitContact:
     sql+="(AFFIDAVIT=\"Y\")";

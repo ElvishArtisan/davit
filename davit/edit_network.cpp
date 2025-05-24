@@ -107,7 +107,7 @@ QSizePolicy EditNetwork::sizePolicy() const
 void EditNetwork::okData()
 {
   QString sql=
-    QString().sprintf("update NETWORKS set NAME=\"%s\" where NAME=\"%s\"",
+    QString::asprintf("update NETWORKS set NAME=\"%s\" where NAME=\"%s\"",
 		      DvtEscapeString(edit_network_edit->text()).
 		      toUtf8().constData(),
 		      DvtEscapeString(edit_network_edit->text()).

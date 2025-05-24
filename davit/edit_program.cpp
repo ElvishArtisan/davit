@@ -532,7 +532,7 @@ EditProgram::EditProgram(const QString &pname,QWidget *parent)
   //
   // Load Data
   //
-  QString sql=QString().sprintf("select ID,CONTACT_NAME,\
+  QString sql=QString::asprintf("select ID,CONTACT_NAME,\
                                  CONTACT_PHONE,CONTACT_FAX,CONTACT_EMAIL,\
                                  PRIMARY_ISDN_NUMBER,PRIMARY_ISDN_TX_ALGO,\
                                  PRIMARY_ISDN_RX_ALGO,PRIMARY_ISDN_BITRATE,\
@@ -749,7 +749,7 @@ void EditProgram::okData()
   QString sql;
   QSqlQuery *q;
 
-  sql=QString().sprintf("update PROGRAMS set \
+  sql=QString::asprintf("update PROGRAMS set \
                          CONTACT_NAME=\"%s\",\
                          CONTACT_PHONE=\"%s\",\
                          CONTACT_FAX=\"%s\",\
@@ -796,12 +796,12 @@ void EditProgram::okData()
   q=new QSqlQuery(sql);
   delete q;
 
-  sql=QString().sprintf("delete from FEEDS where PROGRAM_ID=%d",edit_id);
+  sql=QString::asprintf("delete from FEEDS where PROGRAM_ID=%d",edit_id);
   q=new QSqlQuery(sql);
   delete q;
   DvtListViewItem *item=(DvtListViewItem *)edit_feeds_list->firstChild();
   while(item!=NULL) {
-    sql=QString().sprintf("insert into FEEDS set \
+    sql=QString::asprintf("insert into FEEDS set \
                            PROGRAM_ID=%d,\
                            AIR_TIME=\"%s\",\
                            AIR_SUN=\"%s\",\
@@ -856,7 +856,7 @@ void EditProgram::RefreshList()
 
   edit_feeds_list->clear();
   DvtListViewItem *item=NULL;
-  sql=QString().sprintf("select AIR_TIME,\
+  sql=QString::asprintf("select AIR_TIME,\
                          AIR_SUN,AIR_MON,AIR_TUE,AIR_WED,AIR_THU,AIR_FRI,\
                          AIR_SAT,ID from FEEDS \
                          where PROGRAM_ID=%d",

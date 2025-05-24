@@ -653,7 +653,7 @@ long int DvtAuthenticateLogin(const QString &username,const QString &passwd,
   }
   QString call=username.left(pt);
   QString type=username.mid(pt+1,1).toUpper();
-  sql=QString().sprintf("select ID from AFFILIATES \
+  sql=QString::asprintf("select ID from AFFILIATES \
                          where (STATION_CALL=\"%s\")&&\
                          (STATION_TYPE=\"%s\")&&\
                          (USER_PASSWORD=\"%s\")",
@@ -674,7 +674,7 @@ long int DvtAuthenticateLogin(const QString &username,const QString &passwd,
   timeval=time(&timeval);
   srandom(timeval);
   long int session=random();
-  sql=QString().sprintf("insert into WEB_CONNECTIONS set \
+  sql=QString::asprintf("insert into WEB_CONNECTIONS set \
                          SESSION_ID=%ld,\
                          AFFILIATE_ID=%d,\
                          IP_ADDRESS=\"%s\",\
@@ -696,7 +696,7 @@ int DvtAuthenticateSession(long int session_id,const QHostAddress &addr)
   //
   QDateTime current_datetime=
     QDateTime(QDate::currentDate(),QTime::currentTime());
-  QString sql=QString().sprintf("delete from WEB_CONNECTIONS \
+  QString sql=QString::asprintf("delete from WEB_CONNECTIONS \
                                  where TIME_STAMP<\"%s\"",
 				current_datetime.
 				addSecs(-DVT_WEB_SESSION_TIMEOUT).
@@ -707,7 +707,7 @@ int DvtAuthenticateSession(long int session_id,const QHostAddress &addr)
   //
   // Check for Session
   //
-  sql=QString().sprintf("select AFFILIATE_ID,IP_ADDRESS from WEB_CONNECTIONS \
+  sql=QString::asprintf("select AFFILIATE_ID,IP_ADDRESS from WEB_CONNECTIONS \
                          where SESSION_ID=%ld",
 			session_id);
   q=new QSqlQuery(sql);
@@ -725,7 +725,7 @@ int DvtAuthenticateSession(long int session_id,const QHostAddress &addr)
   //
   // Update Session
   //
-  sql=QString().sprintf("update WEB_CONNECTIONS set TIME_STAMP=\"%s\" \
+  sql=QString::asprintf("update WEB_CONNECTIONS set TIME_STAMP=\"%s\" \
                          where SESSION_ID=%ld",
 			current_datetime.
 			toString("yyyy-MM-dd hh:mm:dd").toUtf8().constData(),
@@ -739,7 +739,7 @@ int DvtAuthenticateSession(long int session_id,const QHostAddress &addr)
 
 void DvtLogoutSession(long int session_id,const QHostAddress &addr)
 {
-  QString sql=QString().sprintf("select IP_ADDRESS from WEB_CONNECTIONS \
+  QString sql=QString::asprintf("select IP_ADDRESS from WEB_CONNECTIONS \
                          where SESSION_ID=%ld",
 			session_id);
   QSqlQuery *q=new QSqlQuery(sql);
@@ -752,7 +752,7 @@ void DvtLogoutSession(long int session_id,const QHostAddress &addr)
     return;
   }
   delete q;
-  sql=QString().sprintf("delete from WEB_CONNECTIONS where SESSION_ID=%ld",
+  sql=QString::asprintf("delete from WEB_CONNECTIONS where SESSION_ID=%ld",
 			session_id);
   q=new QSqlQuery(sql);
   delete q;

@@ -75,6 +75,7 @@ DISTCLEANFILES = *~\
 MAINTAINERCLEANFILES = *~\
                        *.tar.gz\
                        aclocal.m4\
+                       compile\
                        config.guess\
                        config.sub\
                        configure\

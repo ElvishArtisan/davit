@@ -179,8 +179,7 @@ void EditSystem::okData()
     return;
   }
 
-  sql=QString().
-    sprintf("update SYSTEM set ORIGIN_EMAIL=\"%s\",\
+  sql=QString::asprintf("update SYSTEM set ORIGIN_EMAIL=\"%s\",\
              ALERT_EMAIL=\"%s\",\
              AFFIDAVIT_EMAIL_SUBJECT=\"%s\",\
              AFFIDAVIT_EMAIL_TEMPLATE=\"%s\",\

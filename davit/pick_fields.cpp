@@ -287,7 +287,7 @@ PickFields::PickFields(QDate *start_date,QDate *end_date,
     case PickFields::StateMarket:
       break;
     }
-    sql=QString().sprintf("select NAME from %s order by NAME",
+    sql=QString::asprintf("select NAME from %s order by NAME",
 			  market_table.toUtf8().constData());
     q=new QSqlQuery(sql);
     while(q->next()) {

@@ -235,7 +235,7 @@ EditProvider::EditProvider(const QString &bname,QWidget *parent)
   //
   // Load Data
   //
-  QString sql=QString().sprintf("select ID,ADDRESS1,ADDRESS2,CITY,\
+  QString sql=QString::asprintf("select ID,ADDRESS1,ADDRESS2,CITY,\
                                  STATE,ZIPCODE,CONTACT_NAME,\
                                  CONTACT_PHONE,CONTACT_FAX,CONTACT_EMAIL \
                                  from PROVIDERS where BUSINESS_NAME=\"%s\"",
@@ -288,7 +288,7 @@ void EditProvider::okData()
 {
   QString sql;
 
-  sql=QString().sprintf("update PROVIDERS set \
+  sql=QString::asprintf("update PROVIDERS set \
                          ADDRESS1=\"%s\",\
                          ADDRESS2=\"%s\",\
                          CITY=\"%s\",\

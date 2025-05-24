@@ -79,10 +79,10 @@ bool DvtImportTable(const QString &srcfile,const QString &desttable,
     else {
       size=fieldnames.size();
     }
-    sql=QString().sprintf("insert into %s set ",desttable.toUtf8().constData());
+    sql=QString::asprintf("insert into %s set ",desttable.toUtf8().constData());
     for(unsigned i=0;i<size;i++) {
       if(!fieldnames[i].isEmpty()) {
-	sql+=QString().sprintf("%s=%s,",fieldnames[i].toUtf8().constData(),
+	sql+=QString::asprintf("%s=%s,",fieldnames[i].toUtf8().constData(),
 			       values[i].toUtf8().constData());
       }
     }

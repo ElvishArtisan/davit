@@ -56,7 +56,7 @@ bool ListReports::MissingAffidavitContactReport(SpreadSheet *sheet)
   q=new QSqlQuery(sql);
   while(q->next()) {
     sql=QString("select ID from CONTACTS where ")+
-      QString().sprintf("(AFFILIATE_ID=%d)&&",q->value(0).toInt())+
+      QString::asprintf("(AFFILIATE_ID=%d)&&",q->value(0).toInt())+
       "(CONTACTS.AFFIDAVIT=\"Y\")&&"+
       "((CONTACTS.EMAIL!=\"\")&&(CONTACTS.EMAIL is not null))||"+
       "((CONTACTS.PHONE!=\"\")&&(CONTACTS.PHONE is null))";

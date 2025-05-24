@@ -84,7 +84,7 @@ void SpreadCell::setText(const QString &str,QFontMetrics *auto_fm)
   if(auto_fm==NULL) {
     auto_fm=fontMetrics();
   }
-  setWidth(auto_fm->width(cell_text)+10);
+  setWidth(auto_fm->horizontalAdvance(cell_text)+10);
   setHeight(auto_fm->height());
 }
 
@@ -133,7 +133,7 @@ QString SpreadCell::WriteSlkFormat()
   QString ret="";
 
   if((cell_column>0)&&(cell_row>0)) {
-    ret+=QString().sprintf("C;X%d;Y%d;",cell_column,cell_row);
+    ret+=QString::asprintf("C;X%d;Y%d;",cell_column,cell_row);
     ret+="K\""+cell_text+"\"\n";
   }
   else {

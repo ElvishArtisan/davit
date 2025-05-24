@@ -101,7 +101,7 @@ void ListRemarks::addData()
 
   AddRemark *d=new AddRemark(&remark,this);
   if(d->exec()==0) {
-    sql=QString().sprintf("insert into AFFILIATE_REMARKS set \
+    sql=QString::asprintf("insert into AFFILIATE_REMARKS set \
                            AFFILIATE_ID=%d,\
                            EVENT_TYPE=%d,\
                            REMARK_DATETIME=now(),\
@@ -132,7 +132,7 @@ void ListRemarks::RefreshList()
   QString sql;
   QSqlQuery *q;
   QString remarks;
-  sql=QString().sprintf("select REMARK_DATETIME,USER_NAME,REMARK \
+  sql=QString::asprintf("select REMARK_DATETIME,USER_NAME,REMARK \
                          from AFFILIATE_REMARKS where AFFILIATE_ID=%d \
                          order by REMARK_DATETIME desc",list_id);
   q=new QSqlQuery(sql);

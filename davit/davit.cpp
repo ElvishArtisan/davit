@@ -127,8 +127,8 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Create And Set Icon
   //
-  QIcon *map=new QIcon(callcommander_xpm);
-  setWindowIcon(*map);
+  QPixmap map(callcommander_xpm);
+  setWindowIcon(map);
 
   //
   // Load Geometry
@@ -158,7 +158,7 @@ MainWidget::MainWidget(QWidget *parent)
   if(login->exec()!=0) {
     exit(0);
   }
-  sql=QString().sprintf("select USER_NAME from USERS where\
+  sql=QString::asprintf("select USER_NAME from USERS where\
                          USER_NAME=\"%s\" && USER_PASSWORD=password(\"%s\")",
 			loginname.toUtf8().constData(),
 			password.toUtf8().constData());
@@ -171,7 +171,7 @@ MainWidget::MainWidget(QWidget *parent)
   global_dvtuser=new DvtUser(loginname);
   global_dvtsystem=new DvtSystem();
   global_dvtsystem->load();
-  setWindowTitle(QString().sprintf("Davit - User: %s",
+  setWindowTitle(QString::asprintf("Davit - User: %s",
 			       loginname.toUtf8().constData()));
 
   //

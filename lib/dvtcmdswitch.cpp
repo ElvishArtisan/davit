@@ -1,6 +1,6 @@
 // dvtcmdswitch.cpp
 //
-// Process Davit Command-Line Switches
+// Process Command-Line Switches
 //
 //   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -19,50 +19,128 @@
 //
 
 #include <stdio.h>
+#include <syslog.h>
 #include <stdlib.h>
 
-#include <qmessagebox.h>
+#include <QCoreApplication>
+#include <QMessageBox>
+#include <QStyleFactory>
 
 #include "dvtcmdswitch.h"
+#include "dvtconf.h"
 
-DvtCmdSwitch::DvtCmdSwitch(int argc,char *argv[],const char *modname,
-			   const char *usage)
+DvtCmdSwitch::DvtCmdSwitch(const QString &modname,const QString &usage)
 {
-  unsigned l=0;
-  bool handled=false;
+  switch_debug=false;
 
-  for(int i=1;i<argc;i++) {
-#ifndef WIN32
-    if(!strcmp(argv[i],"--version")) {
-      printf("Davit v%s [%s]\n",VERSION,modname);
+  QStringList args=qApp->arguments();
+
+  for(int i=1;i<args.size();i++) {
+    QString value=args.at(i);
+    if(value=="--version") {
+      printf("%s v%s\n",modname.toUtf8().constData(),VERSION);
       exit(0);
     }
-#endif  // WIN32
-    if(!strcmp(argv[i],"--help")) {
-      printf("\n%s %s\n",modname,usage);
+    if(value=="--help") {
+      printf("\n%s %s\n",modname.toUtf8().constData(),
+	     usage.toUtf8().constData());
       exit(0);
     }
-    l=strlen(argv[i]);
-    handled=false;
-    for(unsigned j=0;j<l;j++) {
-      if(argv[i][j]=='=') {
-	switch_keys.push_back(QString(argv[i]).left(j));
-	switch_values.push_back(QString(argv[i]).right(l-(j+1)));
-	switch_processed.push_back(false);
-	j=l;
-	handled=true;
+    if(value=="-d") {
+      switch_debug=true;
+    }
+    if((value=="-show-styles")||(value=="--show-styles")) {
+      QStringList styles=QStyleFactory::keys();
+      for(int i=0;i<styles.size();i++) {
+	printf("%s\n",styles.at(i).toUtf8().constData());
       }
+      exit(0);
     }
-    if(!handled) {
-      switch_keys.push_back(QString(argv[i]));
-      switch_values.push_back(QString(""));
+    QStringList f0=value.split("=",Qt::KeepEmptyParts);
+    if(f0.size()>=2) {
+      if(f0.at(0).left(1)=="-") {
+	switch_keys.push_back(f0.at(0));
+	for(int i=2;i<f0.size();i++) {
+	  f0[1]+="="+f0.at(i);
+	}
+	if(f0.at(1).isEmpty()) {
+	  switch_values.push_back("");
+	}
+	else {
+	  switch_values.push_back(f0.at(1));
+	}
+      }
+      else {
+	switch_keys.push_back(f0.join("="));
+	switch_values.push_back("");
+      }
+      switch_processed.push_back(false);
+    }
+    else {
+      switch_keys.push_back(value);
+      switch_values.push_back("");
       switch_processed.push_back(false);
     }
   }
 }
 
 
-unsigned DvtCmdSwitch::keys() const
+DvtCmdSwitch::DvtCmdSwitch(int argc,char *argv[],const QString &modname,
+			 const QString &usage)
+{
+  switch_debug=false;
+
+  for(int i=1;i<argc;i++) {
+    QString value=QString::fromUtf8(argv[i]);
+    if(value=="--version") {
+      printf("Rivendell v%s [%s]\n",VERSION,modname.toUtf8().constData());
+      exit(0);
+    }
+    if(value=="--help") {
+      printf("\n%s %s\n",modname.toUtf8().constData(),
+	     usage.toUtf8().constData());
+      exit(0);
+    }
+    if(value=="-d") {
+      switch_debug=true;
+    }
+    if((value=="-show-styles")||(value=="--show-styles")) {
+      QStringList styles=QStyleFactory::keys();
+      for(int i=0;i<styles.size();i++) {
+	printf("%s\n",styles.at(i).toUtf8().constData());
+      }
+      exit(0);
+    }
+    QStringList f0=value.split("=",Qt::KeepEmptyParts);
+    if(f0.size()>=2) {
+      if(f0.at(0).left(1)=="-") {
+	switch_keys.push_back(f0.at(0));
+	for(int i=2;i<f0.size();i++) {
+	  f0[1]+="="+f0.at(i);
+	}
+	if(f0.at(1).isEmpty()) {
+	  switch_values.push_back("");
+	}
+	else {
+	  switch_values.push_back(f0.at(1));
+	}
+      }
+      else {
+	switch_keys.push_back(f0.join("="));
+	switch_values.push_back("");
+      }
+      switch_processed.push_back(false);
+    }
+    else {
+      switch_keys.push_back(value);
+      switch_values.push_back("");
+      switch_processed.push_back(false);
+    }
+  }
+}
+
+
+int DvtCmdSwitch::keys() const
 {
   return switch_keys.size();
 }
@@ -89,4 +167,21 @@ bool DvtCmdSwitch::processed(unsigned n) const
 void DvtCmdSwitch::setProcessed(unsigned n,bool state)
 {
   switch_processed[n]=state;
+}
+
+
+bool DvtCmdSwitch::allProcessed() const
+{
+  for(unsigned i=0;i<switch_processed.size();i++) {
+    if(!switch_processed[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+
+bool DvtCmdSwitch::debugActive() const
+{
+  return switch_debug;
 }
