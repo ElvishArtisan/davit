@@ -27,6 +27,8 @@
 #include <QStringList>
 #include <QWidget>
 
+#include <login.h>
+
 class MainWidget : public QWidget
 {
   Q_OBJECT
@@ -58,6 +60,8 @@ class MainWidget : public QWidget
   void VerifyPrecisionTrakRecord(const QString &str1,const QString &str2,
 				 QStringList &errs);
   QString GetNextLine(FILE *f);
+
+  Login *d_login_dialog;
 };
 
 

@@ -825,3 +825,7 @@
 	* Completed rough port to Qt4.
 2025-05-24 Fred Gleason <fredg@paravelsystems.com>
 	* Completed rough port to Qt6.
+2025-05-26 Fred Gleason <fredg@paravelsystems.com>
+	* Modifed davit(1) to create home directory configuration
+	automatically at startup.
+	* Added a 'DvtSqlQuery' class in 'lib/'.

@@ -39,7 +39,7 @@
 #define DVT_DEFAULT_MYSQL_DATABASE "Davit"
 #define DVT_DEFAULT_MYSQL_USERNAME "dvtuser"
 #define DVT_DEFAULT_MYSQL_PASSWORD "letmein"
-#define DVT_DEFAULT_MYSQL_DBTYPE "QMYSQL3"
+#define DVT_DEFAULT_MYSQL_DBTYPE "QMYSQL"
 
 //
 // Default User Name

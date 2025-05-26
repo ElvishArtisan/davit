@@ -58,7 +58,7 @@ MySqlLogin::MySqlLogin(QString msg,QString *username,QString *password,
   login_name_edit->setGeometry(100,sizeHint().height()-110,100,19);
   login_name_edit->setMaxLength(16);
   login_name_edit->setFocus();
-  QLabel *login_name_label=new QLabel("User &Name:",this);
+  QLabel *login_name_label=new QLabel(tr("User Name")+":",this);
   login_name_label->setFont(font);
   login_name_label->setGeometry(10,sizeHint().height()-109,85,19);
   login_name_label->setAlignment(Qt::AlignRight);
@@ -71,7 +71,7 @@ MySqlLogin::MySqlLogin(QString msg,QString *username,QString *password,
   login_password_edit->setGeometry(100,sizeHint().height()-90,100,19);
   login_password_edit->setMaxLength(16);
   login_password_edit->setEchoMode(QLineEdit::Password);
-  QLabel *login_password_label=new QLabel("&Password:",this);
+  QLabel *login_password_label=new QLabel(tr("Password")+":",this);
   login_password_label->setFont(font);
   login_password_label->setGeometry(10,sizeHint().height()-88,85,19);
   login_password_label->setAlignment(Qt::AlignRight);
@@ -82,7 +82,7 @@ MySqlLogin::MySqlLogin(QString msg,QString *username,QString *password,
   QPushButton *ok_button=new QPushButton(this);
   ok_button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
   ok_button->setFont(font);
-  ok_button->setText("&OK");
+  ok_button->setText(tr("OK"));
   ok_button->setDefault(true);
   connect(ok_button,SIGNAL(clicked()),this,SLOT(okData()));
 
@@ -93,7 +93,7 @@ MySqlLogin::MySqlLogin(QString msg,QString *username,QString *password,
   cancel_button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,
 			     80,50);
   cancel_button->setFont(font);
-  cancel_button->setText("&Cancel");
+  cancel_button->setText(tr("Cancel"));
   connect(cancel_button,SIGNAL(clicked()),this,SLOT(cancelData()));
 }
 

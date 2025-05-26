@@ -41,6 +41,7 @@ dist_libdvt_la_SOURCES = algocombobox.cpp algocombobox.h\
                          dvtlabel.cpp dvtlabel.h\
                          dvtlistselector.cpp dvtlistselector.h\
                          dvtlistviewitem.cpp dvtlistviewitem.h\
+                         dvtsqlquery.cpp dvtsqlquery.h\
                          dvtprofile.cpp dvtprofile.h\
                          dvtprofileline.cpp dvtprofileline.h\
                          dvtprofilesection.cpp dvtprofilesection.h\

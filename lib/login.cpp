@@ -22,11 +22,9 @@
 
 #include <QDialog>
 #include <QString>
-#include <QPushButton>
 #include <QRadioButton>
 #include <QLineEdit>
 #include <QTextEdit>
-#include <QLabel>
 #include <QPainter>
 #include <QEvent>
 #include <QMessageBox>
@@ -34,7 +32,7 @@
 
 #include "login.h"
 
-Login::Login(QString *username,QString *password,QWidget *parent)
+Login::Login(QWidget *parent)
   : QDialog(parent)
 {
   setModal(true);
@@ -42,14 +40,10 @@ Login::Login(QString *username,QString *password,QWidget *parent)
   //
   // Fix the Window Size
   //
-  setMinimumWidth(sizeHint().width());
-  setMaximumWidth(sizeHint().width());
-  setMinimumHeight(sizeHint().height());
+  setMinimumSize(sizeHint());
   setMaximumHeight(sizeHint().height());
 
-  setWindowTitle("Login");
-  login_name=username;
-  login_password=password;
+  setWindowTitle("Davit - "+tr("Login"));
 
   //
   // Create Fonts
@@ -58,33 +52,12 @@ Login::Login(QString *username,QString *password,QWidget *parent)
   font.setPixelSize(12);
 
   //
-  // OK Button
-  //
-  QPushButton *ok_button=new QPushButton(this);
-  ok_button->setGeometry(10,60,100,55);
-  ok_button->setFont(font);
-  ok_button->setText("&OK");
-  ok_button->setDefault(true);
-  connect(ok_button,SIGNAL(clicked()),this,SLOT(okData()));
-
-  //
-  // Cancel Button
-  //
-  QPushButton *cancel_button=new QPushButton(this);
-  cancel_button->setGeometry(120,60,100,55);
-  cancel_button->setFont(font);
-  cancel_button->setText("&Cancel");
-  connect(cancel_button,SIGNAL(clicked()),this,SLOT(cancelData()));
-
-  //
   // Login Name
   //
   login_name_edit=new QLineEdit(this);
-  login_name_edit->setGeometry(100,10,100,20);
   login_name_edit->setMaxLength(16);
   login_name_edit->setFocus();
-  QLabel *login_name_label=new QLabel("User &Name:",this);
-  login_name_label->setGeometry(10,10,85,20);
+  login_name_label=new QLabel(tr("User Name")+":",this);
   login_name_label->setFont(font);
   login_name_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
@@ -92,13 +65,28 @@ Login::Login(QString *username,QString *password,QWidget *parent)
   // Login Password
   //
   login_password_edit=new QLineEdit(this);
-  login_password_edit->setGeometry(100,31,100,19);
   login_password_edit->setMaxLength(16);
   login_password_edit->setEchoMode(QLineEdit::Password);
-  QLabel *login_password_label=new QLabel("&Password:",this);
-  login_password_label->setGeometry(10,31,85,19);
+  login_password_label=new QLabel(tr("Password")+":",this);
   login_password_label->setFont(font);
   login_password_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+
+  //
+  // OK Button
+  //
+  login_ok_button=new QPushButton(this);
+  login_ok_button->setFont(font);
+  login_ok_button->setText(tr("OK"));
+  login_ok_button->setDefault(true);
+  connect(login_ok_button,SIGNAL(clicked()),this,SLOT(okData()));
+
+  //
+  // Cancel Button
+  //
+  login_cancel_button=new QPushButton(this);
+  login_cancel_button->setFont(font);
+  login_cancel_button->setText(tr("Cancel"));
+  connect(login_cancel_button,SIGNAL(clicked()),this,SLOT(cancelData()));
 }
 
 
@@ -121,15 +109,48 @@ QSizePolicy Login::sizePolicy() const
 }
 
 
+int Login::exec(QString *username,QString *password)
+{
+  login_name=username;
+  login_name_edit->setText(*username);
+  login_password=password;
+  login_password_edit->setText(*password);
+
+  return QDialog::exec();
+}
+
+
 void Login::okData()
 {
   *login_name=login_name_edit->text();
   *login_password=login_password_edit->text();
-  done(0);
+  done(true);
 }
 
 
 void Login::cancelData()
 {
-  done(1);
+  done(false);
+}
+
+
+void Login::resizeEvent(QResizeEvent *e)
+{
+  int w=size().width();
+  int h=size().height();
+
+  login_name_edit->setGeometry(100,10,w-110,20);
+  login_name_label->setGeometry(10,10,85,20);
+
+  login_password_edit->setGeometry(100,31,w-110,19);
+  login_password_label->setGeometry(10,31,85,19);
+
+  login_ok_button->setGeometry(w-190,h-60,85,50);
+  login_cancel_button->setGeometry(w-95,h-60,85,50);
+}
+
+
+void Login::closeEvent(QCloseEvent *e)
+{
+  cancelData();
 }

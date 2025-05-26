@@ -22,9 +22,11 @@
 #define LOGIN_H
 
 #include <QDialog>
+#include <QLabel>
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QPixmap>
+#include <QPushButton>
 #include <QRadioButton>
 
 
@@ -32,20 +34,31 @@ class Login : public QDialog
 {
  Q_OBJECT
  public:
- Login(QString *username,QString *password,QWidget *parent=0);
+ Login(QWidget *parent=0);
   ~Login();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+
+ public slots:
+  int exec(QString *username,QString *password);
 
  private slots:
   void okData();
   void cancelData();
 
+ protected:
+  void resizeEvent(QResizeEvent *e);
+  void closeEvent(QCloseEvent *e);
+
  private:
   QString *login_name;
+  QLabel *login_name_label;
   QLineEdit *login_name_edit;
   QString *login_password;
+  QLabel *login_password_label;
   QLineEdit *login_password_edit;
+  QPushButton *login_ok_button;
+  QPushButton *login_cancel_button;
 };
 
 

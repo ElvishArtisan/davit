@@ -31,23 +31,14 @@
 #include <sys/types.h>
 
 #include <QApplication>
-#include <QFile>
 #include <QFileDialog>
-#include <QLabel>
 #include <QMessageBox>
-#include <QPainter>
-#include <QPixmap>
-#include <QPushButton>
-#include <QSettings>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 #include <QStringList>
-#include <QWidget>
 
 #include <dvt.h>
 #include <dvtconfig.h>
 #include <dvtimport.h>
-#include <login.h>
+#include <dvtsqlquery.h>
 
 #include "createdb.h"
 #include "opendb.h"
@@ -95,7 +86,7 @@ MainWidget::MainWidget(QWidget *parent)
   :QWidget(parent)
 {
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   QString loginname;
 
   //
@@ -108,10 +99,8 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Fix the Window Size
   //
-  setMinimumWidth(sizeHint().width());
-  setMaximumWidth(sizeHint().width());
-  setMinimumHeight(sizeHint().height());
-  setMaximumHeight(sizeHint().height());
+  setMinimumSize(sizeHint());
+  setMaximumSize(sizeHint());
 
   //
   // Create Fonts
@@ -137,6 +126,11 @@ MainWidget::MainWidget(QWidget *parent)
   global_geometry->load();
 
   //
+  // Dialogs
+  //
+  d_login_dialog=new Login(this);
+
+  //
   // Load Configs
   //
   config=new DvtConfig();
@@ -154,15 +148,15 @@ MainWidget::MainWidget(QWidget *parent)
   // Log In
   //
   QString password;
-  Login *login=new Login(&loginname,&password,this);
-  if(login->exec()!=0) {
+  if(!d_login_dialog->exec(&loginname,&password)) {
     exit(0);
   }
-  sql=QString::asprintf("select USER_NAME from USERS where\
-                         USER_NAME=\"%s\" && USER_PASSWORD=password(\"%s\")",
-			loginname.toUtf8().constData(),
-			password.toUtf8().constData());
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`USER_NAME` "+  // 00
+    "from `USERS` where "+
+    "`USER_NAME`="+DvtSqlQuery::escape(loginname)+" && "+
+    "`USER_PASSWORD`=password("+DvtSqlQuery::escape(password)+")";
+  q=new DvtSqlQuery(sql);
   if(q->size()<=0) {
     QMessageBox::information(this,"Login Failed","Invalid Login!");
     exiting=true;
@@ -223,12 +217,12 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Title
   //
-  QLabel *label=new QLabel("Davit Affiliate Manager",this);
+  QLabel *label=new QLabel(tr("Davit Affiliate Manager"),this);
   label->setGeometry(10,5,sizeHint().width()-20,20);
   label->setFont(title_font);
   label->setAlignment(Qt::AlignCenter);
 
-  label=new QLabel("Database Administrator",this);
+  label=new QLabel(tr("Database Administrator"),this);
   label->setGeometry(10,25,sizeHint().width()-20,20);
   label->setFont(default_font);
   label->setAlignment(Qt::AlignCenter);
@@ -239,7 +233,7 @@ MainWidget::MainWidget(QWidget *parent)
   QPushButton *button=new QPushButton(this);
   button->setGeometry(10,50,120,60);
   button->setFont(font);
-  button->setText("Manage\n&Users");
+  button->setText(tr("Manage\n&Users"));
   button->setEnabled(global_dvtuser->privilege(DvtUser::PrivAdmin));
   connect(button,SIGNAL(clicked()),this,SLOT(manageUsersData()));
 
@@ -249,7 +243,7 @@ MainWidget::MainWidget(QWidget *parent)
   button=new QPushButton(this);
   button->setGeometry(150,50,120,60);
   button->setFont(font);
-  button->setText("Generate\n&Reports");
+  button->setText(tr("Generate\n&Reports"));
   connect(button,SIGNAL(clicked()),this,SLOT(generateReportsData()));
 #ifdef WIN32
   button->setEnabled((!openoffice_path.isEmpty())&&
@@ -264,7 +258,7 @@ MainWidget::MainWidget(QWidget *parent)
   button=new QPushButton(this);
   button->setGeometry(150,120,120,60);
   button->setFont(font);
-  button->setText("Manage\n&Providers");
+  button->setText(tr("Manage\nProviders"));
   button->setEnabled(global_dvtuser->privilege(DvtUser::PrivProviderView));
   connect(button,SIGNAL(clicked()),this,SLOT(manageProvidersData()));
 
@@ -274,7 +268,7 @@ MainWidget::MainWidget(QWidget *parent)
   button=new QPushButton(this);
   button->setGeometry(10,120,120,60);
   button->setFont(font);
-  button->setText("Manage\n&Affiliates");
+  button->setText(tr("Manage\nAffiliates"));
   button->setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateView));
   connect(button,SIGNAL(clicked()),this,SLOT(manageAffiliateData()));
 
@@ -284,7 +278,7 @@ MainWidget::MainWidget(QWidget *parent)
   button=new QPushButton(this);
   button->setGeometry(150,190,120,60);
   button->setFont(font);
-  button->setText("Manage\nP&rograms");
+  button->setText(tr("Manage\nPrograms"));
   button->setEnabled(global_dvtuser->privilege(DvtUser::PrivProgramView));
   connect(button,SIGNAL(clicked()),this,SLOT(manageProgramsData()));
 
@@ -294,7 +288,7 @@ MainWidget::MainWidget(QWidget *parent)
   button=new QPushButton(this);
   button->setGeometry(10,190,120,60);
   button->setFont(font);
-  button->setText("Manage\n&Networks");
+  button->setText(tr("Manage\nNetworks"));
   button->setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateView));
   connect(button,SIGNAL(clicked()),this,SLOT(manageNetworksData()));
 
@@ -304,7 +298,7 @@ MainWidget::MainWidget(QWidget *parent)
   button=new QPushButton(this);
   button->setGeometry(10,260,120,60);
   button->setFont(font);
-  button->setText("Manage System\nSettings");
+  button->setText(tr("Manage System\nSettings"));
   button->setEnabled(global_dvtuser->privilege(DvtUser::PrivAdmin));
   connect(button,SIGNAL(clicked()),this,SLOT(manageSystemData()));
 
@@ -314,7 +308,7 @@ MainWidget::MainWidget(QWidget *parent)
   button=new QPushButton(this);
   button->setGeometry(150,260,120,60);
   button->setFont(font);
-  button->setText("&Import\nExternal Data");
+  button->setText(tr("Import\nExternal Data"));
   button->setEnabled(global_dvtuser->privilege(DvtUser::PrivAdmin));
   connect(button,SIGNAL(clicked()),this,SLOT(importExternalData()));
 
@@ -324,7 +318,7 @@ MainWidget::MainWidget(QWidget *parent)
   button=new QPushButton(this);
   button->setGeometry(10,sizeHint().height()-70,sizeHint().width()-20,60);
   button->setFont(font);
-  button->setText("&Quit");
+  button->setText(tr("Quit"));
   connect(button,SIGNAL(clicked()),this,SLOT(quitMainWidget()));
 
   //
@@ -441,7 +435,6 @@ int main(int argc,char *argv[])
   if(exiting) {
       exit(0);
   }
-  //  a.setMainWidget(w);
   w->setGeometry(w->geometry().x(),w->geometry().y(),
 		 w->sizeHint().width(),w->sizeHint().height());
   w->show();

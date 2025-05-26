@@ -110,9 +110,7 @@ void Geometry::load()
 	              "C:/Program Files/OpenOffice 4/program/soffice");
 #else
   DvtProfile *p=new DvtProfile();
-  if(!p->setSource(ConfigPath())) {
-    fprintf(stderr,"davit: unable to load geometry\n");
-  }
+  p->setSource(ConfigPath());
   for(unsigned i=0;i<Geometry::LastWidget;i++) {
     geo_visible[i]=
       p->boolValue("DavitGeometry",
@@ -186,7 +184,11 @@ void Geometry::save()
 
 QString Geometry::ConfigDir()
 {
-  return DvtGetHomeDir()+"/.davit";
+  QDir dir=DvtGetHomeDir();
+  if(!dir.exists(".davit")) {
+    dir.mkdir(".davit");
+  }
+  return dir.path()+"/.davit";
 }
 
 
