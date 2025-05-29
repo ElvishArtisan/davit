@@ -20,15 +20,17 @@
 
 #include <math.h>
 
+//#include <QButtonGroup>
 #include <QDialog>
-#include <QString>
-#include <QRadioButton>
-#include <QLineEdit>
-#include <QTextEdit>
-#include <QPainter>
 #include <QEvent>
+#include <QGuiApplication>
+#include <QLineEdit>
 #include <QMessageBox>
-#include <QButtonGroup>
+#include <QPainter>
+#include <QRadioButton>
+#include <QScreen>
+#include <QString>
+#include <QTextEdit>
 
 #include "login.h"
 
@@ -115,6 +117,11 @@ int Login::exec(QString *username,QString *password)
   login_name_edit->setText(*username);
   login_password=password;
   login_password_edit->setText(*password);
+
+  QSize size=QGuiApplication::primaryScreen()->availableSize();
+  setGeometry((size.width()-sizeHint().width())/2,
+	      (size.height()-sizeHint().height())/2,
+	      sizeHint().width(),sizeHint().height());
 
   return QDialog::exec();
 }

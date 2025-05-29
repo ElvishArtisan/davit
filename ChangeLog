@@ -829,3 +829,5 @@
 	* Modifed davit(1) to create home directory configuration
 	automatically at startup.
 	* Added a 'DvtSqlQuery' class in 'lib/'.
+2025-05-29 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored the 'Login' dialog in davit(1).
