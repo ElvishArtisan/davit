@@ -37,8 +37,8 @@
 
 #include <dvt.h>
 #include <dvtconfig.h>
+#include <dvtdb.h>
 #include <dvtimport.h>
-#include <dvtsqlquery.h>
 
 #include "createdb.h"
 #include "opendb.h"
@@ -349,7 +349,7 @@ QSizePolicy MainWidget::sizePolicy() const
 
 void MainWidget::manageUsersData()
 {
-  ListUsers *list=new ListUsers(this);
+  ListUsers *list=new ListUsers(config,this);
   list->exec();
   global_dvtuser->load();
   delete list;

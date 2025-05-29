@@ -1,8 +1,8 @@
-// add_user.h
+// dvtdialog.h
 //
-// Add a Davit User.
+// Base class for Davit modal dialogs.
 //
-//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2019-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -18,38 +18,21 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef ADD_USER_H
-#define ADD_USER_H
+#ifndef DVTDIALOG_H
+#define DVTDIALOG_H
 
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
+#include <QDialog>
 
-#include <dvtdialog.h>
+#include <dvtconfig.h>
+#include <dvtfontengine.h>
 
-class AddUser : public DvtDialog
+class DvtDialog : public QDialog,public DvtFontEngine
 {
- Q_OBJECT
+  Q_OBJECT;
  public:
-  AddUser(DvtConfig *c,QWidget *parent=0);
-  ~AddUser();
-  QSize sizeHint() const;
-  QSizePolicy sizePolicy() const;
+  DvtDialog(DvtConfig *c,QWidget *parent=0);
 
- public slots:
-  int exec(QString *username);
-			     
- private slots:
-  void okData();
-  void cancelData();
-
- private:
-  QLabel *add_loginname_label;
-  QLineEdit *add_loginname_edit;
-  QPushButton *add_ok_button;
-  QPushButton *add_cancel_button;
-  QString *add_loginname;
 };
 
 
-#endif  // ADD_USER_H
+#endif  // DVTDIALOG_H

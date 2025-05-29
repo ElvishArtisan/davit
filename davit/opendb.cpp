@@ -48,13 +48,7 @@ bool OpenDb(QString dbname,QString login,QString pwd,QString host)
   //
   // Open Database
   //
-  printf("dbtype: %s\n",config->mysqlDbtype().toUtf8().constData());
   QSqlDatabase db=QSqlDatabase::addDatabase(config->mysqlDbtype());
-  /*
-  if(!db) {
-    return false;
-  }
-  */
   db.setDatabaseName(dbname);
   db.setUserName(login);
   db.setPassword(pwd);

@@ -78,7 +78,8 @@ dist_davit_SOURCES = activity_report.cpp\
                      program_report.cpp\
                      programbymarket_report.cpp\
                      raaffiliate_report.cpp\
-                     showaffidavits.cpp showaffidavits.h
+                     showaffidavits.cpp showaffidavits.h\
+                     userlistmodel.cpp userlistmodel.h
 
 nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_generate_affadavit.cpp\
@@ -114,7 +115,8 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_pick_daypart.cpp\
                        moc_pick_fields.cpp\
                        moc_preview.cpp\
-                       moc_showaffidavits.cpp
+                       moc_showaffidavits.cpp\
+                       moc_userlistmodel.cpp
 
 davit_LDADD = -ldvt @VMIME_LIBS@ @QT6_LIBS@
 

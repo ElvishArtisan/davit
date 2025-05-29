@@ -36,16 +36,19 @@ dist_libdvt_la_SOURCES = algocombobox.cpp algocombobox.h\
                          dvtconfig.cpp dvtconfig.h\
                          dvtdatedialog.cpp dvtdatedialog.h\
                          dvtdatepicker.cpp dvtdatepicker.h\
+                         dvtdb.cpp dvtdb.h\
+                         dvtdialog.cpp dvtdialog.h\
                          dvtfeed.cpp dvtfeed.h\
+                         dvtfontengine.cpp dvtfontengine.h\
                          dvtimport.cpp dvtimport.h\
                          dvtlabel.cpp dvtlabel.h\
                          dvtlistselector.cpp dvtlistselector.h\
                          dvtlistviewitem.cpp dvtlistviewitem.h\
-                         dvtsqlquery.cpp dvtsqlquery.h\
                          dvtprofile.cpp dvtprofile.h\
                          dvtprofileline.cpp dvtprofileline.h\
                          dvtprofilesection.cpp dvtprofilesection.h\
                          dvtsystem.cpp dvtsystem.h\
+                         dvttableview.cpp dvttableview.h\
                          dvttextfile.cpp dvttextfile.h\
                          dvttransportbutton.cpp dvttransportbutton.h\
                          dvtuser.cpp dvtuser.h\
@@ -62,8 +65,10 @@ nodist_libdvt_la_SOURCES = moc_algocombobox.cpp\
                            moc_change_password.cpp\
                            moc_dvtdatedialog.cpp\
                            moc_dvtdatepicker.cpp\
+                           moc_dvtdialog.cpp\
                            moc_dvtlabel.cpp\
                            moc_dvtlistselector.cpp\
+                           moc_dvttableview.cpp\
                            moc_dvttransportbutton.cpp\
                            moc_login.cpp\
                            moc_statecombobox.cpp

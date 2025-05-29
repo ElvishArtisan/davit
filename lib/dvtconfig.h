@@ -39,6 +39,10 @@ class DvtConfig
   QString mysqlPassword() const;
   QString mysqlDbname() const;
   QString mysqlDbtype() const;
+  QString fontFamily() const;
+  int fontButtonSize() const;
+  int fontLabelSize() const;
+  int fontDefaultSize() const;
   QString contactAddress() const;
   void dumpConfig(FILE *stream);
   bool load();
@@ -51,6 +55,10 @@ class DvtConfig
   QString conf_mysql_password;
   QString conf_mysql_dbname;
   QString conf_mysql_dbtype;
+  QString conf_font_family;
+  int conf_font_button_size;
+  int conf_font_label_size;
+  int conf_font_default_size;
   QString conf_contact_address;
 };
 

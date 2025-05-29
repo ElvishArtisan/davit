@@ -18,13 +18,7 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <math.h>
-
-#include <QLabel>
 #include <QMessageBox>
-#include <QPushButton>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
 #include <dvtconfig.h>
 #include <dvtconf.h>
@@ -34,73 +28,55 @@
 #include "globals.h"
 #include "list_users.h"
 
-ListUsers::ListUsers(QWidget *parent)
-  : QDialog(parent)
+ListUsers::ListUsers(DvtConfig *c,QWidget *parent)
+  : DvtDialog(c,parent)
 {
-  setModal(true);
-
   //
   // Fix the Window Size
   //
-  setMinimumWidth(sizeHint().width());
-  setMinimumHeight(sizeHint().height());
+  setMinimumSize(sizeHint());
 
-  setWindowTitle("Davit - Users");
+  setWindowTitle("Davit - "+tr("List Users"));
 
   //
-  // Create Fonts
+  // Dialogs
   //
-  QFont font=QFont("Helvetica",12,QFont::Bold);
-  font.setPixelSize(12);
-  QFont small_font=QFont("Helvetica",10,QFont::Normal);
-  small_font.setPixelSize(10);
+  list_adduser_dialog=new AddUser(config,this);
+  list_edituser_dialog=new EditUser(config,this);
 
   //
   // Users List
   //
-  /*
-  list_users_list=new QListView(this);
-  list_users_list->setMargin(5);
-  list_users_list->setAllColumnsShowFocus(true);
-  connect(list_users_list,
-	  SIGNAL(doubleClicked(QListViewItem *,const QPoint &,int)),
-	  this,
-	  SLOT(doubleClickedData(QListViewItem *,const QPoint &,int)));
-  list_users_list->addColumn("Full Name");
-  list_users_list->setColumnAlignment(0,Qt::AlignLeft|Qt::AlignVCenter);
-  list_users_list->addColumn("User Name");
-  list_users_list->setColumnAlignment(1,Qt::AlignLeft|Qt::AlignVCenter);
-  list_users_list->addColumn("Description");
-  list_users_list->setColumnAlignment(2,Qt::AlignLeft|Qt::AlignVCenter);
-  list_users_list->addColumn("Phone Number");
-  list_users_list->setColumnAlignment(3,Qt::AlignCenter);
-  list_users_list->addColumn("E-Mail Address");
-  list_users_list->setColumnAlignment(4,Qt::AlignCenter);
-  list_users_list->addColumn("Administrator");
-  list_users_list->setColumnAlignment(5,Qt::AlignCenter);
-  */
+  list_users_view=new DvtTableView(this);
+  list_users_model=new UserListModel(this);
+  list_users_model->setFont(defaultFont());
+  list_users_model->setPalette(palette());
+  list_users_view->setModel(list_users_model);
+  connect(list_users_view,SIGNAL(doubleClicked(const QModelIndex &)),
+	  this,SLOT(doubleClickedData(const QModelIndex &)));
+
   //
   //  Add Button
   //
   list_add_button=new QPushButton(this);
-  list_add_button->setFont(font);
-  list_add_button->setText("&Add");
+  list_add_button->setFont(buttonFont());
+  list_add_button->setText(tr("Add"));
   connect(list_add_button,SIGNAL(clicked()),this,SLOT(addData()));
 
   //
   //  Edit Button
   //
   list_edit_button=new QPushButton(this);
-  list_edit_button->setFont(font);
-  list_edit_button->setText("&Edit");
+  list_edit_button->setFont(buttonFont());
+  list_edit_button->setText(tr("Edit"));
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
 
   //
   //  Delete Button
   //
   list_delete_button=new QPushButton(this);
-  list_delete_button->setFont(font);
-  list_delete_button->setText("&Delete");
+  list_delete_button->setFont(buttonFont());
+  list_delete_button->setText(tr("Delete"));
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
 
   //
@@ -108,11 +84,12 @@ ListUsers::ListUsers(QWidget *parent)
   //
   list_close_button=new QPushButton(this);
   list_close_button->setDefault(true);
-  list_close_button->setFont(font);
-  list_close_button->setText("&Close");
+  list_close_button->setFont(buttonFont());
+  list_close_button->setText(tr("Close"));
   connect(list_close_button,SIGNAL(clicked()),this,SLOT(closeData()));
 
-  RefreshList();
+  list_users_model->refresh();
+  list_users_view->resizeColumnsToContents();
 }
 
 
@@ -135,85 +112,77 @@ QSizePolicy ListUsers::sizePolicy() const
 
 void ListUsers::addData()
 {
-  /*
-  QString lname;
+  QString username;
   QString sql;
-  QSqlQuery *q;
 
-  AddUser *add=new AddUser(&lname,this);
-  if(add->exec()==0) {
-    sql=QString().sprintf("insert into USERS set USER_NAME=\"%s\",\
-                           USER_PASSWORD=password(\"\")",
-			  (const char *)lname);
-    q=new QSqlQuery(sql);
-    delete q;
-    EditUser *edit=new EditUser(lname,this,"edit");
-    if(edit->exec()==0) {
-      QListViewItem *item=new QListViewItem(list_users_list);
-      item->setText(1,lname);
-      UpdateItem(item);
-      list_users_list->setSelected(item,true);
-      list_users_list->ensureItemVisible(item);
+  if(list_adduser_dialog->exec(&username)) {
+    sql=QString("insert into `USERS` set ")+
+      "`USER_NAME`="+DvtSqlQuery::escape(username)+","+
+      "`USER_PASSWORD`=password('')";
+    DvtSqlQuery::apply(sql);
+    if(list_edituser_dialog->exec(username)) {
+      QModelIndex index=list_users_model->addUser(username);
+      if(index.isValid()) {
+	list_users_view->selectRow(index.row());
+	list_users_view->scrollTo(index,QAbstractItemView::PositionAtCenter);
+      }
     }
     else {
-      DeleteUser(lname);
+      sql=QString("delete from `USERS` where ")+
+	"`USER_NAME`="+DvtSqlQuery::escape(username);
+      DvtSqlQuery::apply(sql);
     }
-    delete edit;
   }
-  delete add;
-  */
 }
 
 
 void ListUsers::editData()
 {
-  /*
-  QListViewItem *item=list_users_list->selectedItem();
-  
-  if(item==NULL) {
+  QModelIndexList rows=list_users_view->selectionModel()->selectedRows();
+
+  if(rows.size()!=1) {
     return;
   }
-  EditUser *edit=new EditUser(item->text(1),this,"edit");
-  if(edit->exec()==0) {
-    UpdateItem(item);
+  if(list_edituser_dialog->exec(list_users_model->userName(rows.first()))) {
+    list_users_model->refresh(rows.first());
   }
-  delete edit;
-  */
 }
 
 
 void ListUsers::deleteData()
 {
-  /*
-  QListViewItem *item=list_users_list->selectedItem();
+  QString sql;
+  QString warning;
+  QString str;
+  QModelIndexList rows=list_users_view->selectionModel()->selectedRows();
 
-  if(item==NULL) {
+  if(rows.size()!=1) {
     return;
   }
-  if(item->text(1)==global_dvtuser->name()) {
-    QMessageBox::information(this,"Same User",
-			     "You cannot delete the current user!");
+  QString username=list_users_model->userName(rows.first());
+  if(global_dvtuser->name()==username) {
+    QMessageBox::warning(this,"Davit - "+tr("Delete User"),
+			 tr("You cannot delete yourself!"));
     return;
   }
-  if(QMessageBox::question(this,"Delete User",
-      QString().sprintf("Are you sure you want to delete the user \"%s\"",
-			   (const char *)item->text(0)),
-			   QMessageBox::Yes,
-			   QMessageBox::No)==QMessageBox::No) {
+  if(QMessageBox::question(this,"Davit - "+tr("Delete User"),
+			   tr("Are you sure you want to delete the user")+
+			   " \""+username+"\"?",
+			   QMessageBox::Yes,QMessageBox::No)!=QMessageBox::Yes) {
     return;
   }
-  DeleteUser(item->text(1));
-  delete item;
-  */
+  sql=QString("delete from `USERS` where ")+
+    "`USER_NAME`="+DvtSqlQuery::escape(username);
+  DvtSqlQuery::apply(sql);
+  list_users_model->removeUser(rows.first());
 }
 
-/*
-void ListUsers::doubleClickedData(QListViewItem *item,const QPoint &pt,
-				      int c)
+
+void ListUsers::doubleClickedData(const QModelIndex &index)
 {
   editData();
 }
-*/
+
 
 void ListUsers::closeData()
 {
@@ -223,73 +192,9 @@ void ListUsers::closeData()
 
 void ListUsers::resizeEvent(QResizeEvent *e)
 {
-  //  list_users_list->setGeometry(10,10,size().width()-20,size().height()-80);
+  list_users_view->setGeometry(10,10,size().width()-20,size().height()-80);
   list_add_button->setGeometry(10,size().height()-60,80,50);
   list_edit_button->setGeometry(100,size().height()-60,80,50);
   list_delete_button->setGeometry(190,size().height()-60,80,50);
   list_close_button->setGeometry(size().width()-90,size().height()-60,80,50);
 }
-
-
-void ListUsers::DeleteUser (QString lname)
-{
-  QString sql;
-  QSqlQuery *q;
-
-  sql=QString::asprintf("delete from USERS where USER_NAME=\"%s\"",
-			lname.toUtf8().constData());
-  q=new QSqlQuery(sql);
-  delete q;
-}
-
-
-void ListUsers::RefreshList()
-{
-  /*
-  QSqlQuery *q;
-  QListViewItem *item;
-
-  list_users_list->clear();
-  q=new QSqlQuery("select FULL_NAME,USER_NAME,DESCRIPTION,PHONE_NUMBER,\
-                   EMAIL,ADMIN_PRIV from USERS");
-  while (q->next()) {
-    item=new QListViewItem(list_users_list);
-    item->setText(0,q->value(0).toString());
-    item->setText(1,q->value(1).toString());
-    item->setText(2,q->value(2).toString());
-    item->setText(3,DvtFormatPhoneNumber(q->value(3).toString()));
-    item->setText(4,q->value(4).toString());
-    if(q->value(5).toString().lower()=="y") {
-      item->setText(5,tr("Yes"));
-    }
-    else {
-      item->setText(5,tr("No"));
-    }
-  }
-  delete q;
-  */
-}
-
-/*
-void ListUsers::UpdateItem(QListViewItem *item)
-{
-  QSqlQuery *q=new 
-    QSqlQuery(QString::asprintf("select FULL_NAME,DESCRIPTION,PHONE_NUMBER,\
-                                 EMAIL,ADMIN_PRIV from USERS \
-                                 where USER_NAME=\"%s\"",
-				(const char *)item->text(1)));
-  if(q->first()) {
-    item->setText(0,q->value(0).toString());
-    item->setText(2,q->value(1).toString());
-    item->setText(3,DvtFormatPhoneNumber(q->value(2).toString()));
-    item->setText(4,q->value(3).toString());
-    if(q->value(4).toString().lower()=="y") {
-      item->setText(5,tr("Yes"));
-    }
-    else {
-      item->setText(5,tr("No"));
-    }
-  }
-  delete q;
-}
-*/

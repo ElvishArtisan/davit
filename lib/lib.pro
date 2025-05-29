@@ -2,9 +2,7 @@
 #
 # The lib/ QMake project file for Davit.
 #
-# (C) Copyright 2008 Fred Gleason <fredg@paravelsystems.com>
-#
-#      $Id: lib.pro,v 1.8 2011/03/29 15:38:51 pcvs Exp $
+# (C) Copyright 2008-2025 Fred Gleason <fredg@paravelsystems.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License version 2 as
@@ -37,7 +35,10 @@ SOURCES += dvtconf.cpp
 SOURCES += dvtconfig.cpp
 SOURCES += dvtdatedialog.cpp
 SOURCES += dvtdatepicker.cpp
+SOURCES += dvtdb.cpp
+SOURCES += dvtdialog.cpp
 SOURCES += dvtfeed.cpp
+SOURCES += dvtfontengine.cpp
 SOURCES += dvtimport.cpp
 SOURCES += dvtlabel.cpp
 SOURCES += dvtlistselector.cpp
@@ -45,7 +46,7 @@ SOURCES += dvtlistviewitem.cpp
 SOURCES += dvtprofile.cpp
 SOURCES += dvtprofileline.cpp
 SOURCES += dvtprofilesection.cpp
-SOURCES += dvtsqlquery.cpp
+SOURCES += dvttableview.h
 SOURCES += dvttextfile.cpp
 SOURCES += dvtuser.cpp
 SOURCES += login.cpp
@@ -69,7 +70,10 @@ HEADERS += dvtconf.h
 HEADERS += dvtconfig.h
 HEADERS += dvtdatedialog.h
 HEADERS += dvtdatepicker.h
+HEADERS += dvtdb.h
+HEADERS += dvtdialog.h
 HEADERS += dvtfeed.h
+HEADERS += dvtfontengine.h
 HEADERS += dvt.h
 HEADERS += dvtimport.h
 HEADERS += dvtlabel.h 
@@ -78,7 +82,7 @@ HEADERS += dvtlistviewitem.h
 HEADERS += dvtprofile.h
 HEADERS += dvtprofileline.h
 HEADERS += dvtprofilesection.h
-HEADERS += dvtsqlquery.h
+HEADERS += dvttableview.h
 HEADERS += dvttextfile.h
 HEADERS += dvtuser.h
 HEADERS += login.h

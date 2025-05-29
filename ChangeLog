@@ -831,3 +831,5 @@
 	* Added a 'DvtSqlQuery' class in 'lib/'.
 2025-05-29 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored the 'Login' dialog in davit(1).
+2025-05-29 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored the user management dialogs in davit(1) to use a model.

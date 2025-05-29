@@ -83,6 +83,30 @@ QString DvtConfig::mysqlDbtype() const
 }
 
 
+QString DvtConfig::fontFamily() const
+{
+  return conf_font_family;
+}
+
+
+int DvtConfig::fontButtonSize() const
+{
+  return conf_font_button_size;
+}
+
+
+int DvtConfig::fontLabelSize() const
+{
+  return conf_font_label_size;
+}
+
+
+int DvtConfig::fontDefaultSize() const
+{
+  return conf_font_default_size;
+}
+
+
 QString DvtConfig::contactAddress() const
 {
   return conf_contact_address;
@@ -132,6 +156,14 @@ bool DvtConfig::load()
     profile->stringValue("mySQL","ServerType",DVT_DEFAULT_MYSQL_DBTYPE);
 
   //
+  // [Fonts] Section
+  //
+  conf_font_family=profile->stringValue("Fonts","Family");
+  conf_font_button_size=profile->intValue("Fonts","ButtonSize",-1);
+  conf_font_label_size=profile->intValue("Fonts","LabelSize",-1);
+  conf_font_default_size=profile->intValue("Fonts","DefaultSize",-1);
+
+  //
   // [Site] Section
   //
   conf_contact_address=profile->stringValue("Site","ContactAddress","");
@@ -160,5 +192,9 @@ void DvtConfig::clear()
   conf_mysql_password="";
   conf_mysql_dbname="";
   conf_mysql_dbtype="";
+  conf_font_family="";
+  conf_font_button_size=-1;
+  conf_font_label_size=-1;
+  conf_font_default_size=-1;
   conf_contact_address="";
 }

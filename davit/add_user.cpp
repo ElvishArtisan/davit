@@ -18,31 +18,24 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <math.h>
-
-#include <QPushButton>
-#include <QLabel>
 #include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlQuery>
+
+#include <dvtdb.h>
 
 #include "add_user.h"
 
-AddUser::AddUser(QString *loginname,QWidget *parent)
-  : QDialog(parent)
+AddUser::AddUser(DvtConfig *c,QWidget *parent)
+  : DvtDialog(c,parent)
 {
-  setModal(true);
-  add_loginname=loginname;
+  add_loginname=NULL;
 
   //
   // Fix the Window Size
   //
-  setMinimumWidth(sizeHint().width());
-  setMinimumHeight(sizeHint().height());
-  setMaximumWidth(sizeHint().width());
-  setMaximumHeight(sizeHint().height());
+  setMinimumSize(sizeHint());
+  setMaximumSize(sizeHint());
 
-  setWindowTitle("Davit - Add User");
+  setWindowTitle("Davit - "+tr("Add User"));
 
   //
   // Create Fonts
@@ -59,29 +52,29 @@ AddUser::AddUser(QString *loginname,QWidget *parent)
   add_loginname_edit->setGeometry(110,10,80,20);
   add_loginname_edit->setFont(font);
   add_loginname_edit->setMaxLength(8);
-  QLabel *label=new QLabel("Login Name:",this);
-  label->setGeometry(10,10,95,20);
-  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-  label->setFont(label_font);
+  add_loginname_label=new QLabel(tr("Login Name")+":",this);
+  add_loginname_label->setGeometry(10,10,95,20);
+  add_loginname_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  add_loginname_label->setFont(labelFont());
 
   //
   //  OK Button
   //
-  QPushButton *button=new QPushButton(this);
-  button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
-  button->setDefault(true);
-  button->setFont(label_font);
-  button->setText("&OK");
-  connect(button,SIGNAL(clicked()),this,SLOT(okData()));
+  add_ok_button=new QPushButton(this);
+  add_ok_button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
+  add_ok_button->setDefault(true);
+  add_ok_button->setFont(label_font);
+  add_ok_button->setText(tr("OK"));
+  connect(add_ok_button,SIGNAL(clicked()),this,SLOT(okData()));
 
   //
   //  Cancel Button
   //
-  button=new QPushButton(this);
-  button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
-  button->setFont(label_font);
-  button->setText("&Cancel");
-  connect(button,SIGNAL(clicked()),this,SLOT(cancelData()));
+  add_cancel_button=new QPushButton(this);
+  add_cancel_button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
+  add_cancel_button->setFont(label_font);
+  add_cancel_button->setText("&Cancel");
+  connect(add_cancel_button,SIGNAL(clicked()),this,SLOT(cancelData()));
 }
 
 
@@ -102,12 +95,22 @@ QSizePolicy AddUser::sizePolicy() const
 }
 
 
+int AddUser::exec(QString *username)
+{
+  add_loginname=username;
+  add_loginname_edit->setText(*username);
+  add_loginname_edit->selectAll();
+
+  return QDialog::exec();
+}
+
+
 void AddUser::okData()
 {
   QString sql=
     QString::asprintf("select USER_NAME from USERS where USER_NAME=\"%s\"",
 		      add_loginname_edit->text().toUtf8().constData());
-  QSqlQuery *q=new QSqlQuery(sql);
+  DvtSqlQuery *q=new DvtSqlQuery(sql);
   if(q->first()) {
     QMessageBox::warning(this,"User Exists",
 			 "That user already exists!");
@@ -116,11 +119,11 @@ void AddUser::okData()
   }
   delete q;
   *add_loginname=add_loginname_edit->text();
-  done(0);
+  done(true);
 }
 
 
 void AddUser::cancelData()
 {
-  done(-1);
+  done(false);
 }

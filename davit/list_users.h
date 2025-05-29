@@ -25,11 +25,18 @@
 #include <QListView>
 #include <QPushButton>
 
-class ListUsers : public QDialog
+#include <dvtdialog.h>
+#include <dvttableview.h>
+
+#include "add_user.h"
+#include "edit_user.h"
+#include "userlistmodel.h"
+
+class ListUsers : public DvtDialog
 {
  Q_OBJECT
  public:
-  ListUsers(QWidget *parent=0);
+  ListUsers(DvtConfig *c,QWidget *parent=0);
   ~ListUsers();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -38,21 +45,21 @@ class ListUsers : public QDialog
   void addData();
   void editData();
   void deleteData();
-  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
+  void doubleClickedData(const QModelIndex &index);
   void closeData();
 
  protected:
   void resizeEvent(QResizeEvent *e);
 
  private:
-  void DeleteUser (QString loginname);
-  void RefreshList();
-  //  void UpdateItem(QListViewItem *item);
-  //  QListView *list_users_list;
+  DvtTableView *list_users_view;
+  UserListModel *list_users_model;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;
   QPushButton *list_close_button;
+  AddUser *list_adduser_dialog;
+  EditUser *list_edituser_dialog;
 };
 
 

@@ -2,7 +2,25 @@
 Hostname=localhost
 Loginname=dvtuser
 Database=Davit
-ServerType=QMYSQL3
+ServerType=QMYSQL
+
+[Fonts]
+; Directives in the [Fonts] section allows the fonts used by Davit to
+; be specified, with the default being to use the 'System' font. It should
+; seldom be necessary to change these!
+
+; 'Family=' can be used to specify the name of the font to use
+; --e.g. 'Helvetica'.
+;Family=System
+
+; 'ButtonSize=' specifies the size of the font to be used for button labels.
+;ButtonSize=12
+
+; 'LabelSize=' specifies the size of the font to be used for field labels.
+;LabelSize=11
+
+; 'DefaultSize=' specifies the size of the font to be used for field data.
+;DefaultSize=11
 
 [Site]
 ContactAddress=affiliates@radioamerica.org

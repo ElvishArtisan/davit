@@ -1,6 +1,6 @@
-// dvtsqlquery.cpp
+// rddb.cpp
 //
-//   Database driver with error reporting
+//   Database driver with automatic reconnect
 //
 //   (C) Copyright 2007 Dan Mills <dmills@exponent.myzen.co.uk>
 //   (C) Copyright 2018-2025 Fred Gleason <fredg@paravelsystems.com>
@@ -33,13 +33,15 @@
 #include <QStringList>
 #include <QVariant>
 
-#include "dvtsqlquery.h"
+//#include "rdapplication.h"
+#include "dvtdb.h"
+//#include "rddbheartbeat.h"
 
-DvtSqlQuery::DvtSqlQuery (const QString &query):
+DvtSqlQuery::DvtSqlQuery (const QString &query,bool reconnect):
   QSqlQuery(query)
 {
   QSqlDatabase db;
-  QString err_msg;
+  QString err;
   sql_columns=0;
 
   if (!isActive() && reconnect) {
@@ -48,20 +50,28 @@ DvtSqlQuery::DvtSqlQuery (const QString &query):
     if (db.open()) {
       clear();
       exec(query);
-      err_msg=QObject::tr("DB connection re-established");
+      err=QObject::tr("DB connection re-established");
     }
     else {
-      err_msg=QObject::tr("Could not re-establish DB connection")+
+      err=QObject::tr("Could not re-establish DB connection")+
       +"["+db.lastError().text()+"]";
     }
 
-    fprintf(stderr,"%s\n",err_msg.toUtf8().constData());
+    fprintf(stderr,"%s\n",err.toUtf8().constData());
+    /*
     if(rda!=NULL) {
-      rda->syslog(LOG_ERR,err_msg.toUtf8().constData());
+      rda->syslog(LOG_ERR,err.toUtf8().constData());
     }
+    */
   }
 
   if(isActive()) {
+    /*
+    if((rda!=NULL)&&(rda->config()->logSqlQueries())) {
+      rda->syslog(rda->config()->logSqlQueriesLevel(),
+		  "SQL: %s",query.toUtf8().constData());
+    }
+    */
     //printf("QUERY: %s\n",(const char *)query.toUtf8());
     QStringList f0=query.split(" ");
     if(f0[0].toLower()=="select") {
@@ -79,10 +89,11 @@ DvtSqlQuery::DvtSqlQuery (const QString &query):
     }
   }
   else {
-    err_msg=QObject::tr("invalid SQL or failed DB connection")+
+    err=QObject::tr("invalid SQL or failed DB connection")+
       +"["+lastError().text()+"]: "+query;
 
-    syslog(LOG_WARNING,"%s",err_msg.toUtf8().constData());
+    fprintf(stderr,"%s\n",err.toUtf8().constData());
+    syslog(LOG_ERR,"%s",err.toUtf8().constData());
   }
 }
 
@@ -98,7 +109,7 @@ QVariant DvtSqlQuery::value(int index) const
   QVariant ret=QSqlQuery::value(index);
 
   if(!ret.isValid()) {
-    syslog(LOG_WARNING,"for query: %s",executedQuery().toUtf8().constData());
+    fprintf(stderr,"for query: %s\n\n",(const char *)executedQuery().toUtf8());
   }
 
   return ret;
@@ -127,7 +138,7 @@ bool DvtSqlQuery::apply(const QString &sql,QString *err_msg)
   DvtSqlQuery *q=new DvtSqlQuery(sql);
   ret=q->isActive();
   if((err_msg!=NULL)&&(!ret)) {
-    *err_msg=q->lastError().text()+"\n query: "+sql;
+    *err_msg="sql error: "+q->lastError().text()+" query: "+sql;
   }
   delete q;
 
@@ -181,3 +192,59 @@ QString DvtSqlQuery::escape(const QString &str)
 
   return "'"+res+"'";
 }
+
+
+/*
+bool RDOpenDb (int *schema,QString *err_str,RDConfig *config)
+{
+  QSqlDatabase db;
+  QString sql;
+  QSqlQuery *q;
+
+  if (!db.isOpen()){
+    db=QSqlDatabase::addDatabase(config->mysqlDriver());
+    if(!db.isValid()) {
+      *err_str+= QString(QObject::tr("Couldn't initialize MySql driver!"));
+      return false;
+    }
+    db.setHostName(config->mysqlHostname());
+    db.setDatabaseName(config->mysqlDbname());
+    db.setUserName(config->mysqlUsername());
+    db.setPassword(config->mysqlPassword());
+    if(!db.open()) {
+      *err_str+=QString(QObject::tr("Couldn't open MySQL connection on"))+
+	" \""+config->mysqlHostname()+"\".";
+      db.removeDatabase(config->mysqlDbname());
+      db.close();
+      return false;
+    }
+  }
+  new RDDbHeartbeat(config->mysqlHeartbeatInterval());
+  sql=QString("set NAMES utf8mb4 collate utf8mb4_general_ci");
+  q=new QSqlQuery(sql);
+  delete q;
+
+  *schema=-1;
+  sql=QString("show tables where ")+
+    "Tables_in_"+config->mysqlDbname()+"=\"VERSION\"";
+  q=new QSqlQuery(sql);
+  if(q->first()) {
+    delete q;
+    q=new QSqlQuery("select `DB` from `VERSION`");
+    if(q->first()) {
+      *schema=q->value(0).toUInt();
+    }
+  }
+  else {
+    delete q;
+    sql=QString("show tables");
+    q=new QSqlQuery(sql);
+    if(!q->first()) {
+      *schema=0;
+    }
+  }
+  delete q;
+
+  return true;
+}
+*/

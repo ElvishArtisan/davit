@@ -24,19 +24,24 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialog>
+#include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
 
+#include <dvtdialog.h>
 #include <dvtuser.h>
 
-class EditUser : public QDialog
+class EditUser : public DvtDialog
 {
  Q_OBJECT
  public:
-  EditUser(QString lname,QWidget *parent=0);
+  EditUser(DvtConfig *c,QWidget *parent=0);
   ~EditUser();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+
+ public slots:
+  int exec(const QString &username);
 
  private slots:
   void changePasswordData();
@@ -47,36 +52,58 @@ class EditUser : public QDialog
   void okData();
   void cancelData();
 
+ protected:
+  void closeEvent(QCloseEvent *e);
+  void resizeEvent(QResizeEvent *e);
+
  private:
+  QLabel *edit_loginname_label;
   QLineEdit *edit_loginname_edit;
+  QLabel *edit_fullname_label;
   QLineEdit *edit_fullname_edit;
+  QLabel *edit_description_label;
   QLineEdit *edit_description_edit;
+  QLabel *edit_email_label;
   QLineEdit *edit_email_edit;
+  QLabel *edit_phone_label;
   QLineEdit *edit_phone_edit;
-//  QComboBox *edit_admin_box;
   QString edit_loginname;
   QString edit_password;
+  QPushButton *edit_password_button;
   bool edit_password_changed;
-  QCheckBox *edit_admin_box;
-  QLabel *edit_admin_label;
-  QCheckBox *edit_affiliate_view_box;
+
+  QGroupBox *edit_admin_group;
+  QCheckBox *edit_admin_config_check;
+  QLabel *edit_admin_config_label;
+
+  QGroupBox *edit_affiliate_group;
+  QCheckBox *edit_affiliate_view_check;
   QLabel *edit_affiliate_view_label;
-  QCheckBox *edit_affiliate_edit_box;
+  QCheckBox *edit_affiliate_edit_check;
   QLabel *edit_affiliate_edit_label;
-  QCheckBox *edit_affiliate_schedule_box;
+  QCheckBox *edit_affiliate_schedule_check;
   QLabel *edit_affiliate_schedule_label;
-  QCheckBox *edit_affiliate_remark_box;
+  QCheckBox *edit_affiliate_remark_check;
   QLabel *edit_affiliate_remark_label;
-  QCheckBox *edit_provider_view_box;
+
+  QGroupBox *edit_provider_group;
+  QCheckBox *edit_provider_view_check;
   QLabel *edit_provider_view_label;
-  QCheckBox *edit_provider_edit_box;
+  QCheckBox *edit_provider_edit_check;
   QLabel *edit_provider_edit_label;
-  QCheckBox *edit_program_view_box;
+
+  QGroupBox *edit_program_group;
+  QCheckBox *edit_program_view_check;
   QLabel *edit_program_view_label;
-  QCheckBox *edit_program_edit_box;
+  QCheckBox *edit_program_edit_check;
   QLabel *edit_program_edit_label;
-  QCheckBox *edit_report_view_box;
+
+  QGroupBox *edit_report_group;
+  QCheckBox *edit_report_view_check;
   QLabel *edit_report_view_label;
+
+  QPushButton *edit_ok_button;
+  QPushButton *edit_cancel_button;
 };
 
 
