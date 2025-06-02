@@ -50,6 +50,20 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   //
   // Dialogs
   //
+  // Show Contacts
+  edit_contact_list=new ListContacts(config,this);
+  connect(edit_contact_list,SIGNAL(visibilityChanged(bool)),
+	  this,SLOT(contactsVisibilityChangedData(bool)));
+
+  // Show Program List
+  edit_airings_list=new ListAirings(c,this);
+  connect(edit_airings_list,SIGNAL(visibilityChanged(bool)),
+	  this,SLOT(airingsVisibilityChangedData(bool)));
+
+  // Show Affiliate History
+  edit_remarks_list=new ListRemarks(c,this);
+  connect(edit_remarks_list,SIGNAL(visibilityChanged(bool)),
+	  this,SLOT(remarksVisibilityChangedData(bool)));
 
   //
   // Station Call
@@ -358,11 +372,18 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_affidavits->show();
 
   //
-  // Contacts Dialog
+  // Show Program List Button
   //
-  edit_contact_list=new ListContacts(config,this);
-  connect(edit_contact_list,SIGNAL(visibilityChanged(bool)),
-	  this,SLOT(contactsVisibilityChangedData(bool)));
+  edit_airings_button=new QPushButton(tr("Show Program List"),this);
+  edit_airings_button->setFont(labelFont());
+  connect(edit_airings_button,SIGNAL(clicked()),this,SLOT(showAiringsData()));
+  if(global_geometry->isVisible(Geometry::AiringsWidget)) {
+    showAiringsData();
+  }
+
+  //
+  // Show Contacts Button
+  //
   edit_contacts_button=new QPushButton(tr("Show Contacts"),this);
   edit_contacts_button->setFont(labelFont());
   connect(edit_contacts_button,SIGNAL(clicked()),
@@ -372,24 +393,8 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   }
 
   //
-  // Airings List
+  // Show Affiliate History Button
   //
-  edit_airings_list=new ListAirings(c,this);
-  connect(edit_airings_list,SIGNAL(visibilityChanged(bool)),
-	  this,SLOT(airingsVisibilityChangedData(bool)));
-  edit_airings_button=new QPushButton(tr("Show Program List"),this);
-  edit_airings_button->setFont(labelFont());
-  connect(edit_airings_button,SIGNAL(clicked()),this,SLOT(showAiringsData()));
-  if(global_geometry->isVisible(Geometry::AiringsWidget)) {
-    showAiringsData();
-  }
-
-  //
-  // Remarks
-  //
-  edit_remarks_list=new ListRemarks(c,this);
-  connect(edit_remarks_list,SIGNAL(visibilityChanged(bool)),
-	  this,SLOT(remarksVisibilityChangedData(bool)));
   edit_remarks_button=new QPushButton(tr("Show Affiliate History"),this);
   edit_remarks_button->setFont(labelFont());
   connect(edit_remarks_button,SIGNAL(clicked()),this,SLOT(showRemarksData()));

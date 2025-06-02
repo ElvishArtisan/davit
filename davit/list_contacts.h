@@ -24,9 +24,10 @@
 #include <QListView>
 #include <QPushButton>
 
-#include <contactlistview.h>
 #include <dvtdialog.h>
+#include <dvttableview.h>
 
+#include "contactlistmodel.h"
 #include "edit_contact.h"
 
 class ListContacts : public DvtDialog
@@ -48,15 +49,18 @@ class ListContacts : public DvtDialog
   void addData();
   void editData();
   void deleteData();
-  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
+  void doubleClickedData(const QModelIndex &index);
 
  protected:
   void resizeEvent(QResizeEvent *e);
-
+  void closeEvent(QCloseEvent *);
+  
  private:
   void RefreshList();
   //  void UpdateItem(DvtListViewItem *item,Contact *contact);
   //  ContactListView *list_contacts_list;
+  DvtTableView *list_contacts_view;
+  ContactListModel *list_contacts_model;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;

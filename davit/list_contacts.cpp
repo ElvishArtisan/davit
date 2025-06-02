@@ -45,14 +45,14 @@ ListContacts::ListContacts(DvtConfig *c,QWidget *parent)
   //
   // Contact List
   //
+  list_contacts_view=new DvtTableView(this);
+  list_contacts_model=new ContactListModel(this);
+  list_contacts_model->setFont(defaultFont());
+  list_contacts_model->setPalette(palette());
+  list_contacts_view->setModel(list_contacts_model);
+  connect(list_contacts_view,SIGNAL(doubleClicked(const QModelIndex &)),
+	  this,SLOT(doubleClickedData(const QModelIndex &)));
   /*
-  list_contacts_list=new ContactListView(this);
-  list_contacts_list->setAllColumnsShowFocus(true);
-  list_contacts_list->setItemMargin(5);
-  connect(list_contacts_list,
-	  SIGNAL(doubleClicked(QListViewItem *,const QPoint &,int)),
-	  this,
-	  SLOT(doubleClickedData(QListViewItem *,const QPoint &,int)));
   list_contacts_list->addColumn(tr("Name"));
   list_contacts_list->setColumnAlignment(0,AlignLeft);
   list_contacts_list->addColumn(tr("Title"));
@@ -87,7 +87,8 @@ ListContacts::ListContacts(DvtConfig *c,QWidget *parent)
   list_delete_button->setText(tr("Delete"));
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
 
-  RefreshList();
+  list_contacts_model->refresh();
+  list_contacts_view->resizeColumnsToContents();
 }
 
 
@@ -106,6 +107,8 @@ void ListContacts::setAffiliateId(int id)
 {
   list_id=id;
   setWindowTitle("Davit - "+tr("Contacts for ")+DvtStationCallString(id));
+  list_contacts_model->setAffiliateId(id);
+  list_contacts_view->resizeColumnsToContents();
 }
 
 
@@ -134,7 +137,7 @@ void ListContacts::addData()
   /*
   Contact *contact=new Contact();
   if(list_contact_dialog->exec(contact)==0) {
-    DvtListViewItem *item=new DvtListViewItem(list_contacts_list);
+    DvtListViewItem *item=new DvtListViewItem(list_contacts_view);
     UpdateItem(item,contact);
   }
   delete contact;
@@ -145,7 +148,7 @@ void ListContacts::addData()
 void ListContacts::editData()
 {
   /*
-  DvtListViewItem *item=(DvtListViewItem *)list_contacts_list->selectedItem();
+  DvtListViewItem *item=(DvtListViewItem *)list_contacts_view->selectedItem();
   if(item==NULL) {
     return;
   }
@@ -172,7 +175,7 @@ void ListContacts::deleteData()
   /*
   QString sql;
   QSqlQuery *q;
-  DvtListViewItem *item=(DvtListViewItem *)list_contacts_list->selectedItem();
+  DvtListViewItem *item=(DvtListViewItem *)list_contacts_view->selectedItem();
   if(item==NULL) {
     return;
   }
@@ -186,19 +189,25 @@ void ListContacts::deleteData()
   */
 }
 
-/*
-void ListContacts::doubleClickedData(QListViewItem *item,const QPoint &pt,int c)
+
+void ListContacts::doubleClickedData(const QModelIndex &index)
 {
   editData();
 }
-*/
+
 
 void ListContacts::resizeEvent(QResizeEvent *e)
 {
-  //  list_contacts_list->setGeometry(0,0,size().width(),size().height()-40);
+  list_contacts_view->setGeometry(0,0,size().width(),size().height()-40);
   list_add_button->setGeometry(10,size().height()-35,50,30);
   list_edit_button->setGeometry(70,size().height()-35,50,30);
   list_delete_button->setGeometry(130,size().height()-35,50,30);
+}
+
+
+void ListContacts::closeEvent(QCloseEvent *)
+{
+  hide();
 }
 
 
@@ -214,7 +223,7 @@ void ListContacts::RefreshList()
                          from CONTACTS where AFFILIATE_ID=%d",list_id);
   q=new QSqlQuery(sql);
   while(q->next()) {
-    item=new DvtListViewItem(list_contacts_list);
+    item=new DvtListViewItem(list_contacts_view);
     item->setId(q->value(0).toInt());
     item->setText(0,q->value(1).toString());
     item->setText(1,q->value(2).toString());

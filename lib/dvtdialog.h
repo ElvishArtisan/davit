@@ -31,7 +31,6 @@ class DvtDialog : public QDialog,public DvtFontEngine
   Q_OBJECT;
  public:
   DvtDialog(DvtConfig *c,QWidget *parent=0);
-
 };
 
 

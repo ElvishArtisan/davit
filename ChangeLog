@@ -836,3 +836,5 @@
 2025-06-02 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored the 'List Affiliates' and 'Edit Affiliate' dialogs in
 	davit(1).
+2025-06-02 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored the 'Contacts' dialog in davit(1).
