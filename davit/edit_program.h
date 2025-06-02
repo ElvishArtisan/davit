@@ -29,7 +29,7 @@
 #include <QTextEdit>
 
 #include <algocombobox.h>
-#include <dvtlistviewitem.h>
+//#include <dvtlistviewitem.h>
 #include <dvtfeed.h>
 
 class EditProgram : public QDialog
@@ -57,7 +57,7 @@ class EditProgram : public QDialog
 
  private:
   void RefreshList();
-  void RefreshItem(DvtListViewItem *item,DvtFeed *feed);
+  //  void RefreshItem(DvtListViewItem *item,DvtFeed *feed);
   QLineEdit *edit_program_name_edit;
   QTimeEdit *edit_program_length_edit;
   QLineEdit *edit_program_length_lineedit;

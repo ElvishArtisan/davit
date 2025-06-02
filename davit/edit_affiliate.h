@@ -23,7 +23,6 @@
 
 #include <vector>
 
-#include <QDialog>
 #include <QLineEdit>
 #include <QListView>
 #include <QTextEdit>
@@ -32,8 +31,8 @@
 #include <QCheckBox>
 #include <QButtonGroup>
 
+#include <dvtdialog.h>
 #include <dvtfeed.h>
-#include <dvtlistviewitem.h>
 
 #include "list_contacts.h"
 #include "list_airings.h"
@@ -41,14 +40,17 @@
 #include "showaffidavits.h"
 #include "statecombobox.h"
 
-class EditAffiliate : public QDialog
+class EditAffiliate : public DvtDialog
 {
  Q_OBJECT
  public:
-  EditAffiliate(int id,QWidget *parent=0);
+  EditAffiliate(DvtConfig *c,QWidget *parent=0);
   ~EditAffiliate();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+
+ public slots:
+  int exec(int affiliate_id);
 
  private slots:
   void affidavitToggledData(bool state);
@@ -60,6 +62,10 @@ class EditAffiliate : public QDialog
   void remarksVisibilityChangedData(bool visible);
   void okData();
   void cancelData();
+
+ protected:
+  void resizeEvent(QResizeEvent *e);
+  void closeEvent(QCloseEvent *e);
 
  private:
   void SaveGeometry();
@@ -110,6 +116,34 @@ class EditAffiliate : public QDialog
   QPushButton *edit_contacts_button;
   QPushButton *edit_airings_button;
   QPushButton *edit_remarks_button;
+  QLabel *edit_station_call_label;
+  QLabel *edit_station_frequency_label;
+  QLabel *edit_station_type_label;
+  QLabel *edit_station_power_label;
+  QLabel *edit_station_power_unit_label;
+  QLabel *edit_station_night_power_label;
+  QLabel *edit_station_night_power_unit_label;
+  QLabel *edit_license_city_label;
+  QLabel *edit_license_state_label;
+  QLabel *edit_market_label;
+  QLabel *edit_market_rank_label;
+  QLabel *edit_dma_label;
+  QLabel *edit_dma_rank_label;
+  QLabel *edit_second_network_label;
+  QLabel *edit_timezone_label;
+  QLabel *edit_station_prev_call_label;
+  QLabel *edit_address_label;
+  QLabel *edit_city_label;
+  QLabel *edit_state_label;
+  QLabel *edit_zipcode_label;
+  QLabel *edit_email_addr_label;
+  QLabel *edit_phone_label;
+  QLabel *edit_fax_label;
+  QLabel *edit_web_url_label;
+  QLabel *edit_track_affidavit_label;
+  QLabel *edit_business_name_call_label;
+  QPushButton *edit_ok_button;
+  QPushButton *edit_cancel_button;
 };
 
 

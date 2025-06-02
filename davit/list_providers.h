@@ -25,7 +25,7 @@
 #include <QListView>
 #include <QPushButton>
 
-#include <dvtlistviewitem.h>
+//#include <dvtlistviewitem.h>
 
 class ListProviders : public QDialog
 {
@@ -49,7 +49,7 @@ class ListProviders : public QDialog
  private:
   void DeleteProvider(int pid);
   void RefreshList();
-  void UpdateItem(DvtListViewItem *item);
+  //  void UpdateItem(DvtListViewItem *item);
   //  QListView *list_providers_list;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;

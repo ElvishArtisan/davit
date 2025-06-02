@@ -25,7 +25,7 @@
 #include <QListView>
 #include <QPushButton>
 
-#include <dvtlistviewitem.h>
+//#include <dvtlistviewitem.h>
 
 class ListPrograms : public QDialog
 {
@@ -50,7 +50,7 @@ class ListPrograms : public QDialog
  private:
   void DeleteProgram(int pid);
   void RefreshList();
-  void UpdateItem(DvtListViewItem *item);
+  //  void UpdateItem(DvtListViewItem *item);
   //  QListView *list_programs_list;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;

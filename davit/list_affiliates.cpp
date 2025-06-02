@@ -35,9 +35,6 @@
 #include <dvtconfig.h>
 //#include <dvtmail.h>
 
-#include "add_affiliate.h"
-#include "edit_affiliate.h"
-#include "generate_affadavit.h"
 #include "globals.h"
 #include "list_affiliates.h"
 
@@ -48,10 +45,9 @@
 #include "../icons/redball.xpm"
 #include "../icons/whiteball.xpm"
 
-ListAffiliates::ListAffiliates(QWidget *parent)
-  : QDialog(parent)
+ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
+  : DvtDialog(c,parent)
 {
-  setModal(true);
   QDate today=QDate::currentDate();
 
   //
@@ -60,15 +56,7 @@ ListAffiliates::ListAffiliates(QWidget *parent)
   setMinimumWidth(sizeHint().width());
   setMinimumHeight(sizeHint().height());
 
-  setWindowTitle("Davit - Affiliates");
-
-  //
-  // Create Fonts
-  //
-  QFont font=QFont("Helvetica",12,QFont::Bold);
-  font.setPixelSize(12);
-  QFont small_font=QFont("Helvetica",10,QFont::Normal);
-  small_font.setPixelSize(10);
+  setWindowTitle("Davit - "+tr("List Affiliates"));
 
   //
   // Load Icons
@@ -78,35 +66,36 @@ ListAffiliates::ListAffiliates(QWidget *parent)
   list_whiteball_map=new QPixmap(whiteball_xpm);
 
   //
-  // Email Progress Dialog
+  // Dialogs
   //
+  list_edit_affiliate_dialog=new EditAffiliate(c,this);
   /*
   list_email_progress=
     new QProgressDialog(tr("Generating e-mail, please wait..."),
 			tr("Cancel"),100,this);
-  list_email_progress->setCaption("Davit");
+  list_email_progress->setWindowTitle("Davit");
   */
   //
-  // Filter Checkbox
+  // Show Affiliates Checkbox
   //
-  list_filter_box=new QCheckBox(this);
-  list_filter_label=new QLabel(tr("Show Affiliates Only"),this);
-  list_filter_label->setFont(font);
-  list_filter_label->setAlignment(Qt::AlignVCenter|Qt::AlignLeft);
-  connect(list_filter_box,SIGNAL(stateChanged(int)),
-	  this,SLOT(filterStateChangedData(int)));
+  list_show_affiliates_check=new QCheckBox(this);
+  list_show_affiliates_label=new QLabel(tr("Show Affiliates Only"),this);
+  list_show_affiliates_label->setFont(labelFont());
+  list_show_affiliates_label->setAlignment(Qt::AlignVCenter|Qt::AlignLeft);
+  connect(list_show_affiliates_check,SIGNAL(stateChanged(int)),
+	  this,SLOT(showAffiliatesChangedData(int)));
 
   //
-  // Missing Data
+  // Show Missing Affadavits Data
   //
-  list_missing_box=new QCheckBox(this);
-  list_missing_label=
+  list_missing_affiliates_check=new QCheckBox(this);
+  list_missing_affiliates_label=
     new QLabel(tr("Show Affiliates Missing:"),this);
-  list_missing_label->setFont(font);
-  list_missing_label->setAlignment(Qt::AlignVCenter|Qt::AlignLeft);
-  connect(list_missing_box,SIGNAL(stateChanged(int)),
-	  this,SLOT(missingStateChangedData(int)));
-  list_month_box=new QComboBox();
+  list_missing_affiliates_label->setFont(labelFont());
+  list_missing_affiliates_label->setAlignment(Qt::AlignVCenter|Qt::AlignLeft);
+  connect(list_missing_affiliates_check,SIGNAL(stateChanged(int)),
+	  this,SLOT(missingAffiliateChangedData(int)));
+  list_month_box=new QComboBox(this);
   list_month_box->insertItem(0,tr("January"));
   list_month_box->insertItem(1,tr("February"));
   list_month_box->insertItem(2,tr("March"));
@@ -137,7 +126,7 @@ ListAffiliates::ListAffiliates(QWidget *parent)
   //
   list_callfilter_edit=new QLineEdit(this);
   list_callfilter_label=new QLabel(tr("Call Filter:"),this);
-  list_callfilter_label->setFont(font);
+  list_callfilter_label->setFont(labelFont());
   list_callfilter_label->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
   connect(list_callfilter_edit,SIGNAL(textChanged(const QString &)),
 	  this,SLOT(filterTextChangedData(const QString &)));
@@ -148,40 +137,27 @@ ListAffiliates::ListAffiliates(QWidget *parent)
   list_showing_edit=new QLineEdit(this);
   list_showing_edit->setReadOnly(true);
   list_showing_label=new QLabel(tr("Showing:"),this);
-  list_showing_label->setFont(font);
+  list_showing_label->setFont(labelFont());
   list_showing_label->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
-  connect(list_showing_edit,SIGNAL(textChanged(const QString &)),
-	  this,SLOT(filterTextChangedData(const QString &)));
 
   //
   // Affiliates List
   //
-  /*
-  list_affiliates_list=new QListView(this);
-  list_affiliates_list->setMargin(5);
-  list_affiliates_list->setAllColumnsShowFocus(true);
-  connect(list_affiliates_list,
-	  SIGNAL(doubleClicked(QListViewItem *,const QPoint &,int)),
-	  this,
-	  SLOT(doubleClickedData(QListViewItem *,const QPoint &,int)));
-  list_affiliates_list->addColumn(" ");
-  list_affiliates_list->setColumnAlignment(0,Qt::AlignCenter);
-  list_affiliates_list->addColumn("Call");
-  list_affiliates_list->setColumnAlignment(1,Qt::AlignCenter);
-  list_affiliates_list->addColumn("City of License");
-  list_affiliates_list->setColumnAlignment(2,Qt::AlignLeft|Qt::AlignVCenter);
-  list_affiliates_list->addColumn("Type");
-  list_affiliates_list->setColumnAlignment(3,Qt::AlignCenter);
-  list_affiliates_list->addColumn("DMA");
-  list_affiliates_list->setColumnAlignment(4,Qt::AlignLeft|Qt::AlignVCenter);
-  list_affiliates_list->addColumn("Business Name");
-  list_affiliates_list->setColumnAlignment(5,Qt::AlignLeft|Qt::AlignVCenter);
-  */
+  list_affiliates_view=new DvtTableView(this);
+  list_affiliates_model=new AffiliateListModel(this);
+  list_affiliates_model->setFont(defaultFont());
+  list_affiliates_model->setPalette(palette());
+  list_affiliates_view->setModel(list_affiliates_model);
+  connect(list_affiliates_view,SIGNAL(doubleClicked(const QModelIndex &)),
+	  this,SLOT(doubleClickedData(const QModelIndex &)));
+  connect(list_affiliates_model,SIGNAL(rowCountChanged(int)),
+	  this,SLOT(rowCountChangedData(int)));
+
   //
   //  Add Button
   //
   list_add_button=new QPushButton(this);
-  list_add_button->setFont(font);
+  list_add_button->setFont(buttonFont());
   list_add_button->setText("&Add");
   list_add_button->
     setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
@@ -191,7 +167,7 @@ ListAffiliates::ListAffiliates(QWidget *parent)
   //  Edit Button
   //
   list_edit_button=new QPushButton(this);
-  list_edit_button->setFont(font);
+  list_edit_button->setFont(buttonFont());
   list_edit_button->setText("&Edit");
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
 
@@ -199,7 +175,7 @@ ListAffiliates::ListAffiliates(QWidget *parent)
   //  Delete Button
   //
   list_delete_button=new QPushButton(this);
-  list_delete_button->setFont(font);
+  list_delete_button->setFont(buttonFont());
   list_delete_button->setText("&Delete");
   list_delete_button->
     setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
@@ -209,7 +185,7 @@ ListAffiliates::ListAffiliates(QWidget *parent)
   //  Generate Affidavit Button
   //
   list_affadavit_button=new QPushButton(this);
-  list_affadavit_button->setFont(font);
+  list_affadavit_button->setFont(buttonFont());
   list_affadavit_button->setText("&Generate\nAffidavit");
   list_affadavit_button->
     setEnabled(global_dvtuser->privilege(DvtUser::PrivReportView));
@@ -219,7 +195,7 @@ ListAffiliates::ListAffiliates(QWidget *parent)
   //  Affidavit Reminder Button
   //
   list_affidavit_reminder_button=new QPushButton(this);
-  list_affidavit_reminder_button->setFont(font);
+  list_affidavit_reminder_button->setFont(buttonFont());
   list_affidavit_reminder_button->setText("Affidavit\n&Reminders");
   list_affidavit_reminder_button->setDisabled(true);
   connect(list_affidavit_reminder_button,SIGNAL(clicked()),
@@ -233,11 +209,11 @@ ListAffiliates::ListAffiliates(QWidget *parent)
   //
   list_close_button=new QPushButton(this);
   list_close_button->setDefault(true);
-  list_close_button->setFont(font);
+  list_close_button->setFont(buttonFont());
   list_close_button->setText("&Close");
   connect(list_close_button,SIGNAL(clicked()),this,SLOT(closeData()));
 
-  filterStateChangedData(false);
+  showAffiliatesChangedData(false);
 }
 
 
@@ -248,7 +224,7 @@ ListAffiliates::~ListAffiliates()
 
 QSize ListAffiliates::sizeHint() const
 {
-  return QSize(755,480);
+  return QSize(800,480);
 } 
 
 
@@ -258,42 +234,52 @@ QSizePolicy ListAffiliates::sizePolicy() const
 }
 
 
-void ListAffiliates::filterStateChangedData(int state)
+void ListAffiliates::showAffiliatesChangedData(int state)
 {
-  list_missing_box->setEnabled(state);
-  list_missing_label->setEnabled(state);
+  list_missing_affiliates_check->setEnabled(state);
+  list_missing_affiliates_label->setEnabled(state);
   list_month_box->setEnabled(state);
   list_year_box->setEnabled(state);
   if(!state) {
-    list_missing_box->setChecked(false);
+    list_missing_affiliates_check->setChecked(false);
     list_affidavit_reminder_button->setEnabled(false);
   }
-  RefreshList();
+  list_affiliates_model->refresh(state,MissingAffiliatesDate(),
+				 list_callfilter_edit->text());
+  list_affiliates_view->resizeColumnsToContents();
 }
 
 
 void ListAffiliates::filterTextChangedData(const QString &str)
 {
-  RefreshList();
+  list_affiliates_model->refresh(list_show_affiliates_check->isChecked(),
+				 MissingAffiliatesDate(),str);
+  list_affiliates_view->resizeColumnsToContents();
 }
 
 
-void ListAffiliates::missingStateChangedData(int state)
+void ListAffiliates::missingAffiliateChangedData(int state)
 {
   list_affidavit_reminder_button->setEnabled(state&&email_enabled);
-  RefreshList();
+  list_affiliates_model->refresh(true,MissingAffiliatesDate(),
+				 list_callfilter_edit->text());
+  list_affiliates_view->resizeColumnsToContents();
 }
 
 
 void ListAffiliates::monthActivatedData(int index)
 {
-  RefreshList();
+  list_affiliates_model->refresh(true,MissingAffiliatesDate(),
+				 list_callfilter_edit->text());
+  list_affiliates_view->resizeColumnsToContents();
 }
 
 
 void ListAffiliates::yearActivatedData(int index)
 {
-  RefreshList();
+  list_affiliates_model->refresh(true,MissingAffiliatesDate(),
+				 list_callfilter_edit->text());
+  list_affiliates_view->resizeColumnsToContents();
 }
 
 
@@ -340,19 +326,15 @@ void ListAffiliates::addData()
 
 void ListAffiliates::editData()
 {
-  /*
-  DvtListViewItem *item=
-    (DvtListViewItem *)list_affiliates_list->selectedItem();
-  
-  if(item==NULL) {
+  QModelIndexList rows=list_affiliates_view->selectionModel()->selectedRows();
+
+  if(rows.size()!=1) {
     return;
   }
-  EditAffiliate *edit=new EditAffiliate(item->id(),this);
-  if(edit->exec()==0) {
-    UpdateItem(item);
+  if(list_edit_affiliate_dialog->
+     exec(list_affiliates_model->affiliateId(rows.first()))) {
+    list_affiliates_model->refresh(rows.first());
   }
-  delete edit;
-  */
 }
 
 
@@ -408,13 +390,17 @@ void ListAffiliates::affidavitReminderData()
   */
 }
 
-/*
-void ListAffiliates::doubleClickedData(QListViewItem *item,const QPoint &pt,
-				      int c)
+void ListAffiliates::doubleClickedData(const QModelIndex &index)
 {
   editData();
 }
-*/
+
+
+void ListAffiliates::rowCountChangedData(int matches)
+{
+  list_showing_edit->setText(QString::asprintf("%d",matches));
+}
+
 
 void ListAffiliates::closeData()
 {
@@ -424,24 +410,26 @@ void ListAffiliates::closeData()
 
 void ListAffiliates::resizeEvent(QResizeEvent *e)
 {
-  list_filter_box->setGeometry(20,10,15,15);
-  list_filter_label->setGeometry(40,8,130,20);
-  list_missing_box->setGeometry(180,10,15,15);
-  list_missing_label->setGeometry(200,8,140,20);
-  list_month_box->setGeometry(345,8,95,20);
-  list_year_box->setGeometry(445,8,55,20);
-  list_showing_edit->setGeometry(570,7,50,20);
-  list_showing_label->setGeometry(505,8,60,20);
-  list_callfilter_edit->setGeometry(e->size().width()-60,7,50,20);
-  list_callfilter_label->setGeometry(e->size().width()-135,8,70,20);
-  //  list_affiliates_list->
-  //    setGeometry(10,32,size().width()-20,size().height()-102);
-  list_add_button->setGeometry(10,size().height()-60,80,50);
-  list_edit_button->setGeometry(100,size().height()-60,80,50);
-  list_delete_button->setGeometry(190,size().height()-60,80,50);
-  list_affadavit_button->setGeometry(330,size().height()-60,80,50);
-  list_affidavit_reminder_button->setGeometry(430,size().height()-60,80,50);
-  list_close_button->setGeometry(size().width()-90,size().height()-60,80,50);
+  int w=size().width();
+  int h=size().height();
+
+  list_show_affiliates_check->setGeometry(20,11,15,15);
+  list_show_affiliates_label->setGeometry(40,8,130,20);
+  list_missing_affiliates_check->setGeometry(190,11,15,15);
+  list_missing_affiliates_label->setGeometry(210,8,150,20);
+  list_month_box->setGeometry(360,8,100,20);
+  list_year_box->setGeometry(465,8,55,20);
+  list_showing_edit->setGeometry(600,7,50,20);
+  list_showing_label->setGeometry(535,8,60,20);
+  list_callfilter_edit->setGeometry(740,7,50,20);
+  list_callfilter_label->setGeometry(665,8,70,20);
+  list_affiliates_view->setGeometry(10,32,w-20,h-102);
+  list_add_button->setGeometry(10,h-60,80,50);
+  list_edit_button->setGeometry(100,h-60,80,50);
+  list_delete_button->setGeometry(190,h-60,80,50);
+  list_affadavit_button->setGeometry(330,h-60,80,50);
+  list_affidavit_reminder_button->setGeometry(430,h-60,80,50);
+  list_close_button->setGeometry(w-90,h-60,80,50);
 }
 
 
@@ -609,7 +597,7 @@ void ListAffiliates::RefreshList()
   int count=0;
 
   list_affiliates_list->clear();
-  if(list_missing_box->isChecked()) {
+  if(list_missing_affiliates_check->isChecked()) {
     affidavit_date=QDate(list_year_box->currentText().toInt(),
 			 list_month_box->currentItem()+1,1);
   }
@@ -622,7 +610,7 @@ void ListAffiliates::RefreshList()
                          from AFFILIATES %s \
                          order by AFFILIATES.STATION_CALL desc",
 			(const char *)FilterSql(list_callfilter_edit->text(),
-						list_filter_box->isChecked(),
+						list_show_affiliates_check->isChecked(),
 						affidavit_date));
   q=new QSqlQuery(sql);
   while (q->next()) {
@@ -675,9 +663,9 @@ void ListAffiliates::RefreshList()
 }
 
 
+/*
 void ListAffiliates::UpdateItem(DvtListViewItem *item)
 {
-  /*
   QString sql;
   QSqlQuery *q;
   QString suffix;
@@ -726,8 +714,8 @@ void ListAffiliates::UpdateItem(DvtListViewItem *item)
     item->setText(5,q->value(5).toString());
   }
   delete q;
-*/
 }
+*/
 
 
 QString ListAffiliates::FilterSql(const QString &filter,bool affils_only,
@@ -761,5 +749,18 @@ QString ListAffiliates::FilterSql(const QString &filter,bool affils_only,
     ret+=QString::asprintf("(STATION_CALL like \"%%%s%%\")",
 			   filter.toUtf8().constData());
   }
+  return ret;
+}
+
+
+QDate ListAffiliates::MissingAffiliatesDate() const
+{
+  QDate ret;
+
+  if(list_missing_affiliates_check->isChecked()) {
+    ret=QDate(list_year_box->currentText().toInt(),
+	      list_month_box->currentText().toInt()+1,1);
+  }
+
   return ret;
 }

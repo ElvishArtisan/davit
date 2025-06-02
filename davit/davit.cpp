@@ -376,7 +376,7 @@ void MainWidget::manageProvidersData()
 
 void MainWidget::manageAffiliateData()
 {
-  ListAffiliates *list=new ListAffiliates(this);
+  ListAffiliates *list=new ListAffiliates(config,this);
   list->exec();
   delete list;
 }

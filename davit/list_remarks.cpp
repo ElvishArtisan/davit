@@ -28,13 +28,9 @@
 #include "globals.h"
 #include "list_remarks.h"
 
-ListRemarks::ListRemarks(int id,QWidget *parent)
-  : QDialog(parent)
+ListRemarks::ListRemarks(DvtConfig *c,QWidget *parent)
+  : DvtDialog(c,parent)
 {
-  setModal(true);
-  list_id=id;
-  setWindowTitle(tr("Davit - Affiliate History for ")+DvtStationCallString(id));
-
   //
   // Create Fonts
   //
@@ -64,6 +60,14 @@ ListRemarks::~ListRemarks()
 QSize ListRemarks::sizeHint() const
 {
   return QSize(615,300);
+}
+
+
+void ListRemarks::setAffiliateId(int id)
+{
+  list_id=id;
+  setWindowTitle("Davit - "+tr("Affiliate History for")+" "+
+		 DvtStationCallString(id));
 }
 
 

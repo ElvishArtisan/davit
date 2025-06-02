@@ -23,9 +23,11 @@
 #ifndef CONTACTLISTVIEW_H
 #define CONTACTLISTVIEW_H
 
+#include <QListView>
+
 //#include <qpopupmenu.h>
 
-#include <dvtlistviewitem.h>
+//#include <dvtlistviewitem.h>
 
 class ContactListView : public QListView
 {
@@ -42,7 +44,7 @@ class ContactListView : public QListView
 
  private:
   //  QPopupMenu *item_menu;
-  DvtListViewItem *item_menu_item;
+  //  DvtListViewItem *item_menu_item;
   QWidget *item_parent;
 };
 

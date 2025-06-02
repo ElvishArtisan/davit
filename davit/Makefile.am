@@ -38,6 +38,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      affidavit_report.cpp\
                      affiliatesbymarket_report.cpp\
                      affiliatesbyprogram_report.cpp\
+                     affiliatelistmodel.cpp affiliatelistmodel.h\
                      arbitron_report.cpp\
                      contact.cpp contact.h\
                      contactlistview.cpp contactlistview.h\
@@ -88,6 +89,7 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_add_remark.cpp\
                        moc_add_user.cpp\
                        moc_affidavit_picker.cpp\
+                       moc_affiliatelistmodel.cpp\
                        moc_contactlistview.cpp\
                        moc_davit.cpp\
                        moc_daypicker.cpp\

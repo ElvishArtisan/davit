@@ -28,7 +28,7 @@
 #include <QValidator>
 
 #include <dvtconf.h>
-#include <dvtlistviewitem.h>
+//#include <dvtlistviewitem.h>
 #include <dvtfeed.h>
 
 #include "edit_feed.h"
@@ -642,6 +642,7 @@ void EditProgram::migrateData()
 
 void EditProgram::addFeedData()
 {
+  /*
   DvtFeed feed;
   EditFeed *edit_feed=new EditFeed(&feed,this);
   if(edit_feed->exec()<0) {
@@ -652,6 +653,7 @@ void EditProgram::addFeedData()
   RefreshItem(item,&feed);
   //  edit_feeds_list->ensureItemVisible(item);
   delete edit_feed;
+  */
 }
 
 
@@ -893,9 +895,9 @@ void EditProgram::RefreshList()
 }
 
 
+/*
 void EditProgram::RefreshItem(DvtListViewItem *item,DvtFeed *feed)
 {
-  /*
   item->setText(0,feed->startTime().toString("hh:mm:ss"));
   if(feed->dowActive(7)) {
     item->setText(1,tr("Su"));
@@ -939,5 +941,5 @@ void EditProgram::RefreshItem(DvtListViewItem *item,DvtFeed *feed)
   else {
     item->setText(7,"");
   }
-  */
 }
+*/

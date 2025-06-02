@@ -25,7 +25,7 @@
 #include <QListView>
 #include <QPushButton>
 
-#include <dvtlistviewitem.h>
+//#include <dvtlistviewitem.h>
 
 class ListNetworks : public QDialog
 {
@@ -48,7 +48,7 @@ class ListNetworks : public QDialog
 
  private:
   void RefreshList();
-  void UpdateItem(DvtListViewItem *item,const QString &name);
+  //  void UpdateItem(DvtListViewItem *item,const QString &name);
   //  QListView *list_networks_list;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;

@@ -43,16 +43,17 @@ dist_libdvt_la_SOURCES = algocombobox.cpp algocombobox.h\
                          dvtimport.cpp dvtimport.h\
                          dvtlabel.cpp dvtlabel.h\
                          dvtlistselector.cpp dvtlistselector.h\
-                         dvtlistviewitem.cpp dvtlistviewitem.h\
                          dvtprofile.cpp dvtprofile.h\
                          dvtprofileline.cpp dvtprofileline.h\
                          dvtprofilesection.cpp dvtprofilesection.h\
                          dvtsystem.cpp dvtsystem.h\
                          dvttableview.cpp dvttableview.h\
+                         dvttablewidgetitem.cpp dvttablewidgetitem.h\
                          dvttextfile.cpp dvttextfile.h\
                          dvttransportbutton.cpp dvttransportbutton.h\
                          dvtuser.cpp dvtuser.h\
                          dvtweb.cpp dvtweb.h\
+                         dvtwidget.cpp dvtwidget.h\
                          login.cpp login.h\
                          spread.cpp spread.h\
                          spread_cell.cpp spread_cell.h\
@@ -70,6 +71,7 @@ nodist_libdvt_la_SOURCES = moc_algocombobox.cpp\
                            moc_dvtlistselector.cpp\
                            moc_dvttableview.cpp\
                            moc_dvttransportbutton.cpp\
+                           moc_dvtwidget.cpp\
                            moc_login.cpp\
                            moc_statecombobox.cpp
 

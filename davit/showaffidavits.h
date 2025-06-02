@@ -1,6 +1,6 @@
 // showaffidavits.h
 //
-// Show an affiliates affidavit status.
+// Show an affiliate's affidavit status.
 //
 //   (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -21,23 +21,23 @@
 #ifndef SHOWAFFIDAVITS_H
 #define SHOWAFFIDAVITS_H
 
-#include <QListView>
+#include <QTableWidget>
 #include <QPushButton>
-#include <QWidget>
 
-#include <dvtlistviewitem.h>
+#include <dvtwidget.h>
 
 #include "edit_contact.h"
 #include "maildialog.h"
 
-class ShowAffidavits : public QWidget
+class ShowAffidavits : public DvtWidget
 {
  Q_OBJECT
  public:
-  ShowAffidavits(int id,QWidget *parent);
+  ShowAffidavits(DvtConfig *c,QWidget *parent);
   ~ShowAffidavits();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+  void setAffiliateId(int id);
   void setAffiliateStatus(bool state);
 
  signals:
@@ -51,7 +51,7 @@ class ShowAffidavits : public QWidget
 
  private:
   QPushButton *show_mail_button;
-  QListView *show_list;
+  QTableWidget *show_view;
   int show_id;
 };
 

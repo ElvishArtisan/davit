@@ -30,9 +30,10 @@
 ContactListView::ContactListView(QWidget *parent) 
   : QListView(parent)
 {
+/*
   item_parent=parent;
   item_menu_item=NULL;
-/*
+
   //
   // Right Button Menu
   //

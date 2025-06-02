@@ -27,13 +27,9 @@
 #include "globals.h"
 #include "list_airings.h"
 
-ListAirings::ListAirings(int id,QWidget *parent)
-  : QDialog(parent)
+ListAirings::ListAirings(DvtConfig *c,QWidget *parent)
+  : DvtDialog(c,parent)
 {
-  setModal(true);
-  list_id=id;
-  setWindowTitle(tr("Davit - Program List for ")+DvtStationCallString(id));
-
   //
   // Create Fonts
   //
@@ -102,7 +98,7 @@ ListAirings::ListAirings(int id,QWidget *parent)
     setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateSchedule));
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
 
-  RefreshList();
+  //RefreshList();
 }
 
 
@@ -134,6 +130,14 @@ void ListAirings::hide()
 QSizePolicy ListAirings::sizePolicy() const
 {
   return QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+}
+
+
+void ListAirings::setAffiliateId(int id)
+{
+  list_id=id;
+  setWindowTitle("Davit - "+tr("Program List for")+" "+
+		 DvtStationCallString(id));
 }
 
 
@@ -289,10 +293,9 @@ void ListAirings::resizeEvent(QResizeEvent *e)
   list_delete_button->setGeometry(130,size().height()-35,50,30);
 }
 
-
+/*
 void ListAirings::RefreshList()
 {
-  /*
   QString sql;
   QSqlQuery *q;
 
@@ -346,13 +349,11 @@ void ListAirings::RefreshList()
     }
   }
   delete q;
-  */
 }
 
 
 void ListAirings::RefreshItem(DvtListViewItem *item,DvtFeed *airing)
 {
-  /*
   item->setText(0,airing->name());
   item->setText(1,airing->startTime().toString("hh:mm:ss"));
   item->setText(2,airing->startTime().
@@ -399,5 +400,5 @@ void ListAirings::RefreshItem(DvtListViewItem *item,DvtFeed *airing)
   else {
     item->setText(9,"");
   }
-  */
 }
+*/

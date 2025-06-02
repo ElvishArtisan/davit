@@ -21,23 +21,24 @@
 #ifndef LIST_AIRINGS_H
 #define LIST_AIRINGS_H
 
-#include <QDialog>
 #include <QListView>
 #include <QPushButton>
 
-#include <dvtlistviewitem.h>
+#include <dvtdialog.h>
 #include <dvtfeed.h>
+//#include <dvtlistviewitem.h>
 
 #include "edit_contact.h"
 
-class ListAirings : public QDialog
+class ListAirings : public DvtDialog
 {
  Q_OBJECT
  public:
-  ListAirings(int id,QWidget *parent=0);
+  ListAirings(DvtConfig *c,QWidget *parent=0);
   ~ListAirings();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+  void setAffiliateId(int id);
   void show();
   void hide();
 
@@ -55,8 +56,8 @@ class ListAirings : public QDialog
   void resizeEvent(QResizeEvent *e);
 
  private:
-  void RefreshList();
-  void RefreshItem(DvtListViewItem *item,DvtFeed *airing);
+  //  void RefreshList();
+  //  void RefreshItem(DvtListViewItem *item,DvtFeed *airing);
   //  QListView *list_airings_list;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;

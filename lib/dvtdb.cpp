@@ -109,7 +109,7 @@ QVariant DvtSqlQuery::value(int index) const
   QVariant ret=QSqlQuery::value(index);
 
   if(!ret.isValid()) {
-    fprintf(stderr,"for query: %s\n\n",(const char *)executedQuery().toUtf8());
+    fprintf(stderr,"for query: %s\n\n",lastQuery().toUtf8().constData());
   }
 
   return ret;

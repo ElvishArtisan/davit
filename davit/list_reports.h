@@ -31,7 +31,7 @@
 #include <QStringList>
 
 #include <dvt.h>
-#include <dvtlistviewitem.h>
+//#include <dvtlistviewitem.h>
 #include <spread_sheet.h>
 
 #include "pick_fields.h"

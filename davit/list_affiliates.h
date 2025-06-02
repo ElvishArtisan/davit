@@ -21,9 +21,7 @@
 #ifndef LIST_AFFILIATES_H
 #define LIST_AFFILIATES_H
 
-#include <QDialog>
 #include <QCheckBox>
-//#include <QListview>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QLabel>
@@ -33,20 +31,27 @@
 #include <QProgressDialog>
 #include <QPixmap>
 
-#include <dvtlistviewitem.h>
+#include <dvtdialog.h>
+#include <dvttablewidgetitem.h>
+#include <dvttableview.h>
 
-class ListAffiliates : public QDialog
+#include "add_affiliate.h"
+#include "affiliatelistmodel.h"
+#include "edit_affiliate.h"
+#include "generate_affadavit.h"
+
+class ListAffiliates : public DvtDialog
 {
  Q_OBJECT
  public:
-  ListAffiliates(QWidget *parent=0);
+  ListAffiliates(DvtConfig *c,QWidget *parent);
   ~ListAffiliates();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
 
  private slots:
-  void filterStateChangedData(int state);
-  void missingStateChangedData(int state);
+  void showAffiliatesChangedData(int state);
+  void missingAffiliateChangedData(int state);
   void monthActivatedData(int index);
   void yearActivatedData(int index);
   void filterTextChangedData(const QString &str);
@@ -55,7 +60,8 @@ class ListAffiliates : public QDialog
   void deleteData();
   void affadavitData();
   void affidavitReminderData();
-  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
+  void doubleClickedData(const QModelIndex &index);
+  void rowCountChangedData(int matches);
   void closeData();
 
  protected:
@@ -65,19 +71,21 @@ class ListAffiliates : public QDialog
   void SendAffidavitReminder();
   void DeleteAffiliate(int id);
   void RefreshList();
-  void UpdateItem(DvtListViewItem *item);
+  void UpdateItem(DvtTableWidgetItem *item);
   QString FilterSql(const QString &filter,bool affils_only,
 		    const QDate &affidavit_date);
   //QString FilterSql(const QString &filter,bool affils_only,QSqlQuery *q);
-  QLabel *list_filter_label;
-  QCheckBox *list_filter_box;
-  QLabel *list_missing_label;
-  QCheckBox *list_missing_box;
+  QDate MissingAffiliatesDate() const;
+  QLabel *list_show_affiliates_label;
+  QCheckBox *list_show_affiliates_check;
+  QLabel *list_missing_affiliates_label;
+  QCheckBox *list_missing_affiliates_check;
   QComboBox *list_month_box;
   QComboBox *list_year_box;
   QLabel *list_callfilter_label;
   QLineEdit *list_callfilter_edit;
-  //  QListView *list_affiliates_list;
+  DvtTableView *list_affiliates_view;
+  AffiliateListModel *list_affiliates_model;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;
@@ -85,6 +93,7 @@ class ListAffiliates : public QDialog
   QPushButton *list_affidavit_reminder_button;
   QPushButton *list_close_button;
   QProgressDialog *list_email_progress;
+  EditAffiliate *list_edit_affiliate_dialog;
   QPixmap *list_greenball_map;
   QPixmap *list_redball_map;
   QPixmap *list_whiteball_map;

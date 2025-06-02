@@ -21,20 +21,22 @@
 #ifndef LIST_REMARKS_H
 #define LIST_REMARKS_H
 
-#include <QDialog>
 #include <QPushButton>
 #include <QTextEdit>
 
-#include <contactlistview.h>
+#include <dvtdialog.h>
 
-class ListRemarks : public QDialog
+//#include <contactlistview.h>
+
+class ListRemarks : public DvtDialog
 {
  Q_OBJECT
  public:
-  ListRemarks(int id,QWidget *parent=0);
+  ListRemarks(DvtConfig *c,QWidget *parent=0);
   ~ListRemarks();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+  void setAffiliateId(int id);
   void show();
   void hide();
 

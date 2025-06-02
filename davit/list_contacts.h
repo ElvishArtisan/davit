@@ -21,22 +21,23 @@
 #ifndef LIST_CONTACTS_H
 #define LIST_CONTACTS_H
 
-#include <QDialog>
 #include <QListView>
 #include <QPushButton>
 
 #include <contactlistview.h>
+#include <dvtdialog.h>
 
 #include "edit_contact.h"
 
-class ListContacts : public QDialog
+class ListContacts : public DvtDialog
 {
  Q_OBJECT
  public:
-  ListContacts(int id,QWidget *parent=0);
+  ListContacts(DvtConfig *c,QWidget *parent=0);
   ~ListContacts();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+  void setAffiliateId(int id);
   void show();
   void hide();
 
@@ -54,7 +55,7 @@ class ListContacts : public QDialog
 
  private:
   void RefreshList();
-  void UpdateItem(DvtListViewItem *item,Contact *contact);
+  //  void UpdateItem(DvtListViewItem *item,Contact *contact);
   //  ContactListView *list_contacts_list;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;

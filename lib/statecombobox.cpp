@@ -85,7 +85,7 @@ StateComboBox::StateComboBox(bool incl_all,QWidget *parent)
   insertItem(count(),tr("Wisconsin"));
   insertItem(count(),tr("Wyoming"));
 
-  connect(this,SIGNAL(activated(const QString &)),
+  connect(this,SIGNAL(textActivated(const QString &)),
 	  this,SLOT(activatedData(const QString &)));
 }
 

@@ -328,9 +328,9 @@ void ListPrograms::RefreshList()
 }
 
 
+/*
 void ListPrograms::UpdateItem(DvtListViewItem *item)
 {
-  /*
   QString sql;
   QSqlQuery *q;
 
@@ -345,5 +345,5 @@ void ListPrograms::UpdateItem(DvtListViewItem *item)
     item->setText(4,q->value(2).toString());
   }
   delete q;
-  */
 }
+*/

@@ -1,6 +1,6 @@
-/*   dvtlistviewitem.cpp
+/*   dvttablewidgetitem.cpp
  *
- *   A QListViewItem class for Davit
+ *   A QTableWidgetItem class for Davit
  *
  *   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
  *
@@ -20,23 +20,23 @@
  *
  */
 
-#include "dvtlistviewitem.h"
+#include "dvttablewidgetitem.h"
 
 
-DvtListViewItem::DvtListViewItem(QListView *parent) 
-//  : QListViewItem(parent)
+DvtTableWidgetItem::DvtTableWidgetItem()
+  : QTableWidgetItem(QTableWidgetItem::Type)
 {
   item_id=-1;
 }
 
 
-int DvtListViewItem::id() const
+int DvtTableWidgetItem::id() const
 {
   return item_id;
 }
 
 
-void DvtListViewItem::setId(int id)
+void DvtTableWidgetItem::setId(int id)
 {
   item_id=id;
 }

@@ -25,12 +25,11 @@
 
 #include "list_contacts.h"
 
-ListContacts::ListContacts(int id,QWidget *parent)
-  : QDialog(parent)
+ListContacts::ListContacts(DvtConfig *c,QWidget *parent)
+  : DvtDialog(c,parent)
 {
-  setModal(true);
-  list_id=id;
-  setWindowTitle(tr("Davit - Contacts for ")+DvtStationCallString(id));
+  setModal(false);
+  list_id=-1;
 
   //
   // Create Fonts
@@ -100,6 +99,13 @@ ListContacts::~ListContacts()
 QSize ListContacts::sizeHint() const
 {
   return QSize(615,300);
+}
+
+
+void ListContacts::setAffiliateId(int id)
+{
+  list_id=id;
+  setWindowTitle("Davit - "+tr("Contacts for ")+DvtStationCallString(id));
 }
 
 
@@ -224,10 +230,9 @@ void ListContacts::RefreshList()
   */
 }
 
-
+/*
 void ListContacts::UpdateItem(DvtListViewItem *item,Contact *contact)
 {
-  /*
   QString sql;
   QSqlQuery *q;
 
@@ -297,5 +302,5 @@ void ListContacts::UpdateItem(DvtListViewItem *item,Contact *contact)
   item->setText(6,DvtYesNo(contact->programDirector()));
   item->setText(7,DvtYesNo(contact->generalManager()));
   item->setText(8,DvtYesNo(contact->locked()));
-  */
 }
+*/

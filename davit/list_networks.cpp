@@ -241,13 +241,13 @@ void ListNetworks::RefreshList()
 }
 
 
+/*
 void ListNetworks::UpdateItem(DvtListViewItem *item,const QString &name)
 {
-  /*
   item->setText(0,name);
   QString sql=QString().sprintf("update NETWORKS set NAME=\"%s\" where ID=%d",
 				(const char *)name,item->id());
   QSqlQuery *q=new QSqlQuery(sql);
   delete q;
-  */
 }
+*/

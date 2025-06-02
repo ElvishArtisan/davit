@@ -290,9 +290,9 @@ void ListProviders::RefreshList()
 }
 
 
+/*
 void ListProviders::UpdateItem(DvtListViewItem *item)
 {
-  /*
   QString sql;
   QSqlQuery *q;
 
@@ -307,5 +307,5 @@ void ListProviders::UpdateItem(DvtListViewItem *item)
     item->setText(3,q->value(2).toString());
   }
   delete q;
-  */
 }
+*/
