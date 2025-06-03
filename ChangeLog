@@ -838,3 +838,6 @@
 	davit(1).
 2025-06-02 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored the 'Contacts' dialog in davit(1).
+2025-06-03 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored the 'Program List for <affiliate>' dialog in davit(1).
+	* Refactored the 'Affiliate History' dialog in davit(1).

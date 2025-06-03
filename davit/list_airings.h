@@ -26,8 +26,9 @@
 
 #include <dvtdialog.h>
 #include <dvtfeed.h>
-//#include <dvtlistviewitem.h>
+#include <dvttableview.h>
 
+#include "airinglistmodel.h"
 #include "edit_contact.h"
 
 class ListAirings : public DvtDialog
@@ -50,15 +51,17 @@ class ListAirings : public DvtDialog
   void addData();
   void editData();
   void deleteData();
-  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
+  void doubleClickedData(const QModelIndex &index);
 
  protected:
   void resizeEvent(QResizeEvent *e);
+  void closeEvent(QCloseEvent *);
 
  private:
   //  void RefreshList();
   //  void RefreshItem(DvtListViewItem *item,DvtFeed *airing);
-  //  QListView *list_airings_list;
+  AiringListModel *list_airings_model;
+  DvtTableView *list_airings_view;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;

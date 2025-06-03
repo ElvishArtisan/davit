@@ -18,11 +18,8 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-
 #include <dvtconf.h>
+#include <dvtdb.h>
 
 #include "add_remark.h"
 #include "globals.h"
@@ -31,6 +28,8 @@
 ListRemarks::ListRemarks(DvtConfig *c,QWidget *parent)
   : DvtDialog(c,parent)
 {
+  setModal(true);
+
   //
   // Create Fonts
   //
@@ -47,8 +46,6 @@ ListRemarks::ListRemarks(DvtConfig *c,QWidget *parent)
   list_add_button->
     setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateRemark));
   connect(list_add_button,SIGNAL(clicked()),this,SLOT(addData()));
-
-  RefreshList();
 }
 
 
@@ -68,11 +65,13 @@ void ListRemarks::setAffiliateId(int id)
   list_id=id;
   setWindowTitle("Davit - "+tr("Affiliate History for")+" "+
 		 DvtStationCallString(id));
+  RefreshList();
 }
 
 
 void ListRemarks::show()
 {
+  RefreshList();
   QDialog::show();
   emit visibilityChanged(true);
 }
@@ -101,23 +100,16 @@ void ListRemarks::addData()
 {
   QString remark;
   QString sql;
-  QSqlQuery *q;
 
   AddRemark *d=new AddRemark(&remark,this);
   if(d->exec()==0) {
-    sql=QString::asprintf("insert into AFFILIATE_REMARKS set \
-                           AFFILIATE_ID=%d,\
-                           EVENT_TYPE=%d,\
-                           REMARK_DATETIME=now(),\
-                           USER_NAME=\"%s\",\
-                           REMARK=\"%s\"",
-			  list_id,
-			  Dvt::RemarkNarrative,
-			  DvtEscapeString(global_dvtuser->name()).
-			  toUtf8().constData(),
-			  DvtEscapeString(remark).toUtf8().constData());
-    q=new QSqlQuery(sql);
-    delete q;
+    sql=QString("insert into `AFFILIATE_REMARKS` set ")+
+      QString::asprintf("`AFFILIATE_ID`=%d,",list_id)+
+      QString::asprintf("`EVENT_TYPE`=%d,",Dvt::RemarkNarrative)+
+      "`REMARK_DATETIME`=now(),"+
+      "`USER_NAME`="+DvtSqlQuery::escape(global_dvtuser->name())+","+
+      "`REMARK`="+DvtSqlQuery::escape(remark);
+    DvtSqlQuery::apply(sql);
   }
   delete d;
   RefreshList();
@@ -134,12 +126,16 @@ void ListRemarks::resizeEvent(QResizeEvent *e)
 void ListRemarks::RefreshList()
 {
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   QString remarks;
-  sql=QString::asprintf("select REMARK_DATETIME,USER_NAME,REMARK \
-                         from AFFILIATE_REMARKS where AFFILIATE_ID=%d \
-                         order by REMARK_DATETIME desc",list_id);
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`REMARK_DATETIME`,"+  // 00
+    "`USER_NAME`,"+        // 01
+    "`REMARK` "+           // 02
+    "from `AFFILIATE_REMARKS` where "+
+    QString::asprintf("`AFFILIATE_ID`=%d ",list_id)+
+    "order by `REMARK_DATETIME` desc";
+  q=new DvtSqlQuery(sql);
   while(q->next()) {
     remarks+=("On <strong>"+q->value(0).toDateTime().toString("MM/dd/yyyy"));
     remarks+=(" @ "+q->value(0).toDateTime().toString("h:mm ap")+

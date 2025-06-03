@@ -44,38 +44,43 @@ ListAirings::ListAirings(DvtConfig *c,QWidget *parent)
   //
   // Airings List
   //
+  list_airings_view=new DvtTableView(this);
+  list_airings_model=new AiringListModel(this);
+  list_airings_model->setFont(defaultFont());
+  list_airings_model->setPalette(palette());
+  list_airings_view->setModel(list_airings_model);
+  connect(list_airings_view,SIGNAL(doubleClicked(const QModelIndex &)),
+	  this,SLOT(doubleClickedData(const QModelIndex &)));
 /*
-  list_airings_list=new QListView(this);
-  list_airings_list->setGeometry(10,489,sizeHint().width()-80,100);
-  list_airings_list->setAllColumnsShowFocus(true);
-  list_airings_list->setItemMargin(5);
-  connect(list_airings_list,
+  list_airings_view=new QListView(this);
+  list_airings_view->setAllColumnsShowFocus(true);
+  list_airings_view->setItemMargin(5);
+  connect(list_airings_view,
 	  SIGNAL(doubleClicked(QListViewItem *,const QPoint &,int)),
 	  this,
 	  SLOT(doubleClickedData(QListViewItem *,const QPoint &,int)));
-  list_airings_list->addColumn(tr("Program"));
-  list_airings_list->setColumnAlignment(0,AlignLeft);
-  list_airings_list->addColumn(tr("Start Time"));
-  list_airings_list->setColumnAlignment(1,AlignCenter);
-  list_airings_list->addColumn(tr("End Time"));
-  list_airings_list->setColumnAlignment(2,AlignCenter);
-  list_airings_list->addColumn(tr("Su"));
-  list_airings_list->setColumnAlignment(3,AlignCenter);
-  list_airings_list->addColumn(tr("Mn"));
-  list_airings_list->setColumnAlignment(4,AlignCenter);
-  list_airings_list->addColumn(tr("Tu"));
-  list_airings_list->setColumnAlignment(5,AlignCenter);
-  list_airings_list->addColumn(tr("We"));
-  list_airings_list->setColumnAlignment(6,AlignCenter);
-  list_airings_list->addColumn(tr("Th"));
-  list_airings_list->setColumnAlignment(7,AlignCenter);
-  list_airings_list->addColumn(tr("Fr"));
-  list_airings_list->setColumnAlignment(8,AlignCenter);
-  list_airings_list->addColumn(tr("Sa"));
-  list_airings_list->setColumnAlignment(9,AlignCenter);
+  list_airings_view->addColumn(tr("Program"));
+  list_airings_view->setColumnAlignment(0,AlignLeft);
+  list_airings_view->addColumn(tr("Start Time"));
+  list_airings_view->setColumnAlignment(1,AlignCenter);
+  list_airings_view->addColumn(tr("End Time"));
+  list_airings_view->setColumnAlignment(2,AlignCenter);
+  list_airings_view->addColumn(tr("Su"));
+  list_airings_view->setColumnAlignment(3,AlignCenter);
+  list_airings_view->addColumn(tr("Mn"));
+  list_airings_view->setColumnAlignment(4,AlignCenter);
+  list_airings_view->addColumn(tr("Tu"));
+  list_airings_view->setColumnAlignment(5,AlignCenter);
+  list_airings_view->addColumn(tr("We"));
+  list_airings_view->setColumnAlignment(6,AlignCenter);
+  list_airings_view->addColumn(tr("Th"));
+  list_airings_view->setColumnAlignment(7,AlignCenter);
+  list_airings_view->addColumn(tr("Fr"));
+  list_airings_view->setColumnAlignment(8,AlignCenter);
+  list_airings_view->addColumn(tr("Sa"));
+  list_airings_view->setColumnAlignment(9,AlignCenter);
 */
   list_add_button=new QPushButton(this);
-  list_add_button->setGeometry(sizeHint().width()-60,489,50,30);
   list_add_button->setFont(label_font);
   list_add_button->setText(tr("Add"));
   list_add_button->
@@ -83,7 +88,6 @@ ListAirings::ListAirings(DvtConfig *c,QWidget *parent)
   connect(list_add_button,SIGNAL(clicked()),this,SLOT(addData()));
 
   list_edit_button=new QPushButton(this);
-  list_edit_button->setGeometry(sizeHint().width()-60,524,50,30);
   list_edit_button->setFont(label_font);
   list_edit_button->setText(tr("Edit"));
   list_edit_button->
@@ -91,7 +95,6 @@ ListAirings::ListAirings(DvtConfig *c,QWidget *parent)
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
 
   list_delete_button=new QPushButton(this);
-  list_delete_button->setGeometry(sizeHint().width()-60,559,50,30);
   list_delete_button->setFont(label_font);
   list_delete_button->setText(tr("Delete"));
   list_delete_button->
@@ -138,6 +141,8 @@ void ListAirings::setAffiliateId(int id)
   list_id=id;
   setWindowTitle("Davit - "+tr("Program List for")+" "+
 		 DvtStationCallString(id));
+  list_airings_model->setAffiliateId(id);
+  list_airings_view->resizeColumnsToContents();
 }
 
 
@@ -154,9 +159,9 @@ void ListAirings::addData()
     return;
   }
   program_id=feed.addToAffiliate(list_id);
-  DvtListViewItem *item=new DvtListViewItem(list_airings_list);
+  DvtListViewItem *item=new DvtListViewItem(list_airings_view);
   RefreshItem(item,&feed);
-  list_airings_list->ensureItemVisible(item);
+  list_airings_view->ensureItemVisible(item);
 
   //
   // Add Remark
@@ -186,7 +191,7 @@ void ListAirings::addData()
 void ListAirings::editData()
 {
   /*
-  DvtListViewItem *item=(DvtListViewItem *)list_airings_list->selectedItem();
+  DvtListViewItem *item=(DvtListViewItem *)list_airings_view->selectedItem();
   if(item==NULL) {
     return;
   }
@@ -220,7 +225,7 @@ void ListAirings::deleteData()
   QSqlQuery *q;
   QSqlQuery *q1;
   int program_id=-1;
-  DvtListViewItem *item=(DvtListViewItem *)list_airings_list->selectedItem();
+  DvtListViewItem *item=(DvtListViewItem *)list_airings_view->selectedItem();
   if(item==NULL) {
     return;
   }
@@ -278,19 +283,25 @@ void ListAirings::deleteData()
   */
 }
 
-/*
-void ListAirings::doubleClickedData(QListViewItem *item,const QPoint &pt,int c)
+
+void ListAirings::doubleClickedData(const QModelIndex &index)
 {
   editData();
 }
-*/
+
 
 void ListAirings::resizeEvent(QResizeEvent *e)
 {
-  //list_airings_list->setGeometry(0,0,size().width(),size().height()-40);
+  list_airings_view->setGeometry(0,0,size().width(),size().height()-40);
   list_add_button->setGeometry(10,size().height()-35,50,30);
   list_edit_button->setGeometry(70,size().height()-35,50,30);
   list_delete_button->setGeometry(130,size().height()-35,50,30);
+}
+
+
+void ListAirings::closeEvent(QCloseEvent *)
+{
+  hide();
 }
 
 /*
@@ -299,7 +310,7 @@ void ListAirings::RefreshList()
   QString sql;
   QSqlQuery *q;
 
-  list_airings_list->clear();
+  list_airings_view->clear();
   DvtListViewItem *item=NULL;
   sql=QString().sprintf("select PROGRAMS.PROGRAM_NAME,\
                          AIRINGS.AIR_TIME,\
@@ -317,7 +328,7 @@ void ListAirings::RefreshList()
 			list_id);
   q=new QSqlQuery(sql);
   while(q->next()) {
-    item=new DvtListViewItem(list_airings_list);
+    item=new DvtListViewItem(list_airings_view);
     item->setId(q->value(10).toInt());
     item->setText(0,q->value(0).toString());
     item->setText(1,q->value(1).toTime().toString("hh:mm:ss"));

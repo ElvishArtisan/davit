@@ -52,26 +52,7 @@ ListContacts::ListContacts(DvtConfig *c,QWidget *parent)
   list_contacts_view->setModel(list_contacts_model);
   connect(list_contacts_view,SIGNAL(doubleClicked(const QModelIndex &)),
 	  this,SLOT(doubleClickedData(const QModelIndex &)));
-  /*
-  list_contacts_list->addColumn(tr("Name"));
-  list_contacts_list->setColumnAlignment(0,AlignLeft);
-  list_contacts_list->addColumn(tr("Title"));
-  list_contacts_list->setColumnAlignment(1,AlignLeft);
-  list_contacts_list->addColumn(tr("Phone"));
-  list_contacts_list->setColumnAlignment(2,AlignCenter);
-  list_contacts_list->addColumn(tr("FAX"));
-  list_contacts_list->setColumnAlignment(3,AlignCenter);
-  list_contacts_list->addColumn(tr("E-Mail"));
-  list_contacts_list->setColumnAlignment(4,AlignCenter);
-  list_contacts_list->addColumn(tr("Affidavit"));
-  list_contacts_list->setColumnAlignment(5,AlignCenter);
-  list_contacts_list->addColumn(tr("Prog Dir"));
-  list_contacts_list->setColumnAlignment(6,AlignCenter);
-  list_contacts_list->addColumn(tr("Gen Mgr"));
-  list_contacts_list->setColumnAlignment(7,AlignCenter);
-  list_contacts_list->addColumn(tr("Locked"));
-  list_contacts_list->setColumnAlignment(8,AlignCenter);
-  */
+
   list_add_button=new QPushButton(this);
   list_add_button->setFont(label_font);
   list_add_button->setText(tr("Add"));
