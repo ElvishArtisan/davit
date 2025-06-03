@@ -23,44 +23,57 @@
 #define EDIT_CONTACT_H
 
 #include <QCheckBox>
-#include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
+#include <QPushButton>
+
+#include <dvtdialog.h>
 
 #include "contact.h"
 
-class EditContact : public QDialog
+class EditContact : public DvtDialog
 {
  Q_OBJECT
  public:
-  EditContact(QWidget *parent=0);
+  EditContact(DvtConfig *c,QWidget *parent=0);
   ~EditContact();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
 
  public slots:
-  int exec(Contact *contact);
+  int exec(int contact_id,bool new_contact);
 
  private slots:
   void emailChangedData(const QString &str);
   void okData();
   void cancelData();
 
+ protected:
+  void resizeEvent(QResizeEvent *e);
+  void closeEvent(QResizeEvent *e);
+  
  private:
+  QLabel *edit_name_label;
   QLineEdit *edit_name_edit;
+  QLabel *edit_title_label;
   QLineEdit *edit_title_edit;
+  QLabel *edit_phone_label;
   QLineEdit *edit_phone_edit;
+  QLabel *edit_fax_label;
   QLineEdit *edit_fax_edit;
+  QLabel *edit_email_label;
   QLineEdit *edit_email_edit;
-  QCheckBox *edit_affidavit_box;
   QLabel *edit_affidavit_label;
+  QCheckBox *edit_affidavit_box;
   QCheckBox *edit_program_director_box;
   QLabel *edit_program_director_label;
   QCheckBox *edit_general_manager_box;
   QLabel *edit_general_manager_label;
   QCheckBox *edit_locked_box;
   QLabel *edit_locked_label;
-  Contact *edit_contact;
+  QPushButton *edit_ok_button;
+  QPushButton *edit_cancel_button;
+  int edit_contact_id;
 };
 
 

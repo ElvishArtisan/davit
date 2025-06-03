@@ -18,7 +18,6 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <QSqlDatabase>
 #include <QMessageBox>
 
 #include <dvtconf.h>
@@ -40,7 +39,7 @@ ListContacts::ListContacts(DvtConfig *c,QWidget *parent)
   //
   // Edit Contact Dialog
   //
-  list_contact_dialog=new EditContact(this);
+  list_editcontact_dialog=new EditContact(c,this);
 
   //
   // Contact List
@@ -115,59 +114,60 @@ QSizePolicy ListContacts::sizePolicy() const
 
 void ListContacts::addData()
 {
-  /*
-  Contact *contact=new Contact();
-  if(list_contact_dialog->exec(contact)==0) {
-    DvtListViewItem *item=new DvtListViewItem(list_contacts_view);
-    UpdateItem(item,contact);
+  QString sql=QString("insert into `CONTACTS` set ")+
+    QString::asprintf("`AFFILIATE_ID`=%d,",list_id)+
+    "`NAME`="+DvtSqlQuery::escape(tr("[new contact]"));
+  int contact_id=DvtSqlQuery::run(sql).toInt();
+  if(list_editcontact_dialog->exec(contact_id,true)) {
+    QModelIndex index=list_contacts_model->addContact(contact_id);
+    if(index.isValid()) {
+      list_contacts_view->
+	selectionModel()->select(index,QItemSelectionModel::ClearAndSelect|
+				 QItemSelectionModel::Rows);
+    }
   }
-  delete contact;
-  */
+  else {
+    sql=QString("delete from `CONTACTS` where ")+
+      QString::asprintf("`CONTACTS`.`ID`=%d ",contact_id);
+    DvtSqlQuery::apply(sql);
+  }
 }
 
 
 void ListContacts::editData()
 {
-  /*
-  DvtListViewItem *item=(DvtListViewItem *)list_contacts_view->selectedItem();
-  if(item==NULL) {
+  QModelIndexList rows=list_contacts_view->selectionModel()->selectedRows();
+
+  if(rows.size()!=1) {
     return;
   }
-  Contact *contact=new Contact();
-  contact->setName(item->text(0));
-  contact->setTitle(item->text(1));
-  contact->setPhone(item->text(2));
-  contact->setFax(item->text(3));
-  contact->setEmail(item->text(4));
-  contact->setAffidavit(item->text(5)=="Y");
-  contact->setProgramDirector(item->text(6)=="Y");
-  contact->setGeneralManager(item->text(7)=="Y");
-  contact->setLocked(item->text(8)=="Y");
-  if(list_contact_dialog->exec(contact)==0) {
-    UpdateItem(item,contact);
+  if(list_editcontact_dialog->
+     exec(list_contacts_model->contactId(rows.first()),false)) {
+    list_contacts_model->refresh(rows.first());
   }
-  delete contact;
-  */
 }
 
 
 void ListContacts::deleteData()
 {
-  /*
-  QString sql;
-  QSqlQuery *q;
-  DvtListViewItem *item=(DvtListViewItem *)list_contacts_view->selectedItem();
-  if(item==NULL) {
+  QModelIndexList rows=list_contacts_view->selectionModel()->selectedRows();
+
+  if(rows.size()!=1) {
     return;
   }
-  if(QMessageBox::question(this,"Davit",tr("Are you sure you want to delete this contact?"),QMessageBox::Yes,QMessageBox::No)!=QMessageBox::Yes) {
+  if(QMessageBox::question(this,
+	     "Davit",tr("Are you sure you want to delete the contact for")+
+			   " \""+
+			   list_contacts_model->contactName(rows.first())+
+			   "\"?",
+		 QMessageBox::Yes,QMessageBox::No)!=QMessageBox::Yes) {
     return;
   }
-  sql=QString().sprintf("delete from CONTACTS where ID=%d",item->id());
-  q=new QSqlQuery(sql);
-  delete q;
-  delete item;
-  */
+  int contact_id=list_contacts_model->contactId(rows.first());
+  QString sql=QString("delete from `CONTACTS` where ")+
+    QString::asprintf("`CONTACTS`.`ID`=%d ",contact_id);
+  DvtSqlQuery::apply(sql);
+  list_contacts_model->removeContact(rows.first());
 }
 
 
@@ -190,107 +190,3 @@ void ListContacts::closeEvent(QCloseEvent *)
 {
   hide();
 }
-
-
-void ListContacts::RefreshList()
-{
-  /*
-  QString sql;
-  QSqlQuery *q;
-  DvtListViewItem *item=NULL;
-
-  sql=QString().sprintf("select ID,NAME,TITLE,PHONE,FAX,EMAIL,AFFIDAVIT,\
-                         PROGRAM_DIRECTOR,GENERAL_MANAGER,LOCKED \
-                         from CONTACTS where AFFILIATE_ID=%d",list_id);
-  q=new QSqlQuery(sql);
-  while(q->next()) {
-    item=new DvtListViewItem(list_contacts_view);
-    item->setId(q->value(0).toInt());
-    item->setText(0,q->value(1).toString());
-    item->setText(1,q->value(2).toString());
-    item->setText(2,DvtFormatPhoneNumber(q->value(3).toString()));
-    item->setText(3,DvtFormatPhoneNumber(q->value(4).toString()));
-    item->setText(4,q->value(5).toString());
-    item->setText(5,q->value(6).toString());
-    item->setText(6,q->value(7).toString());
-    item->setText(7,q->value(8).toString());
-    item->setText(8,q->value(9).toString());
-  }
-  delete q;
-  */
-}
-
-/*
-void ListContacts::UpdateItem(DvtListViewItem *item,Contact *contact)
-{
-  QString sql;
-  QSqlQuery *q;
-
-  if(item->id()>0) {
-    sql=QString().sprintf("update CONTACTS set \
-                           NAME=\"%s\",\
-                           TITLE=\"%s\",\
-                           PHONE=\"%s\",\
-                           FAX=\"%s\",\
-                           EMAIL=\"%s\",\
-                           AFFIDAVIT=\"%s\",\
-                           PROGRAM_DIRECTOR=\"%s\",\
-                           GENERAL_MANAGER=\"%s\",\
-                           LOCKED=\"%s\" \
-                           where ID=%d",
-			  (const char *)DvtEscapeString(contact->name()),
-			  (const char *)DvtEscapeString(contact->title()),
-			  (const char *)DvtEscapeString(contact->phone()),
-			  (const char *)DvtEscapeString(contact->fax()),
-			  (const char *)DvtEscapeString(contact->email()),
-			  (const char *)DvtYesNo(contact->affidavit()),
-			  (const char *)DvtYesNo(contact->programDirector()),
-			  (const char *)DvtYesNo(contact->generalManager()),
-			  (const char *)DvtYesNo(contact->locked()),
-			  item->id());
-    q=new QSqlQuery(sql);
-    delete q;
-  }
-  else {
-    sql=QString().sprintf("insert into CONTACTS set \
-                           NAME=\"%s\",\
-                           TITLE=\"%s\",\
-                           PHONE=\"%s\",\
-                           FAX=\"%s\",\
-                           EMAIL=\"%s\",\
-                           AFFIDAVIT=\"%s\",\
-                           PROGRAM_DIRECTOR=\"%s\",\
-                           GENERAL_MANAGER=\"%s\",\
-                           LOCKED=\"%s\",\
-                           AFFILIATE_ID=%d",
-			  (const char *)DvtEscapeString(contact->name()),
-			  (const char *)DvtEscapeString(contact->title()),
-			  (const char *)DvtEscapeString(contact->phone()),
-			  (const char *)DvtEscapeString(contact->fax()),
-			  (const char *)DvtEscapeString(contact->email()),
-			  (const char *)DvtYesNo(contact->affidavit()),
-			  (const char *)DvtYesNo(contact->programDirector()),
-			  (const char *)DvtYesNo(contact->generalManager()),
-			  (const char *)DvtYesNo(contact->locked()),
-			  list_id);
-    printf("SQL: %s\n",(const char *)sql);
-    q=new QSqlQuery(sql);
-    delete q;
-    sql="select LAST_INSERT_ID() from CONTACTS";
-    q=new QSqlQuery(sql);
-    if(q->first()) {
-      item->setId(q->value(0).toInt());
-    }
-    delete q;
-  }
-  item->setText(0,contact->name());
-  item->setText(1,contact->title());
-  item->setText(2,DvtFormatPhoneNumber(contact->phone()));
-  item->setText(3,DvtFormatPhoneNumber(contact->fax()));
-  item->setText(4,contact->email());
-  item->setText(5,DvtYesNo(contact->affidavit()));
-  item->setText(6,DvtYesNo(contact->programDirector()));
-  item->setText(7,DvtYesNo(contact->generalManager()));
-  item->setText(8,DvtYesNo(contact->locked()));
-}
-*/

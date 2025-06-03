@@ -44,6 +44,7 @@ class ContactListModel : public QAbstractTableModel
   QVariant headerData(int section,Qt::Orientation orient,
 		      int role=Qt::DisplayRole) const;
   QVariant data(const QModelIndex &index,int role=Qt::DisplayRole) const;
+  int contactId(const QModelIndex &row) const;
   QString contactName(const QModelIndex &row) const;
   QModelIndex addContact(int contact_id);
   void removeContact(const QModelIndex &row);

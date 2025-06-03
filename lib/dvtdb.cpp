@@ -194,6 +194,15 @@ QString DvtSqlQuery::escape(const QString &str)
 }
 
 
+QString DvtSqlQuery::escape(bool state)
+{
+  if(state) {
+    return QString("'Y'");
+  }
+  return QString("'N'");
+}
+
+
 /*
 bool RDOpenDb (int *schema,QString *err_str,RDConfig *config)
 {

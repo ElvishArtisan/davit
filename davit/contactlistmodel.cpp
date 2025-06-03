@@ -156,6 +156,12 @@ QVariant ContactListModel::data(const QModelIndex &index,int role) const
 }
 
 
+int ContactListModel::contactId(const QModelIndex &row) const
+{
+  return d_ids.at(row.row());
+}
+
+
 QString ContactListModel::contactName(const QModelIndex &row) const
 {
   return d_texts.at(row.row()).at(0).toString();
@@ -170,11 +176,11 @@ QModelIndex ContactListModel::addContact(int contact_id)
   int offset=d_ids.size();
 
   beginInsertRows(QModelIndex(),offset,offset);
+  d_ids.insert(offset,contact_id);
   QList<QVariant> list;
   for(int i=0;i<columnCount();i++) {
     list.push_back(QVariant());
   }
-  d_ids.insert(offset,contact_id);
   d_texts.insert(offset,list);
   d_icons.insert(offset,QVariant());
   updateRowLine(offset);
@@ -211,7 +217,7 @@ void ContactListModel::refresh(const QModelIndex &row)
 {
   if(row.row()<d_texts.size()) {
     QString sql=sqlFields()+
-      "from 'CONTACTS` where "+
+      "where "+
       QString::asprintf("`CONTACTS`.`ID`=%d ",d_ids.at(row.row()));
     DvtSqlQuery *q=new DvtSqlQuery(sql);
     if(q->first()) {
@@ -270,8 +276,9 @@ void ContactListModel::updateRowLine(int line)
 {
   if(line<d_texts.size()) {
     QString sql=sqlFields()+
-      "from `CONTACTS` where "+
+      " where "+
       QString::asprintf("`ID`=%d ",d_ids.at(line));
+    printf("UPDATEROWLINE line: %d SQL: %s\n",line,sql.toUtf8().constData());
     DvtSqlQuery *q=new DvtSqlQuery(sql);
     if(q->first()) {
       updateRow(line,q);

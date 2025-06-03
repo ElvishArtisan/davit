@@ -56,16 +56,13 @@ class ListContacts : public DvtDialog
   void closeEvent(QCloseEvent *);
   
  private:
-  void RefreshList();
-  //  void UpdateItem(DvtListViewItem *item,Contact *contact);
-  //  ContactListView *list_contacts_list;
   DvtTableView *list_contacts_view;
   ContactListModel *list_contacts_model;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;
   int list_id;
-  EditContact *list_contact_dialog;
+  EditContact *list_editcontact_dialog;
 };
 
 

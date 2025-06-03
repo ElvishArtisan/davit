@@ -36,6 +36,7 @@ class DvtSqlQuery : public QSqlQuery
   static bool apply(const QString &sql,QString *err_msg=NULL);
   static int rows(const QString &sql);
   static QString escape(const QString &str);
+  static QString escape(bool state);
 
  private:
   int sql_columns;
