@@ -45,3 +45,6 @@ RHEL/CentOS 6:
 
 RHEL/CentOS 7:
 	./configure --prefix=/usr --libexecdir=/var/www/dvt-bin
+
+Ubuntu 22.04:
+        ./configure --prefix=/usr --libexecdir=/var/www/dvt-bin

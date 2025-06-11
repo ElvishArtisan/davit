@@ -25,27 +25,35 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDateTimeEdit>
-#include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 
-#include <dvtfeed.h>
+#include <dvtdialog.h>
 
-class EditAiring : public QDialog
+class EditAiring : public DvtDialog
 {
  Q_OBJECT
  public:
-  EditAiring(DvtFeed *slot,QWidget *parent=0);
+  EditAiring(DvtConfig *c,QWidget *parent=0);
   ~EditAiring();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
 
+ public slots:
+  int exec(int airing_id,bool new_entry=false);
+
  private slots:
+  void programIndexChangedData(int index);
   void okData();
   void cancelData();
 
+ protected:
+  void resizeEvent(QResizeEvent *e);
+  void closeEvent(QCloseEvent *e);
+
  private:
+  QLabel *edit_program_label;
   QComboBox *edit_program_box;
   QLabel *edit_starttime_label;
   QTimeEdit *edit_starttime_edit;
@@ -65,8 +73,10 @@ class EditAiring : public QDialog
   QCheckBox *edit_fri_button;
   QLabel *edit_sat_label;
   QCheckBox *edit_sat_button;
-  DvtFeed *edit_feed;
+  QPushButton *edit_ok_button;
+  QPushButton *edit_cancel_button;
+  int edit_airing_id;
 };
 
 
-#endif  // EDIT_FEED_H
+#endif  // EDIT_AIRING_H

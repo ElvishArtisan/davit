@@ -45,6 +45,7 @@ class AiringListModel : public QAbstractTableModel
 		      int role=Qt::DisplayRole) const;
   QVariant data(const QModelIndex &index,int role=Qt::DisplayRole) const;
   int airingId(const QModelIndex &row) const;
+  QString programName(const QModelIndex &row) const;
   QModelIndex addAiring(int airing_id);
   void removeAiring(const QModelIndex &row);
   void removeAiring(int airing_id);

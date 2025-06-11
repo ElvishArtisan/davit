@@ -39,7 +39,7 @@ ListAirings::ListAirings(DvtConfig *c,QWidget *parent)
   //
   // Edit Contact Dialog
   //
-  list_contact_dialog=new EditContact(config,this);
+  list_editairing_dialog=new EditAiring(config,this);
 
   //
   // Airings List
@@ -51,35 +51,11 @@ ListAirings::ListAirings(DvtConfig *c,QWidget *parent)
   list_airings_view->setModel(list_airings_model);
   connect(list_airings_view,SIGNAL(doubleClicked(const QModelIndex &)),
 	  this,SLOT(doubleClickedData(const QModelIndex &)));
-/*
-  list_airings_view=new QListView(this);
-  list_airings_view->setAllColumnsShowFocus(true);
-  list_airings_view->setItemMargin(5);
-  connect(list_airings_view,
-	  SIGNAL(doubleClicked(QListViewItem *,const QPoint &,int)),
-	  this,
-	  SLOT(doubleClickedData(QListViewItem *,const QPoint &,int)));
-  list_airings_view->addColumn(tr("Program"));
-  list_airings_view->setColumnAlignment(0,AlignLeft);
-  list_airings_view->addColumn(tr("Start Time"));
-  list_airings_view->setColumnAlignment(1,AlignCenter);
-  list_airings_view->addColumn(tr("End Time"));
-  list_airings_view->setColumnAlignment(2,AlignCenter);
-  list_airings_view->addColumn(tr("Su"));
-  list_airings_view->setColumnAlignment(3,AlignCenter);
-  list_airings_view->addColumn(tr("Mn"));
-  list_airings_view->setColumnAlignment(4,AlignCenter);
-  list_airings_view->addColumn(tr("Tu"));
-  list_airings_view->setColumnAlignment(5,AlignCenter);
-  list_airings_view->addColumn(tr("We"));
-  list_airings_view->setColumnAlignment(6,AlignCenter);
-  list_airings_view->addColumn(tr("Th"));
-  list_airings_view->setColumnAlignment(7,AlignCenter);
-  list_airings_view->addColumn(tr("Fr"));
-  list_airings_view->setColumnAlignment(8,AlignCenter);
-  list_airings_view->addColumn(tr("Sa"));
-  list_airings_view->setColumnAlignment(9,AlignCenter);
-*/
+  connect(list_airings_view->selectionModel(),
+     SIGNAL(selectionChanged(const QItemSelection &,const QItemSelection &)),
+     this,
+     SLOT(selectionChangedData(const QItemSelection &,const QItemSelection &)));
+
   list_add_button=new QPushButton(this);
   list_add_button->setFont(label_font);
   list_add_button->setText(tr("Add"));
@@ -93,6 +69,7 @@ ListAirings::ListAirings(DvtConfig *c,QWidget *parent)
   list_edit_button->
     setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateSchedule));
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
+  list_edit_button->setDisabled(true);
 
   list_delete_button=new QPushButton(this);
   list_delete_button->setFont(label_font);
@@ -100,8 +77,7 @@ ListAirings::ListAirings(DvtConfig *c,QWidget *parent)
   list_delete_button->
     setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateSchedule));
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
-
-  //RefreshList();
+  list_delete_button->setDisabled(true);
 }
 
 
@@ -138,7 +114,7 @@ QSizePolicy ListAirings::sizePolicy() const
 
 void ListAirings::setAffiliateId(int id)
 {
-  list_id=id;
+  list_affiliate_id=id;
   setWindowTitle("Davit - "+tr("Program List for")+" "+
 		 DvtStationCallString(id));
   list_airings_model->setAffiliateId(id);
@@ -148,145 +124,107 @@ void ListAirings::setAffiliateId(int id)
 
 void ListAirings::addData()
 {
-  /*
-  QString sql;
-  QSqlQuery *q;
-  DvtFeed feed;
-  int program_id=-1;
-  EditAiring *edit_airing=new EditAiring(&feed,this);
-  if(edit_airing->exec()<0) {
-    delete edit_airing;
-    return;
+  QString sql=QString("insert into `AIRINGS` set ")+
+    QString::asprintf("`AFFILIATE_ID`=%d,",list_affiliate_id)+
+    "`PROGRAM_ID`=0 ";
+  int airing_id=DvtSqlQuery::run(sql).toInt();
+  if(list_editairing_dialog->exec(airing_id,true)) {
+    QModelIndex index=list_airings_model->addAiring(airing_id);
+    if(index.isValid()) {
+      list_airings_view->
+	selectionModel()->select(index,QItemSelectionModel::ClearAndSelect|
+				 QItemSelectionModel::Rows);
+    }
   }
-  program_id=feed.addToAffiliate(list_id);
-  DvtListViewItem *item=new DvtListViewItem(list_airings_view);
-  RefreshItem(item,&feed);
-  list_airings_view->ensureItemVisible(item);
-
-  //
-  // Add Remark
-  //
-  sql=QString().sprintf("insert into AFFILIATE_REMARKS set \
-                         AFFILIATE_ID=%d,\
-                         PROGRAM_ID=%d,\
-                         EVENT_TYPE=%d,\
-                         REMARK_DATETIME=now(),\
-                         USER_NAME=\"%s\",\
-                         REMARK=\"Added an airing of %s.\"",
-			list_id,
-			program_id,
-			Dvt::RemarkProgramAdd,
-			(const char *)
-			DvtEscapeString(global_dvtuser->name()),
-			(const char *)
-			DvtEscapeString(feed.name()));
-  q=new QSqlQuery(sql);
-  delete q;
-  delete edit_airing;
-  emit remarkAdded();
-  */
+  else {
+    sql=QString("delete from `AIRINGS` where ")+
+      QString::asprintf("`ID`=%d ",airing_id);
+    DvtSqlQuery::apply(sql);
+  }
 }
 
 
 void ListAirings::editData()
 {
-  /*
-  DvtListViewItem *item=(DvtListViewItem *)list_airings_view->selectedItem();
-  if(item==NULL) {
+  QModelIndexList rows=list_airings_view->selectionModel()->selectedRows();
+
+  if(rows.size()!=1) {
     return;
   }
-  DvtFeed feed;
-  feed.setName(item->text(0));
-  feed.setStartTime(item->text(1));
-  feed.setLength(item->text(2));
-  feed.setDowActive(7,!item->text(3).isEmpty());
-  feed.setDowActive(1,!item->text(4).isEmpty());
-  feed.setDowActive(2,!item->text(5).isEmpty());
-  feed.setDowActive(3,!item->text(6).isEmpty());
-  feed.setDowActive(4,!item->text(7).isEmpty());
-  feed.setDowActive(5,!item->text(8).isEmpty());
-  feed.setDowActive(6,!item->text(9).isEmpty());
-  EditAiring *edit_airing=new EditAiring(&feed,this);
-  if(edit_airing->exec()<0) {
-    delete edit_airing;
-    return;
+  if(list_editairing_dialog->exec(list_airings_model->airingId(rows.first()))) {
+    list_airings_model->refresh(rows.first());
   }
-  feed.modifyAffiliate(item->id());
-  RefreshItem(item,&feed);
-  delete edit_airing;
-  */
 }
 
 
 void ListAirings::deleteData()
 {
-  /*
-  QString sql;
-  QSqlQuery *q;
-  QSqlQuery *q1;
+  QModelIndexList rows=list_airings_view->selectionModel()->selectedRows();
   int program_id=-1;
-  DvtListViewItem *item=(DvtListViewItem *)list_airings_view->selectedItem();
-  if(item==NULL) {
+
+  if(rows.size()!=1) {
     return;
   }
-  if(QMessageBox::question(this,tr("Davit - Delete Airing?"),
-		 tr("Are you sure you want to deleting this airing of \"")+
-			   item->text(0)+"\"?",
-			   QMessageBox::Yes,QMessageBox::No)!=
-     QMessageBox::Yes) {
+  if(QMessageBox::question(this,
+	     "Davit",tr("Are you sure you want to delete the airing for")+
+			   " \""+
+			   list_airings_model->programName(rows.first())+
+			   "\"?",
+		 QMessageBox::Yes,QMessageBox::No)!=QMessageBox::Yes) {
     return;
   }
-  sql=QString().
-    sprintf("select PROGRAM_ID from AIRINGS where ID=%d",item->id());
-  q=new QSqlQuery(sql);
+
+  //
+  // Get Program ID
+  //
+  QString sql=QString("select ")+
+    "`PROGRAM_ID` "+  // 00
+    "from `AIRINGS` where "+
+    QString::asprintf("`ID`=%d ",list_airings_model->airingId(rows.first()));
+  DvtSqlQuery *q=new DvtSqlQuery(sql);
   if(q->first()) {
     program_id=q->value(0).toInt();
   }
   delete q;
-
-  sql=QString().sprintf("delete from AIRINGS where ID=%d",item->id());
-  q=new QSqlQuery(sql);
-  delete q;
-
-  sql=QString().
-    sprintf("select ID from AIRINGS where AFFILIATE_ID=%d",list_id);
-  q=new QSqlQuery(sql);
-  if(!q->first()) {
-    sql=QString().sprintf("update AFFILIATES set IS_AFFILIATE=\"N\",\
-                           AFFIDAVIT_ACTIVE=\"N\" where ID=%d",list_id);
-    q1=new QSqlQuery(sql);
-    delete q1;
-  }
-  delete q;
-
+  
   //
   // Add Remark
   //
-  sql=QString().sprintf("insert into AFFILIATE_REMARKS set \
-                         AFFILIATE_ID=%d,\
-                         PROGRAM_ID=%d,\
-                         EVENT_TYPE=%d,\
-                         REMARK_DATETIME=now(),\
-                         USER_NAME=\"%s\",\
-                         REMARK=\"Deleted an airing of %s.\"",
-			list_id,
-			program_id,
-			Dvt::RemarkProgramDelete,
-			(const char *)
-			DvtEscapeString(global_dvtuser->name()),
-			(const char *)
-			DvtEscapeString(item->text(0)));
-  q=new QSqlQuery(sql);
-  delete q;
-  delete item;
+  sql=QString("insert into `AFFILIATE_REMARKS` set ")+
+    QString::asprintf("`AFFILIATE_ID`=%d,",list_affiliate_id)+
+    QString::asprintf("`PROGRAM_ID`=%d,",program_id)+
+    QString::asprintf("`EVENT_TYPE`=%d,",Dvt::RemarkProgramDelete)+
+    "`REMARK_DATETIME`=now(),"+
+    "`USER_NAME`="+DvtSqlQuery::escape(global_dvtuser->name())+","+
+    "`REMARK`="+DvtSqlQuery::escape(tr("Deleted an airing of")+" "+
+			   list_airings_model->programName(rows.first())+".");
+  DvtSqlQuery::apply(sql);
+
+  //
+  // Delete Airing Record
+  //
+  sql=QString("delete from `AIRINGS` where ")+
+    QString::asprintf("`ID`=%d",list_airings_model->airingId(rows.first()));
+  DvtSqlQuery::apply(sql);
+  list_airings_model->removeAiring(rows.first());
+
   emit remarkAdded();
-  */
 }
 
 
 void ListAirings::doubleClickedData(const QModelIndex &index)
 {
   editData();
+}
+
+
+void ListAirings::selectionChangedData(const QItemSelection &now,
+				       const QItemSelection &prev)
+{
+  QModelIndexList rows=list_airings_view->selectionModel()->selectedRows();
+
+  list_edit_button->setEnabled(rows.size()==1);
+  list_delete_button->setEnabled(rows.size()==1);
 }
 
 
@@ -303,113 +241,3 @@ void ListAirings::closeEvent(QCloseEvent *)
 {
   hide();
 }
-
-/*
-void ListAirings::RefreshList()
-{
-  QString sql;
-  QSqlQuery *q;
-
-  list_airings_view->clear();
-  DvtListViewItem *item=NULL;
-  sql=QString().sprintf("select PROGRAMS.PROGRAM_NAME,\
-                         AIRINGS.AIR_TIME,\
-                         AIRINGS.AIR_LENGTH,\
-                         AIRINGS.AIR_SUN,\
-                         AIRINGS.AIR_MON,\
-                         AIRINGS.AIR_TUE,\
-                         AIRINGS.AIR_WED,\
-                         AIRINGS.AIR_THU,\
-                         AIRINGS.AIR_FRI,\
-                         AIRINGS.AIR_SAT,\
-                         AIRINGS.ID from PROGRAMS left join AIRINGS \
-                         on PROGRAMS.ID=AIRINGS.PROGRAM_ID \
-                         where AIRINGS.AFFILIATE_ID=%d",
-			list_id);
-  q=new QSqlQuery(sql);
-  while(q->next()) {
-    item=new DvtListViewItem(list_airings_view);
-    item->setId(q->value(10).toInt());
-    item->setText(0,q->value(0).toString());
-    item->setText(1,q->value(1).toTime().toString("hh:mm:ss"));
-    QTime t=q->value(1).toTime().addSecs(q->value(2).toInt());
-    if(t==QTime(23,59,59)) {
-      t=QTime(0,0,0);
-    }
-    item->setText(2,t.toString("hh:mm:ss"));
-    if(q->value(3).toString()=="Y") {
-      item->setText(3,tr("Su"));
-    }
-    if(q->value(4).toString()=="Y") {
-      item->setText(4,tr("Mo"));
-    }
-    if(q->value(5).toString()=="Y") {
-      item->setText(5,tr("Tu"));
-    }
-    if(q->value(6).toString()=="Y") {
-      item->setText(6,tr("We"));
-    }
-    if(q->value(7).toString()=="Y") {
-      item->setText(7,tr("Th"));
-    }
-    if(q->value(8).toString()=="Y") {
-      item->setText(8,tr("Fr"));
-    }
-    if(q->value(9).toString()=="Y") {
-      item->setText(9,tr("Sa"));
-    }
-  }
-  delete q;
-}
-
-
-void ListAirings::RefreshItem(DvtListViewItem *item,DvtFeed *airing)
-{
-  item->setText(0,airing->name());
-  item->setText(1,airing->startTime().toString("hh:mm:ss"));
-  item->setText(2,airing->startTime().
-		addSecs(airing->length()).toString("hh:mm:ss"));
-  if(airing->dowActive(7)) {
-    item->setText(3,tr("Su"));
-  }
-  else {
-    item->setText(3,"");
-  }
-  if(airing->dowActive(1)) {
-    item->setText(4,tr("Mo"));
-  }
-  else {
-    item->setText(4,"");
-  }
-  if(airing->dowActive(2)) {
-    item->setText(5,tr("Tu"));
-  }
-  else {
-    item->setText(5,"");
-  }
-  if(airing->dowActive(3)) {
-    item->setText(6,tr("We"));
-  }
-  else {
-    item->setText(6,"");
-  }
-  if(airing->dowActive(4)) {
-    item->setText(7,tr("Th"));
-  }
-  else {
-    item->setText(7,"");
-  }
-  if(airing->dowActive(5)) {
-    item->setText(8,tr("Fr"));
-  }
-  else {
-    item->setText(8,"");
-  }
-  if(airing->dowActive(6)) {
-    item->setText(9,tr("Sa"));
-  }
-  else {
-    item->setText(9,"");
-  }
-}
-*/

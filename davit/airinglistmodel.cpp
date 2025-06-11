@@ -168,6 +168,12 @@ int AiringListModel::airingId(const QModelIndex &row) const
 }
 
 
+QString AiringListModel::programName(const QModelIndex &row) const
+{
+  return d_texts.at(row.row()).at(0).toString();
+}
+
+
 QModelIndex AiringListModel::addAiring(int airing_id)
 {
   //
@@ -216,8 +222,7 @@ void AiringListModel::removeAiring(int airing_id)
 void AiringListModel::refresh(const QModelIndex &row)
 {
   if(row.row()<d_texts.size()) {
-    QString sql=sqlFields()+
-      "from 'AIRINGS` where "+
+    QString sql=sqlFields()+"where "+
       QString::asprintf("`AIRINGS`.`ID`=%d ",d_ids.at(row.row()));
     DvtSqlQuery *q=new DvtSqlQuery(sql);
     if(q->first()) {
@@ -276,8 +281,8 @@ void AiringListModel::updateRowLine(int line)
 {
   if(line<d_texts.size()) {
     QString sql=sqlFields()+
-      "from `AIRINGS` where "+
-      QString::asprintf("`ID`=%d ",d_ids.at(line));
+      "where "+
+      QString::asprintf("`AIRINGS`.`ID`=%d ",d_ids.at(line));
     DvtSqlQuery *q=new DvtSqlQuery(sql);
     if(q->first()) {
       updateRow(line,q);
@@ -378,10 +383,5 @@ QString AiringListModel::sqlFields() const
     "`AIRINGS`.`AIR_SAT` "+        // 10
     "from `PROGRAMS` left join `AIRINGS` "+
     "on `PROGRAMS`.`ID`=`AIRINGS`.`PROGRAM_ID` ";
-  /*
-  where "+
-    QString::asprintf("`AIRINGS`.`AFFILIATE_ID`=%d",)+
-			list_id);
-  */
     return sql;
 }

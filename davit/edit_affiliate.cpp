@@ -406,7 +406,6 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
     showRemarksData();
   }
 
-
   //
   //  OK Button
   //

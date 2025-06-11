@@ -844,3 +844,6 @@
 2025-06-03 Fred Gleason <fredg@paravelsystems.com>
 	* Reenabled the ability to add and delete contacts in the 'Contacts'
 	dialog in davit(1).
+2025-06-11 Fred Gleason <fredg@paravelsystems.com>
+	* Reenabled the ability to add and delete program airings in the
+	'Program List' dialog in davit(1).

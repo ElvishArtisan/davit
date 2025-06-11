@@ -29,7 +29,7 @@
 #include <dvttableview.h>
 
 #include "airinglistmodel.h"
-#include "edit_contact.h"
+#include "edit_airing.h"
 
 class ListAirings : public DvtDialog
 {
@@ -52,21 +52,21 @@ class ListAirings : public DvtDialog
   void editData();
   void deleteData();
   void doubleClickedData(const QModelIndex &index);
+  void selectionChangedData(const QItemSelection &now,
+			    const QItemSelection &prev);
 
  protected:
   void resizeEvent(QResizeEvent *e);
   void closeEvent(QCloseEvent *);
 
  private:
-  //  void RefreshList();
-  //  void RefreshItem(DvtListViewItem *item,DvtFeed *airing);
   AiringListModel *list_airings_model;
   DvtTableView *list_airings_view;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;
-  int list_id;
-  EditContact *list_contact_dialog;
+  int list_affiliate_id;
+  EditAiring *list_editairing_dialog;
 };
 
 
