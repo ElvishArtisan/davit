@@ -860,3 +860,6 @@
 2025-06-26 Fred Gleason <fredg@paravelsystems.com>
 	* Modified the 'List Affiliates' dialog in davit(1) to set the
 	'Show Affiliates Only' checkbox to be ticked by default.
+2025-06-26 Fred Gleason <fredg@paravelsystems.com>
+	* Adjusted the column width for the days of the week indicators
+	in davit(1)'s 'Edit Show Time' dialog.

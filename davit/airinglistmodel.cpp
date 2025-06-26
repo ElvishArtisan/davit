@@ -137,6 +137,12 @@ QVariant AiringListModel::data(const QModelIndex &index,int role) const
       }
       break;
 
+    case Qt::SizeHintRole:
+      if((col>=3)&&(col<10)) {
+	return QSize(30,10);
+      }
+      break;
+      
     case Qt::TextAlignmentRole:
       ret=d_alignments.at(col);
       break;

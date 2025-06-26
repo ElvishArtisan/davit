@@ -225,7 +225,6 @@ int EditAiring::exec(int airing_id,bool new_entry)
 
 void EditAiring::programIndexChangedData(int index)
 {
-  printf("index: %d\n",index);
   edit_ok_button->setDisabled(index==0);
 }
 
