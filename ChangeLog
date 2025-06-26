@@ -857,3 +857,6 @@
 2025-06-26 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed various issues in davit(1) with showing/hiding modeless
 	dialogs in the 'Edit Affiliate' dialog.
+2025-06-26 Fred Gleason <fredg@paravelsystems.com>
+	* Modified the 'List Affiliates' dialog in davit(1) to set the
+	'Show Affiliates Only' checkbox to be ticked by default.

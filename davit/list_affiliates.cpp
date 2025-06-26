@@ -79,6 +79,7 @@ ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
   // Show Affiliates Checkbox
   //
   list_show_affiliates_check=new QCheckBox(this);
+  list_show_affiliates_check->setChecked(true);
   list_show_affiliates_label=new QLabel(tr("Show Affiliates Only"),this);
   list_show_affiliates_label->setFont(labelFont());
   list_show_affiliates_label->setAlignment(Qt::AlignVCenter|Qt::AlignLeft);
@@ -213,7 +214,7 @@ ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
   list_close_button->setText("&Close");
   connect(list_close_button,SIGNAL(clicked()),this,SLOT(closeData()));
 
-  showAffiliatesChangedData(false);
+  showAffiliatesChangedData(true);
 }
 
 
