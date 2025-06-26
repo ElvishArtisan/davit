@@ -27,7 +27,9 @@
 #include <QStringList>
 #include <QWidget>
 
-#include <login.h>
+#include "list_affiliates.h"
+#include "list_users.h"
+#include "login.h"
 
 class MainWidget : public QWidget
 {
@@ -62,6 +64,8 @@ class MainWidget : public QWidget
   QString GetNextLine(FILE *f);
 
   Login *d_login_dialog;
+  ListUsers *d_users_dialog;
+  ListAffiliates *d_affiliates_dialog;
 };
 
 

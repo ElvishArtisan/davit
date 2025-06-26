@@ -854,3 +854,6 @@
 2025-06-26 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in davit(1) that caused the 'Pgm Dir' column to be
 	hidden in the 'Show Contacts' dialog.
+2025-06-26 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed various issues in davit(1) with showing/hiding modeless
+	dialogs in the 'Edit Affiliate' dialog.

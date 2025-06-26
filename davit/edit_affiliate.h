@@ -51,6 +51,7 @@ class EditAffiliate : public DvtDialog
 
  public slots:
   int exec(int affiliate_id);
+  void done(int r);
 
  private slots:
   void affidavitToggledData(bool state);

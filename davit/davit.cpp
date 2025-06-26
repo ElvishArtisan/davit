@@ -44,13 +44,11 @@
 #include "opendb.h"
 #include "davit.h"
 #include "globals.h"
-#include "list_affiliates.h"
 #include "list_providers.h"
 #include "list_programs.h"
 #include "list_networks.h"
 #include "list_reports.h"
 #include "edit_system.h"
-#include "list_users.h"
 
 //
 // Global Classes
@@ -213,6 +211,8 @@ MainWidget::MainWidget(QWidget *parent)
   // Create Dialogs
   //
   mail_dialog=new MailDialog(this);
+  d_users_dialog=new ListUsers(config,this);
+  d_affiliates_dialog=new ListAffiliates(config,this);
 
   //
   // Title
@@ -349,10 +349,14 @@ QSizePolicy MainWidget::sizePolicy() const
 
 void MainWidget::manageUsersData()
 {
+  /*
   ListUsers *list=new ListUsers(config,this);
   list->exec();
   global_dvtuser->load();
   delete list;
+  */
+  d_users_dialog->exec();
+  global_dvtuser->load();
 }
 
 
@@ -376,9 +380,7 @@ void MainWidget::manageProvidersData()
 
 void MainWidget::manageAffiliateData()
 {
-  ListAffiliates *list=new ListAffiliates(config,this);
-  list->exec();
-  delete list;
+  d_affiliates_dialog->exec();
 }
 
 

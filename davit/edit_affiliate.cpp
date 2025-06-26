@@ -377,9 +377,6 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_airings_button=new QPushButton(tr("Show Program List"),this);
   edit_airings_button->setFont(labelFont());
   connect(edit_airings_button,SIGNAL(clicked()),this,SLOT(showAiringsData()));
-  if(global_geometry->isVisible(Geometry::AiringsWidget)) {
-    showAiringsData();
-  }
 
   //
   // Show Contacts Button
@@ -388,9 +385,6 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_contacts_button->setFont(labelFont());
   connect(edit_contacts_button,SIGNAL(clicked()),
 	  this,SLOT(showContactsData()));
-  if(global_geometry->isVisible(Geometry::ContactsWidget)) {
-    showContactsData();
-  }
 
   //
   // Show Affiliate History Button
@@ -402,9 +396,6 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
 	  edit_remarks_list,SLOT(refresh()));
   connect(edit_affidavits,SIGNAL(remarksUpdated()),
 	  edit_remarks_list,SLOT(refresh()));
-  if(global_geometry->isVisible(Geometry::RemarksWidget)) {
-    showRemarksData();
-  }
 
   //
   //  OK Button
@@ -447,10 +438,23 @@ int EditAffiliate::exec(int affiliate_id)
   edit_id=affiliate_id;
   setWindowTitle("Davit - "+tr("Edit Affiliate")+
 		 QString::asprintf(" [id=%d]",edit_id));
-  edit_contact_list->setAffiliateId(affiliate_id);
+
   edit_affidavits->setAffiliateId(affiliate_id);
+
+  edit_contact_list->setAffiliateId(affiliate_id);
+  if(global_geometry->isVisible(Geometry::ContactsWidget)) {
+    showContactsData();
+  }
+
   edit_airings_list->setAffiliateId(affiliate_id);
+  if(global_geometry->isVisible(Geometry::AiringsWidget)) {
+    showAiringsData();
+  }
+
   edit_remarks_list->setAffiliateId(affiliate_id);
+  if(global_geometry->isVisible(Geometry::RemarksWidget)) {
+    showRemarksData();
+  }
 
   //
   // Load Data
@@ -601,6 +605,16 @@ int EditAffiliate::exec(int affiliate_id)
   }
 
   return QDialog::exec();
+}
+
+
+void EditAffiliate::done(int r)
+{
+  edit_contact_list->hide();
+  edit_airings_list->hide();
+  edit_remarks_list->hide();
+
+  QDialog::done(r);
 }
 
 
