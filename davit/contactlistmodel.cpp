@@ -34,28 +34,31 @@ ContactListModel::ContactListModel(QObject *parent)
   unsigned center=Qt::AlignCenter;
   //  unsigned right=Qt::AlignRight|Qt::AlignVCenter;
 
-  d_headers.push_back(tr("Name"));
+  d_headers.push_back(tr("Name"));            // 00
   d_alignments.push_back(left);
 
-  d_headers.push_back(tr("Title"));
+  d_headers.push_back(tr("Title"));           // 01
   d_alignments.push_back(left);
 
-  d_headers.push_back(tr("Phone Number"));
+  d_headers.push_back(tr("Phone Number"));    // 02
   d_alignments.push_back(left);
 
-  d_headers.push_back(tr("FAX Number"));
+  d_headers.push_back(tr("FAX Number"));      // 03
   d_alignments.push_back(left);
 
-  d_headers.push_back(tr("E-Mail Address"));
+  d_headers.push_back(tr("E-Mail Address"));  // 04
   d_alignments.push_back(left);
 
-  d_headers.push_back(tr("Affadavit"));
+  d_headers.push_back(tr("Affidavit"));       // 05
   d_alignments.push_back(center);
 
-  d_headers.push_back(tr("Gen Mgr"));
+  d_headers.push_back(tr("Pgm Dir"));         // 06
   d_alignments.push_back(center);
 
-  d_headers.push_back(tr("Locked"));
+  d_headers.push_back(tr("Gen Mgr"));         // 07
+  d_alignments.push_back(center);
+
+  d_headers.push_back(tr("Locked"));          // 08
   d_alignments.push_back(center);
 }
 
@@ -308,7 +311,7 @@ void ContactListModel::updateRow(int row,DvtSqlQuery *q)
   // E-Mail
   texts.push_back(q->value(5));
 
-  // Affadavit
+  // Affidavit
   texts.push_back(q->value(6));
 
   // Program Director

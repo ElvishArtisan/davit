@@ -851,3 +851,6 @@
 	* Fixed a regression that caused toggling of the 'Show/Hide Program
 	List' and 'Show/Hide Affiliate History' buttons on the 'Edit
 	Affiliate' dialog to fail in davit(1).
+2025-06-26 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in davit(1) that caused the 'Pgm Dir' column to be
+	hidden in the 'Show Contacts' dialog.
