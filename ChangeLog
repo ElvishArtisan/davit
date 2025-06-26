@@ -847,3 +847,7 @@
 2025-06-11 Fred Gleason <fredg@paravelsystems.com>
 	* Reenabled the ability to add and delete program airings in the
 	'Program List' dialog in davit(1).
+2025-06-26 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression that caused toggling of the 'Show/Hide Program
+	List' and 'Show/Hide Affiliate History' buttons on the 'Edit
+	Affiliate' dialog to fail in davit(1).

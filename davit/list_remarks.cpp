@@ -28,7 +28,7 @@
 ListRemarks::ListRemarks(DvtConfig *c,QWidget *parent)
   : DvtDialog(c,parent)
 {
-  setModal(true);
+  setModal(false);
 
   //
   // Create Fonts

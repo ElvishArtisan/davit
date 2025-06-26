@@ -30,6 +30,8 @@
 ListAirings::ListAirings(DvtConfig *c,QWidget *parent)
   : DvtDialog(c,parent)
 {
+  setModal(false);
+
   //
   // Create Fonts
   //
