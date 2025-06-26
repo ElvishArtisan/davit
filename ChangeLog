@@ -866,3 +866,9 @@
 2025-06-26 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression in davit(1) where the incorrect time format
 	was displayed for the start end times in 'Program List' dialog.
+2025-06-26 Fred Gleason <fredg@paravelsystems.com>
+	* Restored addition of a remark when adding a program airing in
+	davit(1).
+	* Added 'RemarkProgramEdit' to the 'Dvt::RemarkType' enumeration.
+	* Added addition of a remark when editing a program airing in
+	davit(1).

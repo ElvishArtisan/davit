@@ -136,6 +136,30 @@ void ListAirings::addData()
       list_airings_view->
 	selectionModel()->select(index,QItemSelectionModel::ClearAndSelect|
 				 QItemSelectionModel::Rows);
+
+      //
+      // Add Remark
+      //
+      sql=QString("select ")+
+	"`AIRINGS`.`PROGRAM_ID`,"+     // 00
+	"`PROGRAMS`.`PROGRAM_NAME` "+  // 01
+	"from `AIRINGS` left join `PROGRAMS` "+
+	"on `AIRINGS`.`PROGRAM_ID`=`PROGRAMS`.`ID` where "+
+	QString::asprintf("`AIRINGS`.`ID`=%d",airing_id);
+      DvtSqlQuery *q=new DvtSqlQuery(sql);
+      if(q->first()) {
+	sql=QString("insert into `AFFILIATE_REMARKS` set ")+
+	  QString::asprintf("`AFFILIATE_ID`=%d,",list_affiliate_id)+
+	  QString::asprintf("`PROGRAM_ID`=%d,",q->value(0).toInt())+
+	  QString::asprintf("`EVENT_TYPE`=%d,",Dvt::RemarkProgramAdd)+
+	  "`REMARK_DATETIME`=now(),"+
+	  "`USER_NAME`="+DvtSqlQuery::escape(global_dvtuser->name())+","+
+	  "`REMARK`="+DvtSqlQuery::escape(tr("Added an airing of")+" "+
+					  q->value(1).toString()+".");
+	DvtSqlQuery::apply(sql);
+      }
+      delete q;
+      emit remarkAdded();
     }
   }
   else {
@@ -153,8 +177,33 @@ void ListAirings::editData()
   if(rows.size()!=1) {
     return;
   }
-  if(list_editairing_dialog->exec(list_airings_model->airingId(rows.first()))) {
+  int airing_id=list_airings_model->airingId(rows.first());
+  if(list_editairing_dialog->exec(airing_id)) {
     list_airings_model->refresh(rows.first());
+
+    //
+    // Add Remark
+    //
+    QString sql=QString("select ")+
+      "`AIRINGS`.`PROGRAM_ID`,"+     // 00
+      "`PROGRAMS`.`PROGRAM_NAME` "+  // 01
+      "from `AIRINGS` left join `PROGRAMS` "+
+      "on `AIRINGS`.`PROGRAM_ID`=`PROGRAMS`.`ID` where "+
+      QString::asprintf("`AIRINGS`.`ID`=%d",airing_id);
+    DvtSqlQuery *q=new DvtSqlQuery(sql);
+    if(q->first()) {
+      sql=QString("insert into `AFFILIATE_REMARKS` set ")+
+	QString::asprintf("`AFFILIATE_ID`=%d,",list_affiliate_id)+
+	QString::asprintf("`PROGRAM_ID`=%d,",q->value(0).toInt())+
+	QString::asprintf("`EVENT_TYPE`=%d,",Dvt::RemarkProgramEdit)+
+	"`REMARK_DATETIME`=now(),"+
+	"`USER_NAME`="+DvtSqlQuery::escape(global_dvtuser->name())+","+
+	"`REMARK`="+DvtSqlQuery::escape(tr("Edited an airing of")+" "+
+					q->value(1).toString()+".");
+      DvtSqlQuery::apply(sql);
+    }
+    delete q;
+    emit remarkAdded();
   }
 }
 

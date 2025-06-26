@@ -78,7 +78,7 @@ class Dvt
 {
  public:
   enum RemarkType {RemarkNarrative=0,RemarkProgramAdd=1,RemarkProgramDelete=2,
-		   RemarkAffidavitReminder=3};
+    RemarkAffidavitReminder=3,RemarkProgramEdit=4};
   enum AiredState {AiredStateUnknown=0, AiredStateScheduled=1,
 		   AiredStateConfirmed=2,AiredStateDenied=3,
 		   AiredStateModified=4};
