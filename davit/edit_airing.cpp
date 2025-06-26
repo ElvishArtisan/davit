@@ -114,6 +114,7 @@ EditAiring::EditAiring(DvtConfig *c,QWidget *parent)
   // Start Time
   //
   edit_starttime_edit=new QTimeEdit(this);
+  edit_starttime_edit->setDisplayFormat("hh:mm:ss");
   edit_starttime_label=new QLabel(tr("Starting at:"),this);
   edit_starttime_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_starttime_label->setFont(labelFont());
@@ -122,6 +123,7 @@ EditAiring::EditAiring(DvtConfig *c,QWidget *parent)
   // End Time
   //
   edit_endtime_edit=new QTimeEdit(this);
+  edit_endtime_edit->setDisplayFormat("hh:mm:ss");
   edit_endtime_label=new QLabel(tr("Ending at:"),this);
   edit_endtime_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_endtime_label->setFont(labelFont());
