@@ -46,7 +46,6 @@
 #include "globals.h"
 #include "list_providers.h"
 #include "list_programs.h"
-#include "list_networks.h"
 #include "list_reports.h"
 #include "edit_system.h"
 
@@ -213,6 +212,7 @@ MainWidget::MainWidget(QWidget *parent)
   mail_dialog=new MailDialog(this);
   d_users_dialog=new ListUsers(config,this);
   d_affiliates_dialog=new ListAffiliates(config,this);
+  d_networks_dialog=new ListNetworks(config,this);
 
   //
   // Title
@@ -349,12 +349,6 @@ QSizePolicy MainWidget::sizePolicy() const
 
 void MainWidget::manageUsersData()
 {
-  /*
-  ListUsers *list=new ListUsers(config,this);
-  list->exec();
-  global_dvtuser->load();
-  delete list;
-  */
   d_users_dialog->exec();
   global_dvtuser->load();
 }
@@ -394,9 +388,7 @@ void MainWidget::manageProgramsData()
 
 void MainWidget::manageNetworksData()
 {
-  ListNetworks *list=new ListNetworks(this);
-  list->exec();
-  delete list;
+  d_networks_dialog->exec();
 }
 
 

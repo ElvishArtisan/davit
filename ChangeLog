@@ -872,3 +872,5 @@
 	* Added 'RemarkProgramEdit' to the 'Dvt::RemarkType' enumeration.
 	* Added addition of a remark when editing a program airing in
 	davit(1).
+2025-06-26 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored the 'Networks' dialog in davit(1).

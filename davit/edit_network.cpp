@@ -20,70 +20,50 @@
 
 #include <math.h>
 
-#include <QLabel>
 #include <QMessageBox>
-#include <QPushButton>
-#include <QSqlDatabase>
-#include <QSqlQuery>
+
+#include <dvtdb.h>
 
 #include "edit_network.h"
 
 
-EditNetwork::EditNetwork(QString *network,QWidget *parent)
-  : QDialog(parent)
+EditNetwork::EditNetwork(DvtConfig *c,QWidget *parent)
+  : DvtDialog(c,parent)
 {
   setModal(true);
-  edit_network=network;
+  edit_network_id=-1;
 
   //
   // Fix the Window Size
   //
-  setMinimumWidth(sizeHint().width());
-  setMinimumHeight(sizeHint().height());
-  setMaximumWidth(sizeHint().width());
-  setMaximumHeight(sizeHint().height());
-
-  setWindowTitle("Davit - Edit Network");
-
-  //
-  // Create Fonts
-  //
-  QFont label_font=QFont("Helvetica",12,QFont::Bold);
-  label_font.setPixelSize(12);
-  QFont font=QFont("Helvetica",12,QFont::Normal);
-  font.setPixelSize(12);
+  setMinimumSize(sizeHint());
+  setMaximumSize(sizeHint());
 
   //
   // Network Name
   //
   edit_network_edit=new QLineEdit(this);
-  edit_network_edit->setGeometry(110,10,sizeHint().width()-120,20);
-  edit_network_edit->setFont(font);
   edit_network_edit->setMaxLength(64);
-  edit_network_edit->setText(*network);
-  QLabel *label=new QLabel("Network Name:",this);
-  label->setGeometry(10,10,95,20);
-  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-  label->setFont(label_font);
+  edit_network_label=new QLabel("Network Name:",this);
+  edit_network_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  edit_network_label->setFont(labelFont());
 
   //
   //  OK Button
   //
-  QPushButton *button=new QPushButton(this);
-  button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
-  button->setDefault(true);
-  button->setFont(label_font);
-  button->setText("&OK");
-  connect(button,SIGNAL(clicked()),this,SLOT(okData()));
+  edit_ok_button=new QPushButton(this);
+  edit_ok_button->setDefault(true);
+  edit_ok_button->setFont(buttonFont());
+  edit_ok_button->setText("&OK");
+  connect(edit_ok_button,SIGNAL(clicked()),this,SLOT(okData()));
 
   //
   //  Cancel Button
   //
-  button=new QPushButton(this);
-  button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
-  button->setFont(label_font);
-  button->setText("&Cancel");
-  connect(button,SIGNAL(clicked()),this,SLOT(cancelData()));
+  edit_cancel_button=new QPushButton(this);
+  edit_cancel_button->setFont(buttonFont());
+  edit_cancel_button->setText("&Cancel");
+  connect(edit_cancel_button,SIGNAL(clicked()),this,SLOT(cancelData()));
 }
 
 
@@ -104,22 +84,61 @@ QSizePolicy EditNetwork::sizePolicy() const
 }
 
 
+int EditNetwork::exec(int network_id,bool new_entry)
+{
+  edit_network_id=network_id;
+
+  setWindowTitle("Davit - "+tr("Edit Network")+
+		 QString::asprintf(" [Id: %d]",network_id));
+
+  QString sql=QString("select ")+
+    "`NAME` "+  // 00
+    "from `NETWORKS` where "+
+    QString::asprintf("`ID`=%d",network_id);
+  DvtSqlQuery *q=new DvtSqlQuery(sql);
+  if(q->first()) {
+    edit_network_edit->setText(q->value(0).toString());
+    if(new_entry) {
+      edit_network_edit->selectAll();
+    }
+  }
+  delete q;
+
+  return QDialog::exec();
+}
+
+
 void EditNetwork::okData()
 {
   QString sql=
-    QString::asprintf("update NETWORKS set NAME=\"%s\" where NAME=\"%s\"",
-		      DvtEscapeString(edit_network_edit->text()).
-		      toUtf8().constData(),
-		      DvtEscapeString(edit_network_edit->text()).
-		      toUtf8().constData());
-  QSqlQuery *q=new QSqlQuery(sql);
-  delete q;
-  *edit_network=edit_network_edit->text();
-  done(0);
+    QString::asprintf("update `NETWORKS` set ")+
+    "`NAME`="+DvtSqlQuery::escape(edit_network_edit->text())+" where "+
+    QString::asprintf("`ID`=%d",edit_network_id);
+  DvtSqlQuery::apply(sql);
+
+  done(true);
 }
 
 
 void EditNetwork::cancelData()
 {
-  done(-1);
+  done(false);
+}
+
+
+void EditNetwork::resizeEvent(QResizeEvent *e)
+{
+  int w=size().width();
+  int h=size().height();
+
+  edit_network_label->setGeometry(10,10,95,20);
+  edit_network_edit->setGeometry(110,10,w-120,20);
+  edit_ok_button->setGeometry(w-180,h-60,80,50);
+  edit_cancel_button->setGeometry(w-90,h-60,80,50);
+}
+
+
+void EditNetwork::closeEvent(QCloseEvent *e)
+{
+  cancelData();
 }

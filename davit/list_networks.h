@@ -21,17 +21,19 @@
 #ifndef LIST_NETWORKS_H
 #define LIST_NETWORKS_H
 
-#include <QDialog>
-#include <QListView>
 #include <QPushButton>
 
-//#include <dvtlistviewitem.h>
+#include <dvtdialog.h>
+#include <dvttableview.h>
 
-class ListNetworks : public QDialog
+#include "edit_network.h"
+#include "networklistmodel.h"
+
+class ListNetworks : public DvtDialog
 {
  Q_OBJECT
  public:
-  ListNetworks(QWidget *parent=0);
+  ListNetworks(DvtConfig *c,QWidget *parent=0);
   ~ListNetworks();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -40,20 +42,20 @@ class ListNetworks : public QDialog
   void addData();
   void editData();
   void deleteData();
-  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
+  void doubleClickedData(const QModelIndex &index);
   void closeData();
 
  protected:
   void resizeEvent(QResizeEvent *e);
 
  private:
-  void RefreshList();
-  //  void UpdateItem(DvtListViewItem *item,const QString &name);
-  //  QListView *list_networks_list;
+  DvtTableView *list_networks_view;
+  NetworkListModel *list_networks_model;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;
   QPushButton *list_close_button;
+  EditNetwork *list_editnetwork_dialog;
 };
 
 

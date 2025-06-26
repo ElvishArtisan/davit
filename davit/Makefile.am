@@ -73,6 +73,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      missingaffidavit_report.cpp\
                      missingaffidavitcontact_report.cpp\
                      mysql_login.cpp mysql_login.h\
+                     networklistmodel.cpp networklistmodel.h\
                      opendb.cpp opendb.h\
                      pick_daypart.cpp pick_daypart.h\
                      pick_fields.cpp pick_fields.h\
@@ -118,6 +119,7 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_maildialog.cpp\
                        moc_migrate_affiliates.cpp\
                        moc_mysql_login.cpp\
+                       moc_networklistmodel.cpp\
                        moc_pick_daypart.cpp\
                        moc_pick_fields.cpp\
                        moc_preview.cpp\

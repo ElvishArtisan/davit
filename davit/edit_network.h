@@ -21,28 +21,40 @@
 #ifndef EDIT_NETWORK_H
 #define EDIT_NETWORK_H
 
-#include <QDialog>
-#include <QLineEdit>
 #include <QComboBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
 
 #include <dvtconf.h>
+#include <dvtdialog.h>
 
-class EditNetwork : public QDialog
+class EditNetwork : public DvtDialog
 {
  Q_OBJECT
  public:
-  EditNetwork(QString *network,QWidget *parent=0);
+  EditNetwork(DvtConfig *c,QWidget *parent=0);
   ~EditNetwork();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
 
+ public slots:
+  int exec(int network_id,bool new_item=false);
+				
  private slots:
   void okData();
   void cancelData();
 
+ protected:
+  void resizeEvent(QResizeEvent *e);
+  void closeEvent(QCloseEvent *e);
+
  private:
+  QLabel *edit_network_label;
   QLineEdit *edit_network_edit;
-  QString *edit_network;
+  QPushButton *edit_ok_button;
+  QPushButton *edit_cancel_button;
+  int edit_network_id;
 };
 
 
