@@ -877,3 +877,5 @@
 2025-06-29 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored the 'List Programs', 'Edit Program' and 'Edit Feed Slot'
 	dialogs in davit(1).
+2025-06-29 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the 'DvtFeed' class.

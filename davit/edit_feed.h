@@ -31,7 +31,6 @@
 
 #include <dvtconfig.h>
 #include <dvtdialog.h>
-#include <dvtfeed.h>
 
 class EditFeed : public DvtDialog
 {

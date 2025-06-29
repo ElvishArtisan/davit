@@ -25,7 +25,6 @@
 #include <QPushButton>
 
 #include <dvtdialog.h>
-#include <dvtfeed.h>
 #include <dvttableview.h>
 
 #include "airinglistmodel.h"

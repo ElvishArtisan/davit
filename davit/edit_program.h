@@ -33,7 +33,6 @@
 #include <algocombobox.h>
 #include <dvtconfig.h>
 #include <dvtdialog.h>
-#include <dvtfeed.h>
 #include <dvttableview.h>
 
 #include "edit_feed.h"

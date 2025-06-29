@@ -38,7 +38,6 @@ dist_libdvt_la_SOURCES = algocombobox.cpp algocombobox.h\
                          dvtdatepicker.cpp dvtdatepicker.h\
                          dvtdb.cpp dvtdb.h\
                          dvtdialog.cpp dvtdialog.h\
-                         dvtfeed.cpp dvtfeed.h\
                          dvtfontengine.cpp dvtfontengine.h\
                          dvtimport.cpp dvtimport.h\
                          dvtlabel.cpp dvtlabel.h\

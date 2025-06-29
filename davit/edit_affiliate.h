@@ -32,7 +32,6 @@
 #include <QButtonGroup>
 
 #include <dvtdialog.h>
-#include <dvtfeed.h>
 
 #include "list_contacts.h"
 #include "list_airings.h"

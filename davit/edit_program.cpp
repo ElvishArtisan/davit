@@ -27,8 +27,6 @@
 
 #include <dvtconf.h>
 #include <dvtdb.h>
-//#include <dvtlistviewitem.h>
-#include <dvtfeed.h>
 
 #include "edit_feed.h"
 #include "edit_program.h"
