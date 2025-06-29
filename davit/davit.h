@@ -29,6 +29,7 @@
 
 #include "list_affiliates.h"
 #include "list_networks.h"
+#include "list_programs.h"
 #include "list_users.h"
 #include "login.h"
 
@@ -68,6 +69,7 @@ class MainWidget : public QWidget
   ListUsers *d_users_dialog;
   ListAffiliates *d_affiliates_dialog;
   ListNetworks *d_networks_dialog;
+  ListPrograms *d_programs_dialog;
 };
 
 

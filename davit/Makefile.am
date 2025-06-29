@@ -56,6 +56,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      edit_provider.cpp edit_provider.h\
                      edit_system.cpp edit_system.h\
                      edit_user.cpp edit_user.h\
+                     feedlistmodel.cpp feedlistmodel.h\
                      generate_affadavit.cpp generate_affadavit.h\
                      geometry.cpp geometry.h\
                      globals.h\
@@ -80,6 +81,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      precisiontrak.cpp\
                      preview.cpp preview.h\
                      program_report.cpp\
+                     programlistmodel.cpp programlistmodel.h\
                      programbymarket_report.cpp\
                      raaffiliate_report.cpp\
                      showaffidavits.cpp showaffidavits.h\
@@ -107,6 +109,7 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_edit_provider.cpp\
                        moc_edit_system.cpp\
                        moc_edit_user.cpp\
+                       moc_feedlistmodel.cpp\
                        moc_list_affiliates.cpp\
                        moc_list_airings.cpp\
                        moc_list_contacts.cpp\
@@ -123,6 +126,7 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_pick_daypart.cpp\
                        moc_pick_fields.cpp\
                        moc_preview.cpp\
+                       moc_programlistmodel.cpp\
                        moc_showaffidavits.cpp\
                        moc_userlistmodel.cpp
 

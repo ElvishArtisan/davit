@@ -278,9 +278,11 @@ QSizePolicy EditProvider::sizePolicy() const
 
 void EditProvider::programsData()
 {
+  /*
   ListPrograms *list=new ListPrograms(edit_id,this);
   list->exec();
   delete list;
+  */
 }
 
 

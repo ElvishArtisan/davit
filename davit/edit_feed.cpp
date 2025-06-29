@@ -24,36 +24,22 @@
 #include <QLabel>
 #include <QPainter>
 #include <QPushButton>
-#include <QSqlDatabase>
-#include <QSqlQuery>
+
+#include <dvtdb.h>
 
 #include "edit_feed.h"
 
-EditFeed::EditFeed(DvtFeed *feed,QWidget *parent)
-  : QDialog(parent)
+EditFeed::EditFeed(DvtConfig *c,QWidget *parent)
+  : DvtDialog(c,parent)
 {
   setModal(true);
-  edit_feed=feed;
+  edit_feed_id=-1;
 
   //
   // Fix the Window Size
   //
-  setMinimumWidth(sizeHint().width());
-  setMinimumHeight(sizeHint().height());
-  setMaximumWidth(sizeHint().width());
-  setMaximumHeight(sizeHint().height());
-
-  setWindowTitle("Davit - Edit Show Time");
-
-  //
-  // Create Fonts
-  //
-  QFont label_font=QFont("Helvetica",12,QFont::Bold);
-  label_font.setPixelSize(12);
-  QFont font=QFont("Helvetica",12,QFont::Normal);
-  font.setPixelSize(12);
-  QFont day_font=QFont("Helvetica",10,QFont::Normal);
-  day_font.setPixelSize(10);
+  setMinimumSize(sizeHint());
+  setMaximumSize(sizeHint());
 
   //
   // Monday Button
@@ -62,7 +48,7 @@ EditFeed::EditFeed(DvtFeed *feed,QWidget *parent)
   edit_mon_button->setGeometry(22,10,20,20);
   edit_mon_label=new QLabel(tr("Monday"),this);
   edit_mon_label->setGeometry(42,10,115,20);
-  edit_mon_label->setFont(day_font);
+  edit_mon_label->setFont(subLabelFont());
   edit_mon_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 
   //
@@ -72,7 +58,7 @@ EditFeed::EditFeed(DvtFeed *feed,QWidget *parent)
   edit_tue_button->setGeometry(99,10,20,20);
   edit_tue_label=new QLabel(tr("Tuesday"),this);
   edit_tue_label->setGeometry(119,10,115,20);
-  edit_tue_label->setFont(day_font);
+  edit_tue_label->setFont(subLabelFont());
   edit_tue_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 
   //
@@ -82,7 +68,7 @@ EditFeed::EditFeed(DvtFeed *feed,QWidget *parent)
   edit_wed_button->setGeometry(181,10,20,20);
   edit_wed_label=new QLabel(tr("Wednesday"),this);
   edit_wed_label->setGeometry(201,10,115,20);
-  edit_wed_label->setFont(day_font);
+  edit_wed_label->setFont(subLabelFont());
   edit_wed_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 
   //
@@ -92,7 +78,7 @@ EditFeed::EditFeed(DvtFeed *feed,QWidget *parent)
   edit_thu_button->setGeometry(283,10,20,20);
   edit_thu_label=new QLabel(tr("Thursday"),this);
   edit_thu_label->setGeometry(303,10,115,20);
-  edit_thu_label->setFont(day_font);
+  edit_thu_label->setFont(subLabelFont());
   edit_thu_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 
   //
@@ -102,7 +88,7 @@ EditFeed::EditFeed(DvtFeed *feed,QWidget *parent)
   edit_fri_button->setGeometry(370,10,20,20);
   edit_fri_label=new QLabel(tr("Friday"),this);
   edit_fri_label->setGeometry(390,10,35,20);
-  edit_fri_label->setFont(day_font);
+  edit_fri_label->setFont(subLabelFont());
   edit_fri_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 
   //
@@ -112,7 +98,7 @@ EditFeed::EditFeed(DvtFeed *feed,QWidget *parent)
   edit_sat_button->setGeometry(142,35,20,20);
   edit_sat_label=new QLabel(tr("Saturday"),this);
   edit_sat_label->setGeometry(162,35,60,20);
-  edit_sat_label->setFont(day_font);
+  edit_sat_label->setFont(subLabelFont());
   edit_sat_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 
   //
@@ -122,18 +108,19 @@ EditFeed::EditFeed(DvtFeed *feed,QWidget *parent)
   edit_sun_button->setGeometry(246,35,20,20);
   edit_sun_label=new QLabel(tr("Sunday"),this);
   edit_sun_label->setGeometry(266,35,60,20);
-  edit_sun_label->setFont(day_font);
+  edit_sun_label->setFont(subLabelFont());
   edit_sun_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 
   //
   // Start Time
   //
   edit_starttime_edit=new QTimeEdit(this);
+  edit_starttime_edit->setDisplayFormat("hh:mm:ss");
   edit_starttime_edit->setGeometry(112,60,90,20);
-  edit_starttime_label=new QLabel(tr("&Starting at:"),this);
+  edit_starttime_label=new QLabel(tr("Starting at:"),this);
   edit_starttime_label->setGeometry(22,60,85,20);
   edit_starttime_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-  edit_starttime_label->setFont(label_font);
+  edit_starttime_label->setFont(labelFont());
 
   //
   //  OK Button
@@ -141,8 +128,8 @@ EditFeed::EditFeed(DvtFeed *feed,QWidget *parent)
   QPushButton *button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
   button->setDefault(true);
-  button->setFont(label_font);
-  button->setText("&OK");
+  button->setFont(buttonFont());
+  button->setText("OK");
   connect(button,SIGNAL(clicked()),this,SLOT(okData()));
 
   //
@@ -150,21 +137,9 @@ EditFeed::EditFeed(DvtFeed *feed,QWidget *parent)
   //
   button=new QPushButton(this);
   button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
-  button->setFont(label_font);
-  button->setText("&Cancel");
+  button->setFont(buttonFont());
+  button->setText("Cancel");
   connect(button,SIGNAL(clicked()),this,SLOT(cancelData()));
-
-  //
-  // Load Data
-  //
-  edit_starttime_edit->setTime(feed->startTime());
-  edit_sun_button->setChecked(feed->dowActive(7));
-  edit_mon_button->setChecked(feed->dowActive(1));
-  edit_tue_button->setChecked(feed->dowActive(2));
-  edit_wed_button->setChecked(feed->dowActive(3));
-  edit_thu_button->setChecked(feed->dowActive(4));
-  edit_fri_button->setChecked(feed->dowActive(5));
-  edit_sat_button->setChecked(feed->dowActive(6));
 }
 
 
@@ -185,21 +160,74 @@ QSizePolicy EditFeed::sizePolicy() const
 }
 
 
+int EditFeed::exec(int feed_id,bool new_entry)
+{
+  edit_feed_id=feed_id;
+  
+  setWindowTitle("Davit - "+tr("Edit Feed Slot")+
+		 QString::asprintf(" [ID: %d]",feed_id));;
+
+  QString sql=QString("select ")+
+    "`AIR_SUN`,"+   // 00
+    "`AIR_MON`,"+   // 01
+    "`AIR_TUE`,"+   // 02
+    "`AIR_WED`,"+   // 03
+    "`AIR_THU`,"+   // 04
+    "`AIR_FRI`,"+   // 05
+    "`AIR_SAT`,"+   // 06
+    "`AIR_TIME` "+  // 07
+    "from `FEEDS` where "+
+    QString::asprintf("`ID`=%d",edit_feed_id);
+  DvtSqlQuery *q=new DvtSqlQuery(sql);
+  if(q->first()) {
+    edit_sun_button->setChecked(q->value(0).toString()=="Y");
+    edit_mon_button->setChecked(q->value(1).toString()=="Y");
+    edit_tue_button->setChecked(q->value(2).toString()=="Y");
+    edit_wed_button->setChecked(q->value(3).toString()=="Y");
+    edit_thu_button->setChecked(q->value(4).toString()=="Y");
+    edit_fri_button->setChecked(q->value(5).toString()=="Y");
+    edit_sat_button->setChecked(q->value(6).toString()=="Y");
+    edit_starttime_edit->setTime(q->value(7).toTime());
+  }
+  delete q;
+
+  return QDialog::exec();
+}
+
+
 void EditFeed::okData()
 {
-  edit_feed->setStartTime(edit_starttime_edit->time());
-  edit_feed->setDowActive(7,edit_sun_button->isChecked());
-  edit_feed->setDowActive(1,edit_mon_button->isChecked());
-  edit_feed->setDowActive(2,edit_tue_button->isChecked());
-  edit_feed->setDowActive(3,edit_wed_button->isChecked());
-  edit_feed->setDowActive(4,edit_thu_button->isChecked());
-  edit_feed->setDowActive(5,edit_fri_button->isChecked());
-  edit_feed->setDowActive(6,edit_sat_button->isChecked());
-  done(0);
+  QString sql=QString("update `FEEDS` set ")+
+    "`AIR_SUN`="+CheckboxState(edit_sun_button)+","+
+    "`AIR_MON`="+CheckboxState(edit_mon_button)+","+
+    "`AIR_TUE`="+CheckboxState(edit_tue_button)+","+
+    "`AIR_WED`="+CheckboxState(edit_wed_button)+","+
+    "`AIR_THU`="+CheckboxState(edit_thu_button)+","+
+    "`AIR_FRI`="+CheckboxState(edit_fri_button)+","+
+    "`AIR_SAT`="+CheckboxState(edit_sat_button)+","+
+    "`AIR_TIME`="+
+    DvtSqlQuery::escape(edit_starttime_edit->time().toString("hh:mm:ss"))+
+    " where "+
+    QString::asprintf("`ID`=%d",edit_feed_id);
+  DvtSqlQuery::apply(sql);
+
+  done(true);
 }
 
 
 void EditFeed::cancelData()
 {
-  done(-1);
+  done(false);
+}
+
+
+QString EditFeed::CheckboxState(QCheckBox *check) const
+{
+  QString ret="'N'";
+
+  if(check->isChecked()) {
+    ret="'Y'";
+  }
+  
+  return ret;
 }

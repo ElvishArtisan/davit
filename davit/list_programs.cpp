@@ -23,10 +23,8 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
-#include <dvtconfig.h>
+#include <dvtdb.h>
 
 #include "add_program.h"
 #include "edit_program.h"
@@ -34,11 +32,11 @@
 #include "globals.h"
 #include "list_programs.h"
 
-ListPrograms::ListPrograms(int provider_id,QWidget *parent)
-  : QDialog(parent)
+ListPrograms::ListPrograms(DvtConfig *c,QWidget *parent)
+  : DvtDialog(c,parent)
 {
   setModal(true);
-  list_provider_id=provider_id;
+  //  list_provider_id=provider_id;
 
   //
   // Fix the Window Size
@@ -46,44 +44,46 @@ ListPrograms::ListPrograms(int provider_id,QWidget *parent)
   setMinimumWidth(sizeHint().width());
   setMinimumHeight(sizeHint().height());
 
-  setWindowTitle("Davit - Programs");
-
   //
-  // Create Fonts
+  // Dialogs
   //
-  QFont font=QFont("Helvetica",12,QFont::Bold);
-  font.setPixelSize(12);
-  QFont small_font=QFont("Helvetica",10,QFont::Normal);
-  small_font.setPixelSize(10);
+  list_editprogram_dialog=new EditProgram(config,this);
 
   //
   // Programs List
   //
+  list_programs_view=new DvtTableView(this);
+  list_programs_model=new ProgramListModel(this);
+  list_programs_model->setFont(defaultFont());
+  list_programs_model->setPalette(palette());
+  list_programs_view->setModel(list_programs_model);
+  connect(list_programs_view,SIGNAL(doubleClicked(const QModelIndex &)),
+	  this,SLOT(doubleClickedData(const QModelIndex &)));
   /*
-  list_programs_list=new QListView(this);
-  list_programs_list->setItemMargin(5);
-  list_programs_list->setAllColumnsShowFocus(true);
-  connect(list_programs_list,
+  list_programs_view=new QListView(this);
+  list_programs_view->setItemMargin(5);
+  list_programs_view->setAllColumnsShowFocus(true);
+  connect(list_programs_view,
 	  SIGNAL(doubleClicked(QListViewItem *,const QPoint &,int)),
 	  this,
 	  SLOT(doubleClickedData(QListViewItem *,const QPoint &,int)));
-  list_programs_list->addColumn("Program Name");
-  list_programs_list->setColumnAlignment(0,AlignLeft|AlignVCenter);
-  list_programs_list->addColumn("Provider");
-  list_programs_list->setColumnAlignment(1,AlignLeft|AlignVCenter);
-  list_programs_list->addColumn("Contact");
-  list_programs_list->setColumnAlignment(2,AlignCenter);
-  list_programs_list->addColumn("Phone");
-  list_programs_list->setColumnAlignment(3,AlignLeft|AlignVCenter);
-  list_programs_list->addColumn("E-Mail");
-  list_programs_list->setColumnAlignment(4,AlignLeft|AlignVCenter);
+  list_programs_view->addColumn("Program Name");
+  list_programs_view->setColumnAlignment(0,AlignLeft|AlignVCenter);
+  list_programs_view->addColumn("Provider");
+  list_programs_view->setColumnAlignment(1,AlignLeft|AlignVCenter);
+  list_programs_view->addColumn("Contact");
+  list_programs_view->setColumnAlignment(2,AlignCenter);
+  list_programs_view->addColumn("Phone");
+  list_programs_view->setColumnAlignment(3,AlignLeft|AlignVCenter);
+  list_programs_view->addColumn("E-Mail");
+  list_programs_view->setColumnAlignment(4,AlignLeft|AlignVCenter);
   */
   //
   //  Add Button
   //
   list_add_button=new QPushButton(this);
-  list_add_button->setFont(font);
-  list_add_button->setText("&Add");
+  list_add_button->setFont(buttonFont());
+  list_add_button->setText(tr("Add"));
   list_add_button->
     setEnabled(global_dvtuser->privilege(DvtUser::PrivProgramEdit));
   connect(list_add_button,SIGNAL(clicked()),this,SLOT(addData()));
@@ -92,16 +92,16 @@ ListPrograms::ListPrograms(int provider_id,QWidget *parent)
   //  Edit Button
   //
   list_edit_button=new QPushButton(this);
-  list_edit_button->setFont(font);
-  list_edit_button->setText("&Edit");
+  list_edit_button->setFont(buttonFont());
+  list_edit_button->setText(tr("Edit"));
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
 
   //
   //  Delete Button
   //
   list_delete_button=new QPushButton(this);
-  list_delete_button->setFont(font);
-  list_delete_button->setText("&Delete");
+  list_delete_button->setFont(buttonFont());
+  list_delete_button->setText(tr("Delete"));
   list_delete_button->
     setEnabled(global_dvtuser->privilege(DvtUser::PrivProgramEdit));
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
@@ -110,8 +110,8 @@ ListPrograms::ListPrograms(int provider_id,QWidget *parent)
   //  Affidavit Button
   //
   list_affadavit_button=new QPushButton(this);
-  list_affadavit_button->setFont(font);
-  list_affadavit_button->setText("&Generate\nAffidavit");
+  list_affadavit_button->setFont(buttonFont());
+  list_affadavit_button->setText(tr("Generate")+"\n"+tr("Affidavit"));
   list_affadavit_button->
     setEnabled(global_dvtuser->privilege(DvtUser::PrivReportView));
   connect(list_affadavit_button,SIGNAL(clicked()),this,SLOT(affadavitData()));
@@ -121,11 +121,9 @@ ListPrograms::ListPrograms(int provider_id,QWidget *parent)
   //
   list_close_button=new QPushButton(this);
   list_close_button->setDefault(true);
-  list_close_button->setFont(font);
-  list_close_button->setText("&Close");
+  list_close_button->setFont(buttonFont());
+  list_close_button->setText(tr("Close"));
   connect(list_close_button,SIGNAL(clicked()),this,SLOT(closeData()));
-
-  RefreshList();
 }
 
 
@@ -143,6 +141,18 @@ QSize ListPrograms::sizeHint() const
 QSizePolicy ListPrograms::sizePolicy() const
 {
   return QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+}
+
+
+int ListPrograms::exec(int provider_id)
+{
+  list_provider_id=provider_id;
+
+  setWindowTitle("Davit - "+tr("Programs"));
+  list_programs_model->refresh();
+  list_programs_view->resizeColumnsToContents();
+
+  return QDialog::exec();
 }
 
 
@@ -176,11 +186,11 @@ void ListPrograms::addData()
       delete q1;
       EditProgram *edit=new EditProgram(pname,this,"edit");
       if(edit->exec()==0) {
-	DvtListViewItem *item=new DvtListViewItem(list_programs_list);
+	DvtListViewItem *item=new DvtListViewItem(list_programs_view);
 	item->setText(0,pname);
 	UpdateItem(item);
-	list_programs_list->setSelected(item,true);
-	list_programs_list->ensureItemVisible(item);
+	list_programs_view->setSelected(item,true);
+	list_programs_view->ensureItemVisible(item);
       }
       else {
 	DeleteProgram(pid);
@@ -195,8 +205,17 @@ void ListPrograms::addData()
 
 void ListPrograms::editData()
 {
+  QModelIndexList rows=list_programs_view->selectionModel()->selectedRows();
+
+  if(rows.size()!=1) {
+    return;
+  }
+  if(list_editprogram_dialog->
+     exec(list_programs_model->programId(rows.first()),false)) {
+    list_programs_model->refresh(rows.first());
+  }
   /*
-  DvtListViewItem *item=(DvtListViewItem *)list_programs_list->selectedItem();
+  DvtListViewItem *item=(DvtListViewItem *)list_programs_view->selectedItem();
   
   if(item==NULL) {
     return;
@@ -213,7 +232,7 @@ void ListPrograms::editData()
 void ListPrograms::deleteData()
 {
   /*
-  DvtListViewItem *item=(DvtListViewItem *)list_programs_list->selectedItem();
+  DvtListViewItem *item=(DvtListViewItem *)list_programs_view->selectedItem();
 
   if(item==NULL) {
     return;
@@ -235,7 +254,7 @@ void ListPrograms::affadavitData()
 {
   /*
   DvtListViewItem *item=
-    (DvtListViewItem *)list_programs_list->selectedItem();
+    (DvtListViewItem *)list_programs_view->selectedItem();
   
   if(item==NULL) {
     return;
@@ -248,29 +267,30 @@ void ListPrograms::affadavitData()
   */
 }
 
-/*
-void ListPrograms::doubleClickedData(QListViewItem *item,const QPoint &pt,
-				      int c)
+
+void ListPrograms::doubleClickedData(const QModelIndex &index)
 {
   editData();
 }
-*/
+
 
 void ListPrograms::closeData()
 {
-  done(0);
+  done(true);
 }
 
 
 void ListPrograms::resizeEvent(QResizeEvent *e)
 {
-  //  list_programs_list->
-  //    setGeometry(10,10,size().width()-20,size().height()-80);
-  list_add_button->setGeometry(10,size().height()-60,80,50);
-  list_edit_button->setGeometry(100,size().height()-60,80,50);
-  list_delete_button->setGeometry(190,size().height()-60,80,50);
-  list_affadavit_button->setGeometry(380,size().height()-60,80,50);
-  list_close_button->setGeometry(size().width()-90,size().height()-60,80,50);
+  int w=size().width();
+  int h=size().height();
+
+  list_programs_view->setGeometry(10,10,w-20,h-80);
+  list_add_button->setGeometry(10,h-60,80,50);
+  list_edit_button->setGeometry(100,h-60,80,50);
+  list_delete_button->setGeometry(190,h-60,80,50);
+  list_affadavit_button->setGeometry(380,h-60,80,50);
+  list_close_button->setGeometry(w-90,h-60,80,50);
 }
 
 
@@ -304,7 +324,7 @@ void ListPrograms::RefreshList()
   QSqlQuery *q;
   DvtListViewItem *item;
 
-  list_programs_list->clear();
+  list_programs_view->clear();
   sql="select PROGRAMS.PROGRAM_NAME,PROVIDERS.BUSINESS_NAME,\
               PROGRAMS.CONTACT_NAME,PROGRAMS.CONTACT_PHONE,\
               PROGRAMS.CONTACT_EMAIL,PROGRAMS.ID \
@@ -315,7 +335,7 @@ void ListPrograms::RefreshList()
   }
   q=new QSqlQuery(sql);
   while (q->next()) {
-    item=new DvtListViewItem(list_programs_list);
+    item=new DvtListViewItem(list_programs_view);
     item->setId(q->value(5).toInt());
     item->setText(0,q->value(0).toString());
     item->setText(1,q->value(1).toString());

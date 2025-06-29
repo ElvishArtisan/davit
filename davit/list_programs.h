@@ -21,27 +21,33 @@
 #ifndef LIST_PROGRAMS_H
 #define LIST_PROGRAMS_H
 
-#include <QDialog>
-#include <QListView>
 #include <QPushButton>
 
-//#include <dvtlistviewitem.h>
+#include <dvtconfig.h>
+#include <dvtdialog.h>
+#include <dvttableview.h>
 
-class ListPrograms : public QDialog
+#include "edit_program.h"
+#include "programlistmodel.h"
+
+class ListPrograms : public DvtDialog
 {
  Q_OBJECT
  public:
-  ListPrograms(int provider_id=-1,QWidget *parent=0);
+  ListPrograms(DvtConfig *c,QWidget *parent=0);
   ~ListPrograms();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+
+ public slots:
+  int exec(int provider_id=-1);   
 
  private slots:
   void addData();
   void editData();
   void deleteData();
   void affadavitData();
-  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
+  void doubleClickedData(const QModelIndex &index);
   void closeData();
 
  protected:
@@ -51,13 +57,15 @@ class ListPrograms : public QDialog
   void DeleteProgram(int pid);
   void RefreshList();
   //  void UpdateItem(DvtListViewItem *item);
-  //  QListView *list_programs_list;
+  DvtTableView *list_programs_view;
+  ProgramListModel *list_programs_model;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;
   QPushButton *list_affadavit_button;
   QPushButton *list_close_button;
   int list_provider_id;
+  EditProgram *list_editprogram_dialog;
 };
 
 

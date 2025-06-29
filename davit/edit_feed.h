@@ -22,7 +22,6 @@
 #ifndef EDIT_FEED_H
 #define EDIT_FEED_H
 
-#include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QComboBox>
@@ -30,22 +29,28 @@
 #include <QDateTimeEdit>
 #include <QPushButton>
 
+#include <dvtconfig.h>
+#include <dvtdialog.h>
 #include <dvtfeed.h>
 
-class EditFeed : public QDialog
+class EditFeed : public DvtDialog
 {
  Q_OBJECT
  public:
-  EditFeed(DvtFeed *slot,QWidget *parent=0);
+  EditFeed(DvtConfig *c,QWidget *parent=0);
   ~EditFeed();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+
+ public slots:
+  int exec(int feed_id,bool new_entry=false);
 
  private slots:
   void okData();
   void cancelData();
 
  private:
+  QString CheckboxState(QCheckBox *check) const;
   QLabel *edit_starttime_label;
   QTimeEdit *edit_starttime_edit;
   QLabel *edit_sun_label;
@@ -62,7 +67,8 @@ class EditFeed : public QDialog
   QCheckBox *edit_fri_button;
   QLabel *edit_sat_label;
   QCheckBox *edit_sat_button;
-  DvtFeed *edit_feed;
+  //  DvtFeed *edit_feed;
+  int edit_feed_id;
 };
 
 

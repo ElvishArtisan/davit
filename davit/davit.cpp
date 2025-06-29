@@ -45,7 +45,6 @@
 #include "davit.h"
 #include "globals.h"
 #include "list_providers.h"
-#include "list_programs.h"
 #include "list_reports.h"
 #include "edit_system.h"
 
@@ -213,6 +212,7 @@ MainWidget::MainWidget(QWidget *parent)
   d_users_dialog=new ListUsers(config,this);
   d_affiliates_dialog=new ListAffiliates(config,this);
   d_networks_dialog=new ListNetworks(config,this);
+  d_programs_dialog=new ListPrograms(config,this);
 
   //
   // Title
@@ -380,9 +380,7 @@ void MainWidget::manageAffiliateData()
 
 void MainWidget::manageProgramsData()
 {
-  ListPrograms *list=new ListPrograms(-1,this);
-  list->exec();
-  delete list;
+  d_programs_dialog->exec();
 }
 
 
