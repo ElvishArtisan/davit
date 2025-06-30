@@ -1,6 +1,6 @@
-// programlistmodel.h
+// providerlistmodel.h
 //
-// Data model for Davit programs
+// Data model for Davit providers
 //
 //   (C) Copyright 2021-2025 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,8 +18,8 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef PROGRAMLISTMODEL_H
-#define PROGRAMLISTMODEL_H
+#ifndef PROVIDERLISTMODEL_H
+#define PROVIDERLISTMODEL_H
 
 #include <QAbstractTableModel>
 #include <QFont>
@@ -29,30 +29,32 @@
 #include <dvtdb.h>
 
 
-class ProgramListModel : public QAbstractTableModel
+class ProviderListModel : public QAbstractTableModel
 {
   Q_OBJECT
  public:
-  ProgramListModel(QObject *parent=0);
-  ~ProgramListModel();
+  ProviderListModel(QObject *parent=0);
+  ~ProviderListModel();
   QPalette palette();
   void setPalette(const QPalette &pal);
   void setFont(const QFont &font);
+  void setAffiliateId(int id);
   int columnCount(const QModelIndex &parent=QModelIndex()) const;
   int rowCount(const QModelIndex &parent=QModelIndex()) const;
   QVariant headerData(int section,Qt::Orientation orient,
 		      int role=Qt::DisplayRole) const;
   QVariant data(const QModelIndex &index,int role=Qt::DisplayRole) const;
-  int programId(const QModelIndex &row) const;
-  QString programName(const QModelIndex &row) const;
-  QModelIndex addProgram(int program_id);
-  void removeProgram(const QModelIndex &row);
-  void removeProgram(int program_id);
+  int providerId(const QModelIndex &row) const;
+  QString providerName(const QModelIndex &row) const;
+  QModelIndex addProvider(int provider_id);
+  void removeProvider(const QModelIndex &row);
+  void removeProvider(int provider_id);
   void refresh(const QModelIndex &row);
-  void refresh(int provider_id=-1);
+  void refresh(int provider_id);
+  void refresh();
 
  protected:
-  void updateModel(int provider_id);
+  void updateModel();
   void updateRowLine(int line);
   void updateRow(int row,DvtSqlQuery *q);
   QString sqlFields() const;
@@ -69,4 +71,4 @@ class ProgramListModel : public QAbstractTableModel
 };
 
 
-#endif  // PROGRAMLISTMODEL_H
+#endif  // PROVIDERLISTMODEL_H

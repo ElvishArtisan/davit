@@ -22,62 +22,51 @@
 
 #include <QPushButton>
 #include <QLabel>
-#include <QSqlDatabase>
 #include <QMessageBox>
 
-#include <dvtconfig.h>
+#include <dvtdb.h>
 
 #include "add_provider.h"
 #include "edit_provider.h"
 #include "globals.h"
+#include "list_programs.h"
 #include "list_providers.h"
 
-ListProviders::ListProviders(QWidget *parent)
-  : QDialog(parent)
+ListProviders::ListProviders(DvtConfig *c,ListPrograms *listprograms_dialog,
+			     QWidget *parent)
+  : DvtDialog(c,parent)
 {
   setModal(true);
+
   //
   // Fix the Window Size
   //
-  setMinimumWidth(sizeHint().width());
-  setMinimumHeight(sizeHint().height());
+  setMinimumSize(sizeHint());
 
   setWindowTitle("Davit - Providers");
 
   //
-  // Create Fonts
+  // Dialogs
   //
-  QFont font=QFont("Helvetica",12,QFont::Bold);
-  font.setPixelSize(12);
-  QFont small_font=QFont("Helvetica",10,QFont::Normal);
-  small_font.setPixelSize(10);
+  list_editprovider_dialog=new EditProvider(config,listprograms_dialog,this);
 
   //
   // Providers List
   //
-  /*
-  list_providers_list=new QListView(this,"list_providers_list");
-  list_providers_list->setMargin(5);
-  list_providers_list->setAllColumnsShowFocus(true);
-  connect(list_providers_list,
-	  SIGNAL(doubleClicked(QListViewItem *,const QPoint &,int)),
-	  this,
-	  SLOT(doubleClickedData(QListViewItem *,const QPoint &,int)));
-  list_providers_list->addColumn("Business Name");
-  list_providers_list->setColumnAlignment(0,AlignLeft|AlignVCenter);
-  list_providers_list->addColumn("Contact");
-  list_providers_list->setColumnAlignment(1,AlignCenter);
-  list_providers_list->addColumn("Phone");
-  list_providers_list->setColumnAlignment(2,AlignLeft|AlignVCenter);
-  list_providers_list->addColumn("E-Mail");
-  list_providers_list->setColumnAlignment(3,AlignLeft|AlignVCenter);
-  */
+  list_providers_view=new DvtTableView(this);
+  list_providers_model=new ProviderListModel(this);
+  list_providers_model->setFont(defaultFont());
+  list_providers_model->setPalette(palette());
+  list_providers_view->setModel(list_providers_model);
+  connect(list_providers_view,SIGNAL(doubleClicked(const QModelIndex &)),
+	  this,SLOT(doubleClickedData(const QModelIndex &)));
+
   //
   //  Add Button
   //
   list_add_button=new QPushButton(this);
-  list_add_button->setFont(font);
-  list_add_button->setText("&Add");
+  list_add_button->setFont(buttonFont());
+  list_add_button->setText("Add");
   list_add_button->
     setEnabled(global_dvtuser->privilege(DvtUser::PrivProviderEdit));
   connect(list_add_button,SIGNAL(clicked()),this,SLOT(addData()));
@@ -86,16 +75,16 @@ ListProviders::ListProviders(QWidget *parent)
   //  Edit Button
   //
   list_edit_button=new QPushButton(this);
-  list_edit_button->setFont(font);
-  list_edit_button->setText("&Edit");
+  list_edit_button->setFont(buttonFont());
+  list_edit_button->setText("Edit");
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
 
   //
   //  Delete Button
   //
   list_delete_button=new QPushButton(this);
-  list_delete_button->setFont(font);
-  list_delete_button->setText("&Delete");
+  list_delete_button->setFont(buttonFont());
+  list_delete_button->setText("Delete");
   list_delete_button->
     setEnabled(global_dvtuser->privilege(DvtUser::PrivProviderEdit));
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
@@ -105,7 +94,7 @@ ListProviders::ListProviders(QWidget *parent)
   //
   list_close_button=new QPushButton(this);
   list_close_button->setDefault(true);
-  list_close_button->setFont(font);
+  list_close_button->setFont(buttonFont());
   list_close_button->setText("&Close");
   connect(list_close_button,SIGNAL(clicked()),this,SLOT(closeData()));
 
@@ -130,88 +119,92 @@ QSizePolicy ListProviders::sizePolicy() const
 }
 
 
+int ListProviders::exec()
+{
+  list_providers_model->refresh();
+  list_providers_view->resizeColumnsToContents();
+
+  return QDialog::exec();
+}
+
+
 void ListProviders::addData()
 {
-  /*
-  QString bname;
-  QString sql;
-  QSqlQuery *q;
-  int pid=0;
-
-  AddProvider *add=new AddProvider(&bname,this);
-  if(add->exec()==0) {
-    sql=QString().sprintf("insert into PROVIDERS set BUSINESS_NAME=\"%s\"",
-			  (const char *)bname);
-    q=new QSqlQuery(sql);
-    delete q;
-    sql="select LAST_INSERT_ID() from PROVIDERS";
-    q=new QSqlQuery(sql);
-    if(q->first()) {
-      pid=q->value(0).toInt();
+  QString sql=QString("insert into `PROVIDERS` set ")+
+    "`BUSINESS_NAME`="+DvtSqlQuery::escape(tr("[new provider]"));
+  int provider_id=DvtSqlQuery::run(sql).toInt();
+  if(list_editprovider_dialog->exec(provider_id,true)) {
+    QModelIndex index=list_providers_model->addProvider(provider_id);
+    if(index.isValid()) {
+      list_providers_view->
+	selectionModel()->select(index,QItemSelectionModel::ClearAndSelect|
+				 QItemSelectionModel::Rows);
     }
-    delete q;
-    EditProvider *edit=new EditProvider(bname,this,"edit");
-    if(edit->exec()==0) {
-      DvtListViewItem *item=new DvtListViewItem(list_providers_list);
-      item->setText(0,bname);
-      UpdateItem(item);
-      list_providers_list->setSelected(item,true);
-      list_providers_list->ensureItemVisible(item);
-    }
-    else {
-      DeleteProvider(pid);
-    }
-    delete edit;
   }
-  delete add;
-  */
+  else {
+    sql=QString("delete from `PROVIDERS` where ")+
+      QString::asprintf("`PROVIDERS`.`ID`=%d ",provider_id);
+    DvtSqlQuery::apply(sql);
+  }
 }
 
 
 void ListProviders::editData()
 {
-  /*
-  DvtListViewItem *item=(DvtListViewItem *)list_providers_list->selectedItem();
-  
-  if(item==NULL) {
+  QModelIndexList rows=list_providers_view->selectionModel()->selectedRows();
+
+  if(rows.size()!=1) {
     return;
   }
-  EditProvider *edit=new EditProvider(item->text(0),this,"edit");
-  if(edit->exec()==0) {
-    UpdateItem(item);
+  if(list_editprovider_dialog->
+     exec(list_providers_model->providerId(rows.first()),false)) {
+    list_providers_model->refresh(rows.first());
   }
-  delete edit;
-  */
 }
 
 
 void ListProviders::deleteData()
 {
-  /*
-  DvtListViewItem *item=(DvtListViewItem *)list_providers_list->selectedItem();
+  QModelIndexList rows=list_providers_view->selectionModel()->selectedRows();
 
-  if(item==NULL) {
+  if(rows.size()!=1) {
     return;
   }
-  if(QMessageBox::question(this,"Delete Provider",
-      QString().sprintf("Are you sure you want to delete the provider \"%s\"",
-			   (const char *)item->text(0)),
-			   QMessageBox::Yes,
-			   QMessageBox::No)==QMessageBox::No) {
+  QString sql=QString("select ")+
+    "`ID` "+
+    "from `PROGRAMS` where "+
+    QString::asprintf("`PROVIDER_ID`=%d",
+		      list_providers_model->providerId(rows.first()));
+  DvtSqlQuery *q=new DvtSqlQuery(sql);
+  if(q->first()) {
+    QMessageBox::information(this,"Davit - "+tr("Error"),
+			     tr("You must delete or migrate all programs off this provider before it can be deleted."));
+    delete q;
     return;
   }
-  DeleteProvider(item->id());
-  delete item;
-  */
+  delete q;
+
+  if(QMessageBox::question(this,
+	     "Davit",tr("Are you sure you want to delete the provider")+
+			   " \""+
+			   list_providers_model->providerName(rows.first())+
+			   "\"?",
+		 QMessageBox::Yes,QMessageBox::No)!=QMessageBox::Yes) {
+    return;
+  }
+  int provider_id=list_providers_model->providerId(rows.first());
+  sql=QString("delete from `PROVIDERS` where ")+
+    QString::asprintf("`PROVIDERS`.`ID`=%d ",provider_id);
+  DvtSqlQuery::apply(sql);
+  list_providers_model->removeProvider(rows.first());
 }
 
-/*
-void ListProviders::doubleClickedData(QListViewItem *item,const QPoint &pt,
-				      int c)
+
+void ListProviders::doubleClickedData(const QModelIndex &index)
 {
   editData();
 }
-*/
+
 
 void ListProviders::closeData()
 {
@@ -221,8 +214,7 @@ void ListProviders::closeData()
 
 void ListProviders::resizeEvent(QResizeEvent *e)
 {
-  //  list_providers_list->
-  //    setGeometry(10,10,size().width()-20,size().height()-80);
+  list_providers_view->setGeometry(10,10,size().width()-20,size().height()-80);
   list_add_button->setGeometry(10,size().height()-60,80,50);
   list_edit_button->setGeometry(100,size().height()-60,80,50);
   list_delete_button->setGeometry(190,size().height()-60,80,50);
@@ -274,11 +266,11 @@ void ListProviders::RefreshList()
   QSqlQuery *q;
   DvtListViewItem *item;
 
-  list_providers_list->clear();
+  list_providers_view->clear();
   q=new QSqlQuery("select BUSINESS_NAME,CONTACT_NAME,\
                    CONTACT_PHONE,CONTACT_EMAIL,ID from PROVIDERS");
   while (q->next()) {
-    item=new DvtListViewItem(list_providers_list);
+    item=new DvtListViewItem(list_providers_view);
     item->setId(q->value(4).toInt());
     item->setText(0,q->value(0).toString());
     item->setText(1,q->value(1).toString());

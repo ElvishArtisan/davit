@@ -21,26 +21,33 @@
 #ifndef LIST_PROVIDERS_H
 #define LIST_PROVIDERS_H
 
-#include <QDialog>
-#include <QListView>
 #include <QPushButton>
 
-//#include <dvtlistviewitem.h>
+#include <dvtdialog.h>
+#include <dvttableview.h>
 
-class ListProviders : public QDialog
+#include "edit_provider.h"
+#include "programlistmodel.h"
+#include "providerlistmodel.h"
+
+class ListProviders : public DvtDialog
 {
  Q_OBJECT
  public:
-  ListProviders(QWidget *parent=0);
+  ListProviders(DvtConfig *c,ListPrograms *listprograms_dialog,
+		QWidget *parent=0);
   ~ListProviders();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+
+ public slots:
+  int exec();
 
  private slots:
   void addData();
   void editData();
   void deleteData();
-  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
+  void doubleClickedData(const QModelIndex &index);
   void closeData();
 
  protected:
@@ -50,11 +57,13 @@ class ListProviders : public QDialog
   void DeleteProvider(int pid);
   void RefreshList();
   //  void UpdateItem(DvtListViewItem *item);
-  //  QListView *list_providers_list;
+  DvtTableView *list_providers_view;
+  ProviderListModel *list_providers_model;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;
   QPushButton *list_close_button;
+  EditProvider *list_editprovider_dialog;
 };
 
 

@@ -1,6 +1,6 @@
-// programlistmodel.cpp
+// providerlistmodel.cpp
 //
-// Data model for Davit programs
+// Data model for Davit providers
 //
 //   (C) Copyright 2021-2025 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -20,11 +20,11 @@
 
 #include <dvtconf.h>
 
-#include "programlistmodel.h"
+#include "providerlistmodel.h"
 
 #include "../icons/user.xpm"
 
-ProgramListModel::ProgramListModel(QObject *parent)
+ProviderListModel::ProviderListModel(QObject *parent)
   : QAbstractTableModel(parent)
 {
   //
@@ -34,16 +34,13 @@ ProgramListModel::ProgramListModel(QObject *parent)
   //  unsigned center=Qt::AlignCenter;
   //  unsigned right=Qt::AlignRight|Qt::AlignVCenter;
 
-  d_headers.push_back(tr("Program Name"));    // 00
+  d_headers.push_back(tr("Business Name"));            // 00
   d_alignments.push_back(left);
 
-  d_headers.push_back(tr("Provider"));        // 01
+  d_headers.push_back(tr("Contact"));           // 01
   d_alignments.push_back(left);
 
-  d_headers.push_back(tr("Contact"));         // 02
-  d_alignments.push_back(left);
-
-  d_headers.push_back(tr("Phone"));           // 03
+  d_headers.push_back(tr("Phone Number"));    // 02
   d_alignments.push_back(left);
 
   d_headers.push_back(tr("E-Mail Address"));  // 04
@@ -51,42 +48,42 @@ ProgramListModel::ProgramListModel(QObject *parent)
 }
 
 
-ProgramListModel::~ProgramListModel()
+ProviderListModel::~ProviderListModel()
 {
 }
 
 
-QPalette ProgramListModel::palette()
+QPalette ProviderListModel::palette()
 {
   return d_palette;
 }
 
 
-void ProgramListModel::setPalette(const QPalette &pal)
+void ProviderListModel::setPalette(const QPalette &pal)
 {
   d_palette=pal;
 }
 
 
-void ProgramListModel::setFont(const QFont &font)
+void ProviderListModel::setFont(const QFont &font)
 {
   d_font=font;
 }
 
 
-int ProgramListModel::columnCount(const QModelIndex &parent) const
+int ProviderListModel::columnCount(const QModelIndex &parent) const
 {
   return d_headers.size();
 }
 
 
-int ProgramListModel::rowCount(const QModelIndex &parent) const
+int ProviderListModel::rowCount(const QModelIndex &parent) const
 {
   return d_texts.size();
 }
 
 
-QVariant ProgramListModel::headerData(int section,Qt::Orientation orient,
+QVariant ProviderListModel::headerData(int section,Qt::Orientation orient,
 				    int role) const
 {
   if((orient==Qt::Horizontal)&&(role==Qt::DisplayRole)) {
@@ -96,7 +93,7 @@ QVariant ProgramListModel::headerData(int section,Qt::Orientation orient,
 }
 
 
-QVariant ProgramListModel::data(const QModelIndex &index,int role) const
+QVariant ProviderListModel::data(const QModelIndex &index,int role) const
 {
   QVariant ret;
   QString str;
@@ -140,19 +137,19 @@ QVariant ProgramListModel::data(const QModelIndex &index,int role) const
 }
 
 
-int ProgramListModel::programId(const QModelIndex &row) const
+int ProviderListModel::providerId(const QModelIndex &row) const
 {
   return d_ids.at(row.row());
 }
 
 
-QString ProgramListModel::programName(const QModelIndex &row) const
+QString ProviderListModel::providerName(const QModelIndex &row) const
 {
   return d_texts.at(row.row()).at(0).toString();
 }
 
 
-QModelIndex ProgramListModel::addProgram(int program_id)
+QModelIndex ProviderListModel::addProvider(int provider_id)
 {
   //
   // Find the insertion offset
@@ -160,7 +157,7 @@ QModelIndex ProgramListModel::addProgram(int program_id)
   int offset=d_ids.size();
 
   beginInsertRows(QModelIndex(),offset,offset);
-  d_ids.insert(offset,program_id);
+  d_ids.insert(offset,provider_id);
   QList<QVariant> list;
   for(int i=0;i<columnCount();i++) {
     list.push_back(QVariant());
@@ -174,7 +171,7 @@ QModelIndex ProgramListModel::addProgram(int program_id)
 }
 
 
-void ProgramListModel::removeProgram(const QModelIndex &row)
+void ProviderListModel::removeProvider(const QModelIndex &row)
 {
   beginRemoveRows(QModelIndex(),row.row(),row.row());
 
@@ -186,23 +183,23 @@ void ProgramListModel::removeProgram(const QModelIndex &row)
 }
 
 
-void ProgramListModel::removeProgram(int program_id)
+void ProviderListModel::removeProvider(int provider_id)
 {
   for(int i=0;i<d_ids.size();i++) {
-    if(d_ids.at(i)==program_id) {
-      removeProgram(createIndex(i,0));
+    if(d_ids.at(i)==provider_id) {
+      removeProvider(createIndex(i,0));
       return;
     }
   }
 }
 
 
-void ProgramListModel::refresh(const QModelIndex &row)
+void ProviderListModel::refresh(const QModelIndex &row)
 {
   if(row.row()<d_texts.size()) {
     QString sql=sqlFields()+
       "where "+
-      QString::asprintf("`PROGRAMS`.`ID`=%d ",d_ids.at(row.row()));
+      QString::asprintf("`PROVIDERS`.`ID`=%d ",d_ids.at(row.row()));
     DvtSqlQuery *q=new DvtSqlQuery(sql);
     if(q->first()) {
       updateRow(row.row(),q);
@@ -214,23 +211,31 @@ void ProgramListModel::refresh(const QModelIndex &row)
 }
 
 
-void ProgramListModel::refresh(int provider_id)
+void ProviderListModel::refresh(int provider_id)
 {
-  updateModel(provider_id);
+  for(int i=0;i<d_ids.size();i++) {
+    if(d_ids.at(i)==provider_id) {
+      updateRowLine(i);
+      return;
+    }
+  }
 }
 
 
-void ProgramListModel::updateModel(int provider_id)
+void ProviderListModel::refresh()
+{
+  updateModel();
+}
+
+
+void ProviderListModel::updateModel()
 {
   QList<QVariant> texts; 
   QList<QVariant> icons;
 
   DvtSqlQuery *q=NULL;
-  QString sql=sqlFields();
-  if(provider_id>0) {
-    sql+=QString::asprintf("where `PROGRAMS`.`PROVIDER_ID`=%d ",provider_id);
-  }
-  sql+="order by `PROGRAMS`.`PROGRAM_NAME` ";
+  QString sql=sqlFields()+
+    "order by `PROVIDERS`.`BUSINESS_NAME` ";
   beginResetModel();
   d_ids.clear();
   d_texts.clear();
@@ -247,12 +252,12 @@ void ProgramListModel::updateModel(int provider_id)
 }
 
 
-void ProgramListModel::updateRowLine(int line)
+void ProviderListModel::updateRowLine(int line)
 {
   if(line<d_texts.size()) {
     QString sql=sqlFields()+
       " where "+
-      QString::asprintf("`PROGRAMS`.`ID`=%d ",d_ids.at(line));
+      QString::asprintf("`ID`=%d ",d_ids.at(line));
     DvtSqlQuery *q=new DvtSqlQuery(sql);
     if(q->first()) {
       updateRow(line,q);
@@ -262,42 +267,37 @@ void ProgramListModel::updateRowLine(int line)
 }
 
 
-void ProgramListModel::updateRow(int row,DvtSqlQuery *q)
+void ProviderListModel::updateRow(int row,DvtSqlQuery *q)
 {
   QList<QVariant> texts;
 
-  // Program Name
-  texts.push_back(q->value(2));
   d_icons[row]=QPixmap(user_xpm);
 
-  // Provider Name
-  texts.push_back(q->value(3));
+  // Business Name
+  texts.push_back(q->value(1));
 
   // Contact Name
+  texts.push_back(q->value(2));
+
+  // Phone
+  texts.push_back(DvtFormatPhoneNumber(q->value(3).toString()));
+
+  // E-Mail
   texts.push_back(q->value(4));
-
-  // Contact Phone
-  texts.push_back(DvtFormatPhoneNumber(q->value(5).toString()));
-
-  // Contact E-Mail
-  texts.push_back(q->value(6));
 
   d_texts[row]=texts;
 }
 
 
-QString ProgramListModel::sqlFields() const
+QString ProviderListModel::sqlFields() const
 {
   QString sql=QString("select ")+
-    "`PROGRAMS`.`ID`,"+              // 00
-    "`PROGRAMS`.`PROVIDER_ID`,"+     // 01
-    "`PROGRAMS`.`PROGRAM_NAME`,"+    // 02
-    "`PROVIDERS`.`BUSINESS_NAME`,"+  // 03
-    "`PROGRAMS`.`CONTACT_NAME`,"+    // 04
-    "`PROGRAMS`.`CONTACT_PHONE`,"+   // 05
-    "`PROGRAMS`.`CONTACT_EMAIL` "+   // 06
-    "from `PROGRAMS` left join `PROVIDERS` "+
-    "on `PROGRAMS`.`PROVIDER_ID`=`PROVIDERS`.`ID` ";
+    "`PROVIDERS`.`ID`,"+             // 00
+    "`PROVIDERS`.`BUSINESS_NAME`,"+  // 01
+    "`PROVIDERS`.`CONTACT_NAME`,"+   // 02
+    "`PROVIDERS`.`CONTACT_PHONE`,"+  // 03
+    "`PROVIDERS`.`CONTACT_EMAIL` "+  // 04
+    "from `PROVIDERS` ";
 
     return sql;
 }

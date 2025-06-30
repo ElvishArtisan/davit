@@ -59,25 +59,7 @@ ListPrograms::ListPrograms(DvtConfig *c,QWidget *parent)
   list_programs_view->setModel(list_programs_model);
   connect(list_programs_view,SIGNAL(doubleClicked(const QModelIndex &)),
 	  this,SLOT(doubleClickedData(const QModelIndex &)));
-  /*
-  list_programs_view=new QListView(this);
-  list_programs_view->setItemMargin(5);
-  list_programs_view->setAllColumnsShowFocus(true);
-  connect(list_programs_view,
-	  SIGNAL(doubleClicked(QListViewItem *,const QPoint &,int)),
-	  this,
-	  SLOT(doubleClickedData(QListViewItem *,const QPoint &,int)));
-  list_programs_view->addColumn("Program Name");
-  list_programs_view->setColumnAlignment(0,AlignLeft|AlignVCenter);
-  list_programs_view->addColumn("Provider");
-  list_programs_view->setColumnAlignment(1,AlignLeft|AlignVCenter);
-  list_programs_view->addColumn("Contact");
-  list_programs_view->setColumnAlignment(2,AlignCenter);
-  list_programs_view->addColumn("Phone");
-  list_programs_view->setColumnAlignment(3,AlignLeft|AlignVCenter);
-  list_programs_view->addColumn("E-Mail");
-  list_programs_view->setColumnAlignment(4,AlignLeft|AlignVCenter);
-  */
+
   //
   //  Add Button
   //
@@ -149,7 +131,7 @@ int ListPrograms::exec(int provider_id)
   list_provider_id=provider_id;
 
   setWindowTitle("Davit - "+tr("Programs"));
-  list_programs_model->refresh();
+  list_programs_model->refresh(provider_id);
   list_programs_view->resizeColumnsToContents();
 
   return QDialog::exec();

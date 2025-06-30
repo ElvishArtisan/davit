@@ -83,6 +83,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      program_report.cpp\
                      programlistmodel.cpp programlistmodel.h\
                      programbymarket_report.cpp\
+                     providerlistmodel.cpp providerlistmodel.h\
                      raaffiliate_report.cpp\
                      showaffidavits.cpp showaffidavits.h\
                      userlistmodel.cpp userlistmodel.h
@@ -127,6 +128,7 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_pick_fields.cpp\
                        moc_preview.cpp\
                        moc_programlistmodel.cpp\
+                       moc_providerlistmodel.cpp\
                        moc_showaffidavits.cpp\
                        moc_userlistmodel.cpp
 

@@ -213,6 +213,7 @@ MainWidget::MainWidget(QWidget *parent)
   d_affiliates_dialog=new ListAffiliates(config,this);
   d_networks_dialog=new ListNetworks(config,this);
   d_programs_dialog=new ListPrograms(config,this);
+  d_providers_dialog=new ListProviders(config,d_programs_dialog,this);
 
   //
   // Title
@@ -366,9 +367,7 @@ void MainWidget::manageSystemData()
 
 void MainWidget::manageProvidersData()
 {
-  ListProviders *list=new ListProviders(this);
-  list->exec();
-  delete list;
+  d_providers_dialog->exec();
 }
 
 

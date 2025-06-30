@@ -21,19 +21,28 @@
 #ifndef EDIT_PROVIDER_H
 #define EDIT_PROVIDER_H
 
-#include <QDialog>
+#include <QGroupBox>
+#include <QLabel>
 #include <QLineEdit>
+#include <QPushButton>
 
+#include <dvtdialog.h>
 #include <statecombobox.h>
 
-class EditProvider : public QDialog
+#include <list_programs.h>
+
+class EditProvider : public DvtDialog
 {
  Q_OBJECT
  public:
-  EditProvider(const QString &bname,QWidget *parent=0);
+  EditProvider(DvtConfig *c,ListPrograms *listprograms_dialog,
+	       QWidget *parent=0);
   ~EditProvider();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+
+ public slots:
+  int exec(int provider_id,bool new_entry=false);
 
  private slots:
   void programsData();
@@ -41,21 +50,35 @@ class EditProvider : public QDialog
   void cancelData();
 
  protected:
-  void paintEvent(QPaintEvent *e);
+  void resizeEvent(QResizeEvent *e);
 
  private:
+  QLabel *edit_business_name_label;
   QLineEdit *edit_business_name_edit;
+  QLabel *edit_address_label;
   QLineEdit *edit_address1_edit;
   QLineEdit *edit_address2_edit;
+  QLabel *edit_city_label;
   QLineEdit *edit_city_edit;
+  QLabel *edit_state_label;
   StateComboBox *edit_state_box;
   QLineEdit *edit_state_edit;
+  QLabel *edit_zipcode_label;
   QLineEdit *edit_zipcode_edit;
+  QGroupBox *edit_contact_group;
+  QLabel *edit_contact_name_label;
   QLineEdit *edit_contact_name_edit;
+  QLabel *edit_contact_phone_label;
   QLineEdit *edit_contact_phone_edit;
+  QLabel *edit_contact_fax_label;
   QLineEdit *edit_contact_fax_edit;
+  QLabel *edit_contact_email_label;
   QLineEdit *edit_contact_email_edit;
-  int edit_id;
+  QPushButton *edit_programs_button;
+  QPushButton *edit_ok_button;
+  QPushButton *edit_cancel_button;
+  int edit_provider_id;
+  ListPrograms *edit_listprograms_dialog;
 };
 
 

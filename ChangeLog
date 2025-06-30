@@ -879,3 +879,5 @@
 	dialogs in davit(1).
 2025-06-29 Fred Gleason <fredg@paravelsystems.com>
 	* Removed the 'DvtFeed' class.
+2025-06-30 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored the 'List Providers' dialog in davit(1).
