@@ -30,13 +30,12 @@
 #include "globals.h"
 #include "list_programs.h"
 
-EditProvider::EditProvider(DvtConfig *c,ListPrograms *listprograms_dialog,
-			   QWidget *parent)
+EditProvider::EditProvider(DvtConfig *c,QWidget *parent)
   : DvtDialog(c,parent)
 {
   setModal(true);
   edit_provider_id=-1;
-  edit_listprograms_dialog=listprograms_dialog;
+  edit_listprograms_dialog=new ListPrograms(config,this);
   
   //
   // Fix the Window Size

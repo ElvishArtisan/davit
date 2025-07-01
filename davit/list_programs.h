@@ -54,9 +54,6 @@ class ListPrograms : public DvtDialog
   void resizeEvent(QResizeEvent *e);
 
  private:
-  void DeleteProgram(int pid);
-  void RefreshList();
-  //  void UpdateItem(DvtListViewItem *item);
   DvtTableView *list_programs_view;
   ProgramListModel *list_programs_model;
   QPushButton *list_add_button;

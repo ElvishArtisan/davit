@@ -35,8 +35,7 @@ class EditProvider : public DvtDialog
 {
  Q_OBJECT
  public:
-  EditProvider(DvtConfig *c,ListPrograms *listprograms_dialog,
-	       QWidget *parent=0);
+  EditProvider(DvtConfig *c,QWidget *parent=0);
   ~EditProvider();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

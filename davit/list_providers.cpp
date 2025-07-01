@@ -32,8 +32,7 @@
 #include "list_programs.h"
 #include "list_providers.h"
 
-ListProviders::ListProviders(DvtConfig *c,ListPrograms *listprograms_dialog,
-			     QWidget *parent)
+ListProviders::ListProviders(DvtConfig *c,QWidget *parent)
   : DvtDialog(c,parent)
 {
   setModal(true);
@@ -48,7 +47,7 @@ ListProviders::ListProviders(DvtConfig *c,ListPrograms *listprograms_dialog,
   //
   // Dialogs
   //
-  list_editprovider_dialog=new EditProvider(config,listprograms_dialog,this);
+  list_editprovider_dialog=new EditProvider(config,this);
 
   //
   // Providers List

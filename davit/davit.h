@@ -48,9 +48,7 @@ class MainWidget : public QWidget
   void manageSystemData();
   void manageProvidersData();
   void manageAffiliateData();
-  void manageProgramsData();
   void importExternalData();  // precisiontrak.cpp
-  //  void importBiaData();
   void manageNetworksData();
   void generateReportsData();
   void quitMainWidget();
@@ -70,7 +68,6 @@ class MainWidget : public QWidget
   ListUsers *d_users_dialog;
   ListAffiliates *d_affiliates_dialog;
   ListNetworks *d_networks_dialog;
-  ListPrograms *d_programs_dialog;
   ListProviders *d_providers_dialog;
 };
 

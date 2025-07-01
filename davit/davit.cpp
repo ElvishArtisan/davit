@@ -112,7 +112,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Create And Set Icon
   //
-  QPixmap map(callcommander_xpm);
+  QPixmap map(davit_22x22_xpm);
   setWindowIcon(map);
 
   //
@@ -212,8 +212,7 @@ MainWidget::MainWidget(QWidget *parent)
   d_users_dialog=new ListUsers(config,this);
   d_affiliates_dialog=new ListAffiliates(config,this);
   d_networks_dialog=new ListNetworks(config,this);
-  d_programs_dialog=new ListPrograms(config,this);
-  d_providers_dialog=new ListProviders(config,d_programs_dialog,this);
+  d_providers_dialog=new ListProviders(config,this);
 
   //
   // Title
@@ -274,16 +273,6 @@ MainWidget::MainWidget(QWidget *parent)
   connect(button,SIGNAL(clicked()),this,SLOT(manageAffiliateData()));
 
   //
-  // Manage Programs Button
-  //
-  button=new QPushButton(this);
-  button->setGeometry(150,190,120,60);
-  button->setFont(font);
-  button->setText(tr("Manage\nPrograms"));
-  button->setEnabled(global_dvtuser->privilege(DvtUser::PrivProgramView));
-  connect(button,SIGNAL(clicked()),this,SLOT(manageProgramsData()));
-
-  //
   // Manage Networks Button
   //
   button=new QPushButton(this);
@@ -297,21 +286,11 @@ MainWidget::MainWidget(QWidget *parent)
   // Manage System Settings Button
   //
   button=new QPushButton(this);
-  button->setGeometry(10,260,120,60);
+  button->setGeometry(150,190,120,60);
   button->setFont(font);
   button->setText(tr("Manage System\nSettings"));
   button->setEnabled(global_dvtuser->privilege(DvtUser::PrivAdmin));
   connect(button,SIGNAL(clicked()),this,SLOT(manageSystemData()));
-
-  //
-  // Import External Data Button
-  //
-  button=new QPushButton(this);
-  button->setGeometry(150,260,120,60);
-  button->setFont(font);
-  button->setText(tr("Import\nExternal Data"));
-  button->setEnabled(global_dvtuser->privilege(DvtUser::PrivAdmin));
-  connect(button,SIGNAL(clicked()),this,SLOT(importExternalData()));
 
   //
   // Quit Button
@@ -338,7 +317,7 @@ MainWidget::~MainWidget()
 
 QSize MainWidget::sizeHint() const
 {
-  return QSize(280,410);
+  return QSize(280,340);
 }
 
 
@@ -374,12 +353,6 @@ void MainWidget::manageProvidersData()
 void MainWidget::manageAffiliateData()
 {
   d_affiliates_dialog->exec();
-}
-
-
-void MainWidget::manageProgramsData()
-{
-  d_programs_dialog->exec();
 }
 
 

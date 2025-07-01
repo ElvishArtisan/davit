@@ -34,8 +34,7 @@ class ListProviders : public DvtDialog
 {
  Q_OBJECT
  public:
-  ListProviders(DvtConfig *c,ListPrograms *listprograms_dialog,
-		QWidget *parent=0);
+  ListProviders(DvtConfig *c,QWidget *parent=0);
   ~ListProviders();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

@@ -140,48 +140,23 @@ int ListPrograms::exec(int provider_id)
 
 void ListPrograms::addData()
 {
-  /*
-  QString bname;
-  QString pname;
-  int pid=0;
-  QString sql;
-  QSqlQuery *q;
-  QSqlQuery *q1;
-
-  AddProgram *add=new AddProgram(&bname,&pname,this,"add");
-  if(add->exec()==0) {
-    sql=
-      QString().sprintf("select ID from PROVIDERS where BUSINESS_NAME=\"%s\"",
-			(const char *)bname);
-    q=new QSqlQuery(sql);
-    if(q->next()) {
-      sql=QString().sprintf("insert into PROGRAMS set PROVIDER_ID=%d,\
-                             PROGRAM_NAME=\"%s\"",q->value(0).toInt(),
-			    (const char *)pname);
-      q1=new QSqlQuery(sql);
-      delete q1;
-      sql="select LAST_INSERT_ID() from PROGRAMS";
-      q1=new QSqlQuery(sql);
-      if(q1->first()) {
-	pid=q1->value(0).toInt();
-      }
-      delete q1;
-      EditProgram *edit=new EditProgram(pname,this,"edit");
-      if(edit->exec()==0) {
-	DvtListViewItem *item=new DvtListViewItem(list_programs_view);
-	item->setText(0,pname);
-	UpdateItem(item);
-	list_programs_view->setSelected(item,true);
-	list_programs_view->ensureItemVisible(item);
-      }
-      else {
-	DeleteProgram(pid);
-      }
-      delete edit;
+  QString sql=QString("insert into `PROGRAMS` set ")+
+    QString::asprintf("`PROVIDER_ID`=%d,",list_provider_id)+
+    "`PROGRAM_NAME`="+DvtSqlQuery::escape(tr("[new program]"));
+  int program_id=DvtSqlQuery::run(sql).toInt();
+  if(list_editprogram_dialog->exec(program_id,true)) {
+    QModelIndex index=list_programs_model->addProgram(program_id);
+    if(index.isValid()) {
+      list_programs_view->
+	selectionModel()->select(index,QItemSelectionModel::ClearAndSelect|
+				 QItemSelectionModel::Rows);
     }
   }
-  delete add;
-  */
+  else {
+    sql=QString("delete from `PROGRAMS` where ")+
+      QString::asprintf("`PROGRAMS`.`ID`=%d ",program_id);
+    DvtSqlQuery::apply(sql);
+  }
 }
 
 
@@ -196,39 +171,44 @@ void ListPrograms::editData()
      exec(list_programs_model->programId(rows.first()),false)) {
     list_programs_model->refresh(rows.first());
   }
-  /*
-  DvtListViewItem *item=(DvtListViewItem *)list_programs_view->selectedItem();
-  
-  if(item==NULL) {
-    return;
-  }
-  EditProgram *edit=new EditProgram(item->text(0),this,"edit");
-  if(edit->exec()==0) {
-    UpdateItem(item);
-  }
-  delete edit;
-  */
 }
 
 
 void ListPrograms::deleteData()
 {
-  /*
-  DvtListViewItem *item=(DvtListViewItem *)list_programs_view->selectedItem();
+  QModelIndexList rows=list_programs_view->selectionModel()->selectedRows();
 
-  if(item==NULL) {
+  if(rows.size()!=1) {
     return;
   }
-  if(QMessageBox::question(this,"Delete Program",
-      QString().sprintf("Are you sure you want to delete the program \"%s\"",
-			   (const char *)item->text(0)),
-			   QMessageBox::Yes,
-			   QMessageBox::No)==QMessageBox::No) {
+  if(QMessageBox::question(this,
+			   "Davit",
+     tr("Are you sure you want to delete the program")+
+			   " \""+
+			   list_programs_model->programName(rows.first())+
+			   "\"?\n\n"+
+     tr("This will delete all affidavit records associated with this program."),
+		 QMessageBox::Yes,QMessageBox::No)!=QMessageBox::Yes) {
     return;
   }
-  DeleteProgram(item->id());
-  delete item;
-  */
+  int program_id=list_programs_model->programId(rows.first());
+
+  QString sql=QString("delete from `FEEDS` where ")+
+    QString::asprintf("`PROGRAM_ID`=%d",program_id);
+  DvtSqlQuery::apply(sql);
+
+  sql=QString("delete from `AIRINGS` where ")+
+    QString::asprintf("`PROGRAM_ID`=%d",program_id);
+  DvtSqlQuery::apply(sql);
+
+  sql=QString("delete from `AIRED` where ")+
+    QString::asprintf("`PROGRAM_ID`=%d",program_id);
+  DvtSqlQuery::apply(sql);
+
+  sql=QString("delete from `PROGRAMS` where ")+
+    QString::asprintf("`PROGRAMS`.`ID`=%d ",program_id);
+  DvtSqlQuery::apply(sql);
+  list_programs_model->removeProgram(rows.first());
 }
 
 
@@ -274,78 +254,3 @@ void ListPrograms::resizeEvent(QResizeEvent *e)
   list_affadavit_button->setGeometry(380,h-60,80,50);
   list_close_button->setGeometry(w-90,h-60,80,50);
 }
-
-
-void ListPrograms::DeleteProgram(int pid)
-{
-  QString sql;
-  QSqlQuery *q;
-
-  sql=QString::asprintf("delete from PROGRAMS where ID=%d",pid);
-  q=new QSqlQuery(sql);
-  delete q;
-
-  sql=QString::asprintf("delete from FEEDS where PROGRAM_ID=%d",pid);
-  q=new QSqlQuery(sql);
-  delete q;
-
-  sql=QString::asprintf("delete from AIRINGS where PROGRAM_ID=%d",pid);
-  q=new QSqlQuery(sql);
-  delete q;
-
-  sql=QString::asprintf("delete from AIRED where PROGRAM_ID=%d",pid);
-  q=new QSqlQuery(sql);
-  delete q;
-}
-
-
-void ListPrograms::RefreshList()
-{
-  /*
-  QString sql;
-  QSqlQuery *q;
-  DvtListViewItem *item;
-
-  list_programs_view->clear();
-  sql="select PROGRAMS.PROGRAM_NAME,PROVIDERS.BUSINESS_NAME,\
-              PROGRAMS.CONTACT_NAME,PROGRAMS.CONTACT_PHONE,\
-              PROGRAMS.CONTACT_EMAIL,PROGRAMS.ID \
-              from PROVIDERS left join PROGRAMS \
-              on PROVIDERS.ID=PROGRAMS.PROVIDER_ID";
-  if(list_provider_id>=0) {
-    sql+=QString::asprintf(" where PROGRAMS.PROVIDER_ID=%d",list_provider_id);
-  }
-  q=new QSqlQuery(sql);
-  while (q->next()) {
-    item=new DvtListViewItem(list_programs_view);
-    item->setId(q->value(5).toInt());
-    item->setText(0,q->value(0).toString());
-    item->setText(1,q->value(1).toString());
-    item->setText(2,q->value(2).toString());
-    item->setText(3,q->value(3).toString());
-    item->setText(4,q->value(4).toString());
-  }
-  delete q;
-  */
-}
-
-
-/*
-void ListPrograms::UpdateItem(DvtListViewItem *item)
-{
-  QString sql;
-  QSqlQuery *q;
-
-  sql=QString::asprintf("select CONTACT_NAME,CONTACT_PHONE,CONTACT_EMAIL,ID \
-                         from PROGRAMS where PROGRAM_NAME=\"%s\"",
-			(const char *)item->text(0));
-  q=new QSqlQuery(sql);
-  if(q->first()) {
-    item->setId(q->value(3).toInt());
-    item->setText(2,q->value(0).toString());
-    item->setText(3,q->value(1).toString());
-    item->setText(4,q->value(2).toString());
-  }
-  delete q;
-}
-*/
