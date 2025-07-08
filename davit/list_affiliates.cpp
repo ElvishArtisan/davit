@@ -371,19 +371,6 @@ void ListAffiliates::affadavitData()
   }
   list_generateaffadavit_dialog->
     execAffiliate(list_affiliates_model->affiliateId(rows.first()));
-  /*
-  DvtListViewItem *item=
-    (DvtListViewItem *)list_affiliates_list->selectedItem();
-  
-  if(item==NULL) {
-    return;
-  }
-  GenerateAffadavit *edit=
-    new GenerateAffadavit(GenerateAffadavit::ReportAffiliate,item->id(),
-			  this,"edit");
-  edit->exec();
-  delete edit;
-  */
 }
 
 
