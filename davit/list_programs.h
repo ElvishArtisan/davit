@@ -46,7 +46,6 @@ class ListPrograms : public DvtDialog
   void addData();
   void editData();
   void deleteData();
-  void affadavitData();
   void doubleClickedData(const QModelIndex &index);
   void closeData();
 
@@ -59,7 +58,6 @@ class ListPrograms : public DvtDialog
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;
-  QPushButton *list_affadavit_button;
   QPushButton *list_close_button;
   int list_provider_id;
   EditProgram *list_editprogram_dialog;

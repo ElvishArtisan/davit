@@ -895,3 +895,6 @@
 2025-07-08 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a fence post error in davit(1) that cause the affidavit text
 	to be incorrect when generated for multiple programs.
+2025-07-08 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the 'Generate Affidavit' button from the 'List Programs'
+	dialog in davit(1).

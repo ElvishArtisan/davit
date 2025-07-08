@@ -89,16 +89,6 @@ ListPrograms::ListPrograms(DvtConfig *c,QWidget *parent)
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
 
   //
-  //  Affidavit Button
-  //
-  list_affadavit_button=new QPushButton(this);
-  list_affadavit_button->setFont(buttonFont());
-  list_affadavit_button->setText(tr("Generate")+"\n"+tr("Affidavit"));
-  list_affadavit_button->
-    setEnabled(global_dvtuser->privilege(DvtUser::PrivReportView));
-  connect(list_affadavit_button,SIGNAL(clicked()),this,SLOT(affadavitData()));
-
-  //
   //  Close Button
   //
   list_close_button=new QPushButton(this);
@@ -212,24 +202,6 @@ void ListPrograms::deleteData()
 }
 
 
-void ListPrograms::affadavitData()
-{
-  /*
-  DvtListViewItem *item=
-    (DvtListViewItem *)list_programs_view->selectedItem();
-  
-  if(item==NULL) {
-    return;
-  }
-  GenerateAffadavit *edit=
-    new GenerateAffadavit(GenerateAffadavit::ReportProgram,item->id(),
-			  this,"edit");
-  edit->exec();
-  delete edit;
-  */
-}
-
-
 void ListPrograms::doubleClickedData(const QModelIndex &index)
 {
   editData();
@@ -251,6 +223,5 @@ void ListPrograms::resizeEvent(QResizeEvent *e)
   list_add_button->setGeometry(10,h-60,80,50);
   list_edit_button->setGeometry(100,h-60,80,50);
   list_delete_button->setGeometry(190,h-60,80,50);
-  list_affadavit_button->setGeometry(380,h-60,80,50);
   list_close_button->setGeometry(w-90,h-60,80,50);
 }
