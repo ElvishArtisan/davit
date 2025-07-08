@@ -892,3 +892,6 @@
 	* Tweaked font layouts for affidavit print outs in davit(1).
 2025-07-08 Fred Gleason <fredg@paravelsystems.com>
 	* Removed dead code in 'davit/list_affiliates.cpp'.
+2025-07-08 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a fence post error in davit(1) that cause the affidavit text
+	to be incorrect when generated for multiple programs.

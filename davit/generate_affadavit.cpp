@@ -156,6 +156,9 @@ int GenerateAffadavit::execAffiliate(int affiliate_id)
 
   setWindowTitle("Davit - "+tr("Generate Affiliate Affidavit")+
 		 QString::asprintf(" [ID: %d]",affiliate_id));
+  edit_program_box->setCurrentIndex(0);
+  edit_program_box->setEnabled(true);
+
   updateGenerateButtonData(-1);
 
   return QDialog::exec();
@@ -319,7 +322,7 @@ void GenerateAffadavit::printerPaint(QPrinter *printer)
   //
   QString pgm_name=tr("the Radio America Programs were");
   if(q->first()) {
-    if(program_id>=0) {
+    if(program_id>0) {
       pgm_name="\""+q->value(4).toString()+"\" was";
     }
     if(q->value(3).toString().isEmpty()) {
@@ -362,12 +365,12 @@ void GenerateAffadavit::printerPaint(QPrinter *printer)
 	p->fontMetrics().horizontalAdvance(date.toString("MM/dd/yy"));
       int start_width=p->fontMetrics().horizontalAdvance("Start Time");
       int end_width=p->fontMetrics().horizontalAdvance("End Time");
-      p->setFont(defaultFont());
+      p->setFont(labelFont());
       p->drawText(QRect(0,ypos,title_width,
-			p->fontMetrics().height()),Qt::AlignCenter,"Program");
+			p->fontMetrics().height()),Qt::AlignCenter,"Program Name");
       p->drawText(QRect(0+4*w/9,
 			ypos,date_width,
-			p->fontMetrics().height()),Qt::AlignCenter,"Date");
+			p->fontMetrics().height()),Qt::AlignCenter,"Air Date");
       p->drawText(QRect(0+5*w/9,
 			ypos,w/3,
 			p->fontMetrics().height()),
@@ -399,10 +402,10 @@ void GenerateAffadavit::printerPaint(QPrinter *printer)
 		    toString("MM/dd/yy"));
 	p->drawText(QRect(0+5*w/9,
 			  ypos,start_width,p->fontMetrics().height()),
-		    Qt::AlignCenter,q->value(0).toDateTime().toString("h:mm AP"));
+		    Qt::AlignRight,q->value(0).toDateTime().toString("h:mm AP"));
 	p->drawText(QRect(0+6*w/9,
 			  ypos,end_width,p->fontMetrics().height()),
-		    Qt::AlignCenter,q->value(0).toDateTime().
+		    Qt::AlignRight,q->value(0).toDateTime().
 		    addSecs(q->value(1).toInt()).toString("h:mm AP"));
 	NewLine(printer,p,&ypos);
       }
@@ -591,8 +594,10 @@ bool GenerateAffadavit::HasAffidavits() const
   if(program_id>0) {
     sql+=QString::asprintf("(`PROGRAMS`.`ID`=%d)&&",program_id);
   }
-  sql+=QString::asprintf("(`AIRED`.`AFFILIATE_ID`=%d)&&",edit_affiliate_id)+
-    "(`AIRED`.`AIR_DATETIME`>="+
+  if(edit_affiliate_id>0) {
+    sql+=QString::asprintf("(`AIRED`.`AFFILIATE_ID`=%d)&&",edit_affiliate_id);
+  }
+  sql+="(`AIRED`.`AIR_DATETIME`>="+
     DvtSqlQuery::escape(date.toString("yyyy-MM")+"-01 00:00:00")+")&&"+
     "(`AIRED`.`AIR_DATETIME`<"+
     DvtSqlQuery::escape(date.addMonths(1).toString("yyyy-MM")+"-01 00:00:00")+
