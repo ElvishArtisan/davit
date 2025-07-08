@@ -94,6 +94,7 @@ class ListAffiliates : public DvtDialog
   QPushButton *list_close_button;
   QProgressDialog *list_email_progress;
   EditAffiliate *list_edit_affiliate_dialog;
+  GenerateAffadavit *list_generateaffadavit_dialog;
   QPixmap *list_greenball_map;
   QPixmap *list_redball_map;
   QPixmap *list_whiteball_map;

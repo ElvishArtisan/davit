@@ -58,8 +58,7 @@ LT_INIT
 #
 # Check for Qt
 #
-#PKG_CHECK_MODULES(QT4,QtCore QtGui QtNetwork QtSql,,[AC_MSG_ERROR([*** Qt4 not found ***])])
-AQ_FIND_QT6(QT6,Core Gui Widgets Network Sql,[],[AC_MSG_ERROR([*** Qt6 not found ***])])
+AQ_FIND_QT6(QT6,Core Gui Widgets Network Sql PrintSupport,[],[AC_MSG_ERROR([*** Qt6 not found ***])])
 
 #
 # Check for VMime

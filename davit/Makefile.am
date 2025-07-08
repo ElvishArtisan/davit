@@ -79,7 +79,6 @@ dist_davit_SOURCES = activity_report.cpp\
                      pick_daypart.cpp pick_daypart.h\
                      pick_fields.cpp pick_fields.h\
                      precisiontrak.cpp\
-                     preview.cpp preview.h\
                      program_report.cpp\
                      programlistmodel.cpp programlistmodel.h\
                      programbymarket_report.cpp\
@@ -126,7 +125,6 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_networklistmodel.cpp\
                        moc_pick_daypart.cpp\
                        moc_pick_fields.cpp\
-                       moc_preview.cpp\
                        moc_programlistmodel.cpp\
                        moc_providerlistmodel.cpp\
                        moc_showaffidavits.cpp\

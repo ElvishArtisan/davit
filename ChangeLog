@@ -886,3 +886,5 @@
 	davit(1).
 	* Removed the 'Import External Data' button from the main menu screen
 	of davit(1).
+2025-07-08 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored the 'Generate Affidavit' dialog in davit(1).

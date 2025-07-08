@@ -69,6 +69,7 @@ ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
   // Dialogs
   //
   list_edit_affiliate_dialog=new EditAffiliate(c,this);
+  list_generateaffadavit_dialog=new GenerateAffadavit(c,this);
   /*
   list_email_progress=
     new QProgressDialog(tr("Generating e-mail, please wait..."),
@@ -363,6 +364,13 @@ void ListAffiliates::deleteData()
 
 void ListAffiliates::affadavitData()
 {
+  QModelIndexList rows=list_affiliates_view->selectionModel()->selectedRows();
+
+  if(rows.size()!=1) {
+    return;
+  }
+  list_generateaffadavit_dialog->
+    execAffiliate(list_affiliates_model->affiliateId(rows.first()));
   /*
   DvtListViewItem *item=
     (DvtListViewItem *)list_affiliates_list->selectedItem();

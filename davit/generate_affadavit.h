@@ -24,25 +24,36 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialog>
+#include <QLabel>
+#include <QPrinter>
 #include <QPushButton>
-#include <QSqlDatabase>
+
+#include <dvtdialog.h>
 
 #define AFFADAVIT_WIDTH 80
 
-class GenerateAffadavit : public QDialog
+class GenerateAffadavit : public DvtDialog
 {
   Q_OBJECT
  public:
   enum ReportType {ReportAffiliate=0,ReportProgram=1};
-  GenerateAffadavit(ReportType type,int id,QWidget *parent=0);
+  GenerateAffadavit(DvtConfig *c,QWidget *parent=0);
   ~GenerateAffadavit();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
-  
+
+ public slots:
+  int execAffiliate(int affiliate_id);
+
  private slots:
-  void validateDateData(int index);
+  void updateGenerateButtonData(int index);
   void generateData();
   void closeData();
+  void printerPaint(QPrinter *printer);
+
+ protected:
+  void resizeEvent(QResizeEvent *e);
+  void closeEvent(QCloseEvent *e);
 
  private:
   //  void RenderAffidavit(QPainter*p);
@@ -51,14 +62,22 @@ class GenerateAffadavit : public QDialog
 		       const QDate &end_date,bool pgms);
   void ProgramReport(int id,const QDate &start_date,
 		     const QDate &end_date,bool affiliates);
+  bool HasAffidavits() const;
+  QDate SelectedDate() const;
   QString Center(const QString &s);
+  void NewLine(int spacing,QPrinter *printer,QPainter *p,int *ypos);
+  int PrintText(int ypos,QFontMetrics *fm,const QString &str,QPainter *p);
+  QLabel *edit_date_label;
   QComboBox *edit_month_box;
   QComboBox *edit_year_box;
+  QLabel *edit_program_label;
   QComboBox *edit_program_box;
   QCheckBox *edit_airings_check;
+  QLabel *edit_airings_label;
   QPushButton *edit_generate_button;
+  QPushButton *edit_close_button;
   ReportType edit_type;
-  int edit_id;
+  int edit_affiliate_id;
 };
 
 
