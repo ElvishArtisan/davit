@@ -888,3 +888,5 @@
 	of davit(1).
 2025-07-08 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored the 'Generate Affidavit' dialog in davit(1).
+2025-07-08 Fred Gleason <fredg@paravelsystems.com>
+	* Tweaked font layouts for affidavit print outs in davit(1).

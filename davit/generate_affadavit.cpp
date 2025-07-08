@@ -192,57 +192,6 @@ void GenerateAffadavit::generateData()
 }
 
 
-bool GenerateAffadavit::HasAffidavits() const
-{
-  QString sql;
-  DvtSqlQuery *q=NULL;
-  QDate date=SelectedDate();
-
-  int program_id=
-    edit_program_box->itemData(edit_program_box->currentIndex()).toInt();
-  sql=QString("select ")+
-    "`PROGRAMS`.`ID` "+
-    "from `AIRED` left join `PROGRAMS` "+
-    "on `AIRED`.`PROGRAM_ID`=`PROGRAMS`.`ID` where ";
-  if(program_id>0) {
-    sql+=QString::asprintf("(`PROGRAMS`.`ID`=%d)&&",program_id);
-  }
-  sql+=QString::asprintf("(`AIRED`.`AFFILIATE_ID`=%d)&&",edit_affiliate_id)+
-    "(`AIRED`.`AIR_DATETIME`>="+
-    DvtSqlQuery::escape(date.toString("yyyy-MM")+"-01 00:00:00")+")&&"+
-    "(`AIRED`.`AIR_DATETIME`<"+
-    DvtSqlQuery::escape(date.addMonths(1).toString("yyyy-MM")+"-01 00:00:00")+
-    ")&&"+
-    QString::asprintf("((`AIRED`.`STATE`=%d)||",Dvt::AiredStateConfirmed)+
-    QString::asprintf("(`AIRED`.`STATE`=%d)) ",Dvt::AiredStateDenied)+
-    "order by `AIRED`.`AIR_DATETIME` ";
-  q=new DvtSqlQuery(sql);
-  bool ret=q->first();
-  delete q;
-
-  return ret;
-}
-
-
-QDate GenerateAffadavit::SelectedDate() const
-{
-  return QDate(edit_year_box->currentText().toInt(),
-	       edit_month_box->currentIndex()+1,1);
-}
-
-
-QString GenerateAffadavit::Center(const QString &s)
-{
-  QString r;
-  int margin=(AFFADAVIT_WIDTH-s.length())/2;
-
-  for(int i=0;i<margin;i++) {
-    r+=" ";
-  }
-  return r+s;
-}
-
-
 void GenerateAffadavit::closeData()
 {
   done(true);
@@ -251,6 +200,9 @@ void GenerateAffadavit::closeData()
 
 void GenerateAffadavit::printerPaint(QPrinter *printer)
 {
+  QMarginsF margins(20.0,20.0,20.0,20.0);
+  printer->setPageMargins(margins);
+
   QDate date=QDate(edit_year_box->currentText().toInt(),
 		   edit_month_box->currentIndex()+1,1);
   int program_id=
@@ -268,12 +220,7 @@ void GenerateAffadavit::printerPaint(QPrinter *printer)
   //
   QString sql;
   DvtSqlQuery *q=NULL;
-  //  int ypos=preview_pdm->logicalDpiY();
   int ypos=0;
-  QFont title_font("helvetica",10,QFont::Bold);
-  QFontMetrics title_metrics(title_font);
-  QFont line_font("helvetica",10,QFont::Normal);
-  QFontMetrics line_metrics(title_font);
   p->setPen(Qt::black);
   p->setBrush(Qt::black);
 
@@ -306,34 +253,34 @@ void GenerateAffadavit::printerPaint(QPrinter *printer)
     p->drawText(QRect(0,ypos,w,bigLabelFontMetrics()->height()),
 		Qt::AlignTop|Qt::AlignHCenter,
 		tr("RadioAmerica Program Affidavit"));
-    NewLine(title_metrics.lineSpacing(),printer,p,&ypos);
-    p->drawText(QRect(0,ypos,w,title_metrics.height()),
+    NewLine(printer,p,&ypos);
+    p->drawText(QRect(0,ypos,w,p->fontMetrics().height()),
 		Qt::AlignTop|Qt::AlignHCenter,"Affiliate "+station);
-    NewLine(title_metrics.lineSpacing(),printer,p,&ypos);
+    NewLine(printer,p,&ypos);
     if(!q->value(2).toString().isEmpty()) {
-      p->drawText(QRect(0,ypos,w,title_metrics.height()),
+      p->drawText(QRect(0,ypos,w,p->fontMetrics().height()),
 		  Qt::AlignTop|Qt::AlignHCenter,q->value(2).toString());
-      NewLine(title_metrics.lineSpacing(),printer,p,&ypos);
+      NewLine(printer,p,&ypos);
     }
     if(!q->value(3).toString().isEmpty()) {
-      p->drawText(QRect(0,ypos,w,title_metrics.height()),
+      p->drawText(QRect(0,ypos,w,p->fontMetrics().height()),
 		  Qt::AlignTop|Qt::AlignHCenter,q->value(3).toString());
-      NewLine(title_metrics.lineSpacing(),printer,p,&ypos);
+      NewLine(printer,p,&ypos);
     }
-    p->drawText(QRect(0,ypos,w,title_metrics.height()),
+    p->drawText(QRect(0,ypos,w,p->fontMetrics().height()),
 		Qt::AlignTop|Qt::AlignHCenter,q->value(4).toString()+", "+
 		q->value(5).toString().toUpper()+" "+q->value(6).toString());
-    NewLine(title_metrics.lineSpacing(),printer,p,&ypos);
-    p->drawText(QRect(0,ypos,w,title_metrics.height()),
+    NewLine(printer,p,&ypos);
+    p->drawText(QRect(0,ypos,w,p->fontMetrics().height()),
 		Qt::AlignTop|Qt::AlignHCenter,QString("DMA: ")+q->value(7).toString());
-    NewLine(title_metrics.lineSpacing(),printer,p,&ypos);
-    p->drawText(QRect(0,ypos,w,title_metrics.height()),
+    NewLine(printer,p,&ypos);
+    p->drawText(QRect(0,ypos,w,p->fontMetrics().height()),
 		Qt::AlignTop|Qt::AlignHCenter,
 		date.toString("MMMM")+" 1 - "+
 		date.toString("MMMM")+" "+
 		QString::asprintf("%d",date.daysInMonth())+
 		", "+date.toString("yyyy"));
-    NewLine(title_metrics.lineSpacing(),printer,p,&ypos);
+    NewLine(printer,p,&ypos);
   }
 
   //
@@ -387,13 +334,14 @@ void GenerateAffadavit::printerPaint(QPrinter *printer)
     signature=tr("Executed")+" "+
       q->value(2).toDateTime().toString("h:mm:ss AP")+
       " "+tr("on")+" "+q->value(2).toDateTime().toString("dddd, MMMM d, yyyy");
-    NewLine(title_metrics.lineSpacing(),printer,p,&ypos);
+    NewLine(printer,p,&ypos);
     msg+=tr("and all network commercials aired as per contract.");
-    ypos=PrintText(ypos,&title_metrics,msg,p);
-    NewLine(line_metrics.lineSpacing(),printer,p,&ypos);
+    p->setFont(defaultFont());
+    ypos=PrintText(ypos,msg,p);
+    NewLine(printer,p,&ypos);
   }
   else {
-    p->drawText(QRect(0,ypos,w,title_metrics.height()),
+    p->drawText(QRect(0,ypos,w,p->fontMetrics().height()),
 		Qt::AlignTop|Qt::AlignHCenter,
 		tr("No Affidavit Data Found!"));
     delete q;
@@ -411,29 +359,29 @@ void GenerateAffadavit::printerPaint(QPrinter *printer)
       //
       int title_width=4*w/9;
       int date_width=
-	line_metrics.horizontalAdvance(date.toString("MM/dd/yy"));
-      int start_width=line_metrics.horizontalAdvance("Start Time");
-      int end_width=line_metrics.horizontalAdvance("End Time");
-      p->setFont(title_font);
+	p->fontMetrics().horizontalAdvance(date.toString("MM/dd/yy"));
+      int start_width=p->fontMetrics().horizontalAdvance("Start Time");
+      int end_width=p->fontMetrics().horizontalAdvance("End Time");
+      p->setFont(defaultFont());
       p->drawText(QRect(0,ypos,title_width,
-			line_metrics.height()),Qt::AlignCenter,"Program");
+			p->fontMetrics().height()),Qt::AlignCenter,"Program");
       p->drawText(QRect(0+4*w/9,
 			ypos,date_width,
-			line_metrics.height()),Qt::AlignCenter,"Date");
+			p->fontMetrics().height()),Qt::AlignCenter,"Date");
       p->drawText(QRect(0+5*w/9,
 			ypos,w/3,
-			line_metrics.height()),
+			p->fontMetrics().height()),
 		  Qt::AlignLeft,"Start Time");
       p->drawText(QRect(0+6*w/9,
-			ypos,w/3,line_metrics.height()),
+			ypos,w/3,p->fontMetrics().height()),
 		  Qt::AlignLeft,"End Time");
-      NewLine(line_metrics.lineSpacing(),printer,p,&ypos);
+      NewLine(printer,p,&ypos);
 
       //
       // Program Listings
       //
       QString star="";
-      p->setFont(line_font);
+      p->setFont(defaultFont());
       q->seek(-1);
       while(q->next()) {
 	if(q->value(5).toInt()==Dvt::AiredStateModified) {
@@ -443,20 +391,20 @@ void GenerateAffadavit::printerPaint(QPrinter *printer)
 	  star="";
 	}
 	p->drawText(QRect(0,
-			  ypos,4*w/9,line_metrics.height()),
+			  ypos,4*w/9,p->fontMetrics().height()),
 		    Qt::AlignLeft,q->value(4).toString()+star);
 	p->drawText(QRect(0+4*w/9,
-			  ypos,w/3,line_metrics.height()),
+			  ypos,w/3,p->fontMetrics().height()),
 		    Qt::AlignLeft,q->value(0).toDateTime().
 		    toString("MM/dd/yy"));
 	p->drawText(QRect(0+5*w/9,
-			  ypos,start_width,line_metrics.height()),
+			  ypos,start_width,p->fontMetrics().height()),
 		    Qt::AlignCenter,q->value(0).toDateTime().toString("h:mm AP"));
 	p->drawText(QRect(0+6*w/9,
-			  ypos,end_width,line_metrics.height()),
+			  ypos,end_width,p->fontMetrics().height()),
 		    Qt::AlignCenter,q->value(0).toDateTime().
 		    addSecs(q->value(1).toInt()).toString("h:mm AP"));
-	NewLine(line_metrics.lineSpacing(),printer,p,&ypos);
+	NewLine(printer,p,&ypos);
       }
     }
     else {
@@ -464,51 +412,50 @@ void GenerateAffadavit::printerPaint(QPrinter *printer)
       // Column Headers
       //
       int date_width=
-	line_metrics.horizontalAdvance(date.toString("dddd, MMMM 00, yyyy"));
-      int start_width=line_metrics.horizontalAdvance("Start Time");
-      int end_width=line_metrics.horizontalAdvance("End Time");
-      p->setFont(title_font);
+	p->fontMetrics().horizontalAdvance(date.toString("dddd, MMMM 00, yyyy"));
+      int start_width=p->fontMetrics().horizontalAdvance("Start Time");
+      int end_width=p->fontMetrics().horizontalAdvance("End Time");
+      p->setFont(labelFont());
       p->drawText(QRect(0,ypos,date_width,
-			line_metrics.height()),Qt::AlignCenter,"Date");
+			p->fontMetrics().height()),Qt::AlignCenter,"Date");
       p->drawText(QRect(0+w/2,
 			ypos,w/3,
-			line_metrics.height()),
+			p->fontMetrics().height()),
 		  Qt::AlignLeft,"Start Time");
       p->drawText(QRect(0+2*w/3,
-			ypos,w/3,line_metrics.height()),
+			ypos,w/3,p->fontMetrics().height()),
 		  Qt::AlignLeft,"End Time");
-      NewLine(line_metrics.lineSpacing(),printer,p,&ypos);
+      NewLine(printer,p,&ypos);
 
       //
       // Program Listings
       //
-      p->setFont(line_font);
+      p->setFont(defaultFont());
       q->seek(-1);
       while(q->next()) {
 	p->drawText(QRect(0,
-			  ypos,w/3,line_metrics.height()),
+			  ypos,w/3,p->fontMetrics().height()),
 		    Qt::AlignLeft,q->value(0).toDateTime().
 		    toString("dddd, MMMM d, yyyy"));
 	p->drawText(QRect(0+w/2,
-			  ypos,start_width,line_metrics.height()),
+			  ypos,start_width,p->fontMetrics().height()),
 		    Qt::AlignCenter,q->value(0).toDateTime().toString("h:mm AP"));
 	p->drawText(QRect(0+2*w/3,
-			  ypos,end_width,line_metrics.height()),
+			  ypos,end_width,p->fontMetrics().height()),
 		    Qt::AlignCenter,q->value(0).toDateTime().
 		    addSecs(q->value(1).toInt()).toString("h:mm AP"));
-	ypos+=line_metrics.lineSpacing();
+	ypos+=p->fontMetrics().lineSpacing();
       }
       delete q;
-      NewLine(line_metrics.lineSpacing(),printer,p,&ypos);
+      NewLine(printer,p,&ypos);
     }
   }
-  ypos+=line_metrics.lineSpacing();
+  ypos+=p->fontMetrics().lineSpacing();
 
   //
   // Exception Section
   //
   if(!edit_airings_check->isChecked()) {
-    //    printer->newPage();
     sql=QString("select ")+
       "`AIRED`.`AIR_DATETIME`,"+     // 00
       "`AIRED`.`AIR_LENGTH`,"+       // 01
@@ -534,16 +481,16 @@ void GenerateAffadavit::printerPaint(QPrinter *printer)
     sql+=" order by PROGRAMS.PROGRAM_NAME,AIRED.AIR_DATETIME";
     q=new DvtSqlQuery(sql);
     if(q->first()) {
-      p->setFont(title_font);
-      p->drawText(QRect(0,ypos,w,title_metrics.height()),
+      p->setFont(labelFont());
+      p->drawText(QRect(0,ypos,w,p->fontMetrics().height()),
 		  Qt::AlignTop|Qt::AlignHCenter,
 		  "Exceptions");
-      NewLine(title_metrics.lineSpacing(),printer,p,&ypos);
-      p->setFont(line_font);
-      p->drawText(QRect(0,ypos,w,title_metrics.height()),
+      NewLine(printer,p,&ypos);
+      p->setFont(defaultFont());
+      p->drawText(QRect(0,ypos,w,p->fontMetrics().height()),
 		  Qt::AlignTop|Qt::AlignHCenter,
 		  "The following program instances were NOT aired:");
-      NewLine(title_metrics.lineSpacing(),printer,p,&ypos);
+      NewLine(printer,p,&ypos);
       q->seek(-1);
       
       //
@@ -551,47 +498,47 @@ void GenerateAffadavit::printerPaint(QPrinter *printer)
       //
       int title_width=4*w/9;
       int date_width=
-	line_metrics.horizontalAdvance(date.toString("MM/dd/yy"));
-      int start_width=line_metrics.horizontalAdvance("Start Time");
-      int end_width=line_metrics.horizontalAdvance("End Time");
-      p->setFont(title_font);
+	p->fontMetrics().horizontalAdvance(date.toString("MM/dd/yy"));
+      int start_width=p->fontMetrics().horizontalAdvance("Start Time");
+      int end_width=p->fontMetrics().horizontalAdvance("End Time");
+      p->setFont(labelFont());
       p->drawText(QRect(0,ypos,title_width,
-			line_metrics.height()),Qt::AlignCenter,"Program");
+			p->fontMetrics().height()),Qt::AlignCenter,"Program");
       p->drawText(QRect(0+4*w/9,
 			ypos,date_width,
-			line_metrics.height()),Qt::AlignCenter,"Date");
+			p->fontMetrics().height()),Qt::AlignCenter,"Date");
       p->drawText(QRect(0+5*w/9,
 			ypos,w/3,
-			line_metrics.height()),
+			p->fontMetrics().height()),
 		  Qt::AlignLeft,"Start Time");
       p->drawText(QRect(0+6*w/9,
-			ypos,w/3,line_metrics.height()),
+			ypos,w/3,p->fontMetrics().height()),
 		  Qt::AlignLeft,"End Time");
-      NewLine(line_metrics.lineSpacing(),printer,p,&ypos);
+      NewLine(printer,p,&ypos);
       
       //
       // Program Listings
       //
-      p->setFont(line_font);
+      p->setFont(defaultFont());
       q->seek(-1);
       while(q->next()) {
 	p->drawText(QRect(0,
-			  ypos,4*w/9,line_metrics.height()),
+			  ypos,4*w/9,p->fontMetrics().height()),
 		    Qt::AlignLeft,q->value(4).toString());
 	p->drawText(QRect(0+4*w/9,
-			  ypos,w/3,line_metrics.height()),
+			  ypos,w/3,p->fontMetrics().height()),
 		    Qt::AlignLeft,q->value(0).toDateTime().
 		    toString("MM/dd/yy"));
 	p->drawText(QRect(0+5*w/9,
-			  ypos,start_width,line_metrics.height()),
+			  ypos,start_width,p->fontMetrics().height()),
 		    Qt::AlignCenter,q->value(0).toDateTime().toString("h:mm AP"));
 	p->drawText(QRect(0+6*w/9,
-			  ypos,end_width,line_metrics.height()),
+			  ypos,end_width,p->fontMetrics().height()),
 		    Qt::AlignCenter,q->value(0).toDateTime().
 		    addSecs(q->value(1).toInt()).toString("h:mm AP"));
-	NewLine(line_metrics.lineSpacing(),printer,p,&ypos);
+	NewLine(printer,p,&ypos);
       }
-      NewLine(line_metrics.lineSpacing(),printer,p,&ypos);
+      NewLine(printer,p,&ypos);
     }
     delete q;
   }
@@ -599,7 +546,7 @@ void GenerateAffadavit::printerPaint(QPrinter *printer)
   //
   // Signature
   //
-  p->drawText(QRect(0,ypos,w,line_metrics.height()),Qt::AlignLeft,signature);
+  p->drawText(QRect(0,ypos,w,p->fontMetrics().height()),Qt::AlignLeft,signature);
 
   delete p;
 }
@@ -629,22 +576,71 @@ void GenerateAffadavit::closeEvent(QCloseEvent *e)
   closeData();
 }
 
+bool GenerateAffadavit::HasAffidavits() const
+{
+  QString sql;
+  DvtSqlQuery *q=NULL;
+  QDate date=SelectedDate();
 
-void GenerateAffadavit::NewLine(int spacing,QPrinter *printer,QPainter *p,
-				int *ypos)
+  int program_id=
+    edit_program_box->itemData(edit_program_box->currentIndex()).toInt();
+  sql=QString("select ")+
+    "`PROGRAMS`.`ID` "+
+    "from `AIRED` left join `PROGRAMS` "+
+    "on `AIRED`.`PROGRAM_ID`=`PROGRAMS`.`ID` where ";
+  if(program_id>0) {
+    sql+=QString::asprintf("(`PROGRAMS`.`ID`=%d)&&",program_id);
+  }
+  sql+=QString::asprintf("(`AIRED`.`AFFILIATE_ID`=%d)&&",edit_affiliate_id)+
+    "(`AIRED`.`AIR_DATETIME`>="+
+    DvtSqlQuery::escape(date.toString("yyyy-MM")+"-01 00:00:00")+")&&"+
+    "(`AIRED`.`AIR_DATETIME`<"+
+    DvtSqlQuery::escape(date.addMonths(1).toString("yyyy-MM")+"-01 00:00:00")+
+    ")&&"+
+    QString::asprintf("((`AIRED`.`STATE`=%d)||",Dvt::AiredStateConfirmed)+
+    QString::asprintf("(`AIRED`.`STATE`=%d)) ",Dvt::AiredStateDenied)+
+    "order by `AIRED`.`AIR_DATETIME` ";
+  q=new DvtSqlQuery(sql);
+  bool ret=q->first();
+  delete q;
+
+  return ret;
+}
+
+
+QDate GenerateAffadavit::SelectedDate() const
+{
+  return QDate(edit_year_box->currentText().toInt(),
+	       edit_month_box->currentIndex()+1,1);
+}
+
+
+QString GenerateAffadavit::Center(const QString &s)
+{
+  QString r;
+  int margin=(AFFADAVIT_WIDTH-s.length())/2;
+
+  for(int i=0;i<margin;i++) {
+    r+=" ";
+  }
+  return r+s;
+}
+
+
+void GenerateAffadavit::NewLine(QPrinter *printer,QPainter *p,int *ypos)
 {
   //  int w=p->device()->width();
   int h=p->device()->height();
 
-  *ypos+=spacing;
+  *ypos+=p->fontMetrics().lineSpacing();
   if(*ypos>h) {
     printer->newPage();
-    *ypos=spacing;
+    *ypos=p->fontMetrics().lineSpacing();;
   }
 }
 
 
-int GenerateAffadavit::PrintText(int ypos,QFontMetrics *fm,const QString &str,QPainter *p)
+int GenerateAffadavit::PrintText(int ypos,const QString &str,QPainter *p)
 {
   int w=p->device()->width();
   //  int h=p->device()->height();
@@ -653,18 +649,18 @@ int GenerateAffadavit::PrintText(int ypos,QFontMetrics *fm,const QString &str,QP
   QStringList strs=str.split(" ");
 
   for(int i=0;i<strs.size();i++) {
-    if(fm->horizontalAdvance(line+" "+strs[i])<w) {
+    if(p->fontMetrics().horizontalAdvance(line+" "+strs[i])<w) {
       line+=" "+strs[i];
     }
     else {
-      p->drawText(QRect(0,ypos,w,fm->height()),Qt::AlignLeft,line);
+      p->drawText(QRect(0,ypos,w,p->fontMetrics().height()),Qt::AlignLeft,line);
       line=strs[i];
-      ypos+=fm->height();
+      ypos+=p->fontMetrics().height();
     }
   }
   if(!line.isEmpty()) {
-    p->drawText(QRect(0,ypos,w,fm->height()),Qt::AlignLeft,line);
-    ypos+=fm->height();
+    p->drawText(QRect(0,ypos,w,p->fontMetrics().height()),Qt::AlignLeft,line);
+    ypos+=p->fontMetrics().height();
   }
 
   return ypos;

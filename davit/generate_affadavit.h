@@ -65,8 +65,8 @@ class GenerateAffadavit : public DvtDialog
   bool HasAffidavits() const;
   QDate SelectedDate() const;
   QString Center(const QString &s);
-  void NewLine(int spacing,QPrinter *printer,QPainter *p,int *ypos);
-  int PrintText(int ypos,QFontMetrics *fm,const QString &str,QPainter *p);
+  void NewLine(QPrinter *printer,QPainter *p,int *ypos);
+  int PrintText(int ypos,const QString &str,QPainter *p);
   QLabel *edit_date_label;
   QComboBox *edit_month_box;
   QComboBox *edit_year_box;
