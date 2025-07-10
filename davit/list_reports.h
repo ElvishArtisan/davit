@@ -26,31 +26,39 @@
 #include <QDateTime>
 #include <QDialog>
 #include <QFontMetrics>
-#include <QListView>
+#include <QListWidget>
 #include <QPushButton>
 #include <QStringList>
 
 #include <dvt.h>
+#include <dvtdialog.h>
 //#include <dvtlistviewitem.h>
 #include <spread_sheet.h>
 
 #include "pick_fields.h"
 
-class ListReports : public QDialog
+class ListReports : public DvtDialog
 {
  Q_OBJECT
  public:
-  ListReports(QWidget *parent=0);
+  ListReports(DvtConfig *c,QWidget *parent=0);
   ~ListReports();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
 
- private slots:
+ signals:
+  void reportStartupCommenced();
+
+ public slots:
+  void clearBusyCursor();
+
+private slots:
   void runData();
-  //  void doubleClickedData(QListViewItem *item,const QPoint &pt,int c);
+  void doubleClickedData(const QModelIndex &index);
   void closeData();
 
  protected:
+  void setBusyCursor();
   void resizeEvent(QResizeEvent *e);
 
  private:
@@ -120,9 +128,10 @@ class ListReports : public QDialog
   void ContactFields(int affiliate_id,ContactType type,int fields,
 		     SpreadTab *tab,int colnum,int rownum,
 		     QFontMetrics *fm=NULL);
-  QListView *list_reports_list;
+  QListWidget *list_reports_list;
   QPushButton *list_run_button;
   QPushButton *list_close_button;
+  int d_busy_cursor_count;
 };
 
 

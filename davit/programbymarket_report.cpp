@@ -22,11 +22,10 @@
 
 #include <QFile>
 #include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
-#include <dvttextfile.h>
 #include <dvtconf.h>
+#include <dvtdb.h>
+#include <dvttextfile.h>
 #include <state_conv.h>
 
 #include "list_reports.h"
@@ -37,7 +36,7 @@ bool ListReports::ProgramByMarketReport(PickFields::MarketType type,
 {
   QString s;
   QString sql;
-  QSqlQuery *q=NULL;
+  DvtSqlQuery *q=NULL;
   QString where;
   QString outfile;
 
@@ -56,6 +55,7 @@ bool ListReports::ProgramByMarketReport(PickFields::MarketType type,
   //
   // Generate Report
   //
+  setBusyCursor();
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Programs by")+" "+market);
   tab->addCell(1,1)->setText(tr("Programs in")+" "+market);
@@ -68,14 +68,20 @@ bool ListReports::ProgramByMarketReport(PickFields::MarketType type,
   tab->addCell(5,4)->setText(tr("DMA MARKET"));
   tab->addCell(6,4)->setText(tr("MSA MARKET"));
   tab->addCell(7,4)->setText(tr("PROGRAM"));
-  sql=QString("select AFFILIATES.ID,AFFILIATES.STATION_CALL,")+
-    "AFFILIATES.STATION_TYPE,AFFILIATES.STATION_FREQUENCY,"+
-    "AFFILIATES.LICENSE_CITY,AFFILIATES.LICENSE_STATE,DMA_NAME,MARKET_NAME,"+
-    "PROGRAMS.PROGRAM_NAME "+
-    "from AFFILIATES left join AIRINGS "+
-    "on AFFILIATES.ID=AIRINGS.AFFILIATE_ID "+
-    "left join PROGRAMS on AIRINGS.PROGRAM_ID=PROGRAMS.ID "+
-    "where (AFFILIATES.IS_AFFILIATE=\"Y\")";
+  sql=QString("select ")+
+    "`AFFILIATES`.`ID`,"+
+    "`AFFILIATES`.`STATION_CALL`,"+
+    "`AFFILIATES`.`STATION_TYPE`,"+
+    "`AFFILIATES`.`STATION_FREQUENCY`,"+
+    "`AFFILIATES`.`LICENSE_CITY`,"+
+    "`AFFILIATES`.`LICENSE_STATE`,"+
+    "`DMA_NAME`,"+
+    "`MARKET_NAME`,"+
+    "`PROGRAMS`.`PROGRAM_NAME` "+
+    "from `AFFILIATES` left join `AIRINGS` "+
+    "on `AFFILIATES`.`ID`=`AIRINGS`.`AFFILIATE_ID` "+
+    "left join `PROGRAMS` on `AIRINGS`.`PROGRAM_ID`=`PROGRAMS`.`ID` "+
+    "where (`AFFILIATES`.`IS_AFFILIATE`='Y')";
   switch(type) {
   case PickFields::NoMarket:
     break;
@@ -83,7 +89,8 @@ bool ListReports::ProgramByMarketReport(PickFields::MarketType type,
   case PickFields::StateMarket:
     if(state!="aa") {
       if(!city.isEmpty()) {
-	sql+="&&(AFFILIATES.LICENSE_CITY=\""+city+"\")";
+	sql+=QString("&&(`AFFILIATES`.`LICENSE_CITY`=")+
+	  DvtSqlQuery::escape(city)+")";
 	tab->addCell(1,1)->setText(tr("Programs in")+" "+
 				   DvtFormatCityState(city,state));
       }
@@ -91,23 +98,24 @@ bool ListReports::ProgramByMarketReport(PickFields::MarketType type,
 	tab->addCell(1,1)->setText(tr("Programs in")+" "+
 				   AbbreviationToState(state));
       }
-      sql+="&&(AFFILIATES.LICENSE_STATE=\""+state+"\")";
+      sql+=QString("&&(`AFFILIATES`.`LICENSE_STATE`=")+
+	DvtSqlQuery::escape(state)+")";
     }
     break;
 
   case PickFields::DmaMarket:
-    sql+="&&(DMA_NAME=\""+market+"\")";
+    sql+=QString("&&(DMA_NAME=")+DvtSqlQuery::escape(market)+")";
     tab->addCell(1,1)->setText(tr("Programs in")+" "+market);
     break;
 
   case PickFields::MsaMarket:
-    sql+="&&(MARKET_NAME=\""+market+"\")";
+    sql+=QString("&&(MARKET_NAME=")+DvtSqlQuery::escape(market)+")";
     tab->addCell(1,1)->setText(tr("Programs in")+" "+market);
     break;
   }
-  sql+=" order by AFFILIATES.LICENSE_STATE,AFFILIATES.LICENSE_CITY,";
-  sql+="PROGRAMS.PROGRAM_NAME";
-  q=new QSqlQuery(sql);
+  sql+=" order by `AFFILIATES`.`LICENSE_STATE`,`AFFILIATES`.`LICENSE_CITY`,";
+  sql+="`PROGRAMS`.`PROGRAM_NAME`";
+  q=new DvtSqlQuery(sql);
   int row=5;
   while(q->next()) {
     // Call Letters

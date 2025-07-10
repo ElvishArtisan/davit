@@ -43,6 +43,7 @@ bool ListReports::MissingAffidavitContactReport(SpreadSheet *sheet)
   //
   // Generate Report
   //
+  setBusyCursor();
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Missiing Affidavit Contacts"));
 

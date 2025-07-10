@@ -898,3 +898,5 @@
 2025-07-08 Fred Gleason <fredg@paravelsystems.com>
 	* Removed the 'Generate Affidavit' button from the 'List Programs'
 	dialog in davit(1).
+2025-07-10 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored the 'List Reports' dialog in davit(1).

@@ -1565,8 +1565,8 @@ QStringList DvtReportViewerCommand(const QString &filename,
 
   if(getenv("DAVIT_REPORT_COMMAND")==NULL) {
     ret.push_back(ooffice_path);
-    ret.push_back("--calc");
-    ret.push_back("-view");
+    ret.push_back("--norestore");
+    ret.push_back("--view");
     ret.push_back(filename);
   }
   else {

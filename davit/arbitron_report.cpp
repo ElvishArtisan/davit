@@ -46,6 +46,7 @@ bool ListReports::ArbitronReport(SpreadSheet *sheet)
   }
   delete r;
 
+  setBusyCursor();
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Arbitron"));
   sql=QString::asprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",pgm_id);

@@ -56,10 +56,11 @@ DvtUser *global_dvtuser;
 DvtSystem *global_dvtsystem;
 QString openoffice_path;
 bool exiting=false;
-std::vector<QString> temp_files;
+QStringList temp_files;
 bool email_enabled=false;
 Geometry *global_geometry=NULL;
 MailDialog *mail_dialog=NULL;
+ViewerProcessList *global_viewer_list=NULL;
 
 //
 // Icons
@@ -114,6 +115,13 @@ MainWidget::MainWidget(QWidget *parent)
   //
   QPixmap map(davit_22x22_xpm);
   setWindowIcon(map);
+
+  //
+  // Viewer Instance Manager
+  //
+  global_viewer_list=new ViewerProcessList(this);
+  connect(global_viewer_list,SIGNAL(cleanupComplete()),
+	  this,SLOT(quitMainWidget()));
 
   //
   // Load Geometry
@@ -209,6 +217,9 @@ MainWidget::MainWidget(QWidget *parent)
   // Create Dialogs
   //
   mail_dialog=new MailDialog(this);
+  d_reports_dialog=new ListReports(config,this);
+  connect(global_viewer_list,SIGNAL(reportStartupComplete()),
+	  d_reports_dialog,SLOT(clearBusyCursor()));
   d_users_dialog=new ListUsers(config,this);
   d_affiliates_dialog=new ListAffiliates(config,this);
   d_networks_dialog=new ListNetworks(config,this);
@@ -299,7 +310,7 @@ MainWidget::MainWidget(QWidget *parent)
   button->setGeometry(10,sizeHint().height()-70,sizeHint().width()-20,60);
   button->setFont(font);
   button->setText(tr("Quit"));
-  connect(button,SIGNAL(clicked()),this,SLOT(quitMainWidget()));
+  connect(button,SIGNAL(clicked()),global_viewer_list,SLOT(cleanup()));
 
   //
   // Configure Signals
@@ -364,9 +375,7 @@ void MainWidget::manageNetworksData()
 
 void MainWidget::generateReportsData()
 {
-  ListReports *d=new ListReports(this);
-  d->exec();
-  delete d;
+  d_reports_dialog->exec();
 }
 
 
@@ -380,6 +389,7 @@ void MainWidget::quitMainWidget()
   for(unsigned i=0;i<temp_files.size();i++) {
     QFile::remove(temp_files[i]);
   }
+  delete global_viewer_list;
 
   exit(0);
 }
@@ -387,7 +397,7 @@ void MainWidget::quitMainWidget()
 
 void MainWidget::closeEvent(QCloseEvent *e)
 {
-  quitMainWidget();
+  global_viewer_list->cleanup();
 }
 
 

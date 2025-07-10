@@ -33,14 +33,14 @@
 #endif  // WIN32
 
 #include <QLabel>
+#include <QListWidgetItem>
+#include <QMessageBox>
 #include <QProcess>
 #include <QPushButton>
-#include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
 #include <dvtconfig.h>
 #include <dvtconf.h>
+#include <dvtdb.h>
 
 #include "add_provider.h"
 #include "edit_provider.h"
@@ -48,10 +48,11 @@
 #include "list_reports.h"
 #include "spread_sheet.h"
 
-ListReports::ListReports(QWidget *parent)
-  : QDialog(parent)
+ListReports::ListReports(DvtConfig *c,QWidget *parent)
+  : DvtDialog(c,parent)
 {
   setModal(true);
+  d_busy_cursor_count=0;
 
   //
   // Fix the Window Size
@@ -62,72 +63,56 @@ ListReports::ListReports(QWidget *parent)
   setWindowTitle("Davit - Reports");
 
   //
-  // Create Fonts
-  //
-  QFont font=QFont("Helvetica",12,QFont::Bold);
-  font.setPixelSize(12);
-  QFont small_font=QFont("Helvetica",10,QFont::Normal);
-  small_font.setPixelSize(10);
-
-  //
   // Reports List
   //
-  /*
-  list_reports_list=new QListView(this);
-  list_reports_list->setMargin(5);
-  list_reports_list->setAllColumnsShowFocus(true);
-  connect(list_reports_list,
-	  SIGNAL(doubleClicked(QListViewItem *,const QPoint &,int)),
-	  this,
-	  SLOT(doubleClickedData(QListViewItem *,const QPoint &,int)));
-  list_reports_list->addColumn("Report");
-  list_reports_list->setColumnAlignment(0,AlignLeft|AlignVCenter);
+  list_reports_list=new QListWidget(this);
+  connect(list_reports_list,SIGNAL(doubleClicked(const QModelIndex &)),
+	  this,SLOT(doubleClickedData(const QModelIndex &)));
+  QListWidgetItem *item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Affidavit Contacts"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Missing Affidavit Data Contacts"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Missing Affidavit Submissions"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("All Affiliates"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("All Affiliate Contacts"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Affiliates by Daypart"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Affiliates by Network"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Affiliates by Program"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Affiliates/Admin Contacts by Program"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Added Programs"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Deleted Programs"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("RadioAmerica Affiliate"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Arbitron"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Affiliate Activity"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Affiliates by Program/DMA Market"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Affiliates by Program/MSA Market"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Programs by DMA Market"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Programs by MSA Market"));
+  item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Programs by City/State"));
 
-  QListViewItem *item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Affidavit Contacts"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Missing Affidavit Data Contacts"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Missing Affidavit Submissions"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("All Affiliates"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("All Affiliate Contacts"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Affiliates by Daypart"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Affiliates by Network"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Affiliates by Program"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Affiliates/Admin Contacts by Program"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Added Programs"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Deleted Programs"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("RadioAmerica Affiliate"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Arbitron"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Affiliate Activity"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Affiliates by Program/DMA Market"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Affiliates by Program/MSA Market"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Programs by DMA Market"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Programs by MSA Market"));
-  item=new QListViewItem(list_reports_list);
-  item->setText(0,tr("Programs by City/State"));
-  */
   //
   //  Run Button
   //
   list_run_button=new QPushButton(this);
-  list_run_button->setFont(font);
-  list_run_button->setText("&Run");
+  list_run_button->setFont(buttonFont());
+  list_run_button->setText("Run");
   connect(list_run_button,SIGNAL(clicked()),this,SLOT(runData()));
 
   //
@@ -135,8 +120,8 @@ ListReports::ListReports(QWidget *parent)
   //
   list_close_button=new QPushButton(this);
   list_close_button->setDefault(true);
-  list_close_button->setFont(font);
-  list_close_button->setText("&Close");
+  list_close_button->setFont(buttonFont());
+  list_close_button->setText("Close");
   connect(list_close_button,SIGNAL(clicked()),this,SLOT(closeData()));
 }
 
@@ -158,78 +143,86 @@ QSizePolicy ListReports::sizePolicy() const
 }
 
 
+void ListReports::clearBusyCursor()
+{
+  d_busy_cursor_count--;
+  if(d_busy_cursor_count==0) {
+    unsetCursor();
+  }
+}
+
+
 void ListReports::runData()
 {
-  /*
   SpreadSheet *sheet=new SpreadSheet();
   bool ok=false;
 
   sheet->setDefaultFont(DvtGetFont("DAVIT_REPORT"));
 
-  QListViewItem *item=list_reports_list->selectedItem();
-  if(item==NULL) {
+  QList<QListWidgetItem *> items=list_reports_list->selectedItems();
+  if(items.size()!=1) {
     return;
   }
-  if(item->text(0)==tr("Added Programs")) {
+  if(items.first()->text()==tr("Added Programs")) {
     ok=AddedProgramsReport(Dvt::RemarkProgramAdd,sheet);
   }
-  if(item->text(0)==tr("Deleted Programs")) {
+  if(items.first()->text()==tr("Deleted Programs")) {
     ok=AddedProgramsReport(Dvt::RemarkProgramDelete,sheet);
   }
-  if(item->text(0)==tr("All Affiliates")) {
+  if(items.first()->text()==tr("All Affiliates")) {
     ok=AllAffiliatesReport(sheet);
   }
-  if(item->text(0)==tr("All Affiliate Contacts")) {
+  if(items.first()->text()==tr("All Affiliate Contacts")) {
     ok=AllAffiliateContacts(sheet);
   }
-  if(item->text(0)==tr("Affiliates by Daypart")) {
+  if(items.first()->text()==tr("Affiliates by Daypart")) {
     ok=AffiliatesByDaypartReport(sheet);
   }
-  if(item->text(0)==tr("Affiliates by Network")) {
+  if(items.first()->text()==tr("Affiliates by Network")) {
     ok=AffiliatesByNetworkReport(sheet);
   }
-  if(item->text(0)==tr("Affiliates by Program")) {
+  if(items.first()->text()==tr("Affiliates by Program")) {
     ok=AffiliatesByProgramReport(0,sheet);
   }
-  if(item->text(0)==tr("Affiliates/Contacts by Program")) {
+  if(items.first()->text()==tr("Affiliates/Contacts by Program")) {
     ok=AffiliatesByProgramReport(ListReports::ProgramDirectorContact|
 			      ListReports::AffidavitContact,sheet);
   }
-  if(item->text(0)==tr("Affiliates/Admin Contacts by Program")) {
+  if(items.first()->text()==tr("Affiliates/Admin Contacts by Program")) {
     ok=AffiliatesByProgramReport(ListReports::ProgramDirectorContact|
 			      ListReports::GeneralManagerContact,sheet);
   }
-  if(item->text(0)==tr("Arbitron")) {
+  if(items.first()->text()==tr("Arbitron")) {
     ok=ArbitronReport(sheet);
   }
-  if(item->text(0)==tr("RadioAmerica Affiliate")) {
+  if(items.first()->text()==tr("RadioAmerica Affiliate")) {
     ok=RAAffiliateReport(sheet);
   }
-  if(item->text(0)==tr("Affiliate Activity")) {
+  if(items.first()->text()==tr("Affiliate Activity")) {
     ok=ActivityReport(sheet);
   }
-  if(item->text(0)==tr("Affidavit Contacts")) {
+  if(items.first()->text()==tr("Affidavit Contacts")) {
     ok=AffidavitReport(sheet);
   }
-  if(item->text(0)==tr("Missing Affidavit Submissions")) {
+  if(items.first()->text()==tr("Missing Affidavit Submissions")) {
     ok=MissingAffidavitReport(sheet);
   }
-  if(item->text(0)==tr("Missing Affidavit Data Contacts")) {
+  if(items.first()->text()==tr("Missing Affidavit Data Contacts")) {
     ok=MissingAffidavitContactReport(sheet);
   }
-  if(item->text(0)==tr("Affiliates by Program/DMA Market")) {
+  if(items.first()->text()==tr("Affiliates by Program/DMA Market")) {
     ok=AffiliatesByMarketReport(PickFields::DmaMarket,sheet);
   }
-  if(item->text(0)==tr("Affiliates by Program/MSA Market")) {
+  if(items.first()->text()==tr("Affiliates by Program/MSA Market")) {
     ok=AffiliatesByMarketReport(PickFields::MsaMarket,sheet);
   }
-  if(item->text(0)==tr("Programs by DMA Market")) {
+  if(items.first()->text()==tr("Programs by DMA Market")) {
     ok=ProgramByMarketReport(PickFields::DmaMarket,sheet);
   }
-  if(item->text(0)==tr("Programs by MSA Market")) {
+  if(items.first()->text()==tr("Programs by MSA Market")) {
     ok=ProgramByMarketReport(PickFields::MsaMarket,sheet);
   }
-  if(item->text(0)==tr("Programs by City/State")) {
+  if(items.first()->text()==tr("Programs by City/State")) {
     ok=ProgramByMarketReport(PickFields::StateMarket,sheet);
   }
 
@@ -238,27 +231,34 @@ void ListReports::runData()
 	       sheet->write(DvtGetSpreadSheetFileFormat("DAVIT_REPORT")));
     // printf("out: %s\n",(const char *)outfile);
   }
-  */
 }
 
-/*
-void ListReports::doubleClickedData(QListViewItem *item,const QPoint &pt,
-				      int c)
+
+void ListReports::doubleClickedData(const QModelIndex &index)
 {
   runData();
 }
-*/
+
 
 void ListReports::closeData()
 {
-  done(0);
+  done(true);
+}
+
+
+void ListReports::setBusyCursor()
+{
+  emit reportStartupCommenced();
+  if(d_busy_cursor_count==0) {
+    setCursor(Qt::BusyCursor);
+  }
+  d_busy_cursor_count++;
 }
 
 
 void ListReports::resizeEvent(QResizeEvent *e)
 {
-  //  list_reports_list->
-  //    setGeometry(10,10,size().width()-20,size().height()-80);
+  list_reports_list->setGeometry(10,10,size().width()-20,size().height()-80);
   list_run_button->setGeometry(10,size().height()-60,80,50);
   list_close_button->setGeometry(size().width()-90,size().height()-60,80,50);
 }
@@ -266,26 +266,31 @@ void ListReports::resizeEvent(QResizeEvent *e)
 
 void ListReports::ForkViewer(const QString &filename,const QString &data)
 {
-  /*
+  printf("filename: %s\n",filename.toUtf8().constData());
+  //  printf("data: %s\n",data.toUtf8().constData());
+
   if(!data.isEmpty()) {
     FILE *f=NULL;
 
-    if((f=fopen(filename,"w"))==NULL) {
+    if((f=fopen(filename.toUtf8(),"w"))==NULL) {
       QMessageBox::warning(this,"Davit - "+tr("Report Error"),
 			   tr("Unable to create temporary file")+" \""+
 			   filename+"\" ["+strerror(errno)+"].");
       return;
     }
-    fprintf(f,"%s",(const char *)data.utf8());
+    fprintf(f,"%s",data.toUtf8().constData());
     fclose(f);
   }
-
+  /*
   QProcess proc(DvtReportViewerCommand(filename,openoffice_path));
   if(!proc.launch("")) {
     QMessageBox::warning(this,"Davit - "+tr("Error"),
 			 tr("Unable to launch report viewer!"));
   }
   */
+  QStringList args=DvtReportViewerCommand(filename,openoffice_path);
+  global_viewer_list->start(args);
+  
 }
 
 

@@ -22,11 +22,10 @@
 
 #include <QFile>
 #include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
-#include <dvttextfile.h>
 #include <dvtconf.h>
+#include <dvtdb.h>
+#include <dvttextfile.h>
 
 #include "list_reports.h"
 
@@ -51,10 +50,12 @@ bool ListReports::AffiliatesByMarketReport(PickFields::MarketType type,
   //
   // Generate Report
   //
+  setBusyCursor();
+
   QString s;
   QString sql;
   QString field_name;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   int row=6;
   std::vector<int> ids;
 
@@ -84,9 +85,11 @@ bool ListReports::AffiliatesByMarketReport(PickFields::MarketType type,
   }
   tab->addCell(2,1)->setText(tr("Report Date")+": "+
 			     QDate::currentDate().toString("MMMM dd, yyyy"));
-  sql=QString::asprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",
-			pgm_id);
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`PROGRAM_NAME` "+  // 00
+    "from `PROGRAMS` where "+
+    QString::asprintf("`ID`=%d",pgm_id);
+  q=new DvtSqlQuery(sql);
   if(q->first()) {
     tab->addCell(2,2)->setText(tr("Program")+": "+q->value(0).toString());
   }
@@ -102,26 +105,25 @@ bool ListReports::AffiliatesByMarketReport(PickFields::MarketType type,
   tab->addCell(8,5)->setText(tr("THU"));
   tab->addCell(9,5)->setText(tr("FRI"));
   tab->addCell(10,5)->setText(tr("SAT"));
-  sql=QString::asprintf("select AIRINGS.AIR_SUN,\
-                                AIRINGS.AIR_MON,\
-                                AIRINGS.AIR_TUE,\
-                                AIRINGS.AIR_WED,\
-                                AIRINGS.AIR_THU,\
-                                AIRINGS.AIR_FRI,\
-                                AIRINGS.AIR_SAT,\
-                                AIRINGS.AIR_TIME,\
-                                AIRINGS.AIR_LENGTH,\
-                                AFFILIATES.STATION_CALL,\
-                                AFFILIATES.STATION_TYPE,\
-                                AFFILIATES.LICENSE_CITY,\
-                                AFFILIATES.LICENSE_STATE \
-                                from AFFILIATES left join AIRINGS \
-                                on (AFFILIATES.ID=AIRINGS.AFFILIATE_ID) \
-                                where (PROGRAM_ID=%d)&&(%s=\"%s\")",
-			pgm_id,
-			field_name.toUtf8().constData(),
-			market.toUtf8().constData());
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`AIRINGS`.`AIR_SUN`,"+
+    "`AIRINGS`.`AIR_MON`,"+
+    "`AIRINGS`.`AIR_TUE`,"+
+    "`AIRINGS`.`AIR_WED`,"+
+    "`AIRINGS`.`AIR_THU`,"+
+    "`AIRINGS`.`AIR_FRI`,"+
+    "`AIRINGS`.`AIR_SAT`,"+
+    "`AIRINGS`.`AIR_TIME`,"+
+    "`AIRINGS`.`AIR_LENGTH`,"+
+    "`AFFILIATES`.`STATION_CALL`,"+
+    "`AFFILIATES`.`STATION_TYPE`,"+
+    "`AFFILIATES`.`LICENSE_CITY`,"+
+    "`AFFILIATES`.`LICENSE_STATE` "+
+    "from `AFFILIATES` left join `AIRINGS` "+
+    "on `AFFILIATES`.`ID`=`AIRINGS`.`AFFILIATE_ID` where "+
+    QString::asprintf("(`PROGRAM_ID`=%d)&&",pgm_id)+
+    "(`"+field_name+"`="+DvtSqlQuery::escape(market)+")";
+  q=new DvtSqlQuery(sql);
   while(q->next()) {
     // Affiliate
     tab->addCell(1,row)->

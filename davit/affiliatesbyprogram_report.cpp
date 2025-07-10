@@ -19,10 +19,9 @@
 //
 
 #include <QDateTime>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
 #include <dvtconf.h>
+#include <dvtdb.h>
 #include <spread_sheet.h>
 
 #include "list_reports.h"
@@ -31,12 +30,17 @@
 
 bool ListReports::AllAffiliatesReport(SpreadSheet *sheet)
 {
+  setBusyCursor();
+
   //
   // Generate Where Clause
   //
-  QString where="where (AFFILIATES.IS_AFFILIATE=\"Y\") \
-                 order by AFFILIATES.STATION_CALL,AFFILIATES.STATION_TYPE,\
-                 AIRINGS.AIR_TIME";
+  QString where=QString("where ")+
+    "(`AFFILIATES`.`IS_AFFILIATE`='Y') "+
+    "order by "+
+    "`AFFILIATES`.`STATION_CALL`,"+
+    "`AFFILIATES`.`STATION_TYPE`,"+
+    "`AIRINGS`.`AIR_TIME`";
 
   //
   // Render Report
@@ -49,8 +53,10 @@ bool ListReports::AllAffiliatesReport(SpreadSheet *sheet)
 
 bool ListReports::AllAffiliateContacts(SpreadSheet *sheet)
 {
+  setBusyCursor();
+
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
 
   //
   // Generate Fonts
@@ -87,10 +93,21 @@ bool ListReports::AllAffiliateContacts(SpreadSheet *sheet)
   tab->addCell(18,4)->setText(tr("GM E-MAIL"));
 
   int row=5;
-  sql="select ID,STATION_CALL,STATION_TYPE,STATION_FREQUENCY,CITY,\
-              STATE,MARKET_NAME,MARKET_RANK,DMA_NAME,DMA_RANK from AFFILIATES \
-              where IS_AFFILIATE=\"Y\" order by STATION_CALL,STATION_TYPE";
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`ID`,"+
+    "`STATION_CALL`,"+
+    "`STATION_TYPE`,"+
+    "`STATION_FREQUENCY`,"+
+    "`CITY`,"+
+    "`STATE`,"+
+    "`MARKET_NAME`,"+
+    "`MARKET_RANK`,"+
+    "`DMA_NAME`,"+
+    "`DMA_RANK` "+
+    "from `AFFILIATES` where "+
+    "`IS_AFFILIATE`='Y' "+
+    "order by `STATION_CALL`,`STATION_TYPE`";
+  q=new DvtSqlQuery(sql);
   while(q->next()) {
     tab->addCell(1,row)->setText(q->value(1).toString());
     tab->addCell(2,row)->
@@ -140,7 +157,7 @@ bool ListReports::AffiliatesByNetworkReport(SpreadSheet *sheet)
   QDate date;
   QString sql;
   QString where;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   QString network_name;
   QDateTime dt=QDateTime(QDate::currentDate(),QTime::currentTime());
 
@@ -151,17 +168,21 @@ bool ListReports::AffiliatesByNetworkReport(SpreadSheet *sheet)
     return false;
   }
   delete r;
+  setBusyCursor();
 
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Affiliates by Network"));
-  sql=QString::asprintf("select NAME from NETWORKS where ID=%d",network_id);
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`NAME` "+  // 00
+    "from `NETWORKS` where "+
+    QString::asprintf("`ID`=%d",network_id);
+  q=new DvtSqlQuery(sql);
   if(q->first()) {
     network_name=q->value(0).toString();
   }
   delete q;
-  where=QString::asprintf("where (NETWORKS.ID=%d) ",network_id);
-  where+=" order by AFFILIATES.STATION_CALL,AFFILIATES.STATION_TYPE";
+  where=QString::asprintf("where (`NETWORKS`.`ID`=%d) ",network_id);
+  where+=" order by `AFFILIATES`.`STATION_CALL`,`AFFILIATES`.`STATION_TYPE`";
   return RenderAffiliateReport(tab,where,tr("Affiliates by Network Report"),
 			       QString::asprintf("Network: %s",
 					   network_name.toUtf8().constData()),true,0);
@@ -174,7 +195,7 @@ bool ListReports::AffiliatesByProgramReport(int contacts,SpreadSheet *sheet)
   QDate date;
   QString sql;
   QString where;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   QString program_name;
   QDateTime dt=QDateTime(QDate::currentDate(),QTime::currentTime());
   PickFields::SortField sort=(PickFields::SortField)(PickFields::SortAffiliate|
@@ -188,34 +209,39 @@ bool ListReports::AffiliatesByProgramReport(int contacts,SpreadSheet *sheet)
     return false;
   }
   delete r;
+  setBusyCursor();
 
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Affiliates by Program"));
-  sql=QString::asprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",pgm_id);
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`PROGRAM_NAME` "+  // 00
+    "from `PROGRAMS` where "+
+    QString::asprintf("`ID`=%d",pgm_id);
+  q=new DvtSqlQuery(sql);
   if(q->first()) {
     program_name=q->value(0).toString();
   }
   delete q;
-  where=QString::asprintf("where (PROGRAMS.ID=%d) ",pgm_id);
+  where=QString::asprintf("where (`PROGRAMS`.`ID`=%d) ",pgm_id);
   switch(sort) {
     case PickFields::SortAffiliate:
-      where+=" order by AFFILIATES.STATION_CALL,AFFILIATES.STATION_TYPE";
+      where+=QString(" order by ")+
+	"`AFFILIATES`.`STATION_CALL`,`AFFILIATES`.`STATION_TYPE`";
       break;
 
     case PickFields::SortCityState:
-      where+=" order by AFFILIATES.STATE,AFFILIATES.CITY";
+      where+=" order by `AFFILIATES`.`STATE`,`AFFILIATES`.`CITY`";
       break;
 
     case PickFields::SortMarket:
-      where+=
-	" order by AFFILIATES.MARKET_NAME,AFFILIATES.STATE,AFFILIATES.CITY";
+      where+=QString(" order by ")+
+	"`AFFILIATES`.`MARKET_NAME`,`AFFILIATES`.`STATE`,`AFFILIATES`.`CITY`";
       break;
   }
   return RenderAffiliateReport(tab,where,tr("Affiliates by Program Report"),
 			       QString::asprintf("Program: %s",
-					  program_name.toUtf8().constData()),false,
-			contacts);
+			       program_name.toUtf8().constData()),false,
+			       contacts);
 }
 
 
@@ -234,6 +260,7 @@ bool ListReports::AffiliatesByDaypartReport(SpreadSheet *sheet)
     return false;
   }
   delete r;
+  setBusyCursor();
 
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Affiliates by Daypart"));
@@ -283,7 +310,7 @@ bool ListReports::RenderAffiliateReport(SpreadTab *tab,const QString &where,
 					const QString &title,const QString &sub,
 					bool show_program_name,int contacts)
 {
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   QString dow;
   QString sql;
   int prev_id=-1;
@@ -330,24 +357,34 @@ bool ListReports::RenderAffiliateReport(SpreadTab *tab,const QString &where,
   }
   row++;
 
-  sql=QString::asprintf("select AFFILIATES.STATION_CALL,\
-                         AFFILIATES.STATION_TYPE,AFFILIATES.STATION_FREQUENCY,\
-                         AFFILIATES.CITY,AFFILIATES.STATE,\
-                         AFFILIATES.MARKET_NAME,AFFILIATES.MARKET_RANK,\
-                         AFFILIATES.DMA_NAME,AFFILIATES.DMA_RANK,\
-                         AIRINGS.AIR_TIME,\
-                         AIRINGS.AIR_LENGTH,AIRINGS.AIR_SUN,AIRINGS.AIR_MON,\
-                         AIRINGS.AIR_TUE,AIRINGS.AIR_WED,AIRINGS.AIR_THU,\
-                         AIRINGS.AIR_FRI,AIRINGS.AIR_SAT,PROGRAMS.PROGRAM_NAME,\
-                         AFFILIATES.ID \
-                         from AFFILIATES left join AIRINGS \
-                         on (AFFILIATES.ID=AIRINGS.AFFILIATE_ID) \
-                         left join PROGRAMS on (AIRINGS.PROGRAM_ID=PROGRAMS.ID)\
-                         left join NETWORKS on \
-                         (AFFILIATES.SECOND_NETWORK_ID=NETWORKS.ID)\
-                         %s",where.toUtf8().constData());
+  sql=QString("select ")+
+    "`AFFILIATES`.`STATION_CALL`,"+       // 00
+    "`AFFILIATES`.`STATION_TYPE`,"+       // 01
+    "`AFFILIATES`.`STATION_FREQUENCY`,"+  // 02
+    "`AFFILIATES`.`CITY`,"+               // 03
+    "`AFFILIATES`.`STATE`,"+              // 04
+    "`AFFILIATES`.`MARKET_NAME`,"+        // 05
+    "`AFFILIATES`.`MARKET_RANK`,"+        // 06
+    "`AFFILIATES`.`DMA_NAME`,"+           // 07
+    "`AFFILIATES`.`DMA_RANK`,"+           // 08
+    "`AIRINGS`.`AIR_TIME`,"+              // 09
+    "`AIRINGS`.`AIR_LENGTH`,"+            // 10
+    "`AIRINGS`.`AIR_SUN`,"+               // 11
+    "`AIRINGS`.`AIR_MON`,"+               // 12
+    "`AIRINGS`.`AIR_TUE`,"+               // 13
+    "`AIRINGS`.`AIR_WED`,"+               // 14
+    "`AIRINGS`.`AIR_THU`,"+               // 15
+    "`AIRINGS`.`AIR_FRI`,"+               // 16
+    "`AIRINGS`.`AIR_SAT`,"+               // 17
+    "`PROGRAMS`.`PROGRAM_NAME`,"+         // 18
+    "`AFFILIATES`.`ID` "+                 // 19
+    "from `AFFILIATES` left join `AIRINGS` "+
+    "on `AFFILIATES`.`ID`=`AIRINGS`.`AFFILIATE_ID` "+
+    "left join `PROGRAMS` on `AIRINGS`.`PROGRAM_ID`=`PROGRAMS`.`ID` "+
+    "left join `NETWORKS` on `AFFILIATES`.`SECOND_NETWORK_ID`=`NETWORKS`.`ID` "+
+    where;
   //  printf("SQL: %s\n",(const char *)sql);
-  q=new QSqlQuery(sql);
+  q=new DvtSqlQuery(sql);
   while(q->next()) {
     col=1;
     if((prev_id>0)&&(q->value(19).toInt()!=prev_id)) {

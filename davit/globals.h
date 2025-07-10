@@ -2,9 +2,7 @@
 //
 // Global Definitions for Davit
 //
-//   (C) Copyright 2002-2007 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: globals.h,v 1.8 2011/02/03 21:55:43 pcvs Exp $
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -24,14 +22,15 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include <vector>
+#include <QStringList>
 
 #include <dvtconfig.h>
 #include <dvtuser.h>
 #include <dvtsystem.h>
 
-#include <geometry.h>
-#include <maildialog.h>
+#include "geometry.h"
+#include "maildialog.h"
+#include "viewerprocesslist.h"
 
 //
 // Global Classes
@@ -40,10 +39,10 @@ extern DvtConfig *config;
 extern DvtUser *global_dvtuser;
 extern DvtSystem *global_dvtsystem;
 extern QString openoffice_path;
-extern std::vector<QString> temp_files;
+extern QStringList temp_files;
 extern bool email_enabled;
 extern Geometry *global_geometry;
 extern MailDialog *mail_dialog;
-
+extern ViewerProcessList *global_viewer_list;
 
 #endif  // GLOBALS_H

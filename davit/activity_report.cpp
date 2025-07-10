@@ -20,10 +20,9 @@
 
 #include <QDateTime>
 #include <QFontMetrics>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
 #include <dvt.h>
+#include <dvtdb.h>
 #include <dvtconf.h>
 
 #include "list_reports.h"
@@ -35,8 +34,8 @@ bool ListReports::ActivityReport(SpreadSheet *sheet)
   QDate start_date=QDate::currentDate().addMonths(-1);
   QDate end_date=QDate::currentDate();
   QString sql;
-  QSqlQuery *q;
-  QSqlQuery *q1;
+  DvtSqlQuery *q;
+  DvtSqlQuery *q1;
   QString dow;
   int row=5;
   QDateTime dt=QDateTime(QDate::currentDate(),QTime::currentTime());
@@ -50,6 +49,7 @@ bool ListReports::ActivityReport(SpreadSheet *sheet)
   }
   delete r;
 
+  setBusyCursor();
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Affiliate Activity"));
   tab->addCell(1,1)->setText(tr("Affiliate Activity Report"));
@@ -61,31 +61,35 @@ bool ListReports::ActivityReport(SpreadSheet *sheet)
   tab->addCell(4,4)->setText(tr("DATE"));
   tab->addCell(5,4)->setText(tr("USER NAME"));
   tab->addCell(6,4)->setText(tr("REMARKS"));
-  sql="select AFFILIATES.ID,AFFILIATES.STATION_CALL,AFFILIATES.STATION_TYPE,\
-       CONTACTS.NAME,CONTACTS.PHONE \
-       from AFFILIATES left join CONTACTS \
-       on AFFILIATES.ID=CONTACTS.AFFILIATE_ID \
-       where (CONTACTS.PROGRAM_DIRECTOR=\"Y\")";
+  sql=QString("select ")+
+    "`AFFILIATES`.`ID`,"+            // 00
+    "`AFFILIATES`.`STATION_CALL`,"+  // 01
+    "`AFFILIATES`.`STATION_TYPE`,"+  // 02
+    "`CONTACTS`.`NAME`,"+            // 03
+    "`CONTACTS`.`PHONE`	"+           // 04
+    "from `AFFILIATES` left join `CONTACTS` "+
+    "on `AFFILIATES`.`ID`=`CONTACTS`.`AFFILIATE_ID` "+
+    "where (`CONTACTS`.`PROGRAM_DIRECTOR`='Y')";
   if(affiliate_id>0) {
-    sql+=QString::asprintf("&& (AFFILIATES.ID=%d)",affiliate_id);
+    sql+=QString::asprintf("&& (`AFFILIATES`.`ID`=%d)",affiliate_id);
   }
   sql+=" order by AFFILIATES.STATION_CALL";
-  q=new QSqlQuery(sql);
+  q=new DvtSqlQuery(sql);
   while(q->next()) {
-    sql=QString::asprintf("select AFFILIATE_REMARKS.REMARK_DATETIME,\
-                           AFFILIATE_REMARKS.USER_NAME,\
-                           AFFILIATE_REMARKS.REMARK \
-                           from AFFILIATE_REMARKS \
-                           where (AFFILIATE_REMARKS.AFFILIATE_ID=%d)&&",
-			  q->value(0).toInt());
-    sql+=
-     QString::asprintf("(AFFILIATE_REMARKS.REMARK_DATETIME>=\"%s 00:00:00\")&&",
-	      start_date.toString("yyyy-MM-dd").toUtf8().constData());
-    sql+=
-      QString::asprintf("(AFFILIATE_REMARKS.REMARK_DATETIME<=\"%s 23:59:59\")",
-	      end_date.toString("yyyy-MM-dd").toUtf8().constData());
-    sql+=" order by AFFILIATE_REMARKS.REMARK_DATETIME";
-    q1=new QSqlQuery(sql);
+    sql=QString("select ")+
+      "`AFFILIATE_REMARKS`.`REMARK_DATETIME`,"+
+      "`AFFILIATE_REMARKS`.`USER_NAME`,"+
+      "`AFFILIATE_REMARKS`.`REMARK` "+
+      "from `AFFILIATE_REMARKS` "+
+      "where "+
+      QString::asprintf("`AFFILIATE_REMARKS.AFFILIATE_ID`=%d)&&",
+			q->value(0).toInt());
+    sql+="(`AFFILIATE_REMARKS`.`REMARK_DATETIME`>="+
+      DvtSqlQuery::escape(start_date.toString("yyyy-MM-dd")+" 00:00:00")+")&&";
+    sql+="(`AFFILIATE_REMARKS`.`REMARK_DATETIME`<="+
+      DvtSqlQuery::escape(end_date.toString("yyyy-MM-dd")+" 23:59:59")+") ";
+    sql+=" order by `AFFILIATE_REMARKS`.`REMARK_DATETIME`";
+    q1=new DvtSqlQuery(sql);
     if(q1->size()>0) {
       tab->addCell(1,row)->
 	setText(DvtStationCallString(q->value(1).toString(),

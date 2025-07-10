@@ -19,10 +19,9 @@
 //
 
 #include <QDateTime>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
 #include <dvtconf.h>
+#include <dvtdb.h>
 
 #include "list_reports.h"
 #include "pick_fields.h"
@@ -33,7 +32,7 @@ bool ListReports::RAAffiliateReport(SpreadSheet *sheet)
   int pgm_id=0;
   QDate date;
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   QString dow;
   QDateTime dt=QDateTime(QDate::currentDate(),QTime::currentTime());
 
@@ -45,6 +44,8 @@ bool ListReports::RAAffiliateReport(SpreadSheet *sheet)
     return false;
   }
   delete r;
+
+  setBusyCursor();
 
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("RadioAmerica Affiliates"));
@@ -74,26 +75,43 @@ bool ListReports::RAAffiliateReport(SpreadSheet *sheet)
   tab->addCell(col++,row)->setText(tr("PROGRAM"));
   tab->addCell(col++,row)->setText(tr("AIRING"));
   row++;
-  sql=QString("select AFFILIATES.ID,AFFILIATES.STATION_CALL,")+
-    "AFFILIATES.STATION_TYPE,AFFILIATES.STATION_FREQUENCY,"+
-    "AFFILIATES.ADDRESS1,AFFILIATES.ADDRESS2,AFFILIATES.CITY,"+
-    "AFFILIATES.STATE,AFFILIATES.ZIPCODE,AFFILIATES.MARKET_NAME,"+
-    "AFFILIATES.MARKET_RANK,AFFILIATES.DMA_NAME,AFFILIATES.DMA_RANK,"+
-    "PROGRAMS.PROGRAM_NAME,AIRINGS.AIR_TIME,AIRINGS.AIR_LENGTH,"+
-    "AIRINGS.AIR_SUN,AIRINGS.AIR_MON,AIRINGS.AIR_TUE,AIRINGS.AIR_WED,"+
-    "AIRINGS.AIR_THU,AIRINGS.AIR_FRI,AIRINGS.AIR_SAT "+
-    "from AFFILIATES left join AIRINGS "+
-    "on AFFILIATES.ID=AIRINGS.AFFILIATE_ID "+
-    "right join PROGRAMS on PROGRAMS.ID=AIRINGS.PROGRAM_ID "+
-    "where AFFILIATES.STATION_CALL is not null ";
+  sql=QString("select ")+
+    "`AFFILIATES`.`ID`,"+
+    "`AFFILIATES`.`STATION_CALL`,"+
+    "`AFFILIATES`.`STATION_TYPE`,"+
+    "`AFFILIATES`.`STATION_FREQUENCY`,"+
+    "`AFFILIATES`.`ADDRESS1`,"+
+    "`AFFILIATES`.`ADDRESS2`,"+
+    "`AFFILIATES`.`CITY`,"+
+    "`AFFILIATES`.`STATE`,"+
+    "`AFFILIATES`.`ZIPCODE`,"+\
+    "`AFFILIATES`.`MARKET_NAME`,"+
+    "`AFFILIATES`.`MARKET_RANK`,"+
+    "`AFFILIATES`.`DMA_NAME`,"+
+    "`AFFILIATES`.`DMA_RANK`,"+
+    "`PROGRAMS`.`PROGRAM_NAME`,"+
+    "`AIRINGS`.`AIR_TIME`,"+
+    "`AIRINGS`.`AIR_LENGTH`,"+
+    "`AIRINGS`.`AIR_SUN`,"+
+    "`AIRINGS`.`AIR_MON`,"+
+    "`AIRINGS`.`AIR_TUE`,"+
+    "`AIRINGS`.`AIR_WED`,"+
+    "`AIRINGS`.`AIR_THU`,"+
+    "`AIRINGS`.`AIR_FRI`,"+
+    "`AIRINGS`.`AIR_SAT` "+
+    "from `AFFILIATES` left join `AIRINGS` "+
+    "on `AFFILIATES`.`ID`=`AIRINGS`.`AFFILIATE_ID` "+
+    "right join `PROGRAMS` on `PROGRAMS`.`ID`=`AIRINGS`.`PROGRAM_ID` "+
+    "where `AFFILIATES`.`STATION_CALL` is not null ";
   if(affiliate_id>0) {
-    sql+=QString::asprintf("&&(AFFILIATES.ID=%d)",affiliate_id);
+    sql+=QString::asprintf("&&(`AFFILIATES`.`ID`=%d)",affiliate_id);
   }
   if(pgm_id>0) {
-    sql+=QString::asprintf("&&(PROGRAMS.ID=%d)",pgm_id);
+    sql+=QString::asprintf("&&(`PROGRAMS`.`ID`=%d)",pgm_id);
   }
-  sql+=" order by AFFILIATES.STATE,AFFILIATES.CITY,AFFILIATES.STATION_CALL";
-  q=new QSqlQuery(sql);
+  sql+=QString(" order by ")+
+    "`AFFILIATES`.`STATE`,`AFFILIATES`.`CITY`,`AFFILIATES`.`STATION_CALL`";
+  q=new DvtSqlQuery(sql);
   while(q->next()) {
     col=1;
     tab->addCell(col++,row)->setText(q->value(1).toString());

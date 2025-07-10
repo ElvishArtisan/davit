@@ -23,11 +23,10 @@
 
 #include <QFile>
 #include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
-#include <dvttextfile.h>
 #include <dvtconf.h>
+#include <dvtdb.h>
+#include <dvttextfile.h>
 #include <spread_sheet.h>
 
 #include "affidavit_picker.h"
@@ -38,7 +37,7 @@ bool ListReports::MissingAffidavitReport(SpreadSheet *sheet)
 {
   QString s;
   QString sql;
-  QSqlQuery *q=NULL;
+  DvtSqlQuery *q=NULL;
   QString where;
   std::vector<int> affiliate_ids;
   std::map<int,int> affiliate_counts;
@@ -62,6 +61,7 @@ bool ListReports::MissingAffidavitReport(SpreadSheet *sheet)
   //
   // Generate Report
   //
+  setBusyCursor();
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->addCell(1,1)->setText(tr("Affiliates Missing Affidavits"));
   tab->cell(1,1)->setWidth(120.0);
@@ -81,9 +81,11 @@ bool ListReports::MissingAffidavitReport(SpreadSheet *sheet)
     break;
 
   case Dvt::Program:
-    sql=QString("select PROGRAM_NAME from PROGRAMS ")+
-      QString::asprintf("where ID=%d",program_id);
-    q=new QSqlQuery(sql);
+    sql=QString("select ")+
+      "`PROGRAM_NAME` "+  // 00
+      "from `PROGRAMS` "+
+      QString::asprintf("where `ID`=%d",program_id);
+    q=new DvtSqlQuery(sql);
     if(q->first()) {
       tab->addCell(1,3)->setText(q->value(0).toString());
     }
@@ -105,16 +107,20 @@ bool ListReports::MissingAffidavitReport(SpreadSheet *sheet)
 
   DvtAffidavitNeeded(&affiliate_ids,&affiliate_counts,
 		     start_date,end_date,filter,program_id);
-  sql=QString("select AFFILIATES.ID,AFFILIATES.STATION_CALL,")+
-    "AFFILIATES.STATION_TYPE,"+
-    "AFFILIATES.LICENSE_STATE,AFFILIATES.DMA_NAME,AFFILIATES.MARKET_NAME "+
-    "from AFFILIATES "+
+  sql=QString("select ")+
+    "`AFFILIATES`.`ID`,"+             // 00
+    "`AFFILIATES`.`STATION_CALL`,"+   // 01
+    "`AFFILIATES`.`STATION_TYPE`,"+   // 02
+    "`AFFILIATES`.`LICENSE_STATE`,"+  // 03
+    "`AFFILIATES`.`DMA_NAME`,"+       // 04
+    "`AFFILIATES`.`MARKET_NAME` "+    // 05
+    "from `AFFILIATES` "+
     "where ";
   for(unsigned i=0;i<affiliate_ids.size();i++) {
-    sql+=QString::asprintf("(AFFILIATES.ID=%d)||",affiliate_ids[i]);
+    sql+=QString::asprintf("(`AFFILIATES`.`ID`=%d)||",affiliate_ids[i]);
   }
-  sql=sql.left(sql.length()-2)+" order by LICENSE_STATE";
-  q=new QSqlQuery(sql);
+  sql=sql.left(sql.length()-2)+" order by `AFFILIATES`.`LICENSE_STATE`";
+  q=new DvtSqlQuery(sql);
   std::vector<int> index;
   for(int i=0;i<q->size();i++) {
     index.push_back(i);

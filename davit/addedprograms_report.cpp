@@ -19,11 +19,10 @@
 //
 
 #include <QDateTime>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
 #include <dvt.h>
 #include <dvtconf.h>
+#include <dvtdb.h>
 #include <spread_sheet.h>
 
 #include "list_reports.h"
@@ -36,8 +35,8 @@ bool ListReports::AddedProgramsReport(Dvt::RemarkType type,SpreadSheet *sheet)
   QDate start_date=QDate::currentDate().addMonths(-1);
   QDate end_date=QDate::currentDate();
   QString sql;
-  QSqlQuery *q;
-  QSqlQuery *q1;
+  DvtSqlQuery *q;
+  DvtSqlQuery *q1;
   QString dow;
   QDateTime dt=QDateTime(QDate::currentDate(),QTime::currentTime());
 
@@ -49,6 +48,8 @@ bool ListReports::AddedProgramsReport(Dvt::RemarkType type,SpreadSheet *sheet)
     return false;
   }
   delete r;
+
+  setBusyCursor();
 
   //
   // Report Header
@@ -79,44 +80,51 @@ bool ListReports::AddedProgramsReport(Dvt::RemarkType type,SpreadSheet *sheet)
   //
   // Report Body
   //
-  sql="select AFFILIATES.ID,AFFILIATES.STATION_CALL,AFFILIATES.STATION_TYPE,\
-       AFFILIATES.STATION_FREQUENCY,AFFILIATES.ADDRESS1,AFFILIATES.ADDRESS2, \
-       AFFILIATES.CITY,AFFILIATES.STATE,AFFILIATES.ZIPCODE,		\
-       AFFILIATES.MARKET_NAME \
-       from AFFILIATES left join AFFILIATE_REMARKS \
-       on (AFFILIATES.ID=AFFILIATE_REMARKS.AFFILIATE_ID) where";
+  sql=QString("select ")+
+    "`AFFILIATES`.`ID`,"+                 // 00
+    "`AFFILIATES`.`STATION_CALL`,"+       // 01
+    "`AFFILIATES`.`STATION_TYPE`,"+       // 02
+    "`AFFILIATES`.`STATION_FREQUENCY`,"+  // 03
+    "`AFFILIATES`.`ADDRESS1`,"+           // 04
+    "`AFFILIATES`.`ADDRESS2`,"+           // 05
+    "`AFFILIATES`.`CITY`,"+               // 06
+    "`AFFILIATES`.`STATE`,"+              // 07
+    "`AFFILIATES`.`ZIPCODE`,"+            // 08
+    "`AFFILIATES`.`MARKET_NAME` "+        // 09
+    "from `AFFILIATES` left join `AFFILIATE_REMARKS` "+
+    "on (`AFFILIATES`.`ID`=`AFFILIATE_REMARKS`.`AFFILIATE_ID`) where ";
   if(affiliate_id>0) {
-    sql+=QString::asprintf("(AFFILIATES.ID=%d)&&",affiliate_id);
+    sql+=QString::asprintf("(`AFFILIATES`.`ID`=%d)&&",affiliate_id);
   }
   if(pgm_id>0) {
-    sql+=QString::asprintf("(AFFILIATE_REMARKS.PROGRAM_ID=%d)&&",
+    sql+=QString::asprintf("(`AFFILIATE_REMARKS`.`PROGRAM_ID`=%d)&&",
 			   pgm_id);
   }
-  sql+=QString::asprintf("(AFFILIATE_REMARKS.EVENT_TYPE=%d)&&",type);
-  sql+=
-    QString::asprintf("(AFFILIATE_REMARKS.REMARK_DATETIME>=\"%s 00:00:00\")&&",
-		      start_date.toString("yyyy-MM-dd").toUtf8().constData());
-  sql+=QString::asprintf("(AFFILIATE_REMARKS.REMARK_DATETIME<=\"%s 23:59:59\")",
-	    end_date.toString("yyyy-MM-dd").toUtf8().constData());
-  sql+=" order by AFFILIATES.STATION_CALL";
-  q=new QSqlQuery(sql);
+  sql+=QString::asprintf("(`AFFILIATE_REMARKS`.`EVENT_TYPE`=%d)&&",type);
+  sql+="(`AFFILIATE_REMARKS`.`REMARK_DATETIME`>="+
+    DvtSqlQuery::escape(start_date.toString("yyyy-MM-dd")+" 00:00:00")+")&&";
+  sql+="(`AFFILIATE_REMARKS`.`REMARK_DATETIME`<="+
+    DvtSqlQuery::escape(end_date.toString("yyyy-MM-dd")+" 23:59:59")+") ";
+  sql+=" order by `AFFILIATES`.`STATION_CALL`";
+  q=new DvtSqlQuery(sql);
   int row=5;
   while(q->next()) {
-    sql=QString("select PROGRAMS.PROGRAM_NAME,")+
-      "AFFILIATE_REMARKS.REMARK_DATETIME "+
-      "from AFFILIATE_REMARKS right join PROGRAMS "+
-      "on (AFFILIATE_REMARKS.PROGRAM_ID=PROGRAMS.ID) where "+
-      QString::asprintf("(AFFILIATE_REMARKS.EVENT_TYPE=%d)&&",type)+
-      QString::asprintf("(AFFILIATE_REMARKS.AFFILIATE_ID=%d)&&",
+    sql=QString("select ")+
+      "`PROGRAMS`.`PROGRAM_NAME`,"+
+      "`AFFILIATE_REMARKS`.`REMARK_DATETIME` "+
+      "from `AFFILIATE_REMARKS` right join `PROGRAMS` "+
+      "on (`AFFILIATE_REMARKS`.`PROGRAM_ID`=`PROGRAMS.ID`) where "+
+      QString::asprintf("(`AFFILIATE_REMARKS`.`EVENT_TYPE`=%d)&&",type)+
+      QString::asprintf("(`AFFILIATE_REMARKS`.`AFFILIATE_ID`=%d)&&",
 			q->value(0).toInt())+
-      "(AFFILIATE_REMARKS.REMARK_DATETIME>=\""+
-      start_date.toString("yyyy-MM-dd")+" 00:00:00\")&&"+
-      "(AFFILIATE_REMARKS.REMARK_DATETIME<\""+
-      end_date.addDays(1).toString("yyyy-MM-dd")+" 00:00:00\")";
+      "(`AFFILIATE_REMARKS`.`REMARK_DATETIME`>="+
+      DvtSqlQuery::escape(start_date.toString("yyyy-MM-dd")+" 00:00:00")+")&&"+
+      "(`AFFILIATE_REMARKS`.`REMARK_DATETIME`<"+
+      DvtSqlQuery::escape(end_date.addDays(1).toString("yyyy-MM-dd")+" 00:00:00")+")";
     if(pgm_id>0) {
-      sql+=QString::asprintf("&&(AFFILIATE_REMARKS.PROGRAM_ID=%d)",pgm_id);
+      sql+=QString::asprintf("&&(`AFFILIATE_REMARKS`.`PROGRAM_ID`=%d)",pgm_id);
     }
-    q1=new QSqlQuery(sql);
+    q1=new DvtSqlQuery(sql);
     if(q1->size()>0) {
       tab->addCell(1,row)->setText(q->value(1).toString());
       tab->addCell(2,row)->

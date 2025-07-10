@@ -85,7 +85,9 @@ dist_davit_SOURCES = activity_report.cpp\
                      providerlistmodel.cpp providerlistmodel.h\
                      raaffiliate_report.cpp\
                      showaffidavits.cpp showaffidavits.h\
-                     userlistmodel.cpp userlistmodel.h
+                     userlistmodel.cpp userlistmodel.h\
+                     viewerprocess.cpp viewerprocess.h\
+                     viewerprocesslist.cpp viewerprocesslist.h
 
 nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_generate_affadavit.cpp\
@@ -128,7 +130,9 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_programlistmodel.cpp\
                        moc_providerlistmodel.cpp\
                        moc_showaffidavits.cpp\
-                       moc_userlistmodel.cpp
+                       moc_userlistmodel.cpp\
+                       moc_viewerprocess.cpp\
+                       moc_viewerprocesslist.cpp
 
 davit_LDADD = -ldvt @VMIME_LIBS@ @QT6_LIBS@
 

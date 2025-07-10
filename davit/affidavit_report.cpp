@@ -23,11 +23,10 @@
 #include <QFile>
 #include <QFontMetrics>
 #include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
 #include <dvttextfile.h>
 #include <dvtconf.h>
+#include <dvtdb.h>
 #include <spread_sheet.h>
 
 #include "list_reports.h"
@@ -36,7 +35,7 @@ bool ListReports::AffidavitReport(SpreadSheet *sheet)
 {
   QString s;
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   int row=4;
   std::vector<int> ids;
   QString str;
@@ -44,6 +43,7 @@ bool ListReports::AffidavitReport(SpreadSheet *sheet)
   //
   // Generate Report
   //
+  setBusyCursor();
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Affidavit Contacts"));
 
@@ -54,9 +54,14 @@ bool ListReports::AffidavitReport(SpreadSheet *sheet)
   tab->addCell(2,3)->setText(tr("AFFIDAVIT CONTACT NAME"));
   tab->addCell(3,3)->setText(tr("AFFIDAVIT CONTACT PHONE"));
   tab->addCell(4,3)->setText(tr("AFFIDAVIT CONTACT E-MAIL"));
-  sql="select ID,STATION_CALL,STATION_TYPE from AFFILIATES \
-       where (AFFIDAVIT_ACTIVE=\"Y\") order by STATION_CALL desc";
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`ID`,"+            // 00
+    "`STATION_CALL`,"+  // 01
+    "`STATION_TYPE` "+  // 02
+    "from `AFFILIATES` where "+
+    "(`AFFIDAVIT_ACTIVE`='Y') "+
+    "order by `STATION_CALL` desc";
+  q=new DvtSqlQuery(sql);
   while(q->next()) {
     // Call Letters
     tab->addCell(1,row)->
