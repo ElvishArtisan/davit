@@ -24,7 +24,9 @@
 StateComboBox::StateComboBox(bool incl_all,QWidget *parent)
   : QComboBox(parent)
 {
-  insertItem(count(),tr("ALL"));
+  if(incl_all) {
+    insertItem(count(),tr("ALL"));
+  }
   insertItem(count(),tr("Alabama"));
   insertItem(count(),tr("Alaska"));
   insertItem(count(),tr("America Samoa"));

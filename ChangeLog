@@ -916,3 +916,9 @@
 	dialog in davit(1).
 	* Added checks to prevention the creation of duplicate affiliate
 	records in davit(1).
+2025-07-15 Fred Gleason <fredg@paravelsystems.com>
+	* Removed superfluous debugging statements from
+	'davit/contactlistmodel.cpp'.
+	* Fixed a regression in 'lib/statecombobox.cpp' that caused the 'ALL'
+	entry to be included regardless of the value of the 'bool incl_all'
+	parameter in the 'StateComboBox' constructor.

@@ -281,7 +281,6 @@ void ContactListModel::updateRowLine(int line)
     QString sql=sqlFields()+
       " where "+
       QString::asprintf("`ID`=%d ",d_ids.at(line));
-    printf("UPDATEROWLINE line: %d SQL: %s\n",line,sql.toUtf8().constData());
     DvtSqlQuery *q=new DvtSqlQuery(sql);
     if(q->first()) {
       updateRow(line,q);
