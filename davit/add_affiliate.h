@@ -21,26 +21,40 @@
 #ifndef ADD_AFFILIATE_H
 #define ADD_AFFILIATE_H
 
-#include <QDialog>
-#include <QLineEdit>
 #include <QComboBox>
+#include <QDialog>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <dvtdialog.h>
 
-class AddAffiliate : public QDialog
+class AddAffiliate : public DvtDialog
 {
  Q_OBJECT
  public:
-  AddAffiliate(QString *call,QString *type,QWidget *parent=0);
+  AddAffiliate(DvtConfig *c,QWidget *parent=0);
   ~AddAffiliate();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+
+ public slots:
+  int exec(QString *station_call,QString *station_type);
 
  private slots:
   void okData();
   void cancelData();
 
+ protected:
+  void resizeEvent(QResizeEvent *e);
+  void closeEvent(QCloseEvent *e);
+
  private:
+  QLabel *add_call_label;
   QLineEdit *add_call_edit;
+  QLabel *add_type_label;
   QComboBox *add_type_box;
+  QPushButton *add_ok_button;
+  QPushButton *add_cancel_button;
   QString *add_call;
   QString *add_type;
 };

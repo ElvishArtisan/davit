@@ -49,7 +49,7 @@ class EditAffiliate : public DvtDialog
   QSizePolicy sizePolicy() const;
 
  public slots:
-  int exec(int affiliate_id);
+  int exec(int affiliate_id,bool new_instance=false);
   void done(int r);
 
  private slots:
@@ -60,6 +60,8 @@ class EditAffiliate : public DvtDialog
   void airingsVisibilityChangedData(bool visible);
   void showRemarksData();
   void remarksVisibilityChangedData(bool visible);
+  void dmaNameActivatedData(int n);
+  void marketNameActivatedData(int n);
   void okData();
   void cancelData();
 
@@ -69,7 +71,9 @@ class EditAffiliate : public DvtDialog
 
  private:
   void SaveGeometry();
-  int edit_id;
+  int edit_affiliate_id;
+  QCheckBox *edit_active_affiliate_check;
+  QLabel *edit_active_affiliate_label;
   QLineEdit *edit_station_call_edit;
   QLineEdit *edit_station_frequency_edit;
   QComboBox *edit_station_type_box;
@@ -78,9 +82,9 @@ class EditAffiliate : public DvtDialog
   StateComboBox *edit_license_state_box;
   QLineEdit *edit_license_state_edit;
   QComboBox *edit_market_box;
-  QSpinBox *edit_market_rank_spin;
+  QLineEdit *edit_market_rank_edit;
   QComboBox *edit_dma_box;
-  QSpinBox *edit_dma_rank_spin;
+  QLineEdit *edit_dma_rank_edit;
   QComboBox *edit_second_network_box;
   QLineEdit *edit_second_network_edit;
   std::vector<int> second_network_ids;

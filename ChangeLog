@@ -909,3 +909,10 @@
 	* Fixed a bug in the 'List Affiliates' dialog in davit(1) that broke
 	filtering by call letters when the 'Show Affiliates Only' checkbox
 	was ticked.
+2025-07-15 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'Affiliate Is Active' checkbox to the 'Edit Affiliate'
+	dialog in davit(1).
+	* Re-enabled the 'Add' and 'Delete' buttons in the 'List Affiliates'
+	dialog in davit(1).
+	* Added checks to prevention the creation of duplicate affiliate
+	records in davit(1).

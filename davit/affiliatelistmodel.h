@@ -29,7 +29,6 @@
 
 #include <dvtdb.h>
 
-
 class AffiliateListModel : public QAbstractTableModel
 {
   Q_OBJECT

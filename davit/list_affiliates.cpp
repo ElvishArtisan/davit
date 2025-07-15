@@ -68,7 +68,8 @@ ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
   //
   // Dialogs
   //
-  list_edit_affiliate_dialog=new EditAffiliate(c,this);
+  list_addaffiliate_dialog=new AddAffiliate(c,this);
+  list_editaffiliate_dialog=new EditAffiliate(c,this);
   list_generateaffadavit_dialog=new GenerateAffadavit(c,this);
   /*
   list_email_progress=
@@ -81,7 +82,7 @@ ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
   //
   list_show_affiliates_check=new QCheckBox(this);
   list_show_affiliates_check->setChecked(true);
-  list_show_affiliates_label=new QLabel(tr("Show Affiliates Only"),this);
+  list_show_affiliates_label=new QLabel(tr("Show Active Affiliates Only"),this);
   list_show_affiliates_label->setFont(labelFont());
   list_show_affiliates_label->setAlignment(Qt::AlignVCenter|Qt::AlignLeft);
   connect(list_show_affiliates_check,SIGNAL(stateChanged(int)),
@@ -226,7 +227,7 @@ ListAffiliates::~ListAffiliates()
 
 QSize ListAffiliates::sizeHint() const
 {
-  return QSize(800,480);
+  return QSize(850,480);
 } 
 
 
@@ -287,42 +288,28 @@ void ListAffiliates::yearActivatedData(int index)
 
 void ListAffiliates::addData()
 {
-  /*
   QString call;
   QString type;
-  QString sql;
-  QSqlQuery *q;
 
-  AddAffiliate *add=new AddAffiliate(&call,&type,this);
-  if(add->exec()==0) {
-    sql=QString::asprintf("insert into AFFILIATES set \
-                           STATION_CALL=\"%s\",\
-                           STATION_TYPE=\"%s\"",
-			  (const char *)call,
-			  (const char *)type);
-    q=new QSqlQuery(sql);
-    delete q;
-    sql=QString::asprintf("select ID from AFFILIATES where \
-                          (STATION_CALL=\"%s\")&&(STATION_TYPE=\"%s\")",
-			  (const char *)call,(const char *)type);
-    q=new QSqlQuery(sql);
-    if(q->first()) {
-      EditAffiliate *edit=new EditAffiliate(q->value(0).toInt(),this);
-      if(edit->exec()==0) {
-	DvtListViewItem *item=new DvtListViewItem(list_affiliates_list);
-	item->setText(0,call);
-	UpdateItem(item);
-	list_affiliates_list->setSelected(item,true);
-	list_affiliates_list->ensureItemVisible(item);
+  if(list_addaffiliate_dialog->exec(&call,&type)) {
+    QString sql=QString("insert into `AFFILIATES` set ")+
+      "`STATION_CALL`="+DvtSqlQuery::escape(call)+","+
+      "`STATION_TYPE`="+DvtSqlQuery::escape(type);
+    int affiliate_id=DvtSqlQuery::run(sql).toInt();
+    if(list_editaffiliate_dialog->exec(affiliate_id)) {
+      QModelIndex index=list_affiliates_model->addAffiliate(affiliate_id);
+      if(index.isValid()) {
+	list_affiliates_view->
+	  selectionModel()->select(index,QItemSelectionModel::ClearAndSelect|
+				   QItemSelectionModel::Rows);
       }
-      else {
-	DeleteAffiliate(q->value(0).toInt());
-      }
-      delete edit;
+    }
+    else {
+      sql=QString("delete from `AFFILIATES` where ")+
+	QString::asprintf("`AFFILIATES`.`ID`=%d ",affiliate_id);
+      DvtSqlQuery::apply(sql);
     }
   }
-  delete add;
-  */
 }
 
 
@@ -333,7 +320,7 @@ void ListAffiliates::editData()
   if(rows.size()!=1) {
     return;
   }
-  if(list_edit_affiliate_dialog->
+  if(list_editaffiliate_dialog->
      exec(list_affiliates_model->affiliateId(rows.first()))) {
     list_affiliates_model->refresh(rows.first());
   }
@@ -342,23 +329,43 @@ void ListAffiliates::editData()
 
 void ListAffiliates::deleteData()
 {
-  /*
-  DvtListViewItem *item=
-    (DvtListViewItem *)list_affiliates_list->selectedItem();
+  QModelIndexList rows=list_affiliates_view->selectionModel()->selectedRows();
 
-  if(item==NULL) {
+  if(rows.size()!=1) {
     return;
   }
-  if(QMessageBox::question(this,"Delete Affiliate",
-      QString::asprintf("Are you sure you want to delete the affiliate \"%s\"",
-			   (const char *)item->text(0)),
-			   QMessageBox::Yes,
-			   QMessageBox::No)==QMessageBox::No) {
+  int affiliate_id=list_affiliates_model->affiliateId(rows.first());
+  QString sql=QString("select ")+
+    "`STATION_CALL`,"+  // 00
+    "`STATION_TYPE` "+  // 01
+    "from `AFFILIATES` where "+
+    QString::asprintf("`ID`=%d",affiliate_id);
+  DvtSqlQuery *q=new DvtSqlQuery(sql);
+  if(q->first()) {
+    QString msg=tr("Are you sure you want to delete the affiliate records for")+
+      " "+q->value(0).toString()+"-";
+    if(q->value(1).toString()=="I") {
+      msg+="Internet?";
+    }
+    else {
+      msg+=q->value(1).toString()+"M?";
+    }
+    delete q;
+    if(QMessageBox::question(this,"Davit",msg,
+			     QMessageBox::Yes,QMessageBox::No)!=QMessageBox::Yes) {
+      return;
+    }
+  }
+  else {
+    QMessageBox::critical(this,"Davit - "+tr("Error"),
+			  tr("Unable to find record for affiliate!"));
     return;
   }
-  DeleteAffiliate(item->id());
-  delete item;
-  */
+
+  sql=QString("delete from `AFFILIATES` where ")+
+    QString::asprintf("`AFFILIATES`.`ID`=%d ",affiliate_id);
+  DvtSqlQuery::apply(sql);
+  list_affiliates_model->removeAffiliate(rows.first());
 }
 
 
@@ -400,7 +407,7 @@ void ListAffiliates::rowCountChangedData(int matches)
 
 void ListAffiliates::closeData()
 {
-  done(0);
+  done(true);
 }
 
 
@@ -410,15 +417,15 @@ void ListAffiliates::resizeEvent(QResizeEvent *e)
   int h=size().height();
 
   list_show_affiliates_check->setGeometry(20,11,15,15);
-  list_show_affiliates_label->setGeometry(40,8,130,20);
-  list_missing_affiliates_check->setGeometry(190,11,15,15);
-  list_missing_affiliates_label->setGeometry(210,8,150,20);
-  list_month_box->setGeometry(360,8,100,20);
-  list_year_box->setGeometry(465,8,55,20);
-  list_showing_edit->setGeometry(600,7,50,20);
-  list_showing_label->setGeometry(535,8,60,20);
-  list_callfilter_edit->setGeometry(740,7,50,20);
-  list_callfilter_label->setGeometry(665,8,70,20);
+  list_show_affiliates_label->setGeometry(40,8,1800,20);
+  list_missing_affiliates_check->setGeometry(240,11,15,15);
+  list_missing_affiliates_label->setGeometry(260,8,150,20);
+  list_month_box->setGeometry(410,8,100,20);
+  list_year_box->setGeometry(515,8,55,20);
+  list_showing_edit->setGeometry(650,7,50,20);
+  list_showing_label->setGeometry(585,8,60,20);
+  list_callfilter_edit->setGeometry(790,7,50,20);
+  list_callfilter_label->setGeometry(715,8,70,20);
   list_affiliates_view->setGeometry(10,32,w-20,h-102);
   list_add_button->setGeometry(10,h-60,80,50);
   list_edit_button->setGeometry(100,h-60,80,50);
@@ -566,186 +573,6 @@ void ListAffiliates::SendAffidavitReminder()
   }
 #endif  // WIN32
   */
-}
-
-
-void ListAffiliates::DeleteAffiliate(int id)
-{
-  QString sql;
-  QSqlQuery *q;
-
-  sql=QString::asprintf("delete from AFFILIATES where ID=%d",id);
-  q=new QSqlQuery(sql);
-  delete q;
-}
-
-
-void ListAffiliates::RefreshList()
-{
-  /*
-  QString sql;
-  QSqlQuery *q;
-  DvtListViewItem *item;
-  QString call;
-  QString type;
-  QString suffix;
-  QDate affidavit_date;
-  int count=0;
-
-  list_affiliates_list->clear();
-  if(list_missing_affiliates_check->isChecked()) {
-    affidavit_date=QDate(list_year_box->currentText().toInt(),
-			 list_month_box->currentItem()+1,1);
-  }
-  sql=QString::asprintf("select AFFILIATES.ID,AFFILIATES.STATION_CALL,\
-                         AFFILIATES.LICENSE_CITY,AFFILIATES.LICENSE_STATE,\
-                         AFFILIATES.LICENSE_COUNTRY,AFFILIATES.STATION_TYPE,\
-                         AFFILIATES.BUSINESS_NAME,\
-                         AFFILIATES.DMA_NAME,\
-                         AFFILIATES.IS_AFFILIATE,AFFILIATES.AFFIDAVIT_ACTIVE\
-                         from AFFILIATES %s \
-                         order by AFFILIATES.STATION_CALL desc",
-			(const char *)FilterSql(list_callfilter_edit->text(),
-						list_show_affiliates_check->isChecked(),
-						affidavit_date));
-  q=new QSqlQuery(sql);
-  while (q->next()) {
-    count++;
-    if((call!=q->value(1).toString())||(type!=q->value(5).toString())) {
-      item=new DvtListViewItem(list_affiliates_list);
-      item->setId(q->value(0).toInt());
-      if(q->value(8).toString()=="Y") {
-	if(q->value(9).toString()=="Y") {
-	  item->setPixmap(0,*list_greenball_map);
-	}
-	else {
-	  item->setPixmap(0,*list_redball_map);
-	}
-      }
-      else {
-	item->setPixmap(0,*list_whiteball_map);
-      }
-      if(q->value(5).toString().lower()=="a") {
-	item->setText(3,tr("AM"));
-	suffix="-AM";
-      }
-      else {
-	if(q->value(5).toString().lower()=="f") {
-	  item->setText(3,tr("FM"));
-	  suffix="-FM";
-	}
-	else {
-	  item->setText(3,tr("Internet"));
-	  suffix="";
-	}
-      }
-      item->setText(1,q->value(1).toString()+suffix);
-      item->setText(2,DvtFormatCityState(q->value(2).toString(),
-					 q->value(3).toString()));
-      if(q->value(7).toString().isEmpty()) {
-	item->setText(4,"[none]");
-      }
-      else {
-	item->setText(4,q->value(7).toString());
-      }
-      item->setText(5,q->value(6).toString());
-      call=q->value(1).toString();
-      type=q->value(5).toString();
-    }
-  }
-  delete q;
-  list_showing_edit->setText(QString::asprintf("%d",count));
-*/
-}
-
-
-/*
-void ListAffiliates::UpdateItem(DvtListViewItem *item)
-{
-  QString sql;
-  QSqlQuery *q;
-  QString suffix;
-
-  sql=QString::asprintf("select LICENSE_CITY,LICENSE_STATE,LICENSE_COUNTRY,\
-                         STATION_CALL,STATION_TYPE,BUSINESS_NAME,\
-                         DMA_NAME,\
-                         IS_AFFILIATE,AFFIDAVIT_ACTIVE \
-                         from AFFILIATES where ID=%d",item->id());
-  q=new QSqlQuery(sql);
-  if(q->first()) {
-    if(q->value(7).toString()=="Y") {
-      if(q->value(8).toString()=="Y") {
-	item->setPixmap(0,*list_greenball_map);
-      }
-      else {
-	item->setPixmap(0,*list_redball_map);
-      }
-    }
-    else {
-      item->setPixmap(0,*list_whiteball_map);
-    }
-    item->setText(2,DvtFormatCityState(q->value(0).toString(),
-				       q->value(1).toString()));
-    if(q->value(4).toString().lower()=="a") {
-      item->setText(3,tr("AM"));
-      suffix="-AM";
-    }
-    else {
-      if(q->value(4).toString().lower()=="f") {
-	item->setText(3,tr("FM"));
-	suffix="-FM";
-      }
-      else {
-	item->setText(3,tr("Internet"));
-	suffix="";
-      }
-    }
-    item->setText(1,q->value(3).toString()+suffix);
-    if(q->value(6).toString().isEmpty()) {
-      item->setText(4,"[none]");
-    }
-    else {
-      item->setText(4,q->value(6).toString());
-    }
-    item->setText(5,q->value(5).toString());
-  }
-  delete q;
-}
-*/
-
-
-QString ListAffiliates::FilterSql(const QString &filter,bool affils_only,
-				  const QDate &affidavit_date)
-{
-  QString ret="";
-  QString sql;
-  QSqlQuery *q;
-
-  if(filter.isEmpty()&&(affidavit_date.isNull())&&(!affils_only)) {
-    return QString("");
-  }
-  ret="where ";
-  if(affils_only) {
-    ret+="(IS_AFFILIATE=\"Y\")&&";
-  }
-  if(affidavit_date.isValid()) {
-    sql="select ID from AFFILIATES where AFFIDAVIT_ACTIVE=\"Y\"";
-    q=new QSqlQuery(sql);
-    while(q->next()) {
-      if(!DvtAffidavitNeeded(q->value(0).toInt(),affidavit_date)) {
-	ret+=QString::asprintf("(ID!=%d)&&",q->value(0).toInt());
-      }
-    }
-    delete q;
-  }
-  if(filter.isEmpty()) {
-    ret=ret.left(ret.length()-2);
-  }
-  else {
-    ret+=QString::asprintf("(STATION_CALL like \"%%%s%%\")",
-			   filter.toUtf8().constData());
-  }
-  return ret;
 }
 
 

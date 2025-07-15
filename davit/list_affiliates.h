@@ -69,12 +69,6 @@ class ListAffiliates : public DvtDialog
 
  private:
   void SendAffidavitReminder();
-  void DeleteAffiliate(int id);
-  void RefreshList();
-  void UpdateItem(DvtTableWidgetItem *item);
-  QString FilterSql(const QString &filter,bool affils_only,
-		    const QDate &affidavit_date);
-  //QString FilterSql(const QString &filter,bool affils_only,QSqlQuery *q);
   QDate MissingAffiliatesDate() const;
   QLabel *list_show_affiliates_label;
   QCheckBox *list_show_affiliates_check;
@@ -93,7 +87,8 @@ class ListAffiliates : public DvtDialog
   QPushButton *list_affidavit_reminder_button;
   QPushButton *list_close_button;
   QProgressDialog *list_email_progress;
-  EditAffiliate *list_edit_affiliate_dialog;
+  AddAffiliate *list_addaffiliate_dialog;
+  EditAffiliate *list_editaffiliate_dialog;
   GenerateAffadavit *list_generateaffadavit_dialog;
   QPixmap *list_greenball_map;
   QPixmap *list_redball_map;

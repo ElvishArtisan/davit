@@ -39,7 +39,7 @@
 EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   : DvtDialog(c,parent)
 {
-  edit_id=-1;
+  edit_affiliate_id=-1;
 
   //
   // Fix the Window Size
@@ -66,10 +66,17 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
 	  this,SLOT(remarksVisibilityChangedData(bool)));
 
   //
+  // Is Active Affiliate
+  //
+  edit_active_affiliate_check=new QCheckBox(this);
+  edit_active_affiliate_label=new QLabel(tr("Affiliate Is Active"),this);
+  edit_active_affiliate_label->setFont(labelFont());
+
+  //
   // Station Call
   //
   edit_station_call_edit=new QLineEdit(this);
-  edit_station_call_label=new QLabel("Call:",this);
+  edit_station_call_label=new QLabel(tr("Call")+":",this);
   edit_station_call_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_station_call_label->setFont(labelFont());
 
@@ -79,7 +86,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_station_frequency_edit=new QLineEdit(this);
   edit_station_frequency_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  edit_station_frequency_label=new QLabel("Freq:",this);
+  edit_station_frequency_label=new QLabel(tr("Freq")+":",this);
   edit_station_frequency_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_station_frequency_label->setFont(labelFont());
 
@@ -110,7 +117,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_station_power_edit->setValidator(validator);
   edit_station_power_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  edit_station_power_label=new QLabel("Power Day:",this);
+  edit_station_power_label=new QLabel(tr("Power Day")+":",this);
   edit_station_power_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_station_power_label->setFont(labelFont());
   edit_station_power_unit_label=new QLabel("W",this);
@@ -123,7 +130,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_station_night_power_edit->setValidator(validator);
   edit_station_night_power_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  edit_station_night_power_label=new QLabel("Night:",this);
+  edit_station_night_power_label=new QLabel(tr("Night")+":",this);
   edit_station_night_power_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_station_night_power_label->setFont(labelFont());
   edit_station_night_power_unit_label=new QLabel("W",this);
@@ -137,7 +144,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_license_city_edit=new QLineEdit(this);
   edit_license_city_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  edit_license_city_label=new QLabel("City of License:",this);
+  edit_license_city_label=new QLabel(tr("City of License")+":",this);
   edit_license_city_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_license_city_label->setFont(labelFont());
 
@@ -153,7 +160,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   else {
     edit_license_state_box->hide();
   }
-  edit_license_state_label=new QLabel("State of License:",this);
+  edit_license_state_label=new QLabel(tr("State of License")+":",this);
   edit_license_state_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_license_state_label->setFont(labelFont());
 
@@ -161,41 +168,61 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   // MSA Market Name
   //
   edit_market_box=new QComboBox(this);
-  edit_market_label=new QLabel("MSA Market:",this);
+  edit_market_label=new QLabel(tr("MSA Market")+":",this);
   edit_market_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_market_label->setFont(labelFont());
+  connect(edit_market_box,SIGNAL(activated(int)),
+	  this,SLOT(marketNameActivatedData(int)));
+  QString sql=QString("select ")+
+    "`NAME`,"+  // 00
+    "`RANK` "+  // 01
+    "from `MSA_MARKETS` order by `NAME`";
+  DvtSqlQuery *q=new DvtSqlQuery(sql);
+  edit_market_box->insertItem(0,tr("[none]"));
+  while(q->next()) {
+    edit_market_box->insertItem(edit_market_box->count(),
+				q->value(0).toString(),q->value(1));
+  }
+  delete q;
 
   //
   // Market Rank
   //
-  edit_market_rank_spin=new QSpinBox(this);
-  edit_market_rank_spin->setRange(0,999);
-  edit_market_rank_spin->setSpecialValueText(tr("None"));
-  edit_market_rank_label=new QLabel("MSA Market Rank:",this);
+  edit_market_rank_edit=new QLineEdit(this);
+  edit_market_rank_edit->setReadOnly(true);
+  edit_market_rank_label=new QLabel(tr("MSA Market Rank")+":",this);
   edit_market_rank_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_market_rank_label->setFont(labelFont());
-  edit_market_rank_spin->hide();
-  edit_market_rank_label->hide();
 
   //
   // DMA Name
   //
   edit_dma_box=new QComboBox(this);
-  edit_dma_label=new QLabel("DMA Market:",this);
+  edit_dma_label=new QLabel(tr("DMA Market")+":",this);
   edit_dma_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_dma_label->setFont(labelFont());
+  connect(edit_dma_box,SIGNAL(activated(int)),
+	  this,SLOT(dmaNameActivatedData(int)));
+  sql=QString("select ")+
+    "`NAME`,"+  // 00
+    "`RANK` "+  // 01
+    "from `DMA_MARKETS` order by `NAME`";
+  q=new DvtSqlQuery(sql);
+  edit_dma_box->insertItem(0,tr("[none]"));
+  while(q->next()) {
+    edit_dma_box->insertItem(edit_dma_box->count(),
+			     q->value(0).toString(),q->value(1));
+  }
+  delete q;
 
   //
   // DMA Rank
   //
-  edit_dma_rank_spin=new QSpinBox(this);
-  edit_dma_rank_spin->setRange(0,999);
-  edit_dma_rank_spin->setSpecialValueText(tr("None"));
-  edit_dma_rank_label=new QLabel("DMA Market Rank:",this);
+  edit_dma_rank_edit=new QLineEdit(this);
+  edit_dma_rank_edit->setReadOnly(true);
+  edit_dma_rank_label=new QLabel(tr("DMA Market Rank")+":",this);
   edit_dma_rank_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_dma_rank_label->setFont(labelFont());
-  edit_dma_rank_spin->hide();
-  edit_dma_rank_label->hide();
 
   //
   // Second Network
@@ -209,7 +236,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   else {
     edit_second_network_box->hide();
   }
-  edit_second_network_label=new QLabel("Second Network:",this);
+  edit_second_network_label=new QLabel(tr("Second Network")+":",this);
   edit_second_network_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_second_network_label->setFont(labelFont());
 
@@ -231,7 +258,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   else {
     edit_timezone_box->hide();
   }
-  edit_timezone_label=new QLabel("Time Zone:",this);
+  edit_timezone_label=new QLabel(tr("Time Zone")+":",this);
   edit_timezone_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_timezone_label->setFont(labelFont());
 
@@ -241,7 +268,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_station_prev_call_edit=new QLineEdit(this);
   edit_station_prev_call_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  edit_station_prev_call_label=new QLabel("Previous Call:",this);
+  edit_station_prev_call_label=new QLabel(tr("Previous Call")+":",this);
   edit_station_prev_call_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_station_prev_call_label->setFont(labelFont());
 
@@ -252,7 +279,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_business_name_edit->setMaxLength(64);
   edit_business_name_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  edit_business_name_call_label=new QLabel("Business Name:",this);
+  edit_business_name_call_label=new QLabel(tr("Business Name")+":",this);
   edit_business_name_call_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_business_name_call_label->setFont(labelFont());
 
@@ -267,7 +294,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_address2_edit->setMaxLength(64);
   edit_address2_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  edit_address_label=new QLabel("Address:",this);
+  edit_address_label=new QLabel(tr("Address")+":",this);
   edit_address_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_address_label->setFont(labelFont());
 
@@ -278,7 +305,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_city_edit->setMaxLength(64);
   edit_city_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  edit_city_label=new QLabel("City:",this);
+  edit_city_label=new QLabel(tr("City")+":",this);
   edit_city_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_city_label->setFont(labelFont());
 
@@ -294,7 +321,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   else {
     edit_state_box->hide();
   }
-  edit_state_label=new QLabel("State:",this);
+  edit_state_label=new QLabel(tr("State")+":",this);
   edit_state_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_state_label->setFont(labelFont());
 
@@ -305,7 +332,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_zipcode_edit->setMaxLength(10);
   edit_zipcode_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  edit_zipcode_label=new QLabel("Zip Code:",this);
+  edit_zipcode_label=new QLabel(tr("Zip Code")+":",this);
   edit_zipcode_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_zipcode_label->setFont(labelFont());
 
@@ -316,7 +343,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_email_addr_edit->setMaxLength(64);
   edit_email_addr_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  edit_email_addr_label=new QLabel("E-Mail:",this);
+  edit_email_addr_label=new QLabel(tr("E-Mail")+":",this);
   edit_email_addr_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_email_addr_label->setFont(labelFont());
 
@@ -327,7 +354,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_phone_edit->setMaxLength(20);
   edit_phone_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  edit_phone_label=new QLabel("Phone:",this);
+  edit_phone_label=new QLabel(tr("Phone")+":",this);
   edit_phone_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_phone_label->setFont(labelFont());
 
@@ -338,7 +365,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_fax_edit->setMaxLength(20);
   edit_fax_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  edit_fax_label=new QLabel("Fax:",this);
+  edit_fax_label=new QLabel(tr("Fax")+":",this);
   edit_fax_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_fax_label->setFont(labelFont());
 
@@ -349,7 +376,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_web_url_edit->setMaxLength(64);
   edit_web_url_edit->
     setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
-  edit_web_url_label=new QLabel("Web Address:",this);
+  edit_web_url_label=new QLabel(tr("Web URL")+":",this);
   edit_web_url_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_web_url_label->setFont(labelFont());
 
@@ -357,7 +384,8 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   // Affidavit Histogram
   //
   edit_track_affidavit_box=new QCheckBox(this);
-  edit_track_affidavit_label=new QLabel("Enable Affidavit History Tracking",this);
+  edit_track_affidavit_label=
+    new QLabel(tr("Enable Affidavit History Tracking"),this);
   edit_track_affidavit_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
   edit_track_affidavit_label->setFont(labelFont());
   connect(edit_track_affidavit_box,SIGNAL(toggled(bool)),
@@ -365,7 +393,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
 
   edit_web_password_edit=new QLineEdit(this);
   edit_web_password_edit->setMaxLength(41);
-  edit_web_password_label=new QLabel("Web Password:",this);
+  edit_web_password_label=new QLabel(tr("Web Password")+":",this);
   edit_web_password_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_web_password_label->setFont(labelFont());
   edit_affidavits=new ShowAffidavits(config,this);
@@ -403,7 +431,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_ok_button=new QPushButton(this);
   edit_ok_button->setDefault(true);
   edit_ok_button->setFont(buttonFont());
-  edit_ok_button->setText("&OK");
+  edit_ok_button->setText(tr("OK"));
   connect(edit_ok_button,SIGNAL(clicked()),this,SLOT(okData()));
 
   //
@@ -411,7 +439,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   //
   edit_cancel_button=new QPushButton(this);
   edit_cancel_button->setFont(buttonFont());
-  edit_cancel_button->setText("&Cancel");
+  edit_cancel_button->setText(tr("Cancel"));
   connect(edit_cancel_button,SIGNAL(clicked()),this,SLOT(cancelData()));
 }
 
@@ -423,7 +451,7 @@ EditAffiliate::~EditAffiliate()
 
 QSize EditAffiliate::sizeHint() const
 {
-  return QSize(615,482);
+  return QSize(615,482+22);
 } 
 
 
@@ -433,11 +461,11 @@ QSizePolicy EditAffiliate::sizePolicy() const
 }
 
 
-int EditAffiliate::exec(int affiliate_id)
+int EditAffiliate::exec(int affiliate_id,bool new_instance)
 {
-  edit_id=affiliate_id;
+  edit_affiliate_id=affiliate_id;
   setWindowTitle("Davit - "+tr("Edit Affiliate")+
-		 QString::asprintf(" [id=%d]",edit_id));
+		 QString::asprintf(" [id=%d]",edit_affiliate_id));
 
   edit_affidavits->setAffiliateId(affiliate_id);
 
@@ -488,7 +516,7 @@ int EditAffiliate::exec(int affiliate_id)
     "`AFFIDAVIT_ACTIVE`,"+     // 25
     "`IS_AFFILIATE` "+         // 26
     "from `AFFILIATES` where "+
-    QString::asprintf("`ID`=%d",edit_id);
+    QString::asprintf("`ID`=%d",edit_affiliate_id);
   DvtSqlQuery *q=new DvtSqlQuery(sql);
   if(q->first()) {
     edit_station_call_edit->setText(q->value(23).toString());
@@ -519,39 +547,26 @@ int EditAffiliate::exec(int affiliate_id)
     edit_state_box->setCurrentStateCode(q->value(8).toString());
     edit_state_edit->setText(q->value(8).toString());
     edit_zipcode_edit->setText(q->value(9).toString());
-
-    sql=QString("select ")+
-      "`NAME` "+  // 00
-      "from `MSA_MARKETS` order by `NAME`";
-    DvtSqlQuery *q1=new DvtSqlQuery(sql);
-    edit_market_box->insertItem(0,"[none]");
-    int count=1;
-    while(q1->next()) {
-      edit_market_box->insertItem(count++,q1->value(0).toString());
-      if(q1->value(0).toString()==q->value(11).toString()) {
-	edit_market_box->setCurrentIndex(edit_market_box->count()-1);
+    edit_market_box->setCurrentIndex(0);
+    edit_market_rank_edit->setText(tr("n/a"));
+    for(int i=0;i<edit_market_box->count();i++) {
+      if(edit_market_box->itemText(i)==q->value(11).toString()) {
+	edit_market_box->setCurrentIndex(i);
+	edit_market_rank_edit->
+	  setText(QString::asprintf("%d",edit_market_box->itemData(i).toInt()));
       }
     }
-    delete q1;
-
-    sql=QString("select ")+
-      "`NAME` "+  // 00
-      "from `DMA_MARKETS` order by `NAME`";
-    q1=new DvtSqlQuery(sql);
-    edit_dma_box->insertItem(0,"[none]");
-    count=1;
-    while(q1->next()) {
-      edit_dma_box->insertItem(count++,q1->value(0).toString());
-      if(q1->value(0).toString()==q->value(13).toString()) {
-	edit_dma_box->setCurrentIndex(edit_dma_box->count()-1);
+    edit_dma_box->setCurrentIndex(0);
+    edit_dma_rank_edit->setText(tr("n/a"));
+    for(int i=0;i<edit_dma_box->count();i++) {
+      if(edit_dma_box->itemText(i)==q->value(13).toString()) {
+	edit_dma_box->setCurrentIndex(i);
+	edit_dma_rank_edit->
+	  setText(QString::asprintf("%d",edit_dma_box->itemData(i).toInt()));
       }
     }
-    delete q1;
-
-    //    edit_market_box->setText(q->value(11).toString());
-
-    edit_market_rank_spin->setValue(q->value(12).toInt());
-    edit_dma_rank_spin->setValue(q->value(14).toInt());
+    //    edit_market_rank_spin->setValue(q->value(12).toInt());
+    //    edit_dma_rank_spin->setValue(q->value(14).toInt());
     for(int i=0;i<edit_timezone_box->count();i++) {
       if(edit_timezone_box->itemText(i)==q->value(16).toString().toUpper()) {
 	edit_timezone_box->setCurrentIndex(i);
@@ -595,15 +610,19 @@ int EditAffiliate::exec(int affiliate_id)
   edit_track_affidavit_box->setChecked(q->value(25).toString()=="Y");
   affidavitToggledData(q->value(25).toString()=="Y");
   edit_affidavits->setAffiliateStatus(q->value(26).toString()=="Y");
+  edit_active_affiliate_check->setChecked(q->value(26).toString()=="Y");
   delete q;
-
+  /*
   if(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit)) {
     edit_market_rank_spin->
       setRange(edit_market_rank_spin->value(),edit_market_rank_spin->value());
     edit_dma_rank_spin->
       setRange(edit_dma_rank_spin->value(),edit_dma_rank_spin->value());
   }
-
+  */
+  if(new_instance) {
+    edit_station_call_edit->selectAll();
+  }
   return QDialog::exec();
 }
 
@@ -692,6 +711,30 @@ void EditAffiliate::remarksVisibilityChangedData(bool visible)
 }
 
 
+void EditAffiliate::dmaNameActivatedData(int n)
+{
+  if(n==0) {
+    edit_dma_rank_edit->setText(tr("n/a"));
+  }
+  else {
+    edit_dma_rank_edit->
+      setText(QString::asprintf("%d",edit_dma_box->itemData(n).toInt()));
+  }
+}
+
+
+void EditAffiliate::marketNameActivatedData(int n)
+{
+  if(n==0) {
+    edit_market_rank_edit->setText(tr("n/a"));
+  }
+  else {
+    edit_market_rank_edit->
+      setText(QString::asprintf("%d",edit_market_box->itemData(n).toInt()));
+  }
+}
+
+
 void EditAffiliate::okData()
 {
   QString priv;
@@ -713,6 +756,25 @@ void EditAffiliate::okData()
 	type="I";
 	break;
   }
+
+  //
+  // Check for uniqueness
+  //
+  sql=QString("select ")+
+    "`ID` "+
+    "from `AFFILIATES` where "+
+    "(`STATION_CALL`="+
+    DvtSqlQuery::escape(edit_station_call_edit->text())+")&&"+
+    "(`STATION_TYPE`="+DvtSqlQuery::escape(type)+")&&"+
+    QString::asprintf("(`ID`!=%d)",edit_affiliate_id);
+  DvtSqlQuery *q=new DvtSqlQuery(sql);
+  if(q->first()) {
+    QMessageBox::warning(this,"Davit - "+tr("Edit Affiliate"),
+		 tr("An affiliate with that call/type already exists."));
+    delete q;
+    return;
+  }
+  delete q;
   if(edit_dma_box->currentText()!="[none]") {
     dma_name=edit_dma_box->currentText();
   }
@@ -732,9 +794,9 @@ void EditAffiliate::okData()
     QString::asprintf("`STATION_NIGHT_POWER`=%d,",
 		      edit_station_night_power_edit->text().toInt())+
     "`MARKET_NAME`="+DvtSqlQuery::escape(msa_name)+","+
-    QString::asprintf("`MARKET_RANK`=%d,",edit_market_rank_spin->value())+
+    //    QString::asprintf("`MARKET_RANK`=%d,",edit_market_rank_spin->value())+
     "`DMA_NAME`="+DvtSqlQuery::escape(dma_name)+","+
-    QString::asprintf("`DMA_RANK`=%d,",edit_dma_rank_spin->value())+
+    //    QString::asprintf("`DMA_RANK`=%d,",edit_dma_rank_spin->value())+
     "`TIME_ZONE`="+DvtSqlQuery::escape(edit_timezone_box->currentText())+","+
     "`BUSINESS_NAME`="+
     DvtSqlQuery::escape(edit_business_name_edit->text())+","+
@@ -753,8 +815,10 @@ void EditAffiliate::okData()
 		      second_network_ids[edit_second_network_box->currentIndex()])+
     "`USER_PASSWORD`="+DvtSqlQuery::escape(edit_web_password_edit->text())+","+
     "`AFFIDAVIT_ACTIVE`="+
-    DvtSqlQuery::escape(DvtYesNo(edit_track_affidavit_box->isChecked()))+" "+
-    QString::asprintf("where `ID`=%d",edit_id);
+    DvtSqlQuery::escape(DvtYesNo(edit_track_affidavit_box->isChecked()))+","+
+    "`IS_AFFILIATE`="+
+    DvtSqlQuery::escape(DvtYesNo(edit_active_affiliate_check->isChecked()))+" "+
+    QString::asprintf("where `ID`=%d",edit_affiliate_id);
   DvtSqlQuery::apply(sql);
 
   SaveGeometry();
@@ -773,98 +837,101 @@ void EditAffiliate::resizeEvent(QResizeEvent *e)
   int w=size().width();
   int h=size().height();
 
-  edit_station_call_label->setGeometry(10,10,40,20);
-  edit_station_call_edit->setGeometry(55,10,50,20);
+  edit_active_affiliate_check->setGeometry(10,8,15,15);
+  edit_active_affiliate_label->setGeometry(30,6,w-30,20);
 
-  edit_station_frequency_label->setGeometry(110,10,40,20);
-  edit_station_frequency_edit->setGeometry(155,10,50,20);
+  edit_station_call_label->setGeometry(10,32,40,20);
+  edit_station_call_edit->setGeometry(55,32,50,20);
 
-  edit_station_type_label->setGeometry(210,10,40,20);
-  edit_station_type_box->setGeometry(255,10,80,20);
-  edit_station_type_edit->setGeometry(255,10,80,20);
+  edit_station_frequency_label->setGeometry(110,32,40,20);
+  edit_station_frequency_edit->setGeometry(155,32,50,20);
 
-  edit_station_power_label->setGeometry(345,10,70,20);
-  edit_station_power_edit->setGeometry(420,10,45,20);
-  edit_station_power_unit_label->setGeometry(470,10,20,20);
+  edit_station_type_label->setGeometry(210,32,40,20);
+  edit_station_type_box->setGeometry(255,32,80,20);
+  edit_station_type_edit->setGeometry(255,32,80,20);
 
-  edit_station_night_power_label->setGeometry(490,10,40,20);
-  edit_station_night_power_edit->setGeometry(535,10,45,20);
-  edit_station_night_power_unit_label->setGeometry(585,10,20,20);
+  edit_station_power_label->setGeometry(345,32,70,20);
+  edit_station_power_edit->setGeometry(420,32,45,20);
+  edit_station_power_unit_label->setGeometry(470,32,20,20);
+
+  edit_station_night_power_label->setGeometry(490,32,40,20);
+  edit_station_night_power_edit->setGeometry(535,32,45,20);
+  edit_station_night_power_unit_label->setGeometry(585,32,20,20);
   
-  edit_license_city_label->setGeometry(25,32,95,20);
-  edit_license_city_edit->setGeometry(125,32,160,20);
+  edit_license_city_label->setGeometry(25,54,95,20);
+  edit_license_city_edit->setGeometry(125,54,160,20);
 
-  edit_license_state_label->setGeometry(295,32,105,20);
-  edit_license_state_box->setGeometry(405,32,200,20);
-  edit_license_state_edit->setGeometry(405,32,200,20);
+  edit_license_state_label->setGeometry(295,54,105,20);
+  edit_license_state_box->setGeometry(405,54,200,20);
+  edit_license_state_edit->setGeometry(405,54,200,20);
 
-  edit_market_label->setGeometry(30,54,90,20);
-  edit_market_box->setGeometry(125,54,260,20);
+  edit_market_label->setGeometry(30,76,90,20);
+  edit_market_box->setGeometry(125,76,260,20);
 
-  edit_market_rank_label->setGeometry(400,54,130,20);
-  edit_market_rank_spin->setGeometry(535,54,60,20);
+  edit_market_rank_label->setGeometry(400,76,130,20);
+  edit_market_rank_edit->setGeometry(535,76,40,20);
 
-  edit_dma_label->setGeometry(30,76,90,20);
-  edit_dma_box->setGeometry(125,76,260,20);
+  edit_dma_label->setGeometry(30,98,90,20);
+  edit_dma_box->setGeometry(125,98,260,20);
 
-  edit_dma_rank_label->setGeometry(400,76,130,20);
-  edit_dma_rank_spin->setGeometry(535,76,60,20);
+  edit_dma_rank_label->setGeometry(400,98,130,20);
+  edit_dma_rank_edit->setGeometry(535,98,40,20);
 
-  edit_second_network_label->setGeometry(10,98,110,20);
-  edit_second_network_box->setGeometry(125,98,160,20);
-  edit_second_network_edit->setGeometry(125,98,160,20);
+  edit_second_network_label->setGeometry(10,120,110,20);
+  edit_second_network_box->setGeometry(125,120,160,20);
+  edit_second_network_edit->setGeometry(125,120,160,20);
 
-  edit_timezone_label->setGeometry(290,98,80,20);
-  edit_timezone_box->setGeometry(375,98,60,20);
-  edit_timezone_edit->setGeometry(375,98,60,20);
+  edit_timezone_label->setGeometry(290,120,80,20);
+  edit_timezone_box->setGeometry(375,120,60,20);
+  edit_timezone_edit->setGeometry(375,120,60,20);
 
-  edit_station_prev_call_label->setGeometry(450,98,90,20);
-  edit_station_prev_call_edit->setGeometry(545,98,50,20);
+  edit_station_prev_call_label->setGeometry(450,120,90,20);
+  edit_station_prev_call_edit->setGeometry(545,120,50,20);
 
-  edit_business_name_call_label->setGeometry(10,120,110,20);
-  edit_business_name_edit->setGeometry(125,120,w-135,20);
-  edit_address1_edit->setGeometry(125,142,w-135,20);
-  edit_address2_edit->setGeometry(125,164,w-135,20);
-  edit_address_label->setGeometry(10,142,110,20);
+  edit_business_name_call_label->setGeometry(10,142,110,20);
+  edit_business_name_edit->setGeometry(125,142,w-135,20);
+  edit_address1_edit->setGeometry(125,164,w-135,20);
+  edit_address2_edit->setGeometry(125,186,w-135,20);
+  edit_address_label->setGeometry(10,164,110,20);
 
-  edit_city_label->setGeometry(10,186,110,20);
-  edit_city_edit->setGeometry(125,186,190,20);
+  edit_city_label->setGeometry(10,208,110,20);
+  edit_city_edit->setGeometry(125,208,190,20);
 
-  edit_state_label->setGeometry(315,186,50,20);
-  edit_state_box->setGeometry(370,186,200,20);
-  edit_state_edit->setGeometry(370,186,200,20);
+  edit_state_label->setGeometry(315,208,50,20);
+  edit_state_box->setGeometry(370,208,200,20);
+  edit_state_edit->setGeometry(370,208,200,20);
 
-  edit_zipcode_label->setGeometry(10,208,110,20);
-  edit_zipcode_edit->setGeometry(125,208,100,20);
+  edit_zipcode_label->setGeometry(10,230,110,20);
+  edit_zipcode_edit->setGeometry(125,230,100,20);
 
-  edit_email_addr_label->setGeometry(230,208,50,20);
-  edit_email_addr_edit->setGeometry(285,208,140,20);
+  edit_email_addr_label->setGeometry(230,230,50,20);
+  edit_email_addr_edit->setGeometry(285,230,140,20);
 
-  edit_phone_label->setGeometry(10,230,110,20);
-  edit_phone_edit->setGeometry(125,230,100,20);
+  edit_phone_label->setGeometry(10,252,110,20);
+  edit_phone_edit->setGeometry(125,252,100,20);
 
-  edit_fax_label->setGeometry(230,230,50,20);
-  edit_fax_edit->setGeometry(285,230,100,20);
+  edit_fax_label->setGeometry(230,252,50,20);
+  edit_fax_edit->setGeometry(285,252,100,20);
 
-  edit_web_url_label->setGeometry(10,252,110,20);
-  edit_web_url_edit->setGeometry(125,252,200,20);
+  edit_web_url_label->setGeometry(10,274,110,20);
+  edit_web_url_edit->setGeometry(125,274,200,20);
 
-  edit_track_affidavit_label->setGeometry(40,284,w-20,20);
-  edit_track_affidavit_box->setGeometry(20,287,15,15);
-  edit_affidavits->setGeometry(10,304,w-20,55);
+  edit_track_affidavit_label->setGeometry(40,306,w-20,20);
+  edit_track_affidavit_box->setGeometry(20,309,15,15);
+  edit_affidavits->setGeometry(10,304+22,w-20,55);
 
-  edit_web_password_edit->setGeometry(w/2+107,283,70,20);
-  edit_web_password_label->setGeometry(w/2,284,102,20);
+  edit_web_password_edit->setGeometry(w/2+107,305,70,20);
+  edit_web_password_label->setGeometry(w/2,306,102,20);
 
-  edit_contacts_button->setGeometry(60,377,160,30);
+  edit_contacts_button->setGeometry(60,399,160,30);
   edit_contact_list->
     setGeometry(global_geometry->geometry(Geometry::ContactsWidget,
 					  edit_contact_list->geometry()));
-  edit_airings_button->setGeometry(230,377,160,30);
+  edit_airings_button->setGeometry(230,399,160,30);
   edit_airings_list->
     setGeometry(global_geometry->geometry(Geometry::AiringsWidget,
 					  edit_airings_list->geometry()));
-  edit_remarks_button->setGeometry(400,377,160,30);
+  edit_remarks_button->setGeometry(400,399,160,30);
   edit_remarks_list->
     setGeometry(global_geometry->geometry(Geometry::RemarksWidget,
 					  edit_remarks_list->geometry()));

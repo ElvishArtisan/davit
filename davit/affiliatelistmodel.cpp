@@ -299,8 +299,9 @@ void AffiliateListModel::updateRowLine(int line)
 {
   if(line<d_texts.size()) {
     QString sql=sqlFields()+
-      "where `USER_NAME`="+DvtSqlQuery::escape(d_texts.at(line).at(0).toString());
-    DvtSqlQuery *q=new DvtSqlQuery(sql);
+      "from `AFFILIATES` "+
+      QString::asprintf("where `AFFILIATES`.`ID`=%d ",d_ids.at(line)); 
+      DvtSqlQuery *q=new DvtSqlQuery(sql);
     if(q->first()) {
       updateRow(line,q);
     }

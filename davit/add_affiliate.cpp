@@ -23,58 +23,39 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlQuery>
+
+#include <dvtdb.h>
 
 #include "add_affiliate.h"
 
 
-AddAffiliate::AddAffiliate(QString *call,QString *type,QWidget *parent)
-  : QDialog(parent)
+AddAffiliate::AddAffiliate(DvtConfig *c,QWidget *parent)
+  : DvtDialog(c,parent)
 {
   setModal(true);
-  add_call=call;
-  add_type=type;
 
   //
   // Fix the Window Size
   //
-  setMinimumWidth(sizeHint().width());
-  setMinimumHeight(sizeHint().height());
-  setMaximumWidth(sizeHint().width());
-  setMaximumHeight(sizeHint().height());
-
-  setWindowTitle("Davit - Add Affiliate");
-
-  //
-  // Create Fonts
-  //
-  QFont label_font=QFont("Helvetica",12,QFont::Bold);
-  label_font.setPixelSize(12);
-  QFont font=QFont("Helvetica",12,QFont::Normal);
-  font.setPixelSize(12);
+  setMinimumSize(sizeHint());
+  setMaximumSize(sizeHint());
 
   //
   // Station Call
   //
   add_call_edit=new QLineEdit(this);
-  add_call_edit->setGeometry(110,10,80,20);
-  add_call_edit->setFont(font);
-  add_call_edit->setMaxLength(8);
-  QLabel *label=new QLabel("Station Call:",this);
-  label->setGeometry(10,10,95,20);
-  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-  label->setFont(label_font);
+  add_call_edit->setMaxLength(10);
+  add_call_label=new QLabel(tr("Station Call")+":",this);
+  add_call_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  add_call_label->setFont(labelFont());
 
   //
   // Station Type
   //
   add_type_box=new QComboBox(this);
-  add_type_box->setGeometry(110,32,80,20);
-  label=new QLabel("Type:",this);
-  label->setGeometry(10,32,95,20);
-  label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-  label->setFont(label_font);
+  add_type_label=new QLabel(tr("Type")+":",this);
+  add_type_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  add_type_label->setFont(labelFont());
   add_type_box->insertItem(0,"AM");
   add_type_box->insertItem(1,"FM");
   add_type_box->insertItem(2,"Internet");
@@ -82,21 +63,19 @@ AddAffiliate::AddAffiliate(QString *call,QString *type,QWidget *parent)
   //
   //  OK Button
   //
-  QPushButton *button=new QPushButton(this);
-  button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
-  button->setDefault(true);
-  button->setFont(label_font);
-  button->setText("&OK");
-  connect(button,SIGNAL(clicked()),this,SLOT(okData()));
+  add_ok_button=new QPushButton(this);
+  add_ok_button->setDefault(true);
+  add_ok_button->setFont(buttonFont());
+  add_ok_button->setText("OK");
+  connect(add_ok_button,SIGNAL(clicked()),this,SLOT(okData()));
 
   //
   //  Cancel Button
   //
-  button=new QPushButton(this);
-  button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
-  button->setFont(label_font);
-  button->setText("&Cancel");
-  connect(button,SIGNAL(clicked()),this,SLOT(cancelData()));
+  add_cancel_button=new QPushButton(this);
+  add_cancel_button->setFont(buttonFont());
+  add_cancel_button->setText("Cancel");
+  connect(add_cancel_button,SIGNAL(clicked()),this,SLOT(cancelData()));
 }
 
 
@@ -117,28 +96,64 @@ QSizePolicy AddAffiliate::sizePolicy() const
 }
 
 
+int AddAffiliate::exec(QString *station_call,QString *station_type)
+{
+  add_call=station_call;
+  add_type=station_type;
+
+  setWindowTitle("Davit - "+tr("Add Affiliate"));
+
+  add_call_edit->setText(tr("[new call]"));
+  add_call_edit->selectAll();
+  
+  return QDialog::exec();
+}
+
+
 void AddAffiliate::okData()
 {
   QString sql=
-    QString::asprintf("select STATION_CALL from AFFILIATES \
-                       where (STATION_CALL=\"%s\")&&(STATION_TYPE=\"%s\")",
-		      add_call_edit->text().toUtf8().constData(),
-		      add_type_box->currentText().left(1).toUtf8().constData());
-  QSqlQuery *q=new QSqlQuery(sql);
+    QString("select ")+
+    "`STATION_CALL` "+  // 00
+    "from `AFFILIATES` where "+
+    "(`STATION_CALL`="+DvtSqlQuery::escape(add_call_edit->text())+")&&"+
+    "(`STATION_TYPE`="+
+    DvtSqlQuery::escape(add_type_box->currentText().left(1))+")";
+  DvtSqlQuery *q=new DvtSqlQuery(sql);
   if(q->first()) {
-    QMessageBox::warning(this,"Affiliate Exists",
-			 "That affiliate already exists!");
+    QMessageBox::warning(this,"Davit - "+tr("Affiliate Exists"),
+			 tr("That affiliate already exists!"));
     delete q;
     return;
   }
   delete q;
   *add_call=add_call_edit->text();
   *add_type=add_type_box->currentText().left(1);
-  done(0);
+  done(true);
 }
 
 
 void AddAffiliate::cancelData()
 {
-  done(-1);
+  done(false);
+}
+
+
+void AddAffiliate::resizeEvent(QResizeEvent *e)
+{
+  int w=size().width();
+  int h=size().height();
+
+  add_call_edit->setGeometry(110,10,80,20);
+  add_call_label->setGeometry(10,10,95,20);
+  add_type_box->setGeometry(110,32,80,20);
+  add_type_label->setGeometry(10,32,95,20);
+  add_ok_button->setGeometry(w-180,h-60,80,50);
+  add_cancel_button->setGeometry(w-90,h-60,80,50);
+}
+
+
+void AddAffiliate::closeEvent(QCloseEvent *e)
+{
+  cancelData();
 }
