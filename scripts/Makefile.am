@@ -18,8 +18,8 @@
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
 
-bin_SCRIPTS = add_mysql_user.sh\
-              xfer_contacts.pl
+#bin_SCRIPTS = add_mysql_user.sh\
+#              xfer_contacts.pl
 
 EXTRA_DIST = add_mysql_user.sh\
              xfer_contacts.pl

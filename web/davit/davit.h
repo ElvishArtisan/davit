@@ -23,7 +23,6 @@
 #define DAVIT_H
 
 #include <QObject>
-#include <QSqlDatabase>
 #include <QHostAddress>
 
 //

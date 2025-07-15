@@ -28,13 +28,13 @@
 #include <vmime/vmime.hpp>
 #include <vmime/platforms/posix/posixHandler.hpp>
 
-#include <QApplication>
+#include <QCoreApplication>
 #include <QDateTime>
-#include <QSqlQuery>
 
 #include <dvtconfig.h>
-#include <dvtweb.h>
 #include <dvtconf.h>
+#include <dvtdb.h>
+#include <dvtweb.h>
 //#include <dvtmail.h>
 
 #include "davit.h"
@@ -48,9 +48,6 @@
 MainObject::MainObject(QObject *parent)
   :QObject(parent)
 {
-  /*
-   * FIXME: Port to Qt6
-   *
   //
   // Initialize Variables
   //
@@ -70,20 +67,15 @@ MainObject::MainObject(QObject *parent)
   //
   // Open Database
   //
-  QSqlDatabase *db=QSqlDatabase::addDatabase(cast_config->mysqlDbtype());
-  if(!db) {
-    printf("Content-type: text/html\n\n");
-    printf("rdfeed: unable to initialize connection to database\n");
-    exit(0);
-  }
-  db->setDatabaseName(cast_config->mysqlDbname());
-  db->setUserName(cast_config->mysqlUsername());
-  db->setPassword(cast_config->mysqlPassword());
-  db->setHostName(cast_config->mysqlHostname());
-  if(!db->open()) {
+  QSqlDatabase db=QSqlDatabase::addDatabase(cast_config->mysqlDbtype());
+  db.setDatabaseName(cast_config->mysqlDbname());
+  db.setUserName(cast_config->mysqlUsername());
+  db.setPassword(cast_config->mysqlPassword());
+  db.setHostName(cast_config->mysqlHostname());
+  if(!db.open()) {
     printf("Content-type: text/html\n\n");
     printf("davit: unable to connect to database\n");
-    db->removeDatabase(cast_config->mysqlDbname());
+    db.removeDatabase(cast_config->mysqlDbname());
     exit(0);
   }
 
@@ -91,31 +83,31 @@ MainObject::MainObject(QObject *parent)
   // Read Post Variables and Dispatch 
   //
   switch(AuthenticatePost()) {
-    case DAVIT_COMMAND_LOGIN:
-      ServeLogin();
-      break;
+  case DAVIT_COMMAND_LOGIN:
+    ServeLogin();
+    break;
 
-    case DAVIT_COMMAND_LOGOUT:
-      ServeLogout();
-      break;
+  case DAVIT_COMMAND_LOGOUT:
+    ServeLogout();
+    break;
 
-    case DAVIT_COMMAND_MONTH_PICKER:
-      ServeMonthPicker();
-      break;
+  case DAVIT_COMMAND_MONTH_PICKER:
+    ServeMonthPicker();
+    break;
 
-    case DAVIT_COMMAND_SERVE_PROGRAM_LIST:
-      ServeProgramList();
-      break;
+  case DAVIT_COMMAND_SERVE_PROGRAM_LIST:
+    ServeProgramList();
+    break;
 
-    case DAVIT_COMMAND_PROCESS_PROGRAMS:
-      ProcessPrograms();
-      break;
+  case DAVIT_COMMAND_PROCESS_PROGRAMS:
+    ProcessPrograms();
+    break;
 
-    default:
-      DvtCgiError("Invalid post data!");
-      break;
+  default:
+    DvtCgiError("Invalid post data!");
+    break;
   }
-  */
+
   exit(0);
 }
 
@@ -245,7 +237,7 @@ void MainObject::ServeLogout()
 void MainObject::ServeMonthPicker()
 {
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
 
   printf("Content-type: text/html\n\n");
   printf("<html>\n");
@@ -263,16 +255,16 @@ void MainObject::ServeMonthPicker()
     date=QDate(2008,1,31);
   }
   while(date<today) {
-    sql=QString::asprintf("select ID from AIRED where (AFFILIATE_ID=%d)&&\
-                           (STATE=%d)&&\
-                           (AIR_DATETIME>=\"%s-01 00:00:00\")&&\
-                           (AIR_DATETIME<\"%s-01 00:00:00\")",
-			  cast_affiliate_id,
-			  Dvt::AiredStateScheduled,
-			  date.toString("yyyy-MM").toUtf8().constData(),
-			  date.addMonths(1).toString("yyyy-MM").
-			  toUtf8().constData());
-    q=new QSqlQuery(sql);
+    sql=QString("select ")+
+      "`ID` "+  // 00
+      "from `AIRED` where "+
+      QString::asprintf("(`AFFILIATE_ID`=%d)&&",cast_affiliate_id)+
+      QString::asprintf("(`STATE`=%d)&&",Dvt::AiredStateScheduled)+
+      "(`AIR_DATETIME`>="+
+      DvtSqlQuery::escape(date.toString("yyyy-MM")+"-01 00:00:00")+")&&"+
+      "(`AIR_DATETIME`<"+
+      DvtSqlQuery::escape(date.addMonths(1).toString("yyyy-MM")+"-01 00:00:00")+")";
+    q=new DvtSqlQuery(sql);
     if(q->first()) {
       data_needed=true;
       if(first) {
@@ -309,7 +301,6 @@ void MainObject::ServeMonthPicker()
 	   cast_config->contactAddress().toUtf8().constData());
     printf("</td>\n");
     printf("</tr>\n");
-    
   }
   printf("</table>\n");
   printf("</body>\n");
@@ -320,7 +311,7 @@ void MainObject::ServeMonthPicker()
 void MainObject::ServeProgramList()
 {
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   int last_month;
   int last_year;
 
@@ -342,9 +333,12 @@ void MainObject::ServeProgramList()
   printf("</head>\n");
   printf("<body bgcolor=\"%s\">\n",DVT_WEB_BACKGROUND_COLOR);
   printf("<table border=\"0\" cellpadding=\"5\" cellspacing=\"0\">\n");
-  sql=QString::asprintf("select STATION_CALL,STATION_TYPE from\
-                           AFFILIATES where ID=%d",cast_affiliate_id);
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`STATION_CALL`,"+  // 00
+    "`STATION_TYPE` "+  // 01
+    "from `AFFILIATES` where "+
+    QString::asprintf("`ID`=%d",cast_affiliate_id);
+  q=new DvtSqlQuery(sql);
   if(q->first()) {
     printf("<tr>\n");
     printf("<td colspan=\"6\" align=\"center\"><big><strong>\n");
@@ -401,20 +395,22 @@ void MainObject::ServeProgramList()
     line_colors[0]=DVT_WEB_LINE_COLOR1;
     line_colors[1]=DVT_WEB_LINE_COLOR2;
     int current_color=0;
-    sql=QString::asprintf("select PROGRAMS.PROGRAM_NAME,AIRED.AIR_DATETIME,\
-                           AIRED.AIR_LENGTH,AIRED.ID from PROGRAMS \
-                           left join AIRED on AIRED.PROGRAM_ID=PROGRAMS.ID \
-                           where (AIRED.AFFILIATE_ID=%d)&&\
-                           (AIRED.STATE=%d)&&\
-                           (AIRED.AIR_DATETIME>=\"%s-01 00:00:00\")&&\
-                           (AIRED.AIR_DATETIME<\"%s-01 00:00:00\") \
-                           order by PROGRAMS.PROGRAM_NAME,AIRED.AIR_DATETIME",
-			  cast_affiliate_id,
-			  Dvt::AiredStateScheduled,
-			  date.toString("yyyy-MM").toUtf8().constData(),
-			  date.addMonths(1).toString("yyyy-MM").
-			  toUtf8().constData());
-    q=new QSqlQuery(sql);
+    sql=QString("select ")+
+      "`PROGRAMS`.`PROGRAM_NAME`,"+
+      "`AIRED`.`AIR_DATETIME`,"+
+      "`AIRED`.`AIR_LENGTH`,"+
+      "`AIRED`.`ID` "+
+      "from `PROGRAMS` left join `AIRED` "+
+      "on `AIRED`.`PROGRAM_ID`=`PROGRAMS`.`ID` where "+
+      QString::asprintf("(`AIRED`.`AFFILIATE_ID`=%d)&&",cast_affiliate_id)+
+      QString::asprintf("(`AIRED`.`STATE`=%d)&&",Dvt::AiredStateScheduled)+
+      "(`AIRED`.`AIR_DATETIME`>="+
+      DvtSqlQuery::escape(date.toString("yyyy-MM")+"-01 00:00:00")+")&&"+
+      "(`AIRED`.`AIR_DATETIME`<"+
+      DvtSqlQuery::escape(date.addMonths(1).toString("yyyy-MM")+
+			  "-01 00:00:00")+") "+
+      "order by `PROGRAMS`.`PROGRAM_NAME`,`AIRED`.`AIR_DATETIME`";
+    q=new DvtSqlQuery(sql);
     while(q->next()) {
       printf("<tr>\n");
       printf("<td bgcolor=\"%s\" align=\"left\">%s</td>\n",
@@ -466,9 +462,6 @@ void MainObject::ServeProgramList()
 
 void MainObject::ProcessPrograms()
 {
-  /*
-   * FIXME: Port to Qt6
-   *
   char str[1024];
   char var[1024];
   int last_month;
@@ -476,8 +469,7 @@ void MainObject::ProcessPrograms()
   int this_month;
   int this_year;
   QString sql;
-  QSqlQuery *q;
-  QSqlQuery *q1;
+  DvtSqlQuery *q;
   std::vector<int> bad_airings;
   QString name="[unknown]";
   QString phone="[unknown]";
@@ -508,10 +500,16 @@ void MainObject::ProcessPrograms()
   //
   // Get Signing Credentials
   //
-  sql=QString::asprintf("select NAME,PHONE,FAX,EMAIL from CONTACTS \
-                         where (AFFILIATE_ID=%d)&&(AFFIDAVIT=\"Y\")",
-			cast_affiliate_id);
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`NAME`,"+   // 00
+    "`PHONE`,"+  // 01
+    "`FAX`,"+    // 02
+    "`EMAIL` "+  // 03
+    "from `CONTACTS` where "+
+    QString::asprintf("(`AFFILIATE_ID`=%d)&&",cast_affiliate_id)+
+    "(`AFFIDAVIT`='Y')";
+  //		);
+  q=new DvtSqlQuery(sql);
   if(q->first()) {
     name=q->value(0).toString();
     phone=q->value(1).toString();
@@ -520,25 +518,27 @@ void MainObject::ProcessPrograms()
   }
   delete q;
 
-  sql=QString::asprintf("select AIRED.ID,AIRED.AIR_DATETIME,AIRED.AIR_LENGTH \
-                         from AIRED right join PROGRAMS \
-                         on AIRED.PROGRAM_ID=PROGRAMS.ID \
-                         where (AIRED.AFFILIATE_ID=%d)&&\
-                         (AIRED.AIR_DATETIME>=\"%s-01 00:00:00\")&&\
-                         (AIRED.AIR_DATETIME<\"%s-01 00:00:00\")&&\
-                         (AIRED.STATE=%d) order by AIR_DATETIME",
-			cast_affiliate_id,
-			date.toString("yyyy-MM").toUtf8().constData(),
-			date.addMonths(1).toString("yyyy-MM").
-			toUtf8().constData(),
-			Dvt::AiredStateScheduled);
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`AIRED`.`ID`,"+            // 00
+    "`AIRED`.`AIR_DATETIME`,"+  // 01
+    "`AIRED`.`AIR_LENGTH` "+    // 02
+    "from `AIRED` right join `PROGRAMS` "+
+    "on `AIRED`.`PROGRAM_ID`=`PROGRAMS`.`ID` where "+
+    QString::asprintf("(`AIRED`.`AFFILIATE_ID`=%d)&&",cast_affiliate_id)+
+    "(`AIRED`.`AIR_DATETIME`>="+
+    DvtSqlQuery::escape(date.toString("yyyy-MM")+"-01 00:00:00")+")&&"+
+    "(`AIRED`.`AIR_DATETIME`<"+
+    DvtSqlQuery::escape(date.addMonths(1).toString("yyyy-MM")+"-01 00:00:00")+
+    ")&&"+
+    QString::asprintf("(`AIRED`.`STATE`=%d) ",Dvt::AiredStateScheduled)+
+    "order by `AIR_DATETIME`";
+  q=new DvtSqlQuery(sql);
   while(q->next()) {
     sprintf(var,"CORRECT_%d",q->value(0).toInt());
     start_time=GetTime(q->value(0).toInt(),"START");
     air_length=start_time.secsTo(GetTime(q->value(0).toInt(),"END"));
     if(DvtGetPostString(cast_post,var,str,1024)<0) {
-      DvtCgiError(QString::asprintf("Missing CORRECT_%d",q->value(0).toInt()));
+      DvtCgiError(QString::asprintf("Missing CORRECT_%d",q->value(0).toInt()).toUtf8());
     }
     if(strcasecmp(str,"Yes")==0) {
       if((start_time!=q->value(1).toTime())||
@@ -553,28 +553,21 @@ void MainObject::ProcessPrograms()
     else {
       state=Dvt::AiredStateDenied;
     }
-    sql=QString::asprintf("update AIRED set \
-                           AIR_DATETIME=\"%s %s\",\
-                           AIR_LENGTH=%d,\
-                           STATE=%d,\
-                           CONTACT_NAME=\"%s\",\
-                           CONTACT_PHONE=\"%s\",\
-                           CONTACT_FAX=\"%s\",\
-                           CONTACT_EMAIL=\"%s\",\
-                           ORIGIN_DATETIME=now() \
-                           where ID=%d",
-			  q->value(1).toDateTime().toString("yyyy-MM-dd").
-			  toUtf8().constData(),
-			  start_time.toString("hh:mm:ss").toUtf8().constData(),
-			  air_length,
-			  state,
-			  DvtEscapeString(name).toUtf8().constData(),
-			  DvtEscapeString(phone).toUtf8().constData(),
-			  DvtEscapeString(fax).toUtf8().constData(),
-			  DvtEscapeString(email).toUtf8().constData(),
-			  q->value(0).toInt());
-    q1=new QSqlQuery(sql);
-    delete q1;
+    sql=QString("update ")+
+      "`AIRED` set "+
+      "`AIR_DATETIME`="+
+      DvtSqlQuery::escape(q->value(1).toDateTime().toString("yyyy-MM-dd")+" "+
+			  start_time.toString("hh:mm:ss"))+","+
+      QString::asprintf("`AIR_LENGTH`=%d,",air_length)+
+      QString::asprintf("`STATE`=%d,",state)+
+      "`CONTACT_NAME`="+DvtSqlQuery::escape(name)+","+
+      "`CONTACT_PHONE`="+DvtSqlQuery::escape(phone)+","+
+      "`CONTACT_FAX`="+DvtSqlQuery::escape(fax)+","+
+      "`CONTACT_EMAIL`="+DvtSqlQuery::escape(email)+","+
+      "`ORIGIN_DATETIME`=now() "+
+      "where "+
+      QString::asprintf("`ID`=%d",q->value(0).toInt());
+    DvtSqlQuery::apply(sql);
   }
 
   //
@@ -584,7 +577,7 @@ void MainObject::ProcessPrograms()
     SendDiscrepancyAlert(cast_affiliate_id,date,discreps);
   }
   ServeMonthPicker();
-  */
+
   exit(0);
 }
 
@@ -602,13 +595,13 @@ bool MainObject::GetContact(int affiliate_id,QString *name,QString *email,
 			    QString *phone,QString *fax)
 {
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   bool ret;
 
   sql=QString::asprintf("select NAME,EMAIL,PHONE,FAX from CONTACTS \
                          where (AFFILIATE_ID=%d)&&(AFFIDAVIT=\"Y\")",
 			affiliate_id);
-  q=new QSqlQuery(sql);
+  q=new DvtSqlQuery(sql);
   if((ret=q->first())) {
     *name=q->value(0).toString();
     *email=q->value(1).toString();
@@ -647,29 +640,26 @@ QString MainObject::TimeWidget(int id,const QString &name,
 
 QTime MainObject::GetTime(int id,const QString &name)
 {
-  /*
-   * FIXME: Port to Qt6
-   *
   int hour;
   int minute;
   int second;
   QString tag;
 
   tag=QString::asprintf("%s_HOUR_%d",name.toUtf8().constData(),id);
-  if(DvtGetPostInt(cast_post,tag,&hour)<0) {
-    DvtCgiError(QString("Missing ")+tag);
+  if(DvtGetPostInt(cast_post,tag.toUtf8(),&hour)<0) {
+    DvtCgiError((QString("Missing ")+tag).toUtf8());
   }
   tag=QString::asprintf("%s_MINUTE_%d",name.toUtf8().constData(),id);
-  if(DvtGetPostInt(cast_post,tag,&minute)<0) {
-    DvtCgiError(QString("Missing ")+tag);
+  if(DvtGetPostInt(cast_post,tag.toUtf8(),&minute)<0) {
+    DvtCgiError((QString("Missing ")+tag).toUtf8());
   }
   tag=QString::asprintf("%s_SECOND_%d",name.toUtf8().constData(),id);
-  if(DvtGetPostInt(cast_post,tag,&second)<0) {
-    DvtCgiError(QString("Missing ")+tag);
+  if(DvtGetPostInt(cast_post,tag.toUtf8(),&second)<0) {
+    DvtCgiError((QString("Missing ")+tag).toUtf8());
   }
   
   return QTime(hour,minute,second);
-  */
+
   return QTime();
 }
 
@@ -693,7 +683,7 @@ void MainObject::SendDiscrepancyAlert(int affiliate_id,QDate &date,int quan)
 
 int main(int argc,char *argv[])
 {
-  QApplication a(argc,argv,false);
+  QCoreApplication a(argc,argv);
   new MainObject();
   return a.exec();
 }

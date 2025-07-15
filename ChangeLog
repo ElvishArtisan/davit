@@ -900,3 +900,8 @@
 	dialog in davit(1).
 2025-07-10 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored the 'List Reports' dialog in davit(1).
+2025-07-15 Fred Gleason <fredg@paravelsystems.com>
+	* Disabled installation of components in 'utils/vnc/'.
+	* Disabled installation of components in 'scripts/'.
+	* Moved sample configuration files to 'conf/'.
+	* Got the affiliate web interface working.

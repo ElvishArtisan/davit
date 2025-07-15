@@ -126,10 +126,11 @@ AC_CONFIG_FILES(Makefile \
   utils/vnc/Makefile \
   utils/vnc/davit.xinitrc \
   utils/vnc/start_davit.sh \
+  conf/Makefile \
   docs/Makefile \
   icons/Makefile \
   davit.spec \
-  dvt-bin.conf
+  conf/dvt-bin.conf
 ) 
 AC_OUTPUT()
 chmod 755 utils/vnc/davit.xinitrc

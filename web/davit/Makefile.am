@@ -26,7 +26,7 @@ MOC = @QT6_MOC@
 libexec_PROGRAMS = davit.cgi
 
 dist_davit_cgi_SOURCES = davit.cpp davit.h
-davit_cgi_LDADD = @QT6_LIBS@ @VMIME_LIBS@ -ldvt
+davit_cgi_LDADD = -ldvt @QT6_LIBS@ @VMIME_LIBS@
 
 EXTRA_DIST = davit.pro
 

@@ -1,8 +1,6 @@
 ## Makefile.am
 ##
-## utils/vnc Directory Makefile.am for Davit
-##
-## (C) Copyright 2010-2025 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -17,26 +15,25 @@
 ##   License along with this program; if not, write to the Free Software
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
+##
+## Use automake to process this into a Makefile.in
 
-#install-exec-local:
-#	mkdir -p $(DESTDIR)@prefix@/bin
-#	cp davit.xinitrc $(DESTDIR)@prefix@/bin/
-#	cp start_davit.sh $(DESTDIR)@prefix@/bin/
-#	mkdir -p $(DESTDIR)@prefix@/share/fvwm
-#	cp davit-config $(DESTDIR)@prefix@/share/fvwm/
+install-exec-am:	
+	mkdir -p $(DESTDIR)/$(sysconfdir)
+	cp dvt-bin.conf $(DESTDIR)/$(sysconfdir)/
+	mkdir -p $(DESTDIR)$(prefix)/share/davit
+	cp davit-sample.conf $(DESTDIR)$(prefix)/share/davit/
 
-#uninstall:	
-#	rm -f $(DESTDIR)@prefix@/bin/davit.xinitrc
-#	rm -f $(DESTDIR)@prefix@/bin/start_davit.sh
-#	rm -f $(DESTDIR)@prefix@/share/fvwm/davit-config
+uninstall:	
+	rm -f $(DESTDIR)/$(sysconfdir)/dvt-bin.conf
+	rm -f $(DESTDIR)$(prefix)/share/davit/davit-sample.conf
 
-EXTRA_DIST = davit-config\
-             davit.xinitrc.in\
-             start_davit.sh.in
+EXTRA_DIST = davit-sample.conf\
+             dvt-bin.conf.in
 
 CLEANFILES = *~
-
-DISTCLEANFILES = davit.xinitrc\
-                 start_davit.sh
-
-MAINTAINERCLEANFILES = *~ Makefile.in
+DISTCLEANFILES = 
+MAINTAINERCLEANFILES = *~\
+                       aclocal.m4\
+                       configure\
+                       Makefile.in

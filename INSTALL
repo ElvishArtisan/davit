@@ -47,4 +47,4 @@ RHEL/CentOS 7:
 	./configure --prefix=/usr --libexecdir=/var/www/dvt-bin
 
 Ubuntu 22.04:
-        ./configure --prefix=/usr --libexecdir=/var/www/dvt-bin
+        ./configure --prefix=/usr --libexecdir=/var/www/dvt-bin sysconfdir=/etc/apache2/conf-available

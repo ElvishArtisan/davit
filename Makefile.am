@@ -21,6 +21,7 @@
 SUBDIRS = helpers\
           lib\
           scripts\
+          conf\
           docs\
           icons\
           davit\
@@ -43,12 +44,10 @@ rpm:	dist
 EXTRA_DIST = autogen.sh\
              build_win32.bat\
              davit-sample.ini\
-             davit.conf-sample\
              davit.ini kdmrc-example\
              davit.ism\
              davit.pro\
              davit.spec.in\
-             dvt-bin.conf.in\
              get_target.sh\
              get_target.pl\
              get_distro.sh\
