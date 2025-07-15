@@ -925,3 +925,7 @@
 2025-07-15 Fred Gleason <fredg@paravelsystems.com>
 	* Added code to delete associated data when deleting an affiliate
 	entry in davit(1).
+2025-07-15 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in the 'Edit Affiliate' dialog that caused
+	the 'Hide Affiliate History' button to fail to be updated if the
+	'Affiliate History' dialog was closed by clicking the 'X' button'.

@@ -51,6 +51,7 @@ class ListRemarks : public DvtDialog
 
  protected:
   void resizeEvent(QResizeEvent *e);
+  void closeEvent(QCloseEvent *);
 
  private:
   void RefreshList();

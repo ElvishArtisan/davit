@@ -123,6 +123,12 @@ void ListRemarks::resizeEvent(QResizeEvent *e)
 }
 
 
+void ListRemarks::closeEvent(QCloseEvent *)
+{
+  hide();
+}
+
+
 void ListRemarks::RefreshList()
 {
   QString sql;
