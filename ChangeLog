@@ -905,3 +905,7 @@
 	* Disabled installation of components in 'scripts/'.
 	* Moved sample configuration files to 'conf/'.
 	* Got the affiliate web interface working.
+2025-07-15 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in the 'List Affiliates' dialog in davit(1) that broke
+	filtering by call letters when the 'Show Affiliates Olny' checkbox
+	was ticked.

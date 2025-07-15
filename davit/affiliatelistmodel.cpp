@@ -250,10 +250,9 @@ void AffiliateListModel::updateModel()
 
   int prev_rows=rowCount();
   if(d_affiliates_only) {
-    where+=QString("`AFFILIATES`.`IS_AFFILIATE`='Y' ");
+    where+=QString("(`AFFILIATES`.`IS_AFFILIATE`='Y')&&");
   }
   if(!d_affiliates_missing.isNull()) {
-    where+="&&";
     sql=QString("select ")+
       "`AFFILIATES`.`ID` "+  // 00
       "from `AFFILIATES` where `AFFILIATES`.`AFFIDAVIT_ACTIVE`='Y'";
@@ -264,13 +263,12 @@ void AffiliateListModel::updateModel()
       }
     }
     delete q;
-    where=where.left(where.length()-2);
-    where+=" ";
   }
   if(!d_call_filter.isEmpty()) {
-    where+="`AFFILIATES`.`STATION_CALL` like "+
-      DvtSqlQuery::escape(d_call_filter+"%")+" ";
+    where+="(`AFFILIATES`.`STATION_CALL` like "+
+      DvtSqlQuery::escape(d_call_filter+"%")+")&&";
   }
+  where=where.left(where.length()-2);
   DvtSqlQuery *q=NULL;
   sql=sqlFields();
   sql+="from `AFFILIATES` ";
