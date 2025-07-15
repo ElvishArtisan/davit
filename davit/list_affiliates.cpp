@@ -345,11 +345,12 @@ void ListAffiliates::deleteData()
     QString msg=tr("Are you sure you want to delete the affiliate records for")+
       " "+q->value(0).toString()+"-";
     if(q->value(1).toString()=="I") {
-      msg+="Internet?";
+      msg+="Internet?\n\n";
     }
     else {
-      msg+=q->value(1).toString()+"M?";
+      msg+=q->value(1).toString()+"M?\n\n";
     }
+    msg+=tr("WARNING: All associated data (schedule info, remarks, etc) will also be deleted!");
     delete q;
     if(QMessageBox::question(this,"Davit",msg,
 			     QMessageBox::Yes,QMessageBox::No)!=QMessageBox::Yes) {
@@ -361,6 +362,34 @@ void ListAffiliates::deleteData()
 			  tr("Unable to find record for affiliate!"));
     return;
   }
+
+  //
+  // Delete Contacts
+  //
+  sql=QString("delete from `CONTACTS` where ")+
+    QString::asprintf("`AFFILIATE_ID`=%d",affiliate_id);
+  DvtSqlQuery::apply(sql);
+
+  //
+  // Delete Airings
+  //
+  sql=QString("delete from `AIRINGS` where ")+
+    QString::asprintf("`AFFILIATE_ID`=%d",affiliate_id);
+  DvtSqlQuery::apply(sql);
+
+  //
+  // Delete Aired
+  //
+  sql=QString("delete from `AIRED` where ")+
+    QString::asprintf("`AFFILIATE_ID`=%d",affiliate_id);
+  DvtSqlQuery::apply(sql);
+
+  //
+  // Delete Affiliate Remarks
+  //
+  sql=QString("delete from `AFFILIATE_REMARKS` where ")+
+    QString::asprintf("`AFFILIATE_ID`=%d",affiliate_id);
+  DvtSqlQuery::apply(sql);
 
   sql=QString("delete from `AFFILIATES` where ")+
     QString::asprintf("`AFFILIATES`.`ID`=%d ",affiliate_id);

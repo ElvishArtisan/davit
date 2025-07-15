@@ -922,3 +922,6 @@
 	* Fixed a regression in 'lib/statecombobox.cpp' that caused the 'ALL'
 	entry to be included regardless of the value of the 'bool incl_all'
 	parameter in the 'StateComboBox' constructor.
+2025-07-15 Fred Gleason <fredg@paravelsystems.com>
+	* Added code to delete associated data when deleting an affiliate
+	entry in davit(1).
