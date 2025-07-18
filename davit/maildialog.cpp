@@ -26,13 +26,13 @@
 #include <QMessageBox>
 
 #include <dvtconf.h>
-//#include <dvtmail.h>
+#include <dvtsendmail.h>
 
 #include "globals.h"
 #include "maildialog.h"
 
-MailDialog::MailDialog(QWidget *parent)
-  : QDialog(parent)
+MailDialog::MailDialog(DvtConfig *c,QWidget *parent)
+  : DvtDialog(c,parent)
 {
   setModal(true);
   setWindowTitle(tr("Davit - Compose Mail"));
@@ -40,43 +40,42 @@ MailDialog::MailDialog(QWidget *parent)
   //
   // Fix the Window Size
   //
-  setMinimumWidth(sizeHint().width());
-  setMinimumHeight(sizeHint().height());
-
-  //
-  // Fonts
-  //
-  QFont label_font=QFont("helvetica",12,QFont::Bold);
-  label_font.setPixelSize(12);
+  setMinimumSize(sizeHint());
 
   edit_to_edit=new QTextEdit(this);
   edit_to_label=new QLabel(tr("To:"),this);
-  edit_to_label->setFont(label_font);
+  edit_to_label->setFont(labelFont());
   edit_to_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-
+  connect(edit_to_edit,SIGNAL(textChanged()),this,SLOT(addressChangedData()));
+  
   edit_cc_edit=new QTextEdit(this);
   edit_cc_label=new QLabel(tr("Cc:"),this);
-  edit_cc_label->setFont(label_font);
+  edit_cc_label->setFont(labelFont());
   edit_cc_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  connect(edit_cc_edit,SIGNAL(textChanged()),this,SLOT(addressChangedData()));
 
   edit_bcc_edit=new QTextEdit(this);
   edit_bcc_label=new QLabel(tr("Bcc:"),this);
-  edit_bcc_label->setFont(label_font);
+  edit_bcc_label->setFont(labelFont());
   edit_bcc_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  connect(edit_bcc_edit,SIGNAL(textChanged()),this,SLOT(addressChangedData()));
 
   edit_subject_edit=new QLineEdit(this);
   edit_subject_label=new QLabel(tr("Subject:"),this);
-  edit_subject_label->setFont(label_font);
+  edit_subject_label->setFont(labelFont());
   edit_subject_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  connect(edit_subject_edit,SIGNAL(textChanged(const QString &)),
+	  this,SLOT(addressChangedData()));
 
   edit_body_edit=new QTextEdit(this);
+  connect(edit_body_edit,SIGNAL(textChanged()),this,SLOT(addressChangedData()));
 
   edit_send_button=new QPushButton(tr("Send"),this);
-  edit_send_button->setFont(label_font);
+  edit_send_button->setFont(buttonFont());
   connect(edit_send_button,SIGNAL(clicked()),this,SLOT(sendData()));
 
   edit_cancel_button=new QPushButton(tr("Cancel"),this);
-  edit_cancel_button->setFont(label_font);
+  edit_cancel_button->setFont(buttonFont());
   connect(edit_cancel_button,SIGNAL(clicked()),this,SLOT(cancelData()));
 }
 
@@ -120,7 +119,6 @@ int MailDialog::exec(const QStringList &to_addrs,const QStringList &cc_addrs,
   }
   edit_cc_edit->
     setText(edit_cc_edit->toPlainText().left(edit_cc_edit->toPlainText().length()-1));
-  edit_bcc_edit->setText(reply_addr+"\n");
   for(int i=0;i<bcc_addrs.size();i++) {
     if(!bcc_addrs[i].isEmpty()) {
       edit_bcc_edit->setText(edit_bcc_edit->toPlainText()+bcc_addrs[i]+"\n");
@@ -134,7 +132,24 @@ int MailDialog::exec(const QStringList &to_addrs,const QStringList &cc_addrs,
   edit_from_address=from_addr;
   edit_reply_address=reply_addr;
 
+  addressChangedData();
+  
   return QDialog::exec();
+}
+
+
+void MailDialog::addressChangedData()
+{
+  QStringList f0;
+  edit_send_button->
+    setEnabled((!edit_subject_edit->text().trimmed().isEmpty())&&
+	       (!edit_body_edit->toPlainText().trimmed().isEmpty())&&
+	       (!(edit_to_edit->toPlainText().trimmed().isEmpty()&&
+		  edit_cc_edit->toPlainText().trimmed().isEmpty()&&
+		  edit_bcc_edit->toPlainText().trimmed().isEmpty()))&&
+	       DvtNormalizeAddresses(edit_to_edit->toPlainText(),&f0)&&
+	       DvtNormalizeAddresses(edit_cc_edit->toPlainText(),&f0)&&
+	       DvtNormalizeAddresses(edit_bcc_edit->toPlainText(),&f0));
 }
 
 
@@ -143,6 +158,7 @@ void MailDialog::sendData()
   QStringList to_addrs;
   QStringList cc_addrs;
   QStringList bcc_addrs;
+  QString err_msg;
 
   //
   // Validate Addresses
@@ -172,24 +188,26 @@ void MailDialog::sendData()
 			 tr("Invalid address in Bcc: field!"));
     return;
   }
-  /*
-   * FIXME: Upgrade mail system
-   *
-  if(!DvtSendMail(to_addrs,cc_addrs,bcc_addrs,edit_from_address,
-		  edit_reply_address,edit_subject_edit->text(),
-		  edit_body_edit->toPlainText())) {
-    QMessageBox::warning(this,"Davit - Compose Mail",
-		   tr("Mailer system returned an error, message not sent!"));
+  if(!DvtSendMail(&err_msg,
+		  edit_subject_edit->text(),
+		  edit_body_edit->toPlainText(),
+		  edit_from_address,
+		  to_addrs,
+		  cc_addrs,
+		  bcc_addrs,
+		  false)) {
+    QMessageBox::warning(this,"Davit - "+tr("Compose Mail"),
+			 tr("Mailer system returned an error.")+"\n"+
+			 err_msg);
     return;
   }
-  */
-  done(0);
+  done(true);
 }
 
 
 void MailDialog::cancelData()
 {
-  done(-1);
+  done(false);
 }
 
 

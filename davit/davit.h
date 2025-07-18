@@ -27,6 +27,7 @@
 #include <QStringList>
 #include <QWidget>
 
+#include "edit_system.h"
 #include "list_affiliates.h"
 #include "list_networks.h"
 #include "list_programs.h"
@@ -71,6 +72,7 @@ class MainWidget : public QWidget
   ListNetworks *d_networks_dialog;
   ListProviders *d_providers_dialog;
   ListReports *d_reports_dialog;
+  EditSystem *d_system_dialog;
 };
 
 

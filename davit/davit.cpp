@@ -46,7 +46,6 @@
 #include "globals.h"
 #include "list_providers.h"
 #include "list_reports.h"
-#include "edit_system.h"
 
 //
 // Global Classes
@@ -216,7 +215,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Create Dialogs
   //
-  mail_dialog=new MailDialog(this);
+  mail_dialog=new MailDialog(config,this);
   d_reports_dialog=new ListReports(config,this);
   connect(global_viewer_list,SIGNAL(reportStartupComplete()),
 	  d_reports_dialog,SLOT(clearBusyCursor()));
@@ -224,6 +223,7 @@ MainWidget::MainWidget(QWidget *parent)
   d_affiliates_dialog=new ListAffiliates(config,this);
   d_networks_dialog=new ListNetworks(config,this);
   d_providers_dialog=new ListProviders(config,this);
+  d_system_dialog=new EditSystem(config,this);
 
   //
   // Title
@@ -299,7 +299,7 @@ MainWidget::MainWidget(QWidget *parent)
   button=new QPushButton(this);
   button->setGeometry(150,190,120,60);
   button->setFont(font);
-  button->setText(tr("Manage System\nSettings"));
+  button->setText(tr("Manage System")+"\n"+tr("E-Mail Settings"));
   button->setEnabled(global_dvtuser->privilege(DvtUser::PrivAdmin));
   connect(button,SIGNAL(clicked()),this,SLOT(manageSystemData()));
 
@@ -347,11 +347,9 @@ void MainWidget::manageUsersData()
 
 void MainWidget::manageSystemData()
 {
-  EditSystem *list=new EditSystem(this);
-  if(list->exec()==0) {
+  if(d_system_dialog->exec()) {
     global_dvtsystem->load();
   }
-  delete list;
 }
 
 

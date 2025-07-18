@@ -929,3 +929,5 @@
 	* Fixed a regression in the 'Edit Affiliate' dialog that caused
 	the 'Hide Affiliate History' button to fail to be updated if the
 	'Affiliate History' dialog was closed by clicking the 'X' button'.
+2025-07-18 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored the 'Edit System' and 'Compose Mail' dialogs in davit(1).

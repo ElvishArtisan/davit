@@ -22,19 +22,20 @@
 #ifndef MAILDIALOG_H
 #define MAILDIALOG_H
 
-#include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QTextEdit>
 
-#include <contact.h>
+#include <dvtdialog.h>
 
-class MailDialog : public QDialog
+#include "contact.h"
+
+class MailDialog : public DvtDialog
 {
  Q_OBJECT
  public:
-  MailDialog(QWidget *parent=0);
+  MailDialog(DvtConfig *c,QWidget *parent=0);
   ~MailDialog();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -45,6 +46,7 @@ class MailDialog : public QDialog
 	   const QString &reply_addr,const QString &subj,const QString &msg);
 
  private slots:
+  void addressChangedData();
   void sendData();
   void cancelData();
 

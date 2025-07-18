@@ -20,48 +20,41 @@
 
 #include <QMessageBox>
 #include <QPainter>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
 #include <dvtconf.h>
+#include <dvtdb.h>
 
 #include "edit_system.h"
 #include "globals.h"
 
-EditSystem::EditSystem(QWidget *parent)
-  : QDialog(parent)
+EditSystem::EditSystem(DvtConfig *c,QWidget *parent)
+  : DvtDialog(c,parent)
 {
   setModal(true);
-  setWindowTitle(tr("Davit -- Edit System Settings"));
+  setWindowTitle("Davit - "+tr("Edit System E-Mail Settings"));
 
   //
   // Fix the Window Size
   //
-  setMinimumWidth(sizeHint().width());
-  setMinimumHeight(sizeHint().height());
-
-  //
-  // Generate Fonts
-  //
-  QFont label_font("helvetica",12,QFont::Bold);
-  label_font.setPixelSize(12);
+  setMinimumSize(sizeHint());
 
   //
   // SMTP Settings
   //
-  edit_smtp_label=new QLabel(tr("SMTP Server Settings"),this);
-  edit_smtp_label->setFont(label_font);
-  edit_smtp_label->setAlignment(Qt::AlignCenter);
-  edit_smtp_hostname_edit=new QLineEdit(this);
+  edit_smtp_group=new QGroupBox(tr("SMTP Server Settings"),this);
+  edit_smtp_group->setFont(labelFont());
+  edit_smtp_hostname_edit=new QLineEdit(edit_smtp_group);
+  edit_smtp_hostname_edit->setFont(defaultFont());
   edit_smtp_hostname_edit->setMaxLength(255);
-  edit_smtp_hostname_label=new QLabel("Hostname:",this);
-  edit_smtp_hostname_label->setFont(label_font);
+  edit_smtp_hostname_label=new QLabel(tr("Hostname")+":",edit_smtp_group);
+  edit_smtp_hostname_label->setFont(labelFont());
   edit_smtp_hostname_label->setAlignment(Qt::AlignLeft);
   
-  edit_smtp_port_spin=new QSpinBox(this);
+  edit_smtp_port_spin=new QSpinBox(edit_smtp_group);
+  edit_smtp_port_spin->setFont(defaultFont());
   edit_smtp_port_spin->setRange(0,0xFFFF);
-  edit_smtp_port_label=new QLabel("Port:",this);
-  edit_smtp_port_label->setFont(label_font);
+  edit_smtp_port_label=new QLabel("Port:",edit_smtp_group);
+  edit_smtp_port_label->setFont(labelFont());
   edit_smtp_port_label->setAlignment(Qt::AlignLeft);
 
   //
@@ -69,8 +62,8 @@ EditSystem::EditSystem(QWidget *parent)
   //
   edit_origin_email_edit=new QLineEdit(this);
   edit_origin_email_edit->setMaxLength(64);
-  edit_origin_email_label=new QLabel("Originating E-Mail Address:",this);
-  edit_origin_email_label->setFont(label_font);
+  edit_origin_email_label=new QLabel(tr("Originating E-Mail Address")+":",this);
+  edit_origin_email_label->setFont(labelFont());
   edit_origin_email_label->setAlignment(Qt::AlignLeft);
 
   //
@@ -78,8 +71,8 @@ EditSystem::EditSystem(QWidget *parent)
   //
   edit_alert_email_edit=new QLineEdit(this);
   edit_alert_email_edit->setMaxLength(64);
-  edit_alert_email_label=new QLabel("Alert E-Mail Address:",this);
-  edit_alert_email_label->setFont(label_font);
+  edit_alert_email_label=new QLabel(tr("Alert E-Mail Address")+":",this);
+  edit_alert_email_label->setFont(labelFont());
   edit_alert_email_label->setAlignment(Qt::AlignLeft);
 
   //
@@ -88,56 +81,46 @@ EditSystem::EditSystem(QWidget *parent)
   edit_affidavit_subject_edit=new QLineEdit(this);
   edit_affidavit_subject_edit->setMaxLength(64);
   edit_affidavit_subject_label=
-    new QLabel("Affidavit E-Mail Subject Line:",this);
-  edit_affidavit_subject_label->setFont(label_font);
+    new QLabel(tr("Affidavit E-Mail Subject Line")+":",this);
+  edit_affidavit_subject_label->setFont(labelFont());
   edit_affidavit_subject_label->setAlignment(Qt::AlignLeft);
 
   //
   // Affidavit E-Mail Template
   //
   edit_affidavit_template_edit=new QTextEdit(this);
-  edit_affidavit_template_label=new QLabel("Affidavit E-Mail Template",this);
-  edit_affidavit_template_label->setFont(label_font);
+  edit_affidavit_template_label=
+    new QLabel(tr("Affidavit E-Mail Template"),this);
+  edit_affidavit_template_label->setFont(labelFont());
   edit_affidavit_template_label->setAlignment(Qt::AlignLeft);
 
   //
   // Wildcard Key
   //
-  edit_key_label=new QLabel("%S - Station Call Letters\n%U - Web Login Username\n%P - Web Login Password",this);
+  edit_key_label=new QLabel("%S - "+tr("Station Call Letters")+"\n%U - "+
+			    tr("Web Login Username")+"\n%P - "+
+			    tr("Web Login Password"),this);
 
   //
   // Test Button
   //
-  edit_test_button=new QPushButton(tr("Send Test"),this);
-  edit_test_button->setFont(label_font);
+  edit_test_button=new QPushButton(tr("Send Test E-Mail"),this);
+  edit_test_button->setFont(buttonFont());
   connect(edit_test_button,SIGNAL(clicked()),this,SLOT(testData()));
 
   //
   // Ok Button
   //
   edit_ok_button=new QPushButton(tr("OK"),this);
-  edit_ok_button->setFont(label_font);
+  edit_ok_button->setFont(buttonFont());
   connect(edit_ok_button,SIGNAL(clicked()),this,SLOT(okData()));
 
   //
   // Cancel Button
   //
   edit_cancel_button=new QPushButton(tr("Cancel"),this);
-  edit_cancel_button->setFont(label_font);
+  edit_cancel_button->setFont(buttonFont());
   connect(edit_cancel_button,SIGNAL(clicked()),this,SLOT(cancelData()));
-
-  QString sql="select ORIGIN_EMAIL,ALERT_EMAIL,AFFIDAVIT_EMAIL_SUBJECT,\
-               AFFIDAVIT_EMAIL_TEMPLATE,SMTP_HOSTNAME,SMTP_PORT from SYSTEM";
-  QSqlQuery *q=new QSqlQuery(sql);
-  if(q->first()) {
-    edit_origin_email_edit->setText(q->value(0).toString());
-    edit_alert_email_edit->setText(q->value(1).toString());
-    edit_affidavit_subject_edit->setText(q->value(2).toString());
-    edit_affidavit_template_edit->setText(q->value(3).toString());
-    edit_smtp_hostname_edit->setText(q->value(4).toString());
-    edit_smtp_port_spin->setValue(q->value(5).toInt());
-  }
-  delete q;  
 }
 
 
@@ -158,20 +141,43 @@ QSizePolicy EditSystem::sizePolicy() const
 }
 
 
+int EditSystem::exec()
+{
+  QString sql=QString("select ")+
+    "`ORIGIN_EMAIL`,"+              // 00
+    "`ALERT_EMAIL`,"+               // 01
+    "`AFFIDAVIT_EMAIL_SUBJECT`,"+   // 02
+    "`AFFIDAVIT_EMAIL_TEMPLATE`,"+  // 03
+    "`SMTP_HOSTNAME`,"+             // 04
+    "`SMTP_PORT` "+                 // 05
+    "from `SYSTEM`";
+  DvtSqlQuery *q=new DvtSqlQuery(sql);
+  if(q->first()) {
+    edit_origin_email_edit->setText(q->value(0).toString());
+    edit_alert_email_edit->setText(q->value(1).toString());
+    edit_affidavit_subject_edit->setText(q->value(2).toString());
+    edit_affidavit_template_edit->setText(q->value(3).toString());
+    edit_smtp_hostname_edit->setText(q->value(4).toString());
+    edit_smtp_port_spin->setValue(q->value(5).toInt());
+  }
+  delete q;  
+
+  return QDialog::exec();
+}
+
+
 void EditSystem::testData()
 {
-  /*
-  mail_dialog->exec("","","",edit_origin_email_edit->text(),
+  mail_dialog->exec(QStringList(),QStringList(),QStringList(),
+		    edit_origin_email_edit->text(),
 		    edit_origin_email_edit->text(),"Test message",
 		    "This is a test!");
-  */
 }
 
 
 void EditSystem::okData()
 {
   QString sql;
-  QSqlQuery *q;
 
   if(!DvtIsEmailAddress(edit_origin_email_edit->text())) {
     QMessageBox::warning(this,"Davit - Edit System",
@@ -179,71 +185,55 @@ void EditSystem::okData()
     return;
   }
 
-  sql=QString::asprintf("update SYSTEM set ORIGIN_EMAIL=\"%s\",\
-             ALERT_EMAIL=\"%s\",\
-             AFFIDAVIT_EMAIL_SUBJECT=\"%s\",\
-             AFFIDAVIT_EMAIL_TEMPLATE=\"%s\",\
-             SMTP_HOSTNAME=\"%s\",\
-             SMTP_PORT=%d",
-	    DvtEscapeString(edit_origin_email_edit->text()).
-	    toUtf8().constData(),
-	    DvtEscapeString(edit_alert_email_edit->text()).toUtf8().constData(),
-	    DvtEscapeString(edit_affidavit_subject_edit->text()).
-	    toUtf8().constData(),
-	    DvtEscapeString(edit_affidavit_template_edit->toPlainText()).
-	    toUtf8().constData(),
-	    DvtEscapeString(edit_smtp_hostname_edit->text()).
-	    toUtf8().constData(),
-	    edit_smtp_port_spin->value());
-  q=new QSqlQuery(sql);
-  delete q;
+  sql=QString("update `SYSTEM` set ")+
+    "`ORIGIN_EMAIL`="+DvtSqlQuery::escape(edit_origin_email_edit->text())+","+
+    "`ALERT_EMAIL`="+DvtSqlQuery::escape(edit_alert_email_edit->text())+","+
+    "`AFFIDAVIT_EMAIL_SUBJECT`="+
+    DvtSqlQuery::escape(edit_affidavit_subject_edit->text())+","+
+    "`AFFIDAVIT_EMAIL_TEMPLATE`="+
+    DvtSqlQuery::escape(edit_affidavit_template_edit->toPlainText())+","+
+    "`SMTP_HOSTNAME`="+DvtSqlQuery::escape(edit_smtp_hostname_edit->text())+","+
+    QString::asprintf("`SMTP_PORT`=%d ",edit_smtp_port_spin->value());
+  DvtSqlQuery::apply(sql);
 
-  done(0);
+  done(true);
 }
 
 
 void EditSystem::cancelData()
 {
-  done(-1);
-}
-
-
-void EditSystem::paintEvent(QPaintEvent *e)
-{
-  /*
-  QPainter *p=new QPainter(this);
-  p->setPen(Qt::black);
-  p->setBrush(Qt::black);
-  p->moveTo(10,15);
-  p->lineTo(size().width()-10,15);
-  p->lineTo(size().width()-10,49);
-  p->lineTo(10,49);
-  p->lineTo(10,15);
-
-  delete p;
-  */
+  done(false);
 }
 
 
 void EditSystem::resizeEvent(QResizeEvent *e)
 {
-  edit_smtp_label->setGeometry(15,5,130,20);
-  edit_smtp_hostname_label->setGeometry(20,25,65,20);
-  edit_smtp_hostname_edit->setGeometry(90,25,size().width()-230,20);
-  edit_smtp_port_label->setGeometry(size().width()-115,25,30,20);
-  edit_smtp_port_spin->setGeometry(size().width()-80,25,60,20);
+  int w=size().width();
+  int h=size().height();
 
-  edit_origin_email_label->setGeometry(15,50,size().width()-25,18);
-  edit_origin_email_edit->setGeometry(10,70,size().width()-20,20);
-  edit_alert_email_label->setGeometry(15,97,size().width()-25,18);
-  edit_alert_email_edit->setGeometry(10,117,size().width()-20,20);
-  edit_affidavit_subject_label->setGeometry(15,144,size().width()-25,18);
-  edit_affidavit_subject_edit->setGeometry(10,162,size().width()-20,20);
-  edit_affidavit_template_label->setGeometry(15,192,size().width()-25,18);
-  edit_affidavit_template_edit->
-    setGeometry(10,210,size().width()-20,size().height()-272);
-  edit_key_label->setGeometry(25,size().height()-60,size().width()-145,60);
-  edit_test_button->setGeometry(size().width()-250,size().height()-35,80,30);
-  edit_ok_button->setGeometry(size().width()-120,size().height()-35,50,30);
-  edit_cancel_button->setGeometry(size().width()-60,size().height()-35,50,30);
+  edit_smtp_group->setGeometry(15,5,w-30,46);
+  edit_smtp_hostname_label->setGeometry(10,27,65,20);
+  edit_smtp_hostname_edit->setGeometry(80,22,w-250,20);
+  edit_smtp_port_label->setGeometry(w-135,27,30,20);
+  edit_smtp_port_spin->setGeometry(w-100,22,60,20);
+
+  edit_origin_email_label->setGeometry(15,60,w-25,18);
+  edit_origin_email_edit->setGeometry(10,75,w-20,20);
+  edit_alert_email_label->setGeometry(15,107,w-25,18);
+  edit_alert_email_edit->setGeometry(10,122,w-20,20);
+  edit_affidavit_subject_label->setGeometry(15,154,w-25,18);
+  edit_affidavit_subject_edit->setGeometry(10,167,w-20,20);
+  edit_affidavit_template_label->setGeometry(15,202,w-25,18);
+  edit_affidavit_template_edit->setGeometry(10,215,w-20,h-282);
+
+  edit_key_label->setGeometry(25,h-60,w-145,60);
+  edit_test_button->setGeometry(w-310,h-40,150,30);
+  edit_ok_button->setGeometry(w-140,h-40,60,30);
+  edit_cancel_button->setGeometry(w-70,h-40,60,30);
+}
+
+
+void EditSystem::closeEvent(QCloseEvent *e)
+{
+  cancelData();
 }

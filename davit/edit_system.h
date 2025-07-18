@@ -21,23 +21,27 @@
 #ifndef EDIT_SYSTEM_H
 #define EDIT_SYSTEM_H
 
-#include <QDialog>
+#include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QTextEdit>
 
+#include <dvtdialog.h>
 #include <dvtuser.h>
 
-class EditSystem : public QDialog
+class EditSystem : public DvtDialog
 {
  Q_OBJECT
  public:
-  EditSystem(QWidget *parent=0);
+  EditSystem(DvtConfig *c,QWidget *parent=0);
   ~EditSystem();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+
+ public slots:
+  int exec();
 
  private slots:
   void testData();
@@ -45,11 +49,11 @@ class EditSystem : public QDialog
   void cancelData();
 
  protected:
-  void paintEvent(QPaintEvent *e);
   void resizeEvent(QResizeEvent *e);
+  void closeEvent(QCloseEvent *e);
 
  private:
-  QLabel *edit_smtp_label;
+  QGroupBox *edit_smtp_group;
   QLabel *edit_smtp_hostname_label;
   QLineEdit *edit_smtp_hostname_edit;
   QLabel *edit_smtp_port_label;

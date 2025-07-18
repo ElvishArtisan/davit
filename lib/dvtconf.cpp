@@ -1107,7 +1107,7 @@ bool DvtNormalizeAddresses(QString str,QStringList *list)
 {
   str.replace("\n",";");
   str.replace(",",";");
-  *list=str.split(";");
+  *list=str.split(";",Qt::SkipEmptyParts);
   for(int i=0;i<list->size();i++) {
     if(!DvtIsFullEmailAddress((*list)[i])) { 
       return false;
