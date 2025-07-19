@@ -34,6 +34,7 @@
 
 #include <dvt.h>
 #include <dvtconf.h>
+#include <dvtdb.h>
 #include <dvtimport.h>
 
 #include "dvtstamp.h"
@@ -42,7 +43,7 @@ MainObject::MainObject(QObject *parent)
   :QObject(parent)
 {
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   int date_offset=0;
   QDate for_date=QDate::currentDate();
   bool whole_month=false;
@@ -107,23 +108,17 @@ MainObject::MainObject(QObject *parent)
   //
   // Open Database
   //
-  /*
-  QSqlDatabase *db=QSqlDatabase::addDatabase(import_config->mysqlDbtype());
-  if(!db) {
-    fprintf(stderr,"rdimport: unable to initialize connection to database\n");
-    delete import_cmd;
-    exit(256);
-  }
-  db->setDatabaseName(import_config->mysqlDbname());
-  db->setUserName(import_config->mysqlUsername());
-  db->setPassword(import_config->mysqlPassword());
-  db->setHostName(import_config->mysqlHostname());
-  if(!db->open()) {
+  QSqlDatabase db=QSqlDatabase::addDatabase(import_config->mysqlDbtype());
+  db.setDatabaseName(import_config->mysqlDbname());
+  db.setUserName(import_config->mysqlUsername());
+  db.setPassword(import_config->mysqlPassword());
+  db.setHostName(import_config->mysqlHostname());
+  if(!db.open()) {
     fprintf(stderr,"dvtstamp: unable to connect to database\n");
-    db->removeDatabase(import_config->mysqlDbname());
+    db.removeDatabase(import_config->mysqlDbname());
     exit(256);
   }
-  */
+
   //
   // Generate Date Structures
   //
@@ -139,8 +134,11 @@ MainObject::MainObject(QObject *parent)
     for(int i=0;i<for_date.daysInMonth();i++) {
       date=QDate(for_date.year(),for_date.month(),i+1);
       if(affiliate_id<0) {
-	sql="select ID from AFFILIATES where AFFIDAVIT_ACTIVE=\"Y\"";
-	q=new QSqlQuery(sql);
+	sql=QString("select ")+
+	  "`ID` "+  // 00
+	  "from `AFFILIATES` where "+
+	  "`AFFIDAVIT_ACTIVE`='Y'";
+	q=new DvtSqlQuery(sql);
 	while(q->next()) {
 	  GenerateSchedule(q->value(0).toInt(),date);
 	}
@@ -153,8 +151,11 @@ MainObject::MainObject(QObject *parent)
   }
   else {
     if(affiliate_id<0) {
-      sql="select ID from AFFILIATES where AFFIDAVIT_ACTIVE=\"Y\"";
-      q=new QSqlQuery(sql);
+      sql=QString("select ")+
+	"`ID` "+  // 00
+	"from `AFFILIATES` where "+
+	"`AFFIDAVIT_ACTIVE`='Y'";
+      q=new DvtSqlQuery(sql);
       while(q->next()) {
 	GenerateSchedule(q->value(0).toInt(),for_date);
       }
@@ -177,32 +178,28 @@ MainObject::MainObject(QObject *parent)
 void MainObject::GenerateSchedule(int affiliate_id,const QDate &date)
 {
   QString sql;
-  QSqlQuery *q;
-  QSqlQuery *q1;
+  DvtSqlQuery *q;
   QString dow_field="AIR_"+date.toString("ddd").toUpper();
 
-  sql=QString::asprintf("select PROGRAM_ID,AIR_TIME,AIR_LENGTH from AIRINGS \
-                         where (AFFILIATE_ID=%d)&&(%s=\"Y\")",
-			affiliate_id,
-			dow_field.toUtf8().constData());
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`PROGRAM_ID`,"+  // 00
+    "`AIR_TIME`,"+    // 01
+    "`AIR_LENGTH` "+  // 02
+    "from `AIRINGS` where "+
+    QString::asprintf("(`AFFILIATE_ID`=%d)&&",affiliate_id)+
+    "(`"+dow_field+"`='Y')";
+  q=new DvtSqlQuery(sql);
   while(q->next()) {
-    sql=QString::asprintf("insert into AIRED set \
-                           AFFILIATE_ID=%d,\
-                           PROGRAM_ID=%d,\
-                           STATE=%d,\
-                           AIR_DATETIME=\"%s %s\",\
-                           AIR_LENGTH=%d,\
-                           STAMP_DATETIME=now()",
-			  affiliate_id,
-			  q->value(0).toInt(),
-			  Dvt::AiredStateScheduled,
-			  date.toString("yyyy-MM-dd").toUtf8().constData(),
-			  q->value(1).toTime().toString("hh:mm:ss").
-			  toUtf8().constData(),
-			  q->value(2).toInt());
-    q1=new QSqlQuery(sql);
-    delete q1;
+    sql=QString("insert into `AIRED` set ")+
+      QString::asprintf("`AFFILIATE_ID`=%d,",affiliate_id)+
+      QString::asprintf("`PROGRAM_ID`=%d,",q->value(0).toInt())+
+      QString::asprintf("`STATE`=%d,",Dvt::AiredStateScheduled)+
+      "`AIR_DATETIME`="+
+      DvtSqlQuery::escape(date.toString("yyyy-MM-dd")+" "+
+			  q->value(1).toTime().toString("hh:mm:ss"))+","+
+      QString::asprintf("`AIR_LENGTH`=%d,",q->value(2).toInt())+
+      "`STAMP_DATETIME`=now()";
+    DvtSqlQuery::apply(sql);
   }
   delete q;
 }
