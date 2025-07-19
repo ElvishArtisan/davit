@@ -62,16 +62,16 @@ EditSystem::EditSystem(DvtConfig *c,QWidget *parent)
   //
   edit_origin_email_edit=new QLineEdit(this);
   edit_origin_email_edit->setMaxLength(64);
-  edit_origin_email_label=new QLabel(tr("Originating E-Mail Address")+":",this);
+  edit_origin_email_label=new QLabel(tr("Originating E-Mail Address"),this);
   edit_origin_email_label->setFont(labelFont());
   edit_origin_email_label->setAlignment(Qt::AlignLeft);
 
   //
-  // Alert Email Address
+  // Archive Email Address
   //
   edit_alert_email_edit=new QLineEdit(this);
   edit_alert_email_edit->setMaxLength(64);
-  edit_alert_email_label=new QLabel(tr("Alert E-Mail Address")+":",this);
+  edit_alert_email_label=new QLabel(tr("Archive E-Mail Address"),this);
   edit_alert_email_label->setFont(labelFont());
   edit_alert_email_label->setAlignment(Qt::AlignLeft);
 
@@ -81,7 +81,7 @@ EditSystem::EditSystem(DvtConfig *c,QWidget *parent)
   edit_affidavit_subject_edit=new QLineEdit(this);
   edit_affidavit_subject_edit->setMaxLength(64);
   edit_affidavit_subject_label=
-    new QLabel(tr("Affidavit E-Mail Subject Line")+":",this);
+    new QLabel(tr("Affidavit E-Mail Subject Line"),this);
   edit_affidavit_subject_label->setFont(labelFont());
   edit_affidavit_subject_label->setAlignment(Qt::AlignLeft);
 
@@ -222,7 +222,7 @@ void EditSystem::resizeEvent(QResizeEvent *e)
   edit_alert_email_label->setGeometry(15,107,w-25,18);
   edit_alert_email_edit->setGeometry(10,122,w-20,20);
   edit_affidavit_subject_label->setGeometry(15,154,w-25,18);
-  edit_affidavit_subject_edit->setGeometry(10,167,w-20,20);
+  edit_affidavit_subject_edit->setGeometry(10,169,w-20,20);
   edit_affidavit_template_label->setGeometry(15,202,w-25,18);
   edit_affidavit_template_edit->setGeometry(10,215,w-20,h-282);
 

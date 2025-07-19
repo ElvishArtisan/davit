@@ -933,3 +933,6 @@
 	* Refactored the 'Edit System' and 'Compose Mail' dialogs in davit(1).
 2025-07-19 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored dvtstamp(8).
+2025-07-19 Fred Gleason <fredg@paravelsystems.com>
+	* Changed 'Alert E-Mail Address' to 'Archive E-Mail Address' in
+	the 'Edit System E-Mail Settings' dialog in davit(1).
