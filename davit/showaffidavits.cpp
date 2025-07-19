@@ -20,6 +20,7 @@
 
 #include <QDateTime>
 #include <QHeaderView>
+#include <QMessageBox>
 
 #include <dvtconf.h>
 #include <dvtdb.h>
@@ -129,10 +130,31 @@ void ShowAffidavits::mailClickedData()
   //
   // Load System Values
   //
-  QString origin_email=global_dvtsystem->originEmail();
-  QString affidavit_email_subject=global_dvtsystem->affidavitEmailSubject();
-  QString affidavit_email_template=global_dvtsystem->affidavitEmailTemplate();
+  sql=QString("select ")+
+    "`ORIGIN_EMAIL`,"+             // 00
+    "`ALERT_EMAIL`,"+              // 01
+    "`AFFIDAVIT_EMAIL_SUBJECT`,"+  // 02
+    "`AFFIDAVIT_EMAIL_TEMPLATE` "+  // 03
+    "from `SYSTEM`";
+  q=new DvtSqlQuery(sql);
+  if(!q->first()) {
+    QMessageBox::critical(this,"Davit - "+tr("Error"),
+			  tr("Unable to load system e-mail settings."));
+    delete q;
+    return;
+  }
+  QString origin_email=q->value(0).toString();
+  QStringList bcc_addrs;
+  if(!q->value(1).toString().isEmpty()) {
+    bcc_addrs.push_back(q->value(1).toString());
+  }
+  QString affidavit_email_subject=q->value(2).toString();
+  QString affidavit_email_template=q->value(3).toString();
+  delete q;
 
+  //
+  // Compose E-Mail Body
+  //
   sql=QString("select ")+
     "`STATION_CALL`,"+   // 00
     "`STATION_TYPE`,"+   // 01
@@ -153,11 +175,14 @@ void ShowAffidavits::mailClickedData()
   }
   delete q;
 
+  //
+  // Compose Addresses
+  //
   sql=QString("select ")+
     "`NAME`,"+   // 00
     "`EMAIL` "+  // 01
     "from `CONTACTS` where "+
-    QString::asprintf("`(AFFILIATE_ID`=%d)&&(`AFFIDAVIT`='Y')",show_id);
+    QString::asprintf("(`AFFILIATE_ID`=%d)&&(`AFFIDAVIT`='Y')",show_id);
   q=new QSqlQuery(sql);
   while(q->next()) {
     to_addrs.push_back(DvtFormatEmailAddress(q->value(0).toString(),
@@ -165,13 +190,16 @@ void ShowAffidavits::mailClickedData()
   }
   delete q;
 
-  if(mail_dialog->exec(to_addrs,QStringList(),QStringList(),
+  //
+  // Send Message
+  //
+  if(mail_dialog->exec(to_addrs,QStringList(),bcc_addrs,
 		       origin_email,global_dvtuser->email(),
 		       affidavit_email_subject,
-		       affidavit_email_template)==0) {
+		       affidavit_email_template)) {
     sql=QString("insert into ")+
       "`AFFILIATE_REMARKS` set "+
-      QString::asprintf("`EVENT_TYPE=%d,",Dvt::RemarkAffidavitReminder)+
+      QString::asprintf("`EVENT_TYPE`=%d,",Dvt::RemarkAffidavitReminder)+
       QString::asprintf("`AFFILIATE_ID`=%d,",show_id)+
       "`REMARK_DATETIME`=now(),"+
       "`USER_NAME`="+DvtSqlQuery::escape(global_dvtuser->name())+","+

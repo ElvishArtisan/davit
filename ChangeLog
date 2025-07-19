@@ -936,3 +936,6 @@
 2025-07-19 Fred Gleason <fredg@paravelsystems.com>
 	* Changed 'Alert E-Mail Address' to 'Archive E-Mail Address' in
 	the 'Edit System E-Mail Settings' dialog in davit(1).
+2025-07-19 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression that broke generation of affiliate affidavit
+	reminder emails.
