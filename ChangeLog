@@ -939,3 +939,6 @@
 2025-07-19 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression that broke generation of affiliate affidavit
 	reminder emails.
+2025-07-19 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'ID' column to the affiliate listing in the 'List
+	Affiliates' dialog in davit(1).

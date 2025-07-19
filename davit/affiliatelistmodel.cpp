@@ -37,7 +37,7 @@ AffiliateListModel::AffiliateListModel(QObject *parent)
   //
   unsigned left=Qt::AlignLeft|Qt::AlignVCenter;
   //  unsigned center=Qt::AlignCenter;
-  //  unsigned right=Qt::AlignRight|Qt::AlignVCenter;
+  unsigned right=Qt::AlignRight|Qt::AlignVCenter;
 
   d_headers.push_back(tr("Call"));
   d_alignments.push_back(left);
@@ -53,6 +53,9 @@ AffiliateListModel::AffiliateListModel(QObject *parent)
 
   d_headers.push_back(tr("Business Name"));
   d_alignments.push_back(left);
+
+  d_headers.push_back(tr("ID"));
+  d_alignments.push_back(right);
 }
 
 
@@ -353,13 +356,16 @@ void AffiliateListModel::updateRow(int row,DvtSqlQuery *q)
     else {
       texts.push_back(tr("Internet"));
     }
-  }    
+  }
 
   // DMA
   texts.push_back(q->value(7));
 
   // Business Name
   texts.push_back(q->value(6));
+
+  // Affiliate ID
+  texts.push_back(QString::asprintf("%d",q->value(0).toInt()));
 
   d_texts[row]=texts;
 }
