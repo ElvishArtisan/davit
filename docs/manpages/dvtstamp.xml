@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<refentry id="stdin" xmlns="http://docbook.org/ns/docbook" version="5.0">
+  <!--
+      Header
+  -->
+  <refmeta>
+    <refentrytitle>dvtstamp</refentrytitle>
+    <manvolnum>8</manvolnum>
+    <refmiscinfo class='source'>July 2025</refmiscinfo>
+    <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
+  </refmeta>
+  <refnamediv>
+    <refname>dvtstamp</refname>
+    <refpurpose>
+      Manage Davit affiliate airing records
+    </refpurpose>
+  </refnamediv>
+  <info>
+    <author>
+      <personname>
+	<firstname>Fred</firstname>
+	<surname>Gleason</surname>
+	<email>fredg@paravelsystems.com</email>
+      </personname>
+      <contrib>Application Author</contrib>
+    </author>
+  </info>
+
+  <!--
+      Body
+  -->
+  <refsynopsisdiv id='synopsis'>
+    <cmdsynopsis>
+      <command>dvtstamp</command>
+      <arg choice='req'><replaceable>command</replaceable></arg>
+      <arg choice='opt'>--date-offset=<replaceable>days</replaceable></arg>
+      <arg choice='opt'>--for-date=<replaceable>date</replaceable></arg>
+      <arg choice='opt'>--affiliate-id=<replaceable>id</replaceable></arg>
+      <sbr/>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1 id='description'><title>Description</title>
+  <para>
+    <command>dvtstamp</command><manvolnum>8</manvolnum> is a command-line
+    utility that can be used to manage affiliate airing records. It is part
+    of the Davit affiliate management system.
+  </para>
+  <para>
+    Each invocation of <command>dvtstamp</command><manvolnum>8</manvolnum>
+    consists of a command string that indicates the type of action to be
+    performed, followed by zero or more filter attributes that restrict
+    the set of affiliate records to which the command applies.
+  </para>
+  </refsect1>
+
+  <refsect1 id='commands'><title>Commands</title>
+  <para>
+    The following commands can be given:
+  </para>
+  <variablelist>
+    <varlistentry>
+      <term><command>--clear</command></term>
+      <listitem>
+	<para>
+	  Clear the existing airing records for the set of affiliate(s)
+	  and date(s) indicated by the filtering settings. This will have
+	  the effect of removing any affiliate affidavit certifications that
+	  may have been created for those records. Requires root permissions.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><command>--create</command></term>
+      <listitem>
+	<para>
+	  Create a new set of airing records for the set of affiliate(s) and
+	  date(s) indicated by the filtering settings. Requires root
+	  permissions.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><command>--delete</command></term>
+      <listitem>
+	<para>
+	  Delete a set of airing records for the set of affiliate(s) and
+	  date(s) indicated by the filtering settings. Requires root
+	  permissions.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><command>--list</command></term>
+      <listitem>
+	<para>
+	  Print a list of airing entries. This is the default.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+  </refsect1>
+
+  <refsect1 id='filter_settings'><title>Filter Settings</title>
+  <para>
+    The following options can be used to specify the set of affiliate(s)
+    and date(s) affected by a command. If no filter options are specified,
+    then the command will effect <emphasis>all</emphasis> affiliates on the
+    current date.
+  </para>
+  <variablelist>
+    <varlistentry>
+      <term>
+	<command>--date-offset=</command><replaceable>days</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  Add <replaceable>days</replaceable> to the current date to apply
+	  to the specified command. The default value is
+	  <userinput>0</userinput>.
+	</para>
+	<para>
+	  Use of this option is mutually exclusive with
+	  <command>--for-date</command>.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term>
+	<command>--for-date=</command><replaceable>date</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  Use the absolute date <replaceable>date</replaceable> [format
+	  <replaceable>YYYY</replaceable>-<replaceable>MM</replaceable>-<replaceable>DD</replaceable>]
+	  to apply to the specified
+	  command. If the day part of the date is omitted [format
+	  <replaceable>YYYY</replaceable>-<replaceable>MM</replaceable>] then
+	  records for the entire month will be applied. Default is to use the
+	  current date (&quot;today&quot;).
+	</para>
+	<para>
+	  Use of this option is mutually exclusive with
+	  <command>--date-offset</command>.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term>
+	<command>--for-affiliate-id=</command><replaceable>id</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  Apply the specified command only to the affiliate with the
+	  unique numerical ID <replaceable>id</replaceable>. Default is to
+	  apply the command to <emphasis>all</emphasis> active affiliates.
+	  This option may be given multiple times.
+	</para>
+	<para>
+	  NOTE: The numerical ID off an affiliate can be found in the
+	  <computeroutput>ID</computeroutput> column on the
+	  <computeroutput>List Affiliates</computeroutput> list in
+	  <command>davit</command><manvolnum>1</manvolnum>.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+  </refsect1>
+
+  <refsect1 id='miscellaneous_options'><title>Miscellaneous Options</title>
+  <variablelist>
+    <varlistentry>
+      <term>
+	<command>--dry-run</command>
+      </term>
+      <listitem>
+	<para>
+	  Perform the specified command, but make no changes to the database.
+	  Instead, print the SQL statement(s) that would have been used to
+	  make the changes and then exit.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term>
+	<command>--use-numeric-ids</command>
+      </term>
+      <listitem>
+	<para>
+	  Display numeric IDs rather than text labels for affiliates and
+	  programs.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+  </refsect1>
+  
+  <refsect1 id='see_also'><title>See Also</title>
+  <para>
+    <citerefentry>
+      <refentrytitle>davit</refentrytitle><manvolnum>1</manvolnum>
+    </citerefentry>
+  </para>
+  </refsect1>
+</refentry>
+

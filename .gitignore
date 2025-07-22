@@ -1,9 +1,14 @@
 *~
+*.1
+*.5
+*.8
 *.a
 *.cgi
+*.html
 *.la
 *.lo
 *.o
+*.pdf
 *.spec
 .deps
 .libs

@@ -30,7 +30,7 @@ moc_%.cpp:	%.h
 lib_LTLIBRARIES = libdvt.la
 dist_libdvt_la_SOURCES = algocombobox.cpp algocombobox.h\
                          change_password.cpp change_password.h\
-                         dvt.h\
+                         dvt.h dvt.cpp\
                          dvtcmdswitch.cpp dvtcmdswitch.h\
                          dvtconf.cpp dvtconf.h\
                          dvtconfig.cpp dvtconfig.h\

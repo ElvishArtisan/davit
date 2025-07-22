@@ -18,6 +18,8 @@
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
 
+SUBDIRS = manpages
+
 EXTRA_DIST = env_var.txt\
              tables.txt
 

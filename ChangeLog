@@ -942,3 +942,7 @@
 2025-07-19 Fred Gleason <fredg@paravelsystems.com>
 	* Added an 'ID' column to the affiliate listing in the 'List
 	Affiliates' dialog in davit(1).
+2025-07-20 Fred Gleason <fredg@paravelsystems.com>
+	* Added '--clear', '--create', '--delete', '--list', '--dry-run' and
+	'--use-numeric-ids' switches to dvtstamp(8).
+	* Added a dvtstamp(8) man page.

@@ -2,7 +2,7 @@
 //
 // System-Wide Values for Davit.
 //
-//   (C) Copyright 2007 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -86,6 +86,7 @@ class Dvt
   enum AffidavitSortType {ByState=0,ByCount=1};
   enum ContactType {AffidavitContact=0,ProgramDirectorContact=1,
 		    GeneralManagerContact=2};
+  static QString airedStateText(AiredState state);
 };
 
 #endif  // DVT_H

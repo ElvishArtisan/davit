@@ -39,21 +39,8 @@ fi
 # Basic Compiler Checks
 #
 AC_PROG_CXX
-#AC_PROG_LIBTOOL
 AC_LANG(C++)
 LT_INIT
-
-# to avoid rpath usage :
-# http://wiki.debian.net/index.cgi?RpathIssue
-#case ${host} in
-#  *-pc-linux-gnu)
-#    AC_MSG_RESULT([Fixing libtool for -rpath problems.])
-#    sed < libtool > libtool-2 \
-#    's/^hardcode_libdir_flag_spec.*$/hardcode_libdir_flag_spec=" -D__LIBTOOL_IS_A_FOOL__ "/'
-#    mv libtool-2 libtool
-#    chmod 755 libtool
-#  ;;
-#esac
 
 #
 # Check for Qt
@@ -65,6 +52,15 @@ AQ_FIND_QT6(QT6,Core Gui Widgets Network Sql PrintSupport,[],[AC_MSG_ERROR([*** 
 #
 AC_CHECK_HEADER(vmime/vmime.hpp,[],[AC_MSG_ERROR([*** VMime not found, unable to continue ***])])
 AC_SUBST(VMIME_LIBS,`pkg-config --libs vmime`)
+
+#
+# DocBook
+#
+if test $DOCBOOK_STYLESHEETS ; then
+   ln -s $DOCBOOK_STYLESHEETS helpers/docbook
+else
+   AC_MSG_ERROR([*** Unable to find docbook5 stylesheets ***])
+fi
 
 #
 # Determine the target architecture
@@ -127,6 +123,7 @@ AC_CONFIG_FILES(Makefile \
   utils/vnc/davit.xinitrc \
   utils/vnc/start_davit.sh \
   conf/Makefile \
+  docs/manpages/Makefile \
   docs/Makefile \
   icons/Makefile \
   davit.spec \

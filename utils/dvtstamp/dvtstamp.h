@@ -24,8 +24,8 @@
 #include <list>
 
 #include <QObject>
-#include <QSqlDatabase>
 #include <QFileInfo>
+#include <QList>
 
 #include <dvtconfig.h>
 #include <dvtcmdswitch.h>
@@ -36,12 +36,29 @@ class MainObject : public QObject
 {
   Q_OBJECT;
  public:
+  enum Command {ListCommand=0,CreateCommand=1,DeleteCommand=2,ClearCommand=3,
+    LastCommand=4};
   MainObject(QObject *parent=0);
   DvtConfig *import_config;
   DvtCmdSwitch *import_cmd;
+  static QString commandText(Command cmd);
 
  private:
-  void GenerateSchedule(int affiliate_id,const QDate &date);
+  void Clear() const;
+  void Create() const;
+  void Delete() const;
+  void List() const;
+  void CreateSchedule(int affiliate_id,const QDate &date) const;
+  QString FilterSql(const QDate &date,int offset,bool whole_month,
+		    const QList<int> &affiliate_ids) const;
+  bool ApplySql(const QString &sql) const;
+  Command d_command;
+  QDate d_filter_for_date;
+  bool d_filter_whole_month;
+  int d_filter_date_offset;
+  bool d_use_numeric_ids;
+  bool d_dry_run;
+  QList<int> d_affiliate_ids;
 };
 
 
