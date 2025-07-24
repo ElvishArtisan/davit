@@ -30,3 +30,8 @@ Makefile
 Makefile.in
 moc_*
 missing
+davit/davit
+utils/dvtdbcheck/dvtdbcheck
+utils/dvtstamp/dvtstamp
+utils/vnc/davit.xinitrc
+utils/vnc/start_davit.sh
