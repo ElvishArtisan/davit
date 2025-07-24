@@ -50,8 +50,8 @@ AQ_FIND_QT6(QT6,Core Gui Widgets Network Sql PrintSupport,[],[AC_MSG_ERROR([*** 
 #
 # Check for VMime
 #
-AC_CHECK_HEADER(vmime/vmime.hpp,[],[AC_MSG_ERROR([*** VMime not found, unable to continue ***])])
-AC_SUBST(VMIME_LIBS,`pkg-config --libs vmime`)
+#AC_CHECK_HEADER(vmime/vmime.hpp,[],[AC_MSG_ERROR([*** VMime not found, unable to continue ***])])
+#AC_SUBST(VMIME_LIBS,`pkg-config --libs vmime`)
 
 #
 # DocBook

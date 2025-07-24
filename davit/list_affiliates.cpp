@@ -27,10 +27,6 @@
 #include <QResizeEvent>
 #include <QSqlQuery>
 
-#ifndef WIN32
-#include <vmime/vmime.hpp>
-#endif  // WIN32
-
 #include <dvtconf.h>
 #include <dvtconfig.h>
 //#include <dvtmail.h>

@@ -33,7 +33,7 @@ dist_dvtdbcheck_SOURCES = dvtdbcheck.cpp dvtdbcheck.h
 
 nodist_dvtdbcheck_SOURCES = moc_dvtdbcheck.cpp
 
-dvtdbcheck_LDADD =  -ldvt @VMIME_LIBS@ @QT6_LIBS@
+dvtdbcheck_LDADD =  -ldvt @QT6_LIBS@
 
 CLEANFILES = *~\
              *.idb\

@@ -18,12 +18,8 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef WIN32
-#include <vmime/vmime.hpp>
-#include <vmime/platforms/posix/posixHandler.hpp>
 #include <unistd.h>
 #include <sys/wait.h>
-#endif  // WIN32
 
 #include <signal.h>
 #include <sys/types.h>
@@ -84,13 +80,6 @@ MainWidget::MainWidget(QWidget *parent)
   QString sql;
   DvtSqlQuery *q;
   QString loginname;
-
-  //
-  // Initialize VMime
-  //
-#ifndef WIN32
-  vmime::platform::setHandler<vmime::platforms::posix::posixHandler>();
-#endif  // WIN32
 
   //
   // Fix the Window Size

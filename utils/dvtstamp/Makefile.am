@@ -31,7 +31,7 @@ sbin_PROGRAMS = dvtstamp
 
 dist_dvtstamp_SOURCES = dvtstamp.cpp dvtstamp.h
 nodist_dvtstamp_SOURCES = moc_dvtstamp.cpp
-dvtstamp_LDADD = -ldvt @VMIME_LIBS@ @QT6_LIBS@
+dvtstamp_LDADD = -ldvt @QT6_LIBS@
 
 EXTRA_DIST = dvtstamp.pro
 

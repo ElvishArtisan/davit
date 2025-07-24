@@ -134,7 +134,7 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_viewerprocess.cpp\
                        moc_viewerprocesslist.cpp
 
-davit_LDADD = -ldvt @VMIME_LIBS@ @QT6_LIBS@
+davit_LDADD = -ldvt @QT6_LIBS@
 
 EXTRA_DIST = davit.pro
 

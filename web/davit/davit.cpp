@@ -25,9 +25,6 @@
 #include <ctype.h>
 #include <vector>
 
-#include <vmime/vmime.hpp>
-#include <vmime/platforms/posix/posixHandler.hpp>
-
 #include <QCoreApplication>
 #include <QDateTime>
 
@@ -58,11 +55,6 @@ MainObject::MainObject(QObject *parent)
   //
   cast_config=new DvtConfig();
   cast_config->load();
-
-  //
-  // Initialize VMime
-  //
-  vmime::platform::setHandler<vmime::platforms::posix::posixHandler>();
 
   //
   // Open Database

@@ -951,3 +951,5 @@
 2025-07-24 Fred Gleason <fredg@paravelsystems.com>
 	* Removed dvt_import(1).
 	* Removed the 'davit-importers' RPM package.
+2025-07-24 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the vmime dependency.
