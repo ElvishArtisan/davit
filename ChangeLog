@@ -946,3 +946,5 @@
 	* Added '--clear', '--create', '--delete', '--list', '--dry-run' and
 	'--use-numeric-ids' switches to dvtstamp(8).
 	* Added a dvtstamp(8) man page.
+2025-07-24 Fred Gleason <fredg@paravelsystems.com>
+	* Updated dvtdbcheck(8) to use 'DvtSqlQuery'.

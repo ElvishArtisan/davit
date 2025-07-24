@@ -26,13 +26,14 @@
 #include <unistd.h>
 #include <sys/types.h>
 
-#include <QApplication>
+#include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
-#include <QSqlQuery>
 
 #include <dvtconf.h>
-#include <dvtdbcheck.h>
+#include <dvtdb.h>
+
+#include "dvtdbcheck.h"
 
 MainObject::MainObject()
   : QObject()
@@ -75,22 +76,16 @@ MainObject::MainObject()
   //
   // Open Database
   //
-  /*
-  QSqlDatabase *db=QSqlDatabase::addDatabase(dvtconfig->mysqlDbtype());
-  if(!db) {
-    fprintf(stderr,"rdimport: unable to initialize connection to database\n");
-    exit(256);
-  }
-  db->setDatabaseName(dvtconfig->mysqlDbname());
-  db->setUserName(dvtconfig->mysqlUsername());
-  db->setPassword(dvtconfig->mysqlPassword());
-  db->setHostName(dvtconfig->mysqlHostname());
-  if(!db->open()) {
+  QSqlDatabase db=QSqlDatabase::addDatabase(dvtconfig->mysqlDbtype());
+  db.setDatabaseName(dvtconfig->mysqlDbname());
+  db.setUserName(dvtconfig->mysqlUsername());
+  db.setPassword(dvtconfig->mysqlPassword());
+  db.setHostName(dvtconfig->mysqlHostname());
+  if(!db.open()) {
     fprintf(stderr,"dvtstamp: unable to connect to database\n");
-    db->removeDatabase(dvtconfig->mysqlDbname());
+    db.removeDatabase(dvtconfig->mysqlDbname());
     exit(256);
   }
-  */
   CheckDuplicateAffiliates();
 
   exit(0);
@@ -100,8 +95,8 @@ MainObject::MainObject()
 void MainObject::CheckDuplicateAffiliates()
 {
   QString sql;
-  QSqlQuery *q;
-  QSqlQuery *q1;
+  DvtSqlQuery *q;
+  DvtSqlQuery *q1;
   QString last_call;
   QString last_type;
   double last_frequency;
@@ -116,10 +111,16 @@ void MainObject::CheckDuplicateAffiliates()
   int last_remarks;
   int dups=0;
 
-  sql="select ID,STATION_CALL,STATION_TYPE,STATION_FREQUENCY,\
-       LICENSE_CITY,LICENSE_STATE from AFFILIATES \
-       order by STATION_CALL,STATION_TYPE";
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`ID`,"+
+    "`STATION_CALL`,"+       // 00
+    "`STATION_TYPE`,"+       // 01
+    "`STATION_FREQUENCY`,"+  // 02
+    "`LICENSE_CITY`,"+       // 03
+    "`LICENSE_STATE` "+      // 04
+    "from `AFFILIATES` "+
+    "order by `STATION_CALL`,`STATION_TYPE` ";
+  q=new DvtSqlQuery(sql);
   if(q->first()) {
     last_id=q->value(0).toInt();
     last_call=q->value(1).toString();
@@ -130,40 +131,50 @@ void MainObject::CheckDuplicateAffiliates()
     while(q->next()) {
       if((q->value(1).toString().left(3)!="NEW")&&
 	 (q->value(1).toString()==last_call)&&(q->value(2)==last_type)) {
-	sql=QString::asprintf("select ID from CONTACTS \
-                               where (AFFILIATE_ID=%d)&&(AFFIDAVIT=\"Y\")",
-			      last_id);
-	q1=new QSqlQuery(sql);
+	sql=QString("select ")+
+	  "`ID` "+  // 00
+	  "from `CONTACTS` where "+
+	  QString::asprintf("(`AFFILIATE_ID`=%d)&&",last_id)+
+	  "(`AFFIDAVIT`='Y')";
+	q1=new DvtSqlQuery(sql);
 	last_contacts=q1->size();
 	delete q1;
-	sql=QString::asprintf("select ID from CONTACTS \
-                               where (AFFILIATE_ID=%d)&&(AFFIDAVIT=\"Y\")",
-			      q->value(0).toInt());
-	q1=new QSqlQuery(sql);
+	sql=QString("select ")+
+	  "`ID` "+  // 00
+	  "from `CONTACTS` where "+
+	  QString::asprintf("(AFFILIATE_ID=%d)&&",q->value(0).toInt())+
+	  "(`AFFIDAVIT`='Y')",
+	q1=new DvtSqlQuery(sql);
 	curr_contacts=q1->size();
 	delete q1;
 
-
-	sql=QString::asprintf("select ID from AIRED where AFFILIATE_ID=%d",
-			      last_id);
-	q1=new QSqlQuery(sql);
+	sql=QString("select ")+
+	  "`ID` "+  // 00
+	  "from `AIRED` where "+
+	  QString::asprintf("`AFFILIATE_ID`=%d",last_id);
+	q1=new DvtSqlQuery(sql);
 	last_aired=q1->size();
 	delete q1;
-	sql=QString::asprintf("select ID from AIRED where AFFILIATE_ID=%d",
-			      q->value(0).toInt());
-	q1=new QSqlQuery(sql);
+	sql=QString("select ")+
+	  "`ID` "+  // 00
+	  "from `AIRED` where "+
+	  QString::asprintf("`AFFILIATE_ID`=%d",q->value(0).toInt());
+	q1=new DvtSqlQuery(sql);
 	curr_aired=q1->size();
 	delete q1;
 
-
-	sql=QString::asprintf("select ID from AFFILIATE_REMARKS where AFFILIATE_ID=%d",
-			      last_id);
-	q1=new QSqlQuery(sql);
+	sql=QString("select ")+
+	  "`ID` "+  // 00
+	  "from `AFFILIATE_REMARKS` where "+
+	  QString::asprintf("`AFFILIATE_ID`=%d",last_id);
+	q1=new DvtSqlQuery(sql);
 	last_remarks=q1->size();
 	delete q1;
-	sql=QString::asprintf("select ID from AFFILIATE_REMARKS where AFFILIATE_ID=%d",
-			      q->value(0).toInt());
-	q1=new QSqlQuery(sql);
+	sql=QString("select ")+
+	  "`ID` "+  // 00
+	  "from `AFFILIATE_REMARKS` where "+
+	  QString::asprintf("`AFFILIATE_ID`=%d",q->value(0).toInt());
+	q1=new DvtSqlQuery(sql);
 	curr_remarks=q1->size();
 	delete q1;
 	printf("\n");
@@ -206,49 +217,56 @@ void MainObject::CheckDuplicateAffiliates()
 void MainObject::MergeAffiliates(int dest_id,int src_id)
 {
   QString sql;
-  QSqlQuery *q;
-  QSqlQuery *q1;
-  QSqlQuery *q2;
+  DvtSqlQuery *q;
+  DvtSqlQuery *q1;
 
   //
   // AIRED Data
   //
-  sql=QString::asprintf("select ID,STATE,AIR_DATETIME,AIR_LENGTH,PROGRAM_ID \
-                         from AIRED where AFFILIATE_ID=%d",src_id);
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`ID`,"+            // 00
+    "`STATE`,"+         // 01
+    "`AIR_DATETIME`,"+  // 02
+    "`AIR_LENGTH`,"+    // 03
+    "`PROGRAM_ID` "+    // 04
+    "from `AIRED` where "+
+    QString::asprintf("`AFFILIATE_ID`=%d",src_id);
+  q=new DvtSqlQuery(sql);
   while(q->next()) {
-    sql=QString::asprintf("select ID from AIRED where \
-                           (AFFILIATE_ID=%d)&&(PROGRAM_ID=%d)&&\
-                           (AIR_DATETIME=\"%s\")&&(AIR_LENGTH=%d)",
-			  dest_id,q->value(4).toInt(),
-			  q->value(2).toDateTime().
-			  toString("yyyy-MM-dd hh:mm:ss").toUtf8().constData(),
-			  q->value(3).toInt());
-    q1=new QSqlQuery(sql);
+    sql=QString("select ")+
+      "`ID` "+  // 00
+      "from `AIRED` where "+
+      QString::asprintf("(`AFFILIATE_ID`=%d)&&",dest_id)+
+      QString::asprintf("(`PROGRAM_ID`=%d)&&",q->value(4).toInt())+
+      "(`AIR_DATETIME`="+
+      DvtSqlQuery::escape(q->value(2).toDateTime().
+			  toString("yyyy-MM-dd hh:mm:ss"))+")&&"+
+      QString::asprintf("(`AIR_LENGTH`=%d)",q->value(3).toInt());
+    q1=new DvtSqlQuery(sql);
     if(q1->first()) {
       if((q->value(1).toInt()==Dvt::AiredStateScheduled)||
 	 (q->value(1).toInt()==Dvt::AiredStateUnknown)) {
 	sql=QString::asprintf("delete from AIRED where ID=%d",
 			      q->value(0).toInt());
-	q2=new QSqlQuery(sql);
-	delete q2;
+	DvtSqlQuery::apply(sql);
       }
       else {
-	sql=QString::asprintf("delete from AIRED where ID=%d",
-			      q1->value(0).toInt());
-	q2=new QSqlQuery(sql);
-	delete q2;
-	sql=QString::asprintf("update AIRED set AFFILIATE_ID=%d where ID=%d",
-			      dest_id,q->value(0).toInt());
-	q2=new QSqlQuery(sql);
-	delete q2;
+	sql=QString("delete from `AIRED` where ")+
+	  QString::asprintf("`ID`=%d",q1->value(0).toInt());
+	DvtSqlQuery::apply(sql);
+	sql=QString("update `AIRED` set ")+
+	  QString::asprintf("`AFFILIATE_ID`=%d ",dest_id)+
+	  "where "+
+	  QString::asprintf("`ID`=%d",q->value(0).toInt());
+	DvtSqlQuery::apply(sql);
       }
     }
     else {
-      sql=QString::asprintf("update AIRED set AFFILIATE_ID=%d where ID=%d",
-			    dest_id,q->value(0).toInt());
-      q2=new QSqlQuery(sql);
-      delete q2;
+      sql=QString("update AIRED set ")+
+	QString::asprintf("`AFFILIATE_ID`=%d ",dest_id)+
+	"where "+
+	QString::asprintf("`ID`=%d",q->value(0).toInt());
+      DvtSqlQuery::apply(sql);
     }
     delete q1;
   }
@@ -257,30 +275,34 @@ void MainObject::MergeAffiliates(int dest_id,int src_id)
   //
   // AIRINGS Data
   //
-  sql=QString::asprintf("select ID,PROGRAM_ID,AIR_TIME \
-                         from AIRINGS where AFFILIATE_ID=%d",
-			src_id);
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`ID`,"+          // 00
+    "`PROGRAM_ID`,"+  // 01
+    "`AIR_TIME` "+    // 02
+    "from `AIRINGS` where "+
+    QString::asprintf("`AFFILIATE_ID`=%d",src_id);
+  q=new DvtSqlQuery(sql);
   while(q->next()) {
-    sql=QString::asprintf("select ID from AIRINGS \
-                           where (AFFILIATE_ID=%d)&&(PROGRAM_ID=%d)&&\
-                           (AIR_TIME=\"%s\")",
-			  dest_id,q->value(1).toInt(),
-			  q->value(2).toTime().toString("hh:mm:ss").
-			  toUtf8().constData());
-    q1=new QSqlQuery(sql);
+    sql=QString("select ")+
+      "`ID` "+  // 00
+      "from `AIRINGS` where "+
+      QString::asprintf("(`AFFILIATE_ID`=%d)&&",dest_id)+
+      QString::asprintf("(`PROGRAM_ID`=%d)&&",q->value(1).toInt())+
+      "(`AIR_TIME`="+
+      DvtSqlQuery::escape(q->value(2).toTime().toString("hh:mm:ss"))+")";
+    q1=new DvtSqlQuery(sql);
     if(q1->first()) {
-      sql=QString::asprintf("delete from AIRINGS where ID=%d",
-			    q->value(0).toInt());
-      q2=new QSqlQuery(sql);
-      delete q2;
+      sql=QString("delete from `AIRINGS` ")+
+	"where "+
+	QString::asprintf("`ID`=%d",q->value(0).toInt());
+      DvtSqlQuery::apply(sql);
     }
     else {
-      sql=QString::asprintf("update AIRINGS set AFFILIATE_ID=%d \
-                             where ID=%d",
-			    dest_id,q->value(0).toInt());
-      q2=new QSqlQuery(sql);
-      delete q2;
+      sql=QString("update `AIRINGS` set ")+
+	QString::asprintf("`AFFILIATE_ID`=%d ",dest_id)+
+	"where "+
+	QString::asprintf("`ID`=%d",q->value(0).toInt());
+      DvtSqlQuery::apply(sql);
     }
     delete q1;
   }
@@ -289,41 +311,48 @@ void MainObject::MergeAffiliates(int dest_id,int src_id)
   //
   // AFFILIATE_REMARKS Data
   //
-  sql=QString::asprintf("update AFFILIATE_REMARKS set AFFILIATE_ID=%d \
-                         where AFFILIATE_ID=%d",
-			dest_id,src_id);
-  q=new QSqlQuery(sql);
-  delete q;
+  sql=QString("update `AFFILIATE_REMARKS` set ")+
+    QString::asprintf("`AFFILIATE_ID`=%d ",dest_id)+
+    "where "+
+    QString::asprintf("`AFFILIATE_ID`=%d",src_id);
+  DvtSqlQuery::apply(sql);
 
   //
   // CONTACT Data
   //
-  sql=QString::asprintf("update CONTACTS set AFFILIATE_ID=%d \
-                         where (AFFILIATE_ID=%d)&&(LOCKED=\"Y\")",
-			dest_id,src_id);
-  q=new QSqlQuery(sql);
-  delete q;
+  sql=QString("update `CONTACTS` set ")+
+    QString::asprintf("`AFFILIATE_ID`=%d ",dest_id)+
+    "where "+
+    QString::asprintf("(`AFFILIATE_ID`=%d)&&",src_id)+
+    "(`LOCKED`='Y')";
+  DvtSqlQuery::apply(sql);
 
-  sql=QString::asprintf("delete from CONTACTS where AFFILIATE_ID=%d",src_id);
-  q=new QSqlQuery(sql);
-  delete q;
+  sql=QString("delete from `CONTACTS` ")+
+    "where "+
+    QString::asprintf("`AFFILIATE_ID`=%d",src_id);
+  DvtSqlQuery::apply(sql);
 
   //
   // AFFILIATES Data
   //
-  sql=QString::asprintf("select AFFIDAVIT_ACTIVE from AFFILIATES where ID=%d",
-			src_id);
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`AFFIDAVIT_ACTIVE` "+   // 00
+    "from `AFFILIATES` where "+
+    QString::asprintf("`ID`=%d",src_id);
+  q=new DvtSqlQuery(sql);
   if(q->first()) {
     delete q;
-    sql=QString::asprintf("update AFFILIATES set AFFIDAVIT_ACTIVE=\"Y\" \
-                           where ID=%d",dest_id);
-    q=new QSqlQuery(sql);
+    sql=QString("update `AFFILIATES` set ")+
+      "`AFFIDAVIT_ACTIVE`='Y' "+
+      "where "+
+      QString::asprintf("`ID`=%d",dest_id);
+    DvtSqlQuery::apply(sql);
   }
   delete q;
-  sql=QString::asprintf("delete from AFFILIATES where ID=%d",src_id);
-  q=new QSqlQuery(sql);
-  delete q;
+  sql=QString("delete from `AFFILIATES` ")+
+    "where "+
+    QString::asprintf("`ID`=%d",src_id);
+  DvtSqlQuery::apply(sql);
 }
 
 
@@ -356,7 +385,7 @@ bool MainObject::UserResponse()
 
 int main(int argc,char *argv[])
 {
-  QApplication a(argc,argv);
+  QCoreApplication a(argc,argv);
   new MainObject();
   return a.exec();
 }
