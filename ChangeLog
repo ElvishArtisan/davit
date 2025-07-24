@@ -948,3 +948,6 @@
 	* Added a dvtstamp(8) man page.
 2025-07-24 Fred Gleason <fredg@paravelsystems.com>
 	* Updated dvtdbcheck(8) to use 'DvtSqlQuery'.
+2025-07-24 Fred Gleason <fredg@paravelsystems.com>
+	* Removed dvt_import(1).
+	* Removed the 'davit-importers' RPM package.

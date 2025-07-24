@@ -32,19 +32,12 @@ Summary: Web components for the Davit Affiliate Relations System
 Group: Productivity/Office/Other
 Requires: davit httpd
 
-%package importers
-Summary: Importer components for the Davit Affiliate Relations System
-Group: Productivity/Office/Other
-Requires: davit
-
 %description
 Davit is an affiliate relations system for radio network environments.
 
 %description web
 The web components for the affiliate data submission system.
 
-%description importers
-The importer components for the affiliate data submission system.
 
 %prep
 %setup
@@ -61,7 +54,6 @@ ln -s @LOCAL_PREFIX@/@DAVIT_LIB_PATH@/libdvt-@VERSION@.so $RPM_BUILD_ROOT@LOCAL_
 cp lib/.libs/libdvt.la $RPM_BUILD_ROOT@LOCAL_PREFIX@/@DAVIT_LIB_PATH@/
 mkdir -p $RPM_BUILD_ROOT@LOCAL_PREFIX@/bin
 cp davit/.libs/davit $RPM_BUILD_ROOT@LOCAL_PREFIX@/bin/
-cp utils/dvt_import/.libs/dvt_import $RPM_BUILD_ROOT@LOCAL_PREFIX@/bin/
 cp utils/vnc/davit.xinitrc $RPM_BUILD_ROOT@LOCAL_PREFIX@/bin/
 cp utils/vnc/start_davit.sh $RPM_BUILD_ROOT@LOCAL_PREFIX@/bin/
 mkdir -p $RPM_BUILD_ROOT@LOCAL_PREFIX@/sbin
@@ -108,10 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 /var/www/dvt-bin/davit.cgi
 /etc/httpd/conf.d/dvt-bin.conf
 
-%files importers
-@LOCAL_PREFIX@/bin/dvt_import
-
 %changelog
+* Thu Jul 24 2025 Fred Gleason <fgleason@radioamerica.org>
+-- Removed the 'importers' sub-package.
 * Mon Nov  2 2015 Fred Gleason <fgleason@radioamerica.org>
 -- Added a 'qt3-MySQL' dependency.
 * Tue May 13 2014 Fred Gleason <fgleason@radioamerica.org>

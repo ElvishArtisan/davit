@@ -22,7 +22,6 @@
 
 SUBDIRS = dvtdbcheck\
           dvtstamp\
-          dvt_import\
           vnc
 
 AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -DQTDIR=\"@QT_DIR@\" @QT_CXXFLAGS@ -I$(top_srcdir)/lib
