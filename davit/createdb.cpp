@@ -894,7 +894,10 @@ bool UpdateDb(int ver)
 	       QString::asprintf("dvtstamp --for-date=%s --for-affiliate-id=%d",
 			date.toString("yyyy-MM").toUtf8().constData(),
 			q->value(0).toInt());
-	      system(cmd.toUtf8());
+	      //
+	      // FIXME: Eliminate the system(1) call!
+	      //
+	      //system(cmd.toUtf8());
 	    }
 	    delete q1;
 	  }

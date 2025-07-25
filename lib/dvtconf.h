@@ -51,9 +51,7 @@ double DvtGetPrivateProfileDouble(const char *,const char *,const char *,
 int GetIni(const char *,const char *,const char *,char *,int);
 int GetIniLine(FILE *,char *);
 void Prepend(char *,char *);
-int IncrementIndex(char *,int);
 void StripLevel(char *); 
-bool GetLock(const char *);
 void ClearLock(const char *);
 QString DvtGetPathPart(QString path);
 QString DvtGetBasePart(QString path);
@@ -86,13 +84,6 @@ bool DvtIsSqlNull(QString table,QString name,unsigned test,
 QString DvtGetTimeLength(int mseconds,bool leadzero=false,bool tenths=true);
 int DvtSetTimeLength(QString string);
 QTime DvtSetTime(const QString &string);
-bool DvtCopy(QString srcfile,QString destfile);
-#ifndef WIN32
-bool DvtWritePid(QString dirname,QString filename,int owner=-1,int group=-1);
-void DvtDeletePid(QString dirname,QString filename);
-bool DvtCheckPid(QString dirname,QString filename);
-pid_t DvtGetPid(QString pidfile);
-#endif  // WIN32
 QString DvtGetHomeDir(bool *found=0);
 bool DvtTimeSynced();
 QString DvtTruncateAfterWord(QString str,int word,bool add_dots=false);
@@ -128,6 +119,7 @@ QFont DvtGetFont(const QString &base_name);
 Spread::FileFormat DvtGetSpreadSheetFileFormat(const QString &base_name);
 QStringList DvtReportViewerCommand(const QString &filename,
 				   const QString &ooffice_path);
+int DvtCheckReturnCode(const QString &msg,int code,int ok_value);
 
 
 #endif   // DVTCONF_H

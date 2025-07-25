@@ -127,7 +127,8 @@ void ChangePassword::okData()
     done(0);
   }
   else {
-    QMessageBox::warning(this,"Password Mismatch","The passwords don't match,\nplease try again!","OK",0);
+    QMessageBox::warning(this,"Davit - "+tr("Password Mismatch"),
+			 tr("The passwords don't match, please try again!"));
   }
 }
 

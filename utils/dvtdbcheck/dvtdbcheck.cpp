@@ -356,7 +356,7 @@ void MainObject::MergeAffiliates(int dest_id,int src_id)
 }
 
 
-bool MainObject::UserResponse()
+bool MainObject::UserResponse() const
 {
   char c=0;
 
@@ -369,16 +369,16 @@ bool MainObject::UserResponse()
     return false;
   }
   while((c!='y')&&(c!='Y')&&(c!='n')&&(c!='N')) {
-    scanf("%c",&c);
+    DvtCheckReturnCode("UserResponse()",scanf("%c",&c),1);
     if((c=='y')||(c=='Y')) {
-      scanf("%c",&c);
+      DvtCheckReturnCode("UserResponse()",scanf("%c",&c),1);
       return true;
     }
     if(c=='\n') {
       return false;
     }
   }
-  scanf("%c",&c);
+  DvtCheckReturnCode("UserResponse()",scanf("%c",&c),1);
   return false;
 }
 

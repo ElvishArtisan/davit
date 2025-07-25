@@ -237,74 +237,6 @@ void Prepend(char *sPathname,char *sFilename)
   strcpy(sFilename,sTemp);
 }
 
-  
-#ifndef WIN32
-int IncrementIndex(char *sPathname,int dMaxIndex)
-{
-  int dLockname=-1;
-  FILE *hPathname;
-  int i;
-  char sLockname[256];
-  char sAccum[256];
-  int dIndex,dNewIndex;
-
-  /* Lock the index */
-  strcpy(sLockname,sPathname);
-  strcat(sLockname,".LCK");
-  i=0;
-  while(dLockname<0 && i<MAX_RETRIES) {
-    dLockname=open(sLockname,O_WRONLY|O_EXCL|O_CREAT,S_IRUSR|S_IWUSR);
-    i++;
-  }
-  if(dLockname<0) {
-    return -1;
-  }
-  sprintf(sAccum,"%d",getpid());
-  write(dLockname,sAccum,strlen(sAccum));
-  close(dLockname);
-
-  /* We've got the lock, so read the index */
-  hPathname=fopen(sPathname,"r");
-  if(hPathname==NULL) {
-    unlink(sLockname);
-    return -1;
-  }
-  if(fscanf(hPathname,"%d",&dIndex)!=1) {
-    fclose(hPathname);
-    unlink(sLockname);
-    return -1;
-  }
-  fclose(hPathname);
-
-  /* Update the index */
-  if((dIndex<dMaxIndex) || (dMaxIndex==0)) {
-    dNewIndex=dIndex+1;
-  }
-  else {
-    dNewIndex=1;
-  }
-
-  /* Write it back */
-  hPathname=fopen(sPathname,"w");
-  if(hPathname==NULL) {
-    unlink(sLockname);
-    return -1;
-  }
-  fprintf(hPathname,"%d",dNewIndex);
-  fclose(hPathname);
-
-  /* Release the lock */
-  unlink(sLockname);
-
-  /* Ensure a sane value to return and then exit */
-  if((dIndex>dMaxIndex)&&(dMaxIndex!=0)) {
-    dIndex=1;
-  }
-
-  return dIndex;
-}
-#endif
-
 
 /*
  * int StripLevel(char *sString)
@@ -326,34 +258,6 @@ void StripLevel(char *sString)
   }
   sString[0]=0;
 }
-
-
-
-
-#ifndef WIN32
-bool GetLock(const char *sLockname)
-{
-  int fd;
-  char sAccum[256];
-
-  if((fd=open(sLockname,O_WRONLY|O_EXCL|O_CREAT,S_IRUSR|S_IWUSR))<0) {
-    printf("failed!\n");
-    if(DvtCheckPid(DvtGetPathPart(sLockname),DvtGetBasePart(sLockname))) {
-      return false;
-    }
-    ClearLock(sLockname);
-    if((fd=open(sLockname,O_WRONLY|O_EXCL|O_CREAT,S_IRUSR|S_IWUSR))<0) {
-      return false;
-    }
-  }
-  sprintf(sAccum,"%d",getpid());
-  write(fd,sAccum,strlen(sAccum));
-  close(fd);
-  return true;
-}
-#endif
-
-
 
 
 #ifndef WIN32
@@ -826,104 +730,6 @@ QTime DvtSetTime(const QString &str)
 
 
 #ifndef WIN32
-bool DvtCopy(QString srcfile,QString destfile)
-{
-  int src_fd;
-  int dest_fd;
-  struct stat src_stat;
-  struct stat dest_stat;
-  char *buf=NULL;
-  int n;
-
-  if((src_fd=open(srcfile.toUtf8(),O_RDONLY))<0) {
-    return false;
-  }
-  if(fstat(src_fd,&src_stat)<0) {
-    close(src_fd);
-    return false;
-  }
-  if((dest_fd=open(destfile.toUtf8(),O_RDWR|O_CREAT,src_stat.st_mode))
-     <0) {
-    close(src_fd);
-    return false;
-  }
-  if(fstat(dest_fd,&dest_stat)<0) {
-    close(src_fd);
-    close(dest_fd);
-    return false;
-  }
-  buf=(char *)malloc(dest_stat.st_blksize);
-  while((n=read(src_fd,buf,dest_stat.st_blksize))==dest_stat.st_blksize) {
-    write(dest_fd,buf,dest_stat.st_blksize);
-  }
-  write(dest_fd,buf,n);
-  free(buf);
-  close(src_fd);
-  close(dest_fd);
-  return true;
-}
-#endif  // WIN32
-
-
-#ifndef WIN32
-bool DvtWritePid(QString dirname,QString filename,int owner,int group)
-{
-  FILE *file;
-  mode_t prev_mask;
-  QString pathname=QString::asprintf("%s/%s",
-				     dirname.toUtf8().constData(),
-				     filename.toUtf8().constData());
-
-  prev_mask = umask(0113);      // Set umask so pid files are user and group writable.
-  file=fopen(pathname.toUtf8(),"w");
-  umask(prev_mask);
-  if(file==NULL) {
-    return false;
-  }
-  fprintf(file,"%d",getpid());
-  fclose(file);
-  chown(pathname.toUtf8().constData(),owner,group);
-
-  return true;
-}
-
-
-void DvtDeletePid(QString dirname,QString filename)
-{
-  QString pid=QString::asprintf("%s/%s",
-				dirname.toUtf8().constData(),
-				filename.toUtf8().constData());
-  unlink(pid.toUtf8());
-}
-
-
-bool DvtCheckPid(QString dirname,QString filename)
-{
-  QDir dir;
-  QString path;
-  path=QString("/proc/")+
-    QString::asprintf("%d",DvtGetPid(dirname+QString("/")+filename));
-  dir.setPath(path);
-  return dir.exists();
-}
-
-
-pid_t DvtGetPid(QString pidfile)
-{
-  FILE *handle;
-  pid_t ret;
-
-  if((handle=fopen(pidfile.toUtf8(),"r"))==NULL) {
-    return -1;
-  }
-  if(fscanf(handle,"%d",&ret)!=1) {
-    ret=-1;
-  }
-  fclose(handle);
-  return ret;
-}
-
-
 bool DvtTimeSynced()
 {
   struct timex timex;
@@ -1582,4 +1388,14 @@ QStringList DvtReportViewerCommand(const QString &filename,
   QMessageBox::information(NULL,"DEBUG",str);
   */
   return ret;
+}
+
+
+int DvtCheckReturnCode(const QString &msg,int code,int ok_value)
+{
+  if(code!=ok_value) {
+    fprintf(stderr,"%s returned %d, was expecting %d",
+	    msg.toUtf8().constData(),code,ok_value);
+  }
+  return code;
 }

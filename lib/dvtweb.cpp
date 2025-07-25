@@ -49,12 +49,16 @@ int DvtReadPost(char *cBuffer,int dSize)
   if(strcasecmp(getenv("REQUEST_METHOD"),"POST")!=0) {   /* No post data to receive! */
     return -1;
   }
-  sscanf(getenv("CONTENT_LENGTH"),"%d",&dPostSize);
+  if(sscanf(getenv("CONTENT_LENGTH"),"%d",&dPostSize)<=0) {
+    return -1;
+  }
   if(dPostSize>=dSize) {  /* Data block too large! */
     DvtCgiError("POST size too large!");
   }
   dPostSize++;
-  fgets(cBuffer,dPostSize,stdin);
+  if(fgets(cBuffer,dPostSize,stdin)!=cBuffer) {
+    return -1;
+  }
   return dPostSize;  
 }
 

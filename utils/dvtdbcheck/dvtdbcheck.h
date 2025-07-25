@@ -41,7 +41,7 @@ class MainObject : public QObject
  private:
   void CheckDuplicateAffiliates();
   void MergeAffiliates(int dest_id,int src_id);
-  bool UserResponse();
+  bool UserResponse() const;
   bool check_yes;
   bool check_no;
   DvtConfig *dvtconfig;

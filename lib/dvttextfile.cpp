@@ -34,56 +34,52 @@
 bool DvtTextFile(const QString &data)
 {
   char tmpfile[256];
-  QString editor;
+  QString editor=DVT_LINUX_EDITOR;
+  char cmd[PATH_MAX];
+  char *args[64];
 
-  if(getenv("VISUAL")==NULL) {
-#ifdef WIN32
-    editor=DVT_WIN32_EDITOR;
-#else
-    editor=DVT_LINUX_EDITOR;
-#endif  // WIN32
+  /* 
+   * FIXME: Added editor selection
+   *
+  if(!rda->station()->reportEditorPath().trimmed().isEmpty()) {
+    editor=rda->station()->reportEditorPath();
   }
-  else {
-    editor=getenv("VISUAL");
-  }
-#ifdef WIN32
-  QString tempfile=QString().sprintf("%s\\dvt-%s",(const char *)DvtTempDir(),
-	           (const char *)QTime::currentTime().toString("hhmmsszzz"));
-  FILE *f=fopen(tempfile,"w");
-  if(f==NULL) {
-    QMessageBox::warning(NULL,"File Error",QString().
-			 sprintf("Unable to create temporary file \"%s\".",
-				 (const char *)tempfile));
+  */
+  memset(args,0,sizeof(args));
+  QStringList f0=editor.split(" ",Qt::SkipEmptyParts);
+  if(f0.size()>64) {
+    QMessageBox::warning(NULL,"File Error",
+			 "Too many arguments to report editor!");
     return false;
   }
-  fprintf(f,"%s",(const char *)data);
-  fclose(f);
-  QStringList args;
-  args+=editor;
-  args+=tempfile;
-  QProcess *proc=new QProcess(args);
-  proc->launch("");
-  delete proc;
-#else
-  strcpy(tmpfile,"/tmp/dvtreportXXXXXX");
+  strncpy(cmd,f0.at(0).toUtf8(),PATH_MAX-1);
+  QStringList f1=f0.at(0).split("/");
+  args[0]=(char *)malloc(f1.back().toUtf8().size()+1);
+  strcpy(args[0],f1.back().toUtf8());
+  for(int i=1;i<f0.size();i++) {
+    args[i]=(char *)malloc(f0.at(i).toUtf8().size()+1);
+    strcpy(args[i],f0.at(i).toUtf8());
+  }
+  strcpy(tmpfile,"/tmp/rdreportXXXXXX");
   int fd=mkstemp(tmpfile);
   if(fd<0) {
-    QMessageBox::warning(NULL,"File Error",
-		   QString::asprintf("Unable to create temporary file \"%s\".",
-				 (const char *)tmpfile));
+    QMessageBox::warning(NULL,"File Error","Unable to create temporary file");
     return false;
   }
-  else {
-    QByteArray bytes=data.toUtf8();
-    write(fd,bytes,bytes.length());
-    ::close(fd);
-    if(fork()==0) {
-      system(QString::asprintf("%s %s",
-			       editor.toUtf8().constData(),tmpfile).toUtf8());
-      unlink(tmpfile);
-      exit(0);
-    }
+  if(write(fd,data.toUtf8(),data.toUtf8().length())!=data.toUtf8().length()) {
+    fprintf(stderr,"DvtTextFile write lost data [%s]",strerror(errno));
   }
-#endif  // WIN32
+  ::close(fd);
+
+  args[f0.size()]=(char *)malloc(strlen(tmpfile)+1);
+  strcpy(args[f0.size()],tmpfile);
+
+  args[f0.size()+1]=(char *)NULL;
+
+  if(fork()==0) {
+    execvp(cmd,args);
+    _exit(1);
+  }
+
   return true;
 }
