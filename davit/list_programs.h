@@ -28,6 +28,7 @@
 #include <dvttableview.h>
 
 #include "edit_program.h"
+#include "generate_affadavit.h"
 #include "programlistmodel.h"
 
 class ListPrograms : public DvtDialog
@@ -46,6 +47,7 @@ class ListPrograms : public DvtDialog
   void addData();
   void editData();
   void deleteData();
+  void affidavitData();
   void doubleClickedData(const QModelIndex &index);
   void closeData();
 
@@ -58,9 +60,11 @@ class ListPrograms : public DvtDialog
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;
+  QPushButton *list_affidavit_button;
   QPushButton *list_close_button;
   int list_provider_id;
   EditProgram *list_editprogram_dialog;
+  GenerateAffadavit *list_generateaffadavit_dialog;
 };
 
 

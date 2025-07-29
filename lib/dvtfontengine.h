@@ -58,6 +58,11 @@ class DvtFontEngine
   QFont defaultFont() const;
   QFontMetrics *defaultFontMetrics() const;
 
+  QFont printerHeaderFont() const;
+  QFontMetrics *printerHeaderFontMetrics() const;
+  QFont printerFont() const;
+  QFontMetrics *printerFontMetrics() const;
+
  private:
   void MakeFonts(const QFont &default_font);
   QFont font_button_font;
@@ -86,6 +91,8 @@ class DvtFontEngine
   QFontMetrics *font_small_timer_font_metrics;
   QFont font_default_font;
   QFontMetrics *font_default_font_metrics;
+  QFont font_printer_font;
+  QFontMetrics *font_printer_font_metrics;
   DvtConfig *font_config;
 };
 

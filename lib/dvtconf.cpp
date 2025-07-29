@@ -1041,7 +1041,12 @@ int DvtCreateNewAffiliateRecord()
 
 QString DvtStationTypeString(const QString &type)
 {
-  return type.toUpper()+"M";
+  QString ret="Internet";
+  
+  if((type.toUpper()=="A")||(type.toUpper()=="F")) {
+    ret=type.toUpper()+"M";
+  }
+  return ret;
 }
 
 
@@ -1057,8 +1062,11 @@ QString DvtStationCallString(int affiliate_id)
   QSqlQuery *q;
   QString ret;
 
-  sql=QString::asprintf("select STATION_CALL,STATION_TYPE \
-                         from AFFILIATES where ID=%d",affiliate_id);
+  sql=QString("select ")+
+    "`STATION_CALL`,"+
+    "`STATION_TYPE` "+
+    "from `AFFILIATES` where "+
+    QString::asprintf("`ID`=%d",affiliate_id);
   q=new QSqlQuery(sql);
   if(q->first()) {
     ret=DvtStationCallString(q->value(0).toString(),q->value(1).toString());

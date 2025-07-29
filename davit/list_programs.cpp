@@ -28,7 +28,6 @@
 
 #include "add_program.h"
 #include "edit_program.h"
-#include "generate_affadavit.h"
 #include "globals.h"
 #include "list_programs.h"
 
@@ -48,6 +47,7 @@ ListPrograms::ListPrograms(DvtConfig *c,QWidget *parent)
   // Dialogs
   //
   list_editprogram_dialog=new EditProgram(config,this);
+  list_generateaffadavit_dialog=new GenerateAffadavit(c,this);
 
   //
   // Programs List
@@ -88,6 +88,17 @@ ListPrograms::ListPrograms(DvtConfig *c,QWidget *parent)
     setEnabled(global_dvtuser->privilege(DvtUser::PrivProgramEdit));
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
 
+  //
+  //  Affidavit Button
+  //
+  list_affidavit_button=
+    new QPushButton(tr("Generate")+"\n"+tr("Affidavit"),this);
+  list_affidavit_button->setFont(buttonFont());
+  list_affidavit_button->
+    setEnabled(global_dvtuser->privilege(DvtUser::PrivReportView));
+  connect(list_affidavit_button,SIGNAL(clicked()),this,SLOT(affidavitData()));
+  list_affidavit_button->hide();  // Disabled on 29 July 2025 as per mparadiso
+  
   //
   //  Close Button
   //
@@ -202,6 +213,33 @@ void ListPrograms::deleteData()
 }
 
 
+void ListPrograms::affidavitData()
+{
+  QModelIndexList rows=list_programs_view->selectionModel()->selectedRows();
+
+  if(rows.size()!=1) {
+    return;
+  }
+  list_generateaffadavit_dialog->
+    execProgram(list_programs_model->programId(rows.first()));
+
+
+  /*
+  DvtListViewItem *item=
+    (DvtListViewItem *)list_programs_list->selectedItem();
+  
+  if(item==NULL) {
+    return;
+  }
+  GenerateAffadavit *edit=
+    new GenerateAffadavit(GenerateAffadavit::ReportProgram,item->id(),
+			  this,"edit");
+  edit->exec();
+  delete edit;
+*/
+}
+
+
 void ListPrograms::doubleClickedData(const QModelIndex &index)
 {
   editData();
@@ -223,5 +261,6 @@ void ListPrograms::resizeEvent(QResizeEvent *e)
   list_add_button->setGeometry(10,h-60,80,50);
   list_edit_button->setGeometry(100,h-60,80,50);
   list_delete_button->setGeometry(190,h-60,80,50);
+  list_affidavit_button->setGeometry(390,h-60,80,50);
   list_close_button->setGeometry(w-90,h-60,80,50);
 }

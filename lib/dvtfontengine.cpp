@@ -201,6 +201,30 @@ QFontMetrics *DvtFontEngine::defaultFontMetrics() const
 }
 
 
+QFont DvtFontEngine::printerHeaderFont() const
+{
+  return font_big_label_font;
+}
+
+
+QFontMetrics *DvtFontEngine::printerHeaderFontMetrics() const
+{
+  return font_big_label_font_metrics;
+}
+
+
+QFont DvtFontEngine::printerFont() const
+{
+  return font_printer_font;
+}
+
+
+QFontMetrics *DvtFontEngine::printerFontMetrics() const
+{
+  return font_printer_font_metrics;
+}
+
+
 void DvtFontEngine::MakeFonts(const QFont &default_font)
 {
   /*
@@ -288,4 +312,8 @@ void DvtFontEngine::MakeFonts(const QFont &default_font)
   font_default_font=QFont(family,default_size,QFont::Normal);
   font_default_font.setPixelSize(default_size);
   font_default_font_metrics=new QFontMetrics(font_default_font);
+
+  font_printer_font=QFont(family,label_size+2,QFont::Normal);
+  font_printer_font.setPixelSize(label_size+2);
+  font_printer_font_metrics=new QFontMetrics(font_printer_font);
 }

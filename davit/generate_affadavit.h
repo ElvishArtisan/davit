@@ -44,12 +44,14 @@ class GenerateAffadavit : public DvtDialog
 
  public slots:
   int execAffiliate(int affiliate_id);
+  int execProgram(int program_id);
 
  private slots:
   void updateGenerateButtonData(int index);
   void generateData();
   void closeData();
-  void printerPaint(QPrinter *printer);
+  void paintAffiliateReport(QPrinter *printer); // affidavitaffiliatereport.cpp
+  void paintProgramReport(QPrinter *printer);   // affidavitprogramreport.cpp
 
  protected:
   void resizeEvent(QResizeEvent *e);
@@ -61,7 +63,7 @@ class GenerateAffadavit : public DvtDialog
   void AffiliateReport(int id,const QDate &start_date,
 		       const QDate &end_date,bool pgms);
   void ProgramReport(int id,const QDate &start_date,
-		     const QDate &end_date,bool affiliates);
+  		     const QDate &end_date,bool affiliates);
   bool HasAffidavits() const;
   QDate SelectedDate() const;
   QString Center(const QString &s);
@@ -78,6 +80,7 @@ class GenerateAffadavit : public DvtDialog
   QPushButton *edit_close_button;
   ReportType edit_type;
   int edit_affiliate_id;
+  int edit_program_id;
 };
 
 

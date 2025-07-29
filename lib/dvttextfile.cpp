@@ -45,6 +45,8 @@ bool DvtTextFile(const QString &data)
     editor=rda->station()->reportEditorPath();
   }
   */
+  editor="/usr/bin/emacs";
+
   memset(args,0,sizeof(args));
   QStringList f0=editor.split(" ",Qt::SkipEmptyParts);
   if(f0.size()>64) {
