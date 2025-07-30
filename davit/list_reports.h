@@ -32,10 +32,9 @@
 
 #include <dvt.h>
 #include <dvtdialog.h>
-//#include <dvtlistviewitem.h>
-#include <spread_sheet.h>
 
 #include "pick_fields.h"
+#include "spread_sheet.h"
 
 class ListReports : public DvtDialog
 {

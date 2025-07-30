@@ -227,8 +227,8 @@ void ListReports::runData()
   }
 
   if(ok) {
-    ForkViewer(DvtTempName(Spread::fileExtension(DvtGetSpreadSheetFileFormat("DAVIT_REPORT"))),
-	       sheet->write(DvtGetSpreadSheetFileFormat("DAVIT_REPORT")));
+    ForkViewer(DvtTempName(Spread::fileExtension(Spread::fileFormat("DAVIT_REPORT"))),
+	       sheet->write(Spread::fileFormat("DAVIT_REPORT")));
     // printf("out: %s\n",(const char *)outfile);
   }
 }

@@ -2,7 +2,7 @@
 //
 // Abstract base class for a spreadsheet object.
 //
-//   (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2014-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -18,12 +18,14 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <dvtfontengine.h>
+
 #include "spread.h"
 
 Spread::Spread()
 {
-  obj_font=QFont(SPREAD_DEFAULT_FONT_FACE,SPREAD_DEFAULT_FONT_SIZE,
-		 SPREAD_DEFAULT_FONT_WEIGHT);
+  obj_font=QFont(FONT_ENGINE_DEFAULT_FONT_FACE,FONT_ENGINE_DEFAULT_FONT_SIZE,
+		 FONT_ENGINE_DEFAULT_FONT_WEIGHT);
   obj_font_metrics=new QFontMetrics(obj_font);
 }
 
@@ -60,6 +62,30 @@ QString Spread::fileExtension(FileFormat fmt)
   case Spread::ExcelXmlFormat:
     ret="xml";
     break;
+  }
+
+  return ret;
+}
+
+
+Spread::FileFormat Spread::fileFormat(const QString &base_name)
+{
+  Spread::FileFormat ret=Spread::ExcelXmlFormat;
+
+  if(getenv((base_name+"_FORMAT").toUtf8())!=NULL) {
+    QString str=QString(getenv((base_name+"_FORMAT").toUtf8())).toLower();
+    if(str=="slk") {
+      ret=Spread::SlkFormat;
+    }
+    else {
+      if(str=="excelxml") {
+	ret=Spread::ExcelXmlFormat;
+      }
+      else {
+	fprintf(stderr,"davit: %s_FORMAT value is malformatted\n",
+		base_name.toUtf8().constData());
+      }
+    }
   }
 
   return ret;

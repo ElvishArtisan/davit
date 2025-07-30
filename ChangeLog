@@ -957,3 +957,6 @@
 	* Cleaned up build warnings.
 2025-07-29 Fred Gleason <fredg@paravelsystems.com>
 	* Hid the 'Generate Affidavit' button in the 'List Programs' dialog.
+2025-07-30 Fred Gleason <fredg@paravelsystems.com>
+	* Moved the 'Spread' class heirarchy out of the convenience library
+	into 'davit/'.

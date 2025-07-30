@@ -44,8 +44,8 @@
 #include <QSqlQuery>
 
 #include "dvtconf.h"
+#include "dvtfontengine.h"
 #include "dvt.h"
-#include "spread_sheet.h"
 
 #define BUFFER_SIZE 1024
 
@@ -1309,9 +1309,9 @@ unsigned DvtContactInfo(QString *name,QString *title,QString *email,
 
 QFont DvtGetFont(const QString &base_name)
 {
-  QString face=SPREAD_DEFAULT_FONT_FACE;
-  int size=SPREAD_DEFAULT_FONT_SIZE;
-  QFont::Weight weight=SPREAD_DEFAULT_FONT_WEIGHT;
+  QString face=FONT_ENGINE_DEFAULT_FONT_FACE;
+  int size=FONT_ENGINE_DEFAULT_FONT_SIZE;
+  QFont::Weight weight=FONT_ENGINE_DEFAULT_FONT_WEIGHT;
   bool ok=false;
   int n;
 
@@ -1347,7 +1347,7 @@ QFont DvtGetFont(const QString &base_name)
   return QFont(face,size,weight);
 }
 
-
+/*
 Spread::FileFormat DvtGetSpreadSheetFileFormat(const QString &base_name)
 {
   Spread::FileFormat ret=SpreadSheet::ExcelXmlFormat;
@@ -1370,7 +1370,7 @@ Spread::FileFormat DvtGetSpreadSheetFileFormat(const QString &base_name)
 
   return ret;
 }
-
+*/
 
 QStringList DvtReportViewerCommand(const QString &filename,
 				   const QString &ooffice_path)

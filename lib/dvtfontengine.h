@@ -26,6 +26,10 @@
 
 #include <dvtconfig.h>
 
+#define FONT_ENGINE_DEFAULT_FONT_FACE "arial"
+#define FONT_ENGINE_DEFAULT_FONT_SIZE 10
+#define FONT_ENGINE_DEFAULT_FONT_WEIGHT QFont::Normal
+
 class DvtFontEngine
 {
  public:

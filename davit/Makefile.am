@@ -87,6 +87,10 @@ dist_davit_SOURCES = activity_report.cpp\
                      providerlistmodel.cpp providerlistmodel.h\
                      raaffiliate_report.cpp\
                      showaffidavits.cpp showaffidavits.h\
+                     spread.cpp spread.h\
+                     spread_cell.cpp spread_cell.h\
+                     spread_sheet.cpp spread_sheet.h\
+                     spread_tab.cpp spread_tab.h\
                      userlistmodel.cpp userlistmodel.h\
                      viewerprocess.cpp viewerprocess.h\
                      viewerprocesslist.cpp viewerprocesslist.h

@@ -25,10 +25,6 @@
 #include <QFontMetrics>
 #include <QString>
 
-#define SPREAD_DEFAULT_FONT_FACE "arial"
-#define SPREAD_DEFAULT_FONT_SIZE 10
-#define SPREAD_DEFAULT_FONT_WEIGHT QFont::Normal
-
 class Spread
 {
  public:
@@ -39,6 +35,7 @@ class Spread
   void setDefaultFont(const QFont &font);
   virtual QString write(FileFormat fmt)=0;
   static QString fileExtension(FileFormat fmt);
+  static FileFormat fileFormat(const QString &base_name);
 
  protected:
   QFontMetrics *fontMetrics() const;

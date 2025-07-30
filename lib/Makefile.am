@@ -55,10 +55,6 @@ dist_libdvt_la_SOURCES = algocombobox.cpp algocombobox.h\
                          dvtweb.cpp dvtweb.h\
                          dvtwidget.cpp dvtwidget.h\
                          login.cpp login.h\
-                         spread.cpp spread.h\
-                         spread_cell.cpp spread_cell.h\
-                         spread_sheet.cpp spread_sheet.h\
-                         spread_tab.cpp spread_tab.h\
                          state_conv.cpp state_conv.h\
                          statecombobox.cpp statecombobox.h
 

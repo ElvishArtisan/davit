@@ -38,7 +38,6 @@
 #include <QVariant>
 
 #include "dvt.h"
-#include "spread_sheet.h"
 
 /* Function Prototypes */
 int DvtGetPrivateProfileBool(const char *,const char *,const char *,bool);
@@ -116,7 +115,6 @@ unsigned DvtContactInfo(QString *name,QString *title,QString *email,
 			QString *phone,QString *fax,
 			int affiliate_id,Dvt::ContactType type);
 QFont DvtGetFont(const QString &base_name);
-Spread::FileFormat DvtGetSpreadSheetFileFormat(const QString &base_name);
 QStringList DvtReportViewerCommand(const QString &filename,
 				   const QString &ooffice_path);
 int DvtCheckReturnCode(const QString &msg,int code,int ok_value);
