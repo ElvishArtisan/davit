@@ -92,6 +92,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      spread_sheet.cpp spread_sheet.h\
                      spread_tab.cpp spread_tab.h\
                      userlistmodel.cpp userlistmodel.h\
+                     statecombobox.cpp statecombobox.h\
                      viewerprocess.cpp viewerprocess.h\
                      viewerprocesslist.cpp viewerprocesslist.h
 
@@ -136,6 +137,7 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_programlistmodel.cpp\
                        moc_providerlistmodel.cpp\
                        moc_showaffidavits.cpp\
+                       moc_statecombobox.cpp\
                        moc_userlistmodel.cpp\
                        moc_viewerprocess.cpp\
                        moc_viewerprocesslist.cpp

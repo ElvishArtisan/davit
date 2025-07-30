@@ -960,3 +960,6 @@
 2025-07-30 Fred Gleason <fredg@paravelsystems.com>
 	* Moved the 'Spread' class heirarchy out of the convenience library
 	into 'davit/'.
+2025-07-30 Fred Gleason <fredg@paravelsystems.com>
+	* Moved the 'StateComboBox' widget out of the convenience library
+	into 'davit/'.

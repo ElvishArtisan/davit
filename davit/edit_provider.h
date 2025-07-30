@@ -27,9 +27,9 @@
 #include <QPushButton>
 
 #include <dvtdialog.h>
-#include <statecombobox.h>
 
-#include <list_programs.h>
+#include "list_programs.h"
+#include "statecombobox.h"
 
 class EditProvider : public DvtDialog
 {

@@ -55,8 +55,7 @@ dist_libdvt_la_SOURCES = algocombobox.cpp algocombobox.h\
                          dvtweb.cpp dvtweb.h\
                          dvtwidget.cpp dvtwidget.h\
                          login.cpp login.h\
-                         state_conv.cpp state_conv.h\
-                         statecombobox.cpp statecombobox.h
+                         state_conv.cpp state_conv.h
 
 nodist_libdvt_la_SOURCES = moc_algocombobox.cpp\
                            moc_change_password.cpp\
@@ -68,8 +67,7 @@ nodist_libdvt_la_SOURCES = moc_algocombobox.cpp\
                            moc_dvttableview.cpp\
                            moc_dvttransportbutton.cpp\
                            moc_dvtwidget.cpp\
-                           moc_login.cpp\
-                           moc_statecombobox.cpp
+                           moc_login.cpp
 
 libdvt_la_LDFLAGS = -release $(VERSION)
 

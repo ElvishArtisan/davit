@@ -30,7 +30,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-#include <statecombobox.h>
+#include "statecombobox.h"
 
 class PickFields : public QDialog
 {
