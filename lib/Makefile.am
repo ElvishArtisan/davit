@@ -28,8 +28,7 @@ moc_%.cpp:	%.h
 #instdir = @LOCAL_PREFIX@/lib
 
 lib_LTLIBRARIES = libdvt.la
-dist_libdvt_la_SOURCES = algocombobox.cpp algocombobox.h\
-                         change_password.cpp change_password.h\
+dist_libdvt_la_SOURCES = change_password.cpp change_password.h\
                          dvt.h dvt.cpp\
                          dvtcmdswitch.cpp dvtcmdswitch.h\
                          dvtconf.cpp dvtconf.h\
@@ -57,8 +56,7 @@ dist_libdvt_la_SOURCES = algocombobox.cpp algocombobox.h\
                          login.cpp login.h\
                          state_conv.cpp state_conv.h
 
-nodist_libdvt_la_SOURCES = moc_algocombobox.cpp\
-                           moc_change_password.cpp\
+nodist_libdvt_la_SOURCES = moc_change_password.cpp\
                            moc_dvtdatedialog.cpp\
                            moc_dvtdatepicker.cpp\
                            moc_dvtdialog.cpp\

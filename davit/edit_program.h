@@ -30,11 +30,11 @@
 #include <QPushButton>
 #include <QTextEdit>
 
-#include <algocombobox.h>
 #include <dvtconfig.h>
 #include <dvtdialog.h>
 #include <dvttableview.h>
 
+#include "algocombobox.h"
 #include "edit_feed.h"
 #include "feedlistmodel.h"
 

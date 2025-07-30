@@ -42,6 +42,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      affiliatesbyprogram_report.cpp\
                      affiliatelistmodel.cpp affiliatelistmodel.h\
                      airinglistmodel.cpp airinglistmodel.h\
+                     algocombobox.cpp algocombobox.h\
                      arbitron_report.cpp\
                      contact.cpp contact.h\
                      contactlistmodel.cpp contactlistmodel.h\
@@ -105,6 +106,7 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_affidavit_picker.cpp\
                        moc_affiliatelistmodel.cpp\
                        moc_airinglistmodel.cpp\
+                       moc_algocombobox.cpp\
                        moc_contactlistmodel.cpp\
                        moc_contactlistview.cpp\
                        moc_davit.cpp\
