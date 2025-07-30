@@ -44,6 +44,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      airinglistmodel.cpp airinglistmodel.h\
                      algocombobox.cpp algocombobox.h\
                      arbitron_report.cpp\
+                     change_password.cpp change_password.h\
                      contact.cpp contact.h\
                      contactlistmodel.cpp contactlistmodel.h\
                      contactlistview.cpp contactlistview.h\
@@ -98,6 +99,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      viewerprocesslist.cpp viewerprocesslist.h
 
 nodist_davit_SOURCES = moc_add_affiliate.cpp\
+                       moc_change_password.cpp\
                        moc_generate_affadavit.cpp\
                        moc_add_program.cpp\
                        moc_add_provider.cpp\

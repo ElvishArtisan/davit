@@ -199,7 +199,7 @@ void UserListModel::refresh(const QModelIndex &row)
 {
   if(row.row()<d_texts.size()) {
     QString sql=sqlFields()+
-      "where `LOGIN_NAME`="+
+      "where `USER_NAME`="+
       DvtSqlQuery::escape(d_texts.at(row.row()).at(0).toString());
     DvtSqlQuery *q=new DvtSqlQuery(sql);
     if(q->first()) {

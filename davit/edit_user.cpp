@@ -1,4 +1,4 @@
-// edit_show.cpp
+// edit_user.cpp
 //
 // Edit a Davit User.
 //
@@ -23,11 +23,9 @@
 #include <QButtonGroup>
 #include <QPushButton>
 #include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
-#include <change_password.h>
 #include <dvtconf.h>
+#include <dvtdb.h>
 
 #include "edit_user.h"
 #include "globals.h"
@@ -35,8 +33,6 @@
 EditUser::EditUser(DvtConfig *c,QWidget *parent)
   : DvtDialog(c,parent)
 {
-  edit_password_changed=false;
-
   //
   // Fix the Window Size
   //
@@ -44,6 +40,8 @@ EditUser::EditUser(DvtConfig *c,QWidget *parent)
   setMaximumHeight(sizeHint().height());
 
   setWindowTitle("Davit - "+tr("Edit User"));
+
+  edit_changepassword_dialog=new ChangePassword(c,this);
 
   //
   // User Name
@@ -100,7 +98,7 @@ EditUser::EditUser(DvtConfig *c,QWidget *parent)
   //
   edit_password_button=new QPushButton(this);
   edit_password_button->setFont(labelFont());
-  edit_password_button->setText("Change\n&Password");
+  edit_password_button->setText(tr("Change")+"\n"+tr("Password"));
   connect(edit_password_button,SIGNAL(clicked()),this,SLOT(changePasswordData()));
 
   //
@@ -239,7 +237,6 @@ QSizePolicy EditUser::sizePolicy() const
 int EditUser::exec(const QString &username)
 {
   edit_loginname=username;
-  edit_password_changed=false;
 
   DvtUser *user=new DvtUser(username);
   edit_loginname_edit->setText(user->name());
@@ -278,11 +275,13 @@ int EditUser::exec(const QString &username)
 
 void EditUser::changePasswordData()
 {
-  ChangePassword *change=new ChangePassword(&edit_password,this);
-  if(change->exec()==0) {
-    edit_password_changed=true;
+  if(edit_changepassword_dialog->exec(&edit_password)) {
+    QString sql=QString("update `USERS` set ")+
+      "`USER_PASSWORD`=password("+DvtSqlQuery::escape(edit_password)+") "+
+      "where "+
+      "`USER_NAME`="+DvtSqlQuery::escape(edit_loginname_edit->text());
+    DvtSqlQuery::apply(sql);
   }
-  delete change;
 }
 
 
@@ -290,7 +289,7 @@ void EditUser::adminToggledData(bool state)
 {
   if((!state)&&(global_dvtuser->name()==edit_loginname)) {
     QMessageBox::information(this,"Current User",
-	"You cannot revoke administrative\nprivileges on the current user!");
+       tr("You cannot revoke administrative\nprivileges on the current user!"));
     edit_admin_config_check->setChecked(true);
   }
 }
@@ -356,19 +355,6 @@ void EditUser::okData()
 		     edit_report_view_check->isChecked());
   user->save();
   delete user;
-
-  //
-  // Update Password
-  //
-  if(edit_password_changed) {
-    QString sql;
-    sql=QString::asprintf("update USERS set USER_PASSWORD=password(\"%s\")\
-                           where USER_NAME=\"%s\"",
-			  edit_password.toUtf8().constData(),
-			  edit_loginname.toUtf8().constData());    
-    QSqlQuery *q=new QSqlQuery(sql);
-    delete q;
-  }
 
   done(true);
 }

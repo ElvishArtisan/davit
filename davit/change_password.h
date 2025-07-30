@@ -21,32 +21,40 @@
 #ifndef CHANGE_PASSWORD_H
 #define CHANGE_PASSWORD_H
 
-#include <QDialog>
+#include <QLabel>
 #include <QLineEdit>
-#include <QTextEdit>
-#include <QPixmap>
-#include <QRadioButton>
+#include <QPushButton>
 
+#include <dvtdialog.h>
 
-class ChangePassword : public QDialog
+class ChangePassword : public DvtDialog
 {
   Q_OBJECT
-  public:
-   ChangePassword(QString *password,QWidget *parent=0);
-   ~ChangePassword();
-   QSize sizeHint() const;
-   QSizePolicy sizePolicy() const;
+ public:
+  ChangePassword(DvtConfig *c,QWidget *parent=0);
+  ~ChangePassword();
+  QSize sizeHint() const;
+  QSizePolicy sizePolicy() const;
 
-  protected:
+ public slots:
+  int exec(QString *passwd);
 
-  private slots:
-   void okData();
-   void cancelData();
+ private slots:
+  void textChangedData(const QString &text);
+  void okData();
+  void cancelData();
 
-  private:
-   QLineEdit *passwd_password_1_edit;
-   QLineEdit *passwd_password_2_edit;
-   QString *passwd_password;
+ protected:
+  void resizeEvent(QResizeEvent *e);
+
+ private:
+  QLabel *passwd_password_1_label;
+  QLineEdit *passwd_password_1_edit;
+  QLabel *passwd_password_2_label;
+  QLineEdit *passwd_password_2_edit;
+  QPushButton *passwd_ok_button;
+  QPushButton *passwd_cancel_button;
+  QString *passwd_password;
 };
 
 

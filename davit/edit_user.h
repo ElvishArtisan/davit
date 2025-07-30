@@ -31,6 +31,8 @@
 #include <dvtdialog.h>
 #include <dvtuser.h>
 
+#include "change_password.h"
+
 class EditUser : public DvtDialog
 {
  Q_OBJECT
@@ -70,7 +72,6 @@ class EditUser : public DvtDialog
   QString edit_loginname;
   QString edit_password;
   QPushButton *edit_password_button;
-  bool edit_password_changed;
 
   QGroupBox *edit_admin_group;
   QCheckBox *edit_admin_config_check;
@@ -104,6 +105,8 @@ class EditUser : public DvtDialog
 
   QPushButton *edit_ok_button;
   QPushButton *edit_cancel_button;
+
+  ChangePassword *edit_changepassword_dialog;
 };
 
 
