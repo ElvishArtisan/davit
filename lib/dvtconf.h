@@ -31,7 +31,6 @@
 
 #include <QString>
 #include <QDateTime>
-#include <QFont>
 #include <QHostAddress>
 #include <QSqlDatabase>
 #include <QStringList>
@@ -62,7 +61,7 @@ QString DvtGetShortDate(QDate);
  * ... 7 = "Sun".  If the value is out of range 1 is defaulted to.
  **/
 QString DvtGetShortDayNameEN(int weekday);
-QFont::Weight DvtGetFontWeight(QString);
+//QFont::Weight DvtGetFontWeight(QString);
 bool DvtDetach();
 bool DvtBool(QString);
 QString DvtYesNo(bool);

@@ -18,7 +18,7 @@
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" @QT6_CFLAGS@ -std=c++17 -fPIC
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" @QT6CLI_CFLAGS@ -std=c++17 -fPIC
 MOC = @QT6_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)

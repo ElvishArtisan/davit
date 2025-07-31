@@ -23,8 +23,6 @@
 #include <stdlib.h>
 
 #include <QCoreApplication>
-#include <QMessageBox>
-#include <QStyleFactory>
 
 #include "dvtcmdswitch.h"
 #include "dvtconf.h"
@@ -48,13 +46,6 @@ DvtCmdSwitch::DvtCmdSwitch(const QString &modname,const QString &usage)
     }
     if(value=="-d") {
       switch_debug=true;
-    }
-    if((value=="-show-styles")||(value=="--show-styles")) {
-      QStringList styles=QStyleFactory::keys();
-      for(int i=0;i<styles.size();i++) {
-	printf("%s\n",styles.at(i).toUtf8().constData());
-      }
-      exit(0);
     }
     QStringList f0=value.split("=",Qt::KeepEmptyParts);
     if(f0.size()>=2) {
@@ -103,13 +94,6 @@ DvtCmdSwitch::DvtCmdSwitch(int argc,char *argv[],const QString &modname,
     }
     if(value=="-d") {
       switch_debug=true;
-    }
-    if((value=="-show-styles")||(value=="--show-styles")) {
-      QStringList styles=QStyleFactory::keys();
-      for(int i=0;i<styles.size();i++) {
-	printf("%s\n",styles.at(i).toUtf8().constData());
-      }
-      exit(0);
     }
     QStringList f0=value.split("=",Qt::KeepEmptyParts);
     if(f0.size()>=2) {

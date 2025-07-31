@@ -994,3 +994,6 @@
 	library	into 'davit/'.
 	* Moved the 'DvtWidget' widget out of the convenience library
 	into 'davit/'.
+2025-07-31 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored linking for dvtstamp(8), dvtdbcheck(8) and davit.cgi so
+	as to avoid linking to Qt's GUI components.

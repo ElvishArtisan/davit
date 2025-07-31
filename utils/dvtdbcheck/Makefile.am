@@ -19,13 +19,12 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -std=c++17 -fPIC -I$(top_srcdir)/lib @QT6_CFLAGS@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -std=c++17 -fPIC -I$(top_srcdir)/lib @QT6CLI_CFLAGS@
 LIBS = -L$(top_srcdir)/lib
-MOC = @QT6_MOC@
 
 # QT's Meta Object Compiler (moc)
 moc_%.cpp:	%.h
-	$(MOC) $< -o $@
+	@QT6CLI_MOC@ $< -o $@
 
 sbin_PROGRAMS = dvtdbcheck
 
@@ -33,7 +32,7 @@ dist_dvtdbcheck_SOURCES = dvtdbcheck.cpp dvtdbcheck.h
 
 nodist_dvtdbcheck_SOURCES = moc_dvtdbcheck.cpp
 
-dvtdbcheck_LDADD =  -ldvt @QT6_LIBS@
+dvtdbcheck_LDADD =  -ldvt @QT6CLI_LIBS@
 
 CLEANFILES = *~\
              *.idb\

@@ -38,7 +38,6 @@
 
 #include <QDir>
 #include <QHostAddress>
-#include <QMessageBox>
 #include <QObject>
 #include <QVariant>
 #include <QSqlQuery>
@@ -311,7 +310,7 @@ QString DvtGetShortDayNameEN(int weekday)
     day_name = "Sun";
   return day_name;
 }
-
+/*
 QFont::Weight DvtGetFontWeight(QString string)
 {
   if(string.contains("Light",Qt::CaseInsensitive)) {
@@ -331,7 +330,7 @@ QFont::Weight DvtGetFontWeight(QString string)
   }
   return QFont::Normal;
 }
-
+*/
 
 #ifndef WIN32
 bool DvtDetach()

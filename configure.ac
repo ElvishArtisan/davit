@@ -45,13 +45,8 @@ LT_INIT
 #
 # Check for Qt
 #
-AQ_FIND_QT6(QT6,Core Gui Widgets Network Sql PrintSupport,[],[AC_MSG_ERROR([*** Qt6 not found ***])])
-
-#
-# Check for VMime
-#
-#AC_CHECK_HEADER(vmime/vmime.hpp,[],[AC_MSG_ERROR([*** VMime not found, unable to continue ***])])
-#AC_SUBST(VMIME_LIBS,`pkg-config --libs vmime`)
+AQ_FIND_QT6(QT6GUI,Core Gui Widgets Network Sql PrintSupport,[],[AC_MSG_ERROR([*** Qt6 GUI components not found ***])])
+AQ_FIND_QT6(QT6CLI,Core Network Sql PrintSupport,[],[AC_MSG_ERROR([*** Qt6 CLI not found ***])])
 
 #
 # DocBook
@@ -83,7 +78,7 @@ else
    fi
 fi
 
-
+#
 # Determine Distro
 #
 AR_GET_DISTRO()

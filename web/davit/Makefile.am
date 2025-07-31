@@ -1,6 +1,6 @@
 ## Makefile.am
 ##
-## Makefile.am for rivendell/web/davit
+## Makefile.am for Davit's web/davit
 ##
 ##   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
@@ -19,14 +19,13 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing -std=c++17 -fPIC -I$(top_srcdir)/lib @QT6_CFLAGS@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing -std=c++17 -fPIC -I$(top_srcdir)/lib @QT6CLI_CFLAGS@
 LIBS = -L$(top_srcdir)/lib
-MOC = @QT6_MOC@
 
 libexec_PROGRAMS = davit.cgi
 
 dist_davit_cgi_SOURCES = davit.cpp davit.h
-davit_cgi_LDADD = -ldvt @QT6_LIBS@
+davit_cgi_LDADD = -ldvt @QT6CLI_LIBS@
 
 EXTRA_DIST = davit.pro
 

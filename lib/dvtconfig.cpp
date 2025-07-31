@@ -20,7 +20,6 @@
 
 #include <stdio.h>
 
-#include <QMessageBox>
 #include <QSettings>
 
 #include "dvt.h"
