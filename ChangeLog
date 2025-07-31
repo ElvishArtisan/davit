@@ -969,3 +969,28 @@
 2025-07-30 Fred Gleason <fredg@paravelsystems.com>
 	* Moved the 'ChangePassword' dialog out of the convenience library
 	into 'davit/'.
+2025-07-31 Fred Gleason <fredg@paravelsystems.com>
+	* Moved the 'DvtDateDialog' dialog out of the convenience library
+	into 'davit/'.
+	* Moved the 'DvtDatePicker' widget out of the convenience library
+	into 'davit/'.
+	* Moved the 'DvtDialog' dialog out of the convenience library
+	into 'davit/'.
+	* Moved the 'DvtFontEngine' class out of the convenience library
+	into 'davit/'.
+	* Moved the 'DvtLabel' widget out of the convenience library
+	into 'davit/'.
+	* Moved the 'DvtListSelector' widget out of the convenience library
+	into 'davit/'.
+	* Moved the 'Login' dialog out of the convenience library
+	into 'davit/'.
+	* Moved the 'state_conv' module out of the convenience library
+	into 'davit/'.
+	* Moved the 'DvtTableView' widget out of the convenience library
+	into 'davit/'.
+	* Moved the 'DvtTextFile' dialog out of the convenience library
+	into 'davit/'.
+	* Moved the 'DvtTransportButton' widget out of the convenience
+	library	into 'davit/'.
+	* Moved the 'DvtWidget' widget out of the convenience library
+	into 'davit/'.

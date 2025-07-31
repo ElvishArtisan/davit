@@ -29,7 +29,7 @@
 #include "showaffidavits.h"
 
 ShowAffidavits::ShowAffidavits(DvtConfig *c,QWidget *parent)
-  : DvtWidget(c,parent)
+  : Widget(c,parent)
 {
   QDate now(QDate::currentDate().year(),QDate::currentDate().month(),1);
   QDate month=now.addMonths(-11);

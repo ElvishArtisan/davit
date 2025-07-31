@@ -28,7 +28,7 @@
 #include "globals.h"
 
 EditSystem::EditSystem(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(true);
   setWindowTitle("Davit - "+tr("Edit System E-Mail Settings"));

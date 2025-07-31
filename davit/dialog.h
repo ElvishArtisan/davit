@@ -1,4 +1,4 @@
-// dvtdialog.cpp
+// dialog.h
 //
 // Base class for Davit modal dialogs.
 //
@@ -18,10 +18,21 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include "dvtdialog.h"
+#ifndef DIALOG_H
+#define DIALOG_H
 
-DvtDialog::DvtDialog(DvtConfig *c,QWidget *parent)
-  : QDialog(parent), DvtFontEngine(font(),c)
+#include <QDialog>
+
+#include <dvtconfig.h>
+
+#include "fontengine.h"
+
+class Dialog : public QDialog,public FontEngine
 {
-  setModal(true);
-}
+  Q_OBJECT;
+ public:
+  Dialog(DvtConfig *c,QWidget *parent=0);
+};
+
+
+#endif  // DIALOG_H

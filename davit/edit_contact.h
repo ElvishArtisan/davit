@@ -27,11 +27,10 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-#include <dvtdialog.h>
-
 #include "contact.h"
+#include "dialog.h"
 
-class EditContact : public DvtDialog
+class EditContact : public Dialog
 {
  Q_OBJECT
  public:

@@ -23,10 +23,10 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
-#include <dvttextfile.h>
 #include <dvtconf.h>
 
 #include "generate_affadavit.h"
+#include "textfile.h"
 
 void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
 				      const QDate &end_date,bool affiliates)
@@ -213,5 +213,5 @@ void GenerateAffadavit::ProgramReport(int id,const QDate &start_date,
 
   delete q;
 
-  DvtTextFile(s);
+  TextFile(s);
 }

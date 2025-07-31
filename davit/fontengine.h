@@ -1,4 +1,4 @@
-// dvtfontengine.h
+// fontengine.h
 //
 // Engine for calculating fonts in Davit UIs
 //
@@ -18,8 +18,8 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef DVTFONTENGINE_H
-#define DVTFONTENGINE_H
+#ifndef FONTENGINE_H
+#define FONTENGINE_H
 
 #include <QFont>
 #include <QFontMetrics>
@@ -30,11 +30,11 @@
 #define FONT_ENGINE_DEFAULT_FONT_SIZE 10
 #define FONT_ENGINE_DEFAULT_FONT_WEIGHT QFont::Normal
 
-class DvtFontEngine
+class FontEngine
 {
  public:
-  DvtFontEngine(const QFont &default_font,DvtConfig *c);
-  ~DvtFontEngine();
+  FontEngine(const QFont &default_font,DvtConfig *c);
+  ~FontEngine();
   QFont buttonFont() const;
   QFontMetrics *buttonFontMetrics() const;
   QFont hugeButtonFont() const;
@@ -101,4 +101,4 @@ class DvtFontEngine
 };
 
 
-#endif  // DVTFONTENGINE_H
+#endif  // FONTENGINE_H

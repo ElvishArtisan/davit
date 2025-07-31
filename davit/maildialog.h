@@ -27,11 +27,10 @@
 #include <QPushButton>
 #include <QTextEdit>
 
-#include <dvtdialog.h>
-
 #include "contact.h"
+#include "dialog.h"
 
-class MailDialog : public DvtDialog
+class MailDialog : public Dialog
 {
  Q_OBJECT
  public:

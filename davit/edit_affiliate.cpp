@@ -37,7 +37,7 @@
 #include "globals.h"
 
 EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   edit_affiliate_id=-1;
 

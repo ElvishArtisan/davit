@@ -31,12 +31,12 @@
 #include <QStringList>
 
 #include <dvt.h>
-#include <dvtdialog.h>
 
+#include "dialog.h"
 #include "pick_fields.h"
 #include "spread_sheet.h"
 
-class ListReports : public DvtDialog
+class ListReports : public Dialog
 {
  Q_OBJECT
  public:

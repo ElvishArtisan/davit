@@ -24,13 +24,12 @@
 #include <QListView>
 #include <QPushButton>
 
-#include <dvtdialog.h>
-#include <dvttableview.h>
-
 #include "airinglistmodel.h"
+#include "dialog.h"
 #include "edit_airing.h"
+#include "tableview.h"
 
-class ListAirings : public DvtDialog
+class ListAirings : public Dialog
 {
  Q_OBJECT
  public:
@@ -60,7 +59,7 @@ class ListAirings : public DvtDialog
 
  private:
   AiringListModel *list_airings_model;
-  DvtTableView *list_airings_view;
+  TableView *list_airings_view;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;
   QPushButton *list_delete_button;

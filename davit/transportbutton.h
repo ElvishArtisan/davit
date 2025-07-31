@@ -1,4 +1,4 @@
-//   dvttransportbutton.h
+//   transportbutton.h
 //
 //   An audio transport button widget.
 //
@@ -18,8 +18,8 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef DVTTRANSPORTBUTTON_H
-#define DVTTRANSPORTBUTTON_H
+#ifndef TRANSPORTBUTTON_H
+#define TRANSPORTBUTTON_H
 
 #include <QWidget>
 #include <QPushButton>
@@ -27,9 +27,9 @@
 #include <QColor>
 #include <QResizeEvent>
 
-#define DVTTRANSPORTBUTTON_DEFAULT_ON_COLOR Qt::green
+#define TRANSPORTBUTTON_DEFAULT_ON_COLOR Qt::green
 
-class DvtTransportButton : public QPushButton
+class TransportButton : public QPushButton
 {
   Q_OBJECT
  public:
@@ -37,14 +37,14 @@ class DvtTransportButton : public QPushButton
 		  Pause=6,PlayFrom=7,PlayBetween=8,Loop=9,Up=10,Down=11,
 		  PlayTo=12};
   enum TransState {On=0,Off=1,Flashing=2}; 
-  DvtTransportButton(DvtTransportButton::TransType type,QWidget *parent=0);
-  DvtTransportButton::TransType getType() const;
-  void setType(DvtTransportButton::TransType type);
+  TransportButton(TransportButton::TransType type,QWidget *parent=0);
+  TransportButton::TransType getType() const;
+  void setType(TransportButton::TransType type);
   QColor onColor() const;
   void setOnColor(QColor color);
   QColor accentColor() const;
   void setAccentColor(QColor color);
-  void setState(DvtTransportButton::TransState state);
+  void setState(TransportButton::TransState state);
   
  public slots:
   void on();
@@ -67,8 +67,8 @@ class DvtTransportButton : public QPushButton
  void flashOff();
  QSize capSize() const;
  bool flash_state;
- DvtTransportButton::TransType button_type;
- DvtTransportButton::TransState button_state;
+ TransportButton::TransType button_type;
+ TransportButton::TransState button_state;
  QColor on_color;
  QColor accent_color;
  QPixmap *on_cap;
@@ -77,4 +77,4 @@ class DvtTransportButton : public QPushButton
 };
 
 
-#endif  // DVTTRANSPORTBUTTON_H
+#endif  // TRANSPORTBUTTON_H

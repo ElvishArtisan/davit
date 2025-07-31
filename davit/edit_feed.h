@@ -30,9 +30,10 @@
 #include <QPushButton>
 
 #include <dvtconfig.h>
-#include <dvtdialog.h>
 
-class EditFeed : public DvtDialog
+#include "dialog.h"
+
+class EditFeed : public Dialog
 {
  Q_OBJECT
  public:

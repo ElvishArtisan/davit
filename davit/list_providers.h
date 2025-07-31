@@ -23,14 +23,13 @@
 
 #include <QPushButton>
 
-#include <dvtdialog.h>
-#include <dvttableview.h>
-
+#include "dialog.h"
 #include "edit_provider.h"
 #include "programlistmodel.h"
 #include "providerlistmodel.h"
+#include "tableview.h"
 
-class ListProviders : public DvtDialog
+class ListProviders : public Dialog
 {
  Q_OBJECT
  public:
@@ -56,7 +55,7 @@ class ListProviders : public DvtDialog
   void DeleteProvider(int pid);
   void RefreshList();
   //  void UpdateItem(DvtListViewItem *item);
-  DvtTableView *list_providers_view;
+  TableView *list_providers_view;
   ProviderListModel *list_providers_model;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;

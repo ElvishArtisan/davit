@@ -1,4 +1,4 @@
-// dvtlabel.cpp
+// label.cpp
 //
 // An audio- and touchscreen-friendly slider widget.
 //
@@ -30,16 +30,16 @@
 #include <QRect>
 #include <QPixmap>
 
-#include "dvtlabel.h"
+#include "label.h"
 
-DvtLabel::DvtLabel(QWidget *parent)
+Label::Label(QWidget *parent)
   : QLabel(parent)
 {
   label_wrap=false;
 }
 
 
-DvtLabel::DvtLabel(const QString &text,QWidget *parent=0)
+Label::Label(const QString &text,QWidget *parent=0)
   : QLabel(text,parent)
 {
   label_wrap=false;
@@ -48,13 +48,13 @@ DvtLabel::DvtLabel(const QString &text,QWidget *parent=0)
 }
 
 
-QString DvtLabel::text() const
+QString Label::text() const
 {
   return label_text;
 }
 
 
-void DvtLabel::setFont(const QFont &font)
+void Label::setFont(const QFont &font)
 {
   label_font=font;
   QLabel::setFont(font);
@@ -62,27 +62,27 @@ void DvtLabel::setFont(const QFont &font)
 }
 
 
-bool DvtLabel::wordWrapEnabled() const
+bool Label::wordWrapEnabled() const
 {
   return label_wrap;
 }
 
 
-void DvtLabel::setWordWrapEnabled(bool state)
+void Label::setWordWrapEnabled(bool state)
 {
   label_wrap=state;
   QLabel::setText(WrapText());
 }
 
 
-void DvtLabel::setText(const QString &string)
+void Label::setText(const QString &string)
 {
   label_text=string;
   QLabel::setText(WrapText());
 }
 
 
-QString DvtLabel::WrapText()
+QString Label::WrapText()
 {
   QFontMetrics fm(label_font);
   QString str;

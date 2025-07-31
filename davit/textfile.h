@@ -1,8 +1,8 @@
-// dvtwidget.cpp
+// textfile.h
 //
-// Base class for Davit widgets
+// Spawn an external text file viewer.
 //
-//   (C) Copyright 2019-2025 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -18,9 +18,12 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include "dvtwidget.h"
+#ifndef TEXTFILE_H
+#define TEXTFILE_H
 
-DvtWidget::DvtWidget(DvtConfig *c,QWidget *parent)
-  : QWidget(parent), DvtFontEngine(font(),c)
-{
-}
+#include <QString>
+
+bool TextFile(const QString &data);
+
+
+#endif  // TEXTFILE_H

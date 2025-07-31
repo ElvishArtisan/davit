@@ -33,7 +33,7 @@
 #include "list_providers.h"
 
 ListProviders::ListProviders(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(true);
 
@@ -52,7 +52,7 @@ ListProviders::ListProviders(DvtConfig *c,QWidget *parent)
   //
   // Providers List
   //
-  list_providers_view=new DvtTableView(this);
+  list_providers_view=new TableView(this);
   list_providers_model=new ProviderListModel(this);
   list_providers_model->setFont(defaultFont());
   list_providers_model->setPalette(palette());

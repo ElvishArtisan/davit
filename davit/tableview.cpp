@@ -1,4 +1,4 @@
-// dvttableview.cpp
+// tableview.cpp
 //
 // QTableView widget with consistent defaults
 //
@@ -20,9 +20,9 @@
 
 #include <QHeaderView>
 
-#include "dvttableview.h"
+#include "tableview.h"
 
-DvtTableView::DvtTableView(QWidget *parent)
+TableView::TableView(QWidget *parent)
   :QTableView(parent)
 {
   setSelectionBehavior(QAbstractItemView::SelectRows);

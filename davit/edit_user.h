@@ -28,12 +28,12 @@
 #include <QLabel>
 #include <QLineEdit>
 
-#include <dvtdialog.h>
 #include <dvtuser.h>
 
 #include "change_password.h"
+#include "dialog.h"
 
-class EditUser : public DvtDialog
+class EditUser : public Dialog
 {
  Q_OBJECT
  public:

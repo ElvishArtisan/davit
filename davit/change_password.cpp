@@ -26,7 +26,7 @@
 #include "change_password.h"
 
 ChangePassword::ChangePassword(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(true);
   setWindowTitle("Davit - "+tr("Change Password"));

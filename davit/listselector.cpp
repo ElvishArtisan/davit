@@ -1,4 +1,4 @@
-// dvtlistselector.cpp
+// listselector.cpp
 //
 // A List Selector Widget.
 //
@@ -26,9 +26,9 @@
 #include <QString>
 #include <QPixmap>
 
-#include "dvtlistselector.h"
+#include "listselector.h"
 
-DvtListSelector::DvtListSelector(QWidget *parent)
+ListSelector::ListSelector(QWidget *parent)
   : QHBoxLayout(parent)
 {
   QFont font;
@@ -76,33 +76,33 @@ DvtListSelector::DvtListSelector(QWidget *parent)
 }
 
 
-uint DvtListSelector::sourceCount() const
+uint ListSelector::sourceCount() const
 {
   //  return list_source_box->count();
   return 0;
 }
 
 
-uint DvtListSelector::destCount() const
+uint ListSelector::destCount() const
 {
   //  return list_dest_box->count();
   return 0;
 }
 
 
-void DvtListSelector::sourceSetLabel(QString label)
+void ListSelector::sourceSetLabel(QString label)
 {
   list_source_label->setText(label);
 }
 
 
-void DvtListSelector::destSetLabel(QString label)
+void ListSelector::destSetLabel(QString label)
 {
   list_dest_label->setText(label);
 }
 
 
-void DvtListSelector::sourceInsertItem(const QString &text,int index)
+void ListSelector::sourceInsertItem(const QString &text,int index)
 {
   /*
   list_source_box->insertItem(text,index);
@@ -112,7 +112,7 @@ void DvtListSelector::sourceInsertItem(const QString &text,int index)
 }
 
 
-void DvtListSelector::destInsertItem(const QString &text,int index)
+void ListSelector::destInsertItem(const QString &text,int index)
 {
   /*
   list_dest_box->insertItem(text,index);
@@ -122,7 +122,7 @@ void DvtListSelector::destInsertItem(const QString &text,int index)
 }
 
 
-void DvtListSelector::sourceRemoveItem(int index)
+void ListSelector::sourceRemoveItem(int index)
 {
   /*
   list_source_box->removeItem(index);
@@ -131,7 +131,7 @@ void DvtListSelector::sourceRemoveItem(int index)
 }
 
 
-void DvtListSelector::destRemoveItem(int index)
+void ListSelector::destRemoveItem(int index)
 {
   /*
   list_dest_box->removeItem(index);
@@ -140,21 +140,21 @@ void DvtListSelector::destRemoveItem(int index)
 }
 
 
-QString DvtListSelector::sourceText(int index) const
+QString ListSelector::sourceText(int index) const
 {
   //  return list_source_box->text(index);
   return QString();
 }
 
 
-QString DvtListSelector::destText(int index) const
+QString ListSelector::destText(int index) const
 {
   //  return list_dest_box->text(index);
   return QString();
 }
 
 
-void DvtListSelector::sourceChangeItem(const QString &text,int index)
+void ListSelector::sourceChangeItem(const QString &text,int index)
 {
   /*
   list_source_box->changeItem(text,index);
@@ -163,7 +163,7 @@ void DvtListSelector::sourceChangeItem(const QString &text,int index)
 }
 
 
-void DvtListSelector::destChangeItem(const QString &text,int index)
+void ListSelector::destChangeItem(const QString &text,int index)
 {
   /*
   list_dest_box->changeItem(text,index);
@@ -172,75 +172,75 @@ void DvtListSelector::destChangeItem(const QString &text,int index)
 }
 
 
-int DvtListSelector::sourceNumItemsVisible() const
+int ListSelector::sourceNumItemsVisible() const
 {
   //  return list_source_box->numItemsVisible();
   return 0;
 }
 
 
-int DvtListSelector::destNumItemsVisible() const
+int ListSelector::destNumItemsVisible() const
 {
   //  return list_dest_box->numItemsVisible();
   return 0;
 }
 
 
-int DvtListSelector::sourceCurrentItem() const
+int ListSelector::sourceCurrentItem() const
 {
   //  return list_source_box->currentItem();
   return 0;
 }
 
 
-int DvtListSelector::destCurrentItem() const
+int ListSelector::destCurrentItem() const
 {
   //  return list_dest_box->currentItem();
   return 0;
 }
 
 
-QString DvtListSelector::sourceCurrentText() const
+QString ListSelector::sourceCurrentText() const
 {
   //  return list_source_box->currentText();
   return QString();
 }
 
 
-QString DvtListSelector::destCurrentText() const
+QString ListSelector::destCurrentText() const
 {
   //  return list_dest_box->currentText();
   return QString();
 }
 
 
-void DvtListSelector::sourceSetCurrentItem(int item)
+void ListSelector::sourceSetCurrentItem(int item)
 {
   //list_source_box->setCurrentItem(item);
 }
 
 
-void DvtListSelector::destSetCurrentItem(int item)
+void ListSelector::destSetCurrentItem(int item)
 {
   //  list_dest_box->setCurrentItem(item);
 }
 
 /*
-QListBoxItem *DvtListSelector::sourceFindItem(const QString &text,
+QListBoxItem *ListSelector::sourceFindItem(const QString &text,
 				      ComparisonFlags compare) const
 {
   return list_source_box->findItem(text,compare);
 }
 
 
-QListBoxItem *DvtListSelector::destFindItem(const QString &text,
+QListBoxItem *ListSelector::destFindItem(const QString &text,
 				      ComparisonFlags compare) const
 {
   return list_dest_box->findItem(text,compare);
 }
 */
 
-void DvtListSelector::clear()
+void ListSelector::clear()
 {
   /*
   list_source_box->clear();
@@ -249,7 +249,7 @@ void DvtListSelector::clear()
 }
 
 
-void DvtListSelector::addData()
+void ListSelector::addData()
 {
   /*
   if(list_source_box->currentItem()>=0) {
@@ -264,7 +264,7 @@ void DvtListSelector::addData()
 }
 
 
-void DvtListSelector::addAllData()
+void ListSelector::addAllData()
 {
   /*
   for(unsigned i=0;i<list_source_box->count();i++) {
@@ -278,7 +278,7 @@ void DvtListSelector::addAllData()
 }
 
 
-void DvtListSelector::removeData()
+void ListSelector::removeData()
 {
   /*
   if(list_dest_box->currentItem()>=0) {
@@ -293,7 +293,7 @@ void DvtListSelector::removeData()
 }
 
 
-void DvtListSelector::removeAllData()
+void ListSelector::removeAllData()
 {
   /*
   for(unsigned i=0;i<list_dest_box->count();i++) {
@@ -307,7 +307,7 @@ void DvtListSelector::removeAllData()
 }
 
 
-void DvtListSelector::CheckButtons()
+void ListSelector::CheckButtons()
 {
   /*
   list_add_button->setDisabled(list_source_box->count()==0);

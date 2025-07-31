@@ -26,12 +26,11 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-#include <dvtdialog.h>
-
+#include "dialog.h"
 #include "list_programs.h"
 #include "statecombobox.h"
 
-class EditProvider : public DvtDialog
+class EditProvider : public Dialog
 {
  Q_OBJECT
  public:

@@ -28,10 +28,11 @@
 #include <QSpinBox>
 #include <QTextEdit>
 
-#include <dvtdialog.h>
 #include <dvtuser.h>
 
-class EditSystem : public DvtDialog
+#include "dialog.h"
+
+class EditSystem : public Dialog
 {
  Q_OBJECT
  public:

@@ -25,11 +25,11 @@
 
 #include <dvtconf.h>
 #include <dvtdb.h>
-#include <dvttextfile.h>
 #include <state_conv.h>
 
 #include "list_reports.h"
 #include "pick_fields.h"
+#include "textfile.h"
 
 bool ListReports::ProgramByMarketReport(PickFields::MarketType type,
 					SpreadSheet *sheet)

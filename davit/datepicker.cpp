@@ -1,4 +1,4 @@
-// dvtdatepicker.cpp
+// datepicker.cpp
 //
 // A Qt-based application for testing General Purpose Outputs (GPO).
 //
@@ -24,12 +24,12 @@
 #include <QString>
 #include <QWidget>
 
-#include "dvtdatepicker.h"
+#include "datepicker.h"
 
 //
 // Global Classes
 //
-DvtDatePicker::DvtDatePicker(int low_year,int high_year,QWidget *parent)
+DatePicker::DatePicker(int low_year,int high_year,QWidget *parent)
   :QWidget(parent)
 {
   QLocale locale;
@@ -88,44 +88,44 @@ DvtDatePicker::DvtDatePicker(int low_year,int high_year,QWidget *parent)
 					   QPalette::Mid));
 
   QLabel *label=new QLabel(tr("Mo"),this);
-  label->setGeometry(DVTDATEPICKER_X_ORIGIN,30,30,30);
+  label->setGeometry(DATEPICKER_X_ORIGIN,30,30,30);
   label->setFont(header_font);
   label->setAlignment(Qt::AlignCenter);
 
   label=new QLabel(tr("Tu"),this);
-  label->setGeometry(DVTDATEPICKER_X_ORIGIN+DVTDATEPICKER_X_INTERVAL,
-		     DVTDATEPICKER_Y_ORIGIN,30,30);
+  label->setGeometry(DATEPICKER_X_ORIGIN+DATEPICKER_X_INTERVAL,
+		     DATEPICKER_Y_ORIGIN,30,30);
   label->setFont(header_font);
   label->setAlignment(Qt::AlignCenter);
 
   label=new QLabel(tr("We"),this);
-  label->setGeometry(DVTDATEPICKER_X_ORIGIN+DVTDATEPICKER_X_INTERVAL*2,
-		     DVTDATEPICKER_Y_ORIGIN,30,30);
+  label->setGeometry(DATEPICKER_X_ORIGIN+DATEPICKER_X_INTERVAL*2,
+		     DATEPICKER_Y_ORIGIN,30,30);
   label->setFont(header_font);
   label->setAlignment(Qt::AlignCenter);
 
   label=new QLabel(tr("Th"),this);
-  label->setGeometry(DVTDATEPICKER_X_ORIGIN+DVTDATEPICKER_X_INTERVAL*3,
-		     DVTDATEPICKER_Y_ORIGIN,30,30);
+  label->setGeometry(DATEPICKER_X_ORIGIN+DATEPICKER_X_INTERVAL*3,
+		     DATEPICKER_Y_ORIGIN,30,30);
   label->setFont(header_font);
   label->setAlignment(Qt::AlignCenter);
 
   label=new QLabel(tr("Fr"),this);
-  label->setGeometry(DVTDATEPICKER_X_ORIGIN+DVTDATEPICKER_X_INTERVAL*4,
-		     DVTDATEPICKER_Y_ORIGIN,30,30);
+  label->setGeometry(DATEPICKER_X_ORIGIN+DATEPICKER_X_INTERVAL*4,
+		     DATEPICKER_Y_ORIGIN,30,30);
   label->setFont(header_font);
   label->setAlignment(Qt::AlignCenter);
 
   label=new QLabel(tr("Sa"),this);
-  label->setGeometry(DVTDATEPICKER_X_ORIGIN+DVTDATEPICKER_X_INTERVAL*5,
-		     DVTDATEPICKER_Y_ORIGIN,30,30);
+  label->setGeometry(DATEPICKER_X_ORIGIN+DATEPICKER_X_INTERVAL*5,
+		     DATEPICKER_Y_ORIGIN,30,30);
   label->setFont(header_font);
   label->setAlignment(Qt::AlignCenter);
   label->setPalette(weekend_palette);
 
   label=new QLabel(tr("Su"),this);
-  label->setGeometry(DVTDATEPICKER_X_ORIGIN+DVTDATEPICKER_X_INTERVAL*6,
-		     DVTDATEPICKER_Y_ORIGIN,30,30);
+  label->setGeometry(DATEPICKER_X_ORIGIN+DATEPICKER_X_INTERVAL*6,
+		     DATEPICKER_Y_ORIGIN,30,30);
   label->setFont(header_font);
   label->setAlignment(Qt::AlignCenter);
   label->setPalette(weekend_palette);
@@ -135,8 +135,8 @@ DvtDatePicker::DvtDatePicker(int low_year,int high_year,QWidget *parent)
     for(int j=0;j<7;j++) {
       pick_date_label[i][j]=new QLabel(this);
       pick_date_label[i][j]->
-	setGeometry(DVTDATEPICKER_X_ORIGIN+DVTDATEPICKER_X_INTERVAL*j,
-		    DVTDATEPICKER_Y_ORIGIN+20+DVTDATEPICKER_Y_INTERVAL*i,30,30);
+	setGeometry(DATEPICKER_X_ORIGIN+DATEPICKER_X_INTERVAL*j,
+		    DATEPICKER_Y_ORIGIN+20+DATEPICKER_Y_INTERVAL*i,30,30);
       pick_date_label[i][j]->setAlignment(Qt::AlignCenter);
     }
   }
@@ -144,30 +144,30 @@ DvtDatePicker::DvtDatePicker(int low_year,int high_year,QWidget *parent)
 }
 
 
-DvtDatePicker::~DvtDatePicker()
+DatePicker::~DatePicker()
 {
 }
 
 
-QSize DvtDatePicker::sizeHint() const
+QSize DatePicker::sizeHint() const
 {
   return QSize(220,175);
 }
 
 
-QSizePolicy DvtDatePicker::sizePolicy() const
+QSizePolicy DatePicker::sizePolicy() const
 {
   return QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 }
 
 
-QDate DvtDatePicker::date() const
+QDate DatePicker::date() const
 {
   return pick_date;
 }
 
 
-bool DvtDatePicker::setDate(QDate date)
+bool DatePicker::setDate(QDate date)
 {
   if(!date.isValid()) {
     date=QDate::currentDate();
@@ -188,7 +188,7 @@ bool DvtDatePicker::setDate(QDate date)
 }
 
 
-void DvtDatePicker::monthActivatedData(int id)
+void DatePicker::monthActivatedData(int id)
 {
   QDate date=QDate(pick_date.year(),id+1,1);
   if(pick_date.day()<=date.daysInMonth()) {
@@ -201,7 +201,7 @@ void DvtDatePicker::monthActivatedData(int id)
 }
 
 
-void DvtDatePicker::yearActivatedData(int id)
+void DatePicker::yearActivatedData(int id)
 {
   QDate date=QDate(pick_low_year+pick_year_box->currentIndex(),
 		   pick_date.month(),1);
@@ -217,7 +217,7 @@ void DvtDatePicker::yearActivatedData(int id)
 }
 
 
-void DvtDatePicker::yearChangedData(int year)
+void DatePicker::yearChangedData(int year)
 {
   QDate date=QDate(pick_year_spin->value(),pick_date.month(),1);
   if(pick_date.day()<=date.daysInMonth()) {
@@ -232,17 +232,17 @@ void DvtDatePicker::yearChangedData(int year)
 }
 
 
-void DvtDatePicker::mousePressEvent(QMouseEvent *e)
+void DatePicker::mousePressEvent(QMouseEvent *e)
 {
-  if((e->pos().x()<DVTDATEPICKER_X_ORIGIN)||
-     (e->pos().x()>(DVTDATEPICKER_X_ORIGIN+DVTDATEPICKER_X_INTERVAL*7))||
-     (e->pos().y()<DVTDATEPICKER_Y_ORIGIN)||
-     (e->pos().y()>(DVTDATEPICKER_Y_ORIGIN+DVTDATEPICKER_Y_INTERVAL*7))) {
+  if((e->pos().x()<DATEPICKER_X_ORIGIN)||
+     (e->pos().x()>(DATEPICKER_X_ORIGIN+DATEPICKER_X_INTERVAL*7))||
+     (e->pos().y()<DATEPICKER_Y_ORIGIN)||
+     (e->pos().y()>(DATEPICKER_Y_ORIGIN+DATEPICKER_Y_INTERVAL*7))) {
     QWidget::mousePressEvent(e);
     return;
   }
-  int dow=(e->pos().x()-DVTDATEPICKER_X_ORIGIN)/DVTDATEPICKER_X_INTERVAL;
-  int week=(e->pos().y()-DVTDATEPICKER_Y_ORIGIN)/DVTDATEPICKER_Y_INTERVAL-1;
+  int dow=(e->pos().x()-DATEPICKER_X_ORIGIN)/DATEPICKER_X_INTERVAL;
+  int week=(e->pos().y()-DATEPICKER_Y_ORIGIN)/DATEPICKER_Y_INTERVAL-1;
   if((dow<0)||(dow>6)||(week<0)||(week>6)) {
     return;
   }
@@ -255,7 +255,7 @@ void DvtDatePicker::mousePressEvent(QMouseEvent *e)
 }
 
 
-void DvtDatePicker::PrintDays()
+void DatePicker::PrintDays()
 {
   QDate top_date;
 
@@ -306,7 +306,7 @@ void DvtDatePicker::PrintDays()
 }
 
 
-void DvtDatePicker::PrintDay(int day,int dow_offset)
+void DatePicker::PrintDay(int day,int dow_offset)
 {
   int slot=day+dow_offset-1;
   int week=slot/7;
@@ -315,7 +315,7 @@ void DvtDatePicker::PrintDay(int day,int dow_offset)
 }
 
 
-void DvtDatePicker::SelectDay(int day,int dow_offset,bool state)
+void DatePicker::SelectDay(int day,int dow_offset,bool state)
 {
   int slot=day+dow_offset-1;
   int week=slot/7;

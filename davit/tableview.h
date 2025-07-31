@@ -1,8 +1,8 @@
-// dvttextfile.h
+// tableview.h
 //
-// Spawn an external text file viewer.
+// QTableView widget with consistent defaults
 //
-//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2021-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -18,12 +18,17 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef DVTTEXTFILE_H
-#define DVTTEXTFILE_H
+#ifndef TABLEVIEW_H
+#define TABLEVIEW_H
 
-#include <QString>
+#include <QTableView>
 
-bool DvtTextFile(const QString &data);
+class TableView : public QTableView
+{
+  Q_OBJECT
+ public:
+  TableView(QWidget *parent=0);
+};
 
 
-#endif  // DVTTEXTFILE_H
+#endif  // TABLEVIEW_H

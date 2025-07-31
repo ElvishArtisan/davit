@@ -31,7 +31,7 @@
 #include "globals.h"
 
 EditUser::EditUser(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   //
   // Fix the Window Size

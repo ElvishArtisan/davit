@@ -25,7 +25,7 @@
 #include "add_user.h"
 
 AddUser::AddUser(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   add_loginname=NULL;
 

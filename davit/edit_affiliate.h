@@ -31,15 +31,14 @@
 #include <QCheckBox>
 #include <QButtonGroup>
 
-#include <dvtdialog.h>
-
+#include "dialog.h"
 #include "list_contacts.h"
 #include "list_airings.h"
 #include "list_remarks.h"
 #include "showaffidavits.h"
 #include "statecombobox.h"
 
-class EditAffiliate : public DvtDialog
+class EditAffiliate : public Dialog
 {
  Q_OBJECT
  public:

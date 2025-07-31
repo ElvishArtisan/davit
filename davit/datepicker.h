@@ -1,6 +1,6 @@
-// dvtdatedialog.h
+// datepicker.h
 //
-// A Dialog Box for using an DvtDatePicker widget.
+// A Calendar Widget.
 //
 //   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,10 +18,10 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef DVTDATEDIALOG_H
-#define DVTDATEDIALOG_H
+#ifndef DATEPICKER_H
+#define DATEPICKER_H
 
-#include <QDialog>
+#include <QWidget>
 #include <QSize>
 #include <QSizePolicy>
 #include <QPushButton>
@@ -29,29 +29,48 @@
 #include <QString>
 #include <QDateTime>
 #include <QLabel>
+#include <QComboBox>
+#include <QSpinBox>
 
-#include <dvtdatepicker.h>
+//
+// Display Settings
+//
+#define DATEPICKER_X_ORIGIN 20
+#define DATEPICKER_X_INTERVAL 25
+#define DATEPICKER_Y_ORIGIN 30
+#define DATEPICKER_Y_INTERVAL 20
 
-class DvtDateDialog : public QDialog
+class DatePicker : public QWidget
 {
- Q_OBJECT
+  Q_OBJECT
  public:
- DvtDateDialog(int low_year,int high_year,QWidget *parent=0);
-  ~DvtDateDialog();
+  DatePicker(int low_year,int high_year,QWidget *parent=0);
+  ~DatePicker();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
-
- public slots:
-  int exec(QDate *date);
+  QDate date() const;
+  bool setDate(QDate date);
 
  private slots:
-  void okData();
-  void cancelData();
+  void monthActivatedData(int id);
+  void yearActivatedData(int id);
+  void yearChangedData(int year);
+
+ protected:
+  void mousePressEvent(QMouseEvent *e);
 
  private:
-  DvtDatePicker *date_picker;
-  QDate *date_date;
+  void PrintDays();
+  void PrintDay(int day,int dow_offset);
+  void SelectDay(int day,int dow_offset,bool state);
+  QComboBox *pick_month_box;
+  QComboBox *pick_year_box;
+  QSpinBox *pick_year_spin;
+  QLabel *pick_date_label[6][7];
+  QDate pick_date;
+  int pick_low_year;
+  int pick_high_year;
 };
 
 
-#endif  // DVTDATEDIALOG_H
+#endif  // DATEPICKER_H

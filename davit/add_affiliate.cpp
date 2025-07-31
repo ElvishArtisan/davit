@@ -30,7 +30,7 @@
 
 
 AddAffiliate::AddAffiliate(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(true);
 

@@ -25,7 +25,7 @@
 #include "list_contacts.h"
 
 ListContacts::ListContacts(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(false);
   list_id=-1;
@@ -44,7 +44,7 @@ ListContacts::ListContacts(DvtConfig *c,QWidget *parent)
   //
   // Contact List
   //
-  list_contacts_view=new DvtTableView(this);
+  list_contacts_view=new TableView(this);
   list_contacts_model=new ContactListModel(this);
   list_contacts_model->setFont(defaultFont());
   list_contacts_model->setPalette(palette());

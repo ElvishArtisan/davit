@@ -32,7 +32,7 @@
 #include "maildialog.h"
 
 MailDialog::MailDialog(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(true);
   setWindowTitle(tr("Davit - Compose Mail"));

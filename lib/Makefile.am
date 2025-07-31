@@ -32,38 +32,17 @@ dist_libdvt_la_SOURCES = dvt.h dvt.cpp\
                          dvtcmdswitch.cpp dvtcmdswitch.h\
                          dvtconf.cpp dvtconf.h\
                          dvtconfig.cpp dvtconfig.h\
-                         dvtdatedialog.cpp dvtdatedialog.h\
-                         dvtdatepicker.cpp dvtdatepicker.h\
                          dvtdb.cpp dvtdb.h\
-                         dvtdialog.cpp dvtdialog.h\
-                         dvtfontengine.cpp dvtfontengine.h\
                          dvtimport.cpp dvtimport.h\
-                         dvtlabel.cpp dvtlabel.h\
-                         dvtlistselector.cpp dvtlistselector.h\
                          dvtprofile.cpp dvtprofile.h\
                          dvtprofileline.cpp dvtprofileline.h\
                          dvtprofilesection.cpp dvtprofilesection.h\
                          dvtsendmail.cpp dvtsendmail.h\
                          dvtsystem.cpp dvtsystem.h\
-                         dvttableview.cpp dvttableview.h\
-                         dvttablewidgetitem.cpp dvttablewidgetitem.h\
-                         dvttextfile.cpp dvttextfile.h\
-                         dvttransportbutton.cpp dvttransportbutton.h\
                          dvtuser.cpp dvtuser.h\
-                         dvtweb.cpp dvtweb.h\
-                         dvtwidget.cpp dvtwidget.h\
-                         login.cpp login.h\
-                         state_conv.cpp state_conv.h
+                         dvtweb.cpp dvtweb.h
 
-nodist_libdvt_la_SOURCES = moc_dvtdatedialog.cpp\
-                           moc_dvtdatepicker.cpp\
-                           moc_dvtdialog.cpp\
-                           moc_dvtlabel.cpp\
-                           moc_dvtlistselector.cpp\
-                           moc_dvttableview.cpp\
-                           moc_dvttransportbutton.cpp\
-                           moc_dvtwidget.cpp\
-                           moc_login.cpp
+# nodist_libdvt_la_SOURCES =
 
 libdvt_la_LDFLAGS = -release $(VERSION)
 

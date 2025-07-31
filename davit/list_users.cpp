@@ -29,7 +29,7 @@
 #include "list_users.h"
 
 ListUsers::ListUsers(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   //
   // Fix the Window Size
@@ -47,7 +47,7 @@ ListUsers::ListUsers(DvtConfig *c,QWidget *parent)
   //
   // Users List
   //
-  list_users_view=new DvtTableView(this);
+  list_users_view=new TableView(this);
   list_users_model=new UserListModel(this);
   list_users_model->setFont(defaultFont());
   list_users_model->setPalette(palette());

@@ -30,7 +30,7 @@
 #include "edit_feed.h"
 
 EditFeed::EditFeed(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(true);
   edit_feed_id=-1;

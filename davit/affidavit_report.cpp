@@ -24,12 +24,12 @@
 #include <QFontMetrics>
 #include <QMessageBox>
 
-#include <dvttextfile.h>
 #include <dvtconf.h>
 #include <dvtdb.h>
 #include <spread_sheet.h>
 
 #include "list_reports.h"
+#include "textfile.h"
 
 bool ListReports::AffidavitReport(SpreadSheet *sheet)
 {

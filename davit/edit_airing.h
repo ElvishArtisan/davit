@@ -29,9 +29,9 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-#include <dvtdialog.h>
+#include "dialog.h"
 
-class EditAiring : public DvtDialog
+class EditAiring : public Dialog
 {
  Q_OBJECT
  public:

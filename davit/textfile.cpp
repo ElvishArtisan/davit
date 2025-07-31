@@ -1,4 +1,4 @@
-// dvttextfile.cpp
+// textfile.cpp
 //
 // Spawn an external text file viewer.
 //
@@ -29,9 +29,10 @@
 
 #include <dvtconf.h>
 #include <dvt.h>
-#include <dvttextfile.h>
 
-bool DvtTextFile(const QString &data)
+#include "textfile.h"
+
+bool TextFile(const QString &data)
 {
   char tmpfile[256];
   QString editor=DVT_LINUX_EDITOR;
@@ -69,7 +70,7 @@ bool DvtTextFile(const QString &data)
     return false;
   }
   if(write(fd,data.toUtf8(),data.toUtf8().length())!=data.toUtf8().length()) {
-    fprintf(stderr,"DvtTextFile write lost data [%s]",strerror(errno));
+    fprintf(stderr,"TextFile write lost data [%s]",strerror(errno));
   }
   ::close(fd);
 

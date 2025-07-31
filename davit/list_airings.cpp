@@ -28,7 +28,7 @@
 #include "list_airings.h"
 
 ListAirings::ListAirings(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(false);
 
@@ -46,7 +46,7 @@ ListAirings::ListAirings(DvtConfig *c,QWidget *parent)
   //
   // Airings List
   //
-  list_airings_view=new DvtTableView(this);
+  list_airings_view=new TableView(this);
   list_airings_model=new AiringListModel(this);
   list_airings_model->setFont(defaultFont());
   list_airings_model->setPalette(palette());

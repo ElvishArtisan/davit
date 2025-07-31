@@ -32,7 +32,7 @@
 #include "edit_airing.h"
 
 EditAiring::EditAiring(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   edit_airing_id=0;
 

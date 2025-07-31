@@ -31,16 +31,16 @@
 #include <QProgressDialog>
 #include <QPixmap>
 
-#include <dvtdialog.h>
-#include <dvttablewidgetitem.h>
-#include <dvttableview.h>
 
 #include "add_affiliate.h"
 #include "affiliatelistmodel.h"
+#include "dialog.h"
 #include "edit_affiliate.h"
 #include "generate_affadavit.h"
+#include "tableview.h"
+#include "tablewidgetitem.h"
 
-class ListAffiliates : public DvtDialog
+class ListAffiliates : public Dialog
 {
  Q_OBJECT
  public:
@@ -78,7 +78,7 @@ class ListAffiliates : public DvtDialog
   QComboBox *list_year_box;
   QLabel *list_callfilter_label;
   QLineEdit *list_callfilter_edit;
-  DvtTableView *list_affiliates_view;
+  TableView *list_affiliates_view;
   AffiliateListModel *list_affiliates_model;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;

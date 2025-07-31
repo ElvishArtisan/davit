@@ -1,4 +1,4 @@
-// dvtfontengine.cpp
+// fontengine.cpp
 //
 // Engine for calculating fonts in Davit UIs
 //
@@ -18,16 +18,16 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include "dvtfontengine.h"
+#include "fontengine.h"
 
-DvtFontEngine::DvtFontEngine(const QFont &default_font,DvtConfig *c)
+FontEngine::FontEngine(const QFont &default_font,DvtConfig *c)
 {
   font_config=c;
   MakeFonts(default_font);
 }
 
 
-DvtFontEngine::~DvtFontEngine()
+FontEngine::~FontEngine()
 {
   delete font_button_font_metrics;
   delete font_huge_button_font_metrics;
@@ -45,187 +45,187 @@ DvtFontEngine::~DvtFontEngine()
 }
 
 
-QFont DvtFontEngine::buttonFont() const
+QFont FontEngine::buttonFont() const
 {
   return font_button_font;
 }
 
 
-QFontMetrics *DvtFontEngine::buttonFontMetrics() const
+QFontMetrics *FontEngine::buttonFontMetrics() const
 {
   return font_button_font_metrics;
 }
 
 
-QFont DvtFontEngine::hugeButtonFont() const
+QFont FontEngine::hugeButtonFont() const
 {
   return font_huge_button_font;
 }
 
 
-QFontMetrics *DvtFontEngine::hugeButtonFontMetrics() const
+QFontMetrics *FontEngine::hugeButtonFontMetrics() const
 {
   return font_huge_button_font_metrics;
 }
 
 
-QFont DvtFontEngine::bigButtonFont() const
+QFont FontEngine::bigButtonFont() const
 {
   return font_big_button_font;
 }
 
 
-QFontMetrics *DvtFontEngine::bigButtonFontMetrics() const
+QFontMetrics *FontEngine::bigButtonFontMetrics() const
 {
   return font_big_button_font_metrics;
 }
 
 
-QFont DvtFontEngine::subButtonFont() const
+QFont FontEngine::subButtonFont() const
 {
   return font_sub_button_font;
 }
 
 
-QFontMetrics *DvtFontEngine::subButtonFontMetrics() const
+QFontMetrics *FontEngine::subButtonFontMetrics() const
 {
   return font_sub_button_font_metrics;
 }
 
 
-QFont DvtFontEngine::sectionLabelFont() const
+QFont FontEngine::sectionLabelFont() const
 {
   return font_section_label_font;
 }
 
 
-QFontMetrics *DvtFontEngine::sectionLabelFontMetrics() const
+QFontMetrics *FontEngine::sectionLabelFontMetrics() const
 {
   return font_section_label_font_metrics;
 }
 
 
-QFont DvtFontEngine::bigLabelFont() const
+QFont FontEngine::bigLabelFont() const
 {
   return font_big_label_font;
 }
 
 
-QFontMetrics *DvtFontEngine::bigLabelFontMetrics() const
+QFontMetrics *FontEngine::bigLabelFontMetrics() const
 {
   return font_big_label_font_metrics;
 }
 
 
-QFont DvtFontEngine::labelFont() const
+QFont FontEngine::labelFont() const
 {
   return font_label_font;
 }
 
 
-QFontMetrics *DvtFontEngine::labelFontMetrics() const
+QFontMetrics *FontEngine::labelFontMetrics() const
 {
   return font_label_font_metrics;
 }
 
 
-QFont DvtFontEngine::subLabelFont() const
+QFont FontEngine::subLabelFont() const
 {
   return font_sub_label_font;
 }
 
 
-QFontMetrics *DvtFontEngine::subLabelFontMetrics() const
+QFontMetrics *FontEngine::subLabelFontMetrics() const
 {
   return font_sub_label_font_metrics;
 }
 
 
-QFont DvtFontEngine::progressFont() const
+QFont FontEngine::progressFont() const
 {
   return font_progress_font;
 }
 
 
-QFontMetrics *DvtFontEngine::progressFontMetrics() const
+QFontMetrics *FontEngine::progressFontMetrics() const
 {
   return font_progress_font_metrics;
 }
 
 
-QFont DvtFontEngine::bannerFont() const
+QFont FontEngine::bannerFont() const
 {
   return font_banner_font;
 }
 
 
-QFontMetrics *DvtFontEngine::bannerFontMetrics() const
+QFontMetrics *FontEngine::bannerFontMetrics() const
 {
   return font_banner_font_metrics;
 }
 
 
-QFont DvtFontEngine::timerFont() const
+QFont FontEngine::timerFont() const
 {
   return font_timer_font;
 }
 
 
-QFontMetrics *DvtFontEngine::timerFontMetrics() const
+QFontMetrics *FontEngine::timerFontMetrics() const
 {
   return font_timer_font_metrics;
 }
 
 
-QFont DvtFontEngine::smallTimerFont() const
+QFont FontEngine::smallTimerFont() const
 {
   return font_small_timer_font;
 }
 
 
-QFontMetrics *DvtFontEngine::smallTimerFontMetrics() const
+QFontMetrics *FontEngine::smallTimerFontMetrics() const
 {
   return font_small_timer_font_metrics;
 }
 
 
-QFont DvtFontEngine::defaultFont() const
+QFont FontEngine::defaultFont() const
 {
   return font_default_font;
 }
 
 
-QFontMetrics *DvtFontEngine::defaultFontMetrics() const
+QFontMetrics *FontEngine::defaultFontMetrics() const
 {
   return font_default_font_metrics;
 }
 
 
-QFont DvtFontEngine::printerHeaderFont() const
+QFont FontEngine::printerHeaderFont() const
 {
   return font_big_label_font;
 }
 
 
-QFontMetrics *DvtFontEngine::printerHeaderFontMetrics() const
+QFontMetrics *FontEngine::printerHeaderFontMetrics() const
 {
   return font_big_label_font_metrics;
 }
 
 
-QFont DvtFontEngine::printerFont() const
+QFont FontEngine::printerFont() const
 {
   return font_printer_font;
 }
 
 
-QFontMetrics *DvtFontEngine::printerFontMetrics() const
+QFontMetrics *FontEngine::printerFontMetrics() const
 {
   return font_printer_font_metrics;
 }
 
 
-void DvtFontEngine::MakeFonts(const QFont &default_font)
+void FontEngine::MakeFonts(const QFont &default_font)
 {
   /*
   printf("family: %s  pixelSize: %d  pointSize: %d\n",

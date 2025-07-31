@@ -31,7 +31,7 @@
 #include "list_programs.h"
 
 EditProvider::EditProvider(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(true);
   edit_provider_id=-1;

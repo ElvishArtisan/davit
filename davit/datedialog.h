@@ -1,8 +1,8 @@
-// spread.h
+// datedialog.h
 //
-// Abstract base class for a spreadsheet object.
+// A Dialog Box for using an DvtDatePicker widget.
 //
-//   (C) Copyright 2014-2025 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -18,32 +18,40 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef SPREAD_H
-#define SPREAD_H
+#ifndef DATEDIALOG_H
+#define DATEDIALOG_H
 
-#include <QFont>
-#include <QFontMetrics>
+#include <QDialog>
+#include <QSize>
+#include <QSizePolicy>
+#include <QPushButton>
+#include <QColor>
 #include <QString>
+#include <QDateTime>
+#include <QLabel>
 
-class Spread
+#include "datepicker.h"
+
+class DateDialog : public QDialog
 {
+ Q_OBJECT
  public:
-  enum FileFormat {SlkFormat=0,ExcelXmlFormat=1};
-  Spread();
-  ~Spread();
-  virtual QString write(FileFormat fmt)=0;
-  static QString fileExtension(FileFormat fmt);
-  static FileFormat fileFormat(const QString &base_name);
+ DateDialog(int low_year,int high_year,QWidget *parent=0);
+  ~DateDialog();
+  QSize sizeHint() const;
+  QSizePolicy sizePolicy() const;
 
- protected:
-  QFontMetrics *fontMetrics() const;
-  QString escapeXml(const QString &xml);
-  QString unEscapeXml(const QString &xml);
+ public slots:
+  int exec(QDate *date);
+
+ private slots:
+  void okData();
+  void cancelData();
 
  private:
-  QFont obj_font;
-  QFontMetrics *obj_font_metrics;
+  DatePicker *date_picker;
+  QDate *date_date;
 };
 
 
-#endif   // SPREAD_H
+#endif  // DATEDIALOG_H

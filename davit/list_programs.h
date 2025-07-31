@@ -24,14 +24,14 @@
 #include <QPushButton>
 
 #include <dvtconfig.h>
-#include <dvtdialog.h>
-#include <dvttableview.h>
 
+#include "dialog.h"
 #include "edit_program.h"
 #include "generate_affadavit.h"
 #include "programlistmodel.h"
+#include "tableview.h"
 
-class ListPrograms : public DvtDialog
+class ListPrograms : public Dialog
 {
  Q_OBJECT
  public:
@@ -55,7 +55,7 @@ class ListPrograms : public DvtDialog
   void resizeEvent(QResizeEvent *e);
 
  private:
-  DvtTableView *list_programs_view;
+  TableView *list_programs_view;
   ProgramListModel *list_programs_model;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;

@@ -25,9 +25,9 @@
 
 #include <dvtconf.h>
 #include <dvtdb.h>
-#include <dvttextfile.h>
 
 #include "list_reports.h"
+#include "textfile.h"
 
 bool ListReports::AffiliatesByMarketReport(PickFields::MarketType type,
 					   SpreadSheet *sheet)

@@ -26,14 +26,14 @@
 
 #include <dvt.h>
 #include <dvtconf.h>
-#include <dvtdatedialog.h>
 #include <dvtdb.h>
-#include <dvttextfile.h>
 
+#include "datedialog.h"
 #include "generate_affadavit.h"
+#include "textfile.h"
 
 GenerateAffadavit::GenerateAffadavit(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(true);
 

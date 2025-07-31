@@ -30,7 +30,7 @@
 #include "list_networks.h"
 
 ListNetworks::ListNetworks(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(true);
 
@@ -50,7 +50,7 @@ ListNetworks::ListNetworks(DvtConfig *c,QWidget *parent)
   //
   // Networks List
   //
-  list_networks_view=new DvtTableView(this);
+  list_networks_view=new TableView(this);
   list_networks_model=new NetworkListModel(this);
   list_networks_model->setFont(defaultFont());
   list_networks_model->setPalette(palette());

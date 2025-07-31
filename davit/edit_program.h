@@ -31,14 +31,14 @@
 #include <QTextEdit>
 
 #include <dvtconfig.h>
-#include <dvtdialog.h>
-#include <dvttableview.h>
 
 #include "algocombobox.h"
+#include "dialog.h"
 #include "edit_feed.h"
 #include "feedlistmodel.h"
+#include "tableview.h"
 
-class EditProgram : public DvtDialog
+class EditProgram : public Dialog
 {
  Q_OBJECT
  public:
@@ -86,7 +86,7 @@ class EditProgram : public DvtDialog
   QLineEdit *edit_contact_email_edit;
   QGroupBox *edit_feeds_group;
   QLabel *edit_feeds_label;
-  DvtTableView *edit_feeds_view;
+  TableView *edit_feeds_view;
   FeedListModel *edit_feeds_model;
   QGroupBox *edit_primary_group;
   QLabel *edit_primary_number_label;

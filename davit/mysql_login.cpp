@@ -22,7 +22,7 @@
 #include <QPainter>
 #include <QPushButton>
 
-#include <dvtlabel.h>
+#include "label.h"
 
 #include "mysql_login.h"
 
@@ -44,7 +44,7 @@ MySqlLogin::MySqlLogin(QString msg,QString *username,QString *password,
   //
   // Message Label
   //
-  DvtLabel *label=new DvtLabel(msg,this);
+  Label *label=new Label(msg,this);
   label->setFont(font);
   label->setGeometry(10,10,sizeHint().width()-20,sizeHint().height()-130);
   label->setAlignment(Qt::AlignCenter);

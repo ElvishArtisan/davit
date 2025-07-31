@@ -27,7 +27,7 @@
 #include "edit_contact.h"
 
 EditContact::EditContact(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   edit_contact_id=-1;
 

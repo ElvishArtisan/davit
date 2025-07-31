@@ -1,4 +1,4 @@
-// dvtdatedialog.cpp
+// datedialog.cpp
 //
 // A Dialog Box for using an DvtDatePicker widget.
 //
@@ -32,12 +32,12 @@
 #include <QSignalMapper>
 
 #include "dvtconf.h"
-#include "dvtdatedialog.h"
+#include "datedialog.h"
 
 //
 // Global Classes
 //
-DvtDateDialog::DvtDateDialog(int low_year,int high_year,QWidget *parent)
+DateDialog::DateDialog(int low_year,int high_year,QWidget *parent)
   : QDialog(parent)
 {
   setModal(true);
@@ -51,7 +51,7 @@ DvtDateDialog::DvtDateDialog(int low_year,int high_year,QWidget *parent)
   //
   // Datepicker
   //
-  date_picker=new DvtDatePicker(low_year,high_year,this);
+  date_picker=new DatePicker(low_year,high_year,this);
   date_picker->setGeometry(10,10,
 			   date_picker->sizeHint().width(),
 			   date_picker->sizeHint().height());
@@ -76,25 +76,25 @@ DvtDateDialog::DvtDateDialog(int low_year,int high_year,QWidget *parent)
 }
 
 
-DvtDateDialog::~DvtDateDialog()
+DateDialog::~DateDialog()
 {
 }
 
 
-QSize DvtDateDialog::sizeHint() const
+QSize DateDialog::sizeHint() const
 {
   return QSize(date_picker->sizeHint().width()+20,
 	       date_picker->sizeHint().height()+60);
 }
 
 
-QSizePolicy DvtDateDialog::sizePolicy() const
+QSizePolicy DateDialog::sizePolicy() const
 {
   return QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 }
 
 
-int DvtDateDialog::exec(QDate *date)
+int DateDialog::exec(QDate *date)
 {
   date_date=date;
   date_picker->setDate(*date_date);
@@ -102,14 +102,14 @@ int DvtDateDialog::exec(QDate *date)
 }
 
 
-void DvtDateDialog::okData()
+void DateDialog::okData()
 {
   *date_date=date_picker->date();
   done(0);
 }
 
 
-void DvtDateDialog::cancelData()
+void DateDialog::cancelData()
 {
   done(-1);
 }

@@ -44,7 +44,6 @@
 #include <QSqlQuery>
 
 #include "dvtconf.h"
-#include "dvtfontengine.h"
 #include "dvt.h"
 
 #define BUFFER_SIZE 1024
@@ -1306,71 +1305,6 @@ unsigned DvtContactInfo(QString *name,QString *title,QString *email,
   return ret;
 }
 
-
-QFont DvtGetFont(const QString &base_name)
-{
-  QString face=FONT_ENGINE_DEFAULT_FONT_FACE;
-  int size=FONT_ENGINE_DEFAULT_FONT_SIZE;
-  QFont::Weight weight=FONT_ENGINE_DEFAULT_FONT_WEIGHT;
-  bool ok=false;
-  int n;
-
-  if(getenv((base_name+"_FONT_FACE").toUtf8())!=NULL) {
-    face=getenv((base_name+"_FONT_FACE").toUtf8());
-  }
-  if(getenv((base_name+"_FONT_SIZE").toUtf8())!=NULL) {
-    n=QString(getenv((base_name+"_FONT_SIZE").toUtf8())).toInt(&ok);
-    if(ok) {
-      size=n;
-    }
-    else {
-      fprintf(stderr,"davit: %s_FONT_SIZE value is malformatted\n",
-	      base_name.toUtf8().constData());
-    }
-  }
-  if(getenv((base_name+"_FONT_WEIGHT").toUtf8())!=NULL) {
-    QString wt=getenv((base_name+"_FONT_WEIGHT").toUtf8());
-    if(wt.toLower()=="normal") {
-      weight=QFont::Normal;
-    }
-    else {
-      if(wt.toLower()=="bold") {
-	weight=QFont::Bold;
-      }
-      else {
-	fprintf(stderr,"davit: %s_FONT_WEIGHT value is malformatted\n",
-		base_name.toUtf8().constData());
-      }
-    }
-  }
-
-  return QFont(face,size,weight);
-}
-
-/*
-Spread::FileFormat DvtGetSpreadSheetFileFormat(const QString &base_name)
-{
-  Spread::FileFormat ret=SpreadSheet::ExcelXmlFormat;
-
-  if(getenv((base_name+"_FORMAT").toUtf8())!=NULL) {
-    QString str=QString(getenv((base_name+"_FORMAT").toUtf8())).toLower();
-    if(str=="slk") {
-      ret=Spread::SlkFormat;
-    }
-    else {
-      if(str=="excelxml") {
-	ret=Spread::ExcelXmlFormat;
-      }
-      else {
-	fprintf(stderr,"davit: %s_FORMAT value is malformatted\n",
-		base_name.toUtf8().constData());
-      }
-    }
-  }
-
-  return ret;
-}
-*/
 
 QStringList DvtReportViewerCommand(const QString &filename,
 				   const QString &ooffice_path)

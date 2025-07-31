@@ -26,11 +26,11 @@
 
 #include <dvtconf.h>
 #include <dvtdb.h>
-#include <dvttextfile.h>
-#include <spread_sheet.h>
 
 #include "affidavit_picker.h"
 #include "list_reports.h"
+#include "spread_sheet.h"
+#include "textfile.h"
 
 
 bool ListReports::MissingAffidavitReport(SpreadSheet *sheet)

@@ -42,7 +42,7 @@
 #include "../icons/whiteball.xpm"
 
 ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   QDate today=QDate::currentDate();
 
@@ -142,7 +142,7 @@ ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
   //
   // Affiliates List
   //
-  list_affiliates_view=new DvtTableView(this);
+  list_affiliates_view=new TableView(this);
   list_affiliates_model=new AffiliateListModel(this);
   list_affiliates_model->setFont(defaultFont());
   list_affiliates_model->setPalette(palette());

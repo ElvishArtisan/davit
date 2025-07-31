@@ -1,4 +1,4 @@
-/*   dvttablewidgetitem.h
+/*   tablewidgetitem.cpp
  *
  *   A QTableWidgetItem class for Davit
  *
@@ -20,21 +20,23 @@
  *
  */
 
-#ifndef DVTTABLEWIDGETITEM_H
-#define DVTTABLEWIDGETITEM_H
+#include "tablewidgetitem.h"
 
-#include <QTableWidgetItem>
 
-class DvtTableWidgetItem : public QTableWidgetItem
+TableWidgetItem::TableWidgetItem()
+  : QTableWidgetItem(QTableWidgetItem::Type)
 {
- public:
-  DvtTableWidgetItem();
-  int id() const;
-  void setId(int id);
-
- private:
-  int item_id;
-};
+  item_id=-1;
+}
 
 
-#endif  // DVTTABLEWIDGETITEM_H
+int TableWidgetItem::id() const
+{
+  return item_id;
+}
+
+
+void TableWidgetItem::setId(int id)
+{
+  item_id=id;
+}

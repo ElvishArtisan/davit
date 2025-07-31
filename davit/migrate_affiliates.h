@@ -26,7 +26,7 @@
 #include <QComboBox>
 #include <QDialog>
 
-#include <dvtlistselector.h>
+#include "listselector.h"
 
 class MigrateAffiliates : public QDialog
 {
@@ -48,7 +48,7 @@ class MigrateAffiliates : public QDialog
   int edit_id;
   QString edit_program_name;
   QComboBox *edit_program_box;
-  DvtListSelector *edit_affiliates_sel;
+  ListSelector *edit_affiliates_sel;
 };
 
 

@@ -25,9 +25,9 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-#include <dvtdialog.h>
+#include "dialog.h"
 
-class ChangePassword : public DvtDialog
+class ChangePassword : public Dialog
 {
   Q_OBJECT
  public:

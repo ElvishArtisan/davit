@@ -32,7 +32,7 @@
 #include "list_programs.h"
 
 ListPrograms::ListPrograms(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(true);
   //  list_provider_id=provider_id;
@@ -52,7 +52,7 @@ ListPrograms::ListPrograms(DvtConfig *c,QWidget *parent)
   //
   // Programs List
   //
-  list_programs_view=new DvtTableView(this);
+  list_programs_view=new TableView(this);
   list_programs_model=new ProgramListModel(this);
   list_programs_model->setFont(defaultFont());
   list_programs_model->setPalette(palette());

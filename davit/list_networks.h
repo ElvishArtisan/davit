@@ -23,13 +23,12 @@
 
 #include <QPushButton>
 
-#include <dvtdialog.h>
-#include <dvttableview.h>
-
+#include "dialog.h"
 #include "edit_network.h"
 #include "networklistmodel.h"
+#include "tableview.h"
 
-class ListNetworks : public DvtDialog
+class ListNetworks : public Dialog
 {
  Q_OBJECT
  public:
@@ -49,7 +48,7 @@ class ListNetworks : public DvtDialog
   void resizeEvent(QResizeEvent *e);
 
  private:
-  DvtTableView *list_networks_view;
+  TableView *list_networks_view;
   NetworkListModel *list_networks_model;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;

@@ -1,6 +1,6 @@
-// dvtdialog.h
+// widget.h
 //
-// Base class for Davit modal dialogs.
+// Base class for Davit widgets
 //
 //   (C) Copyright 2019-2025 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,20 +18,21 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef DVTDIALOG_H
-#define DVTDIALOG_H
+#ifndef WIDGET_H
+#define WIDGET_H
 
-#include <QDialog>
+#include <QWidget>
 
 #include <dvtconfig.h>
-#include <dvtfontengine.h>
 
-class DvtDialog : public QDialog,public DvtFontEngine
+#include "fontengine.h"
+
+class Widget : public QWidget,public FontEngine
 {
   Q_OBJECT;
  public:
-  DvtDialog(DvtConfig *c,QWidget *parent=0);
+  Widget(DvtConfig *c,QWidget *parent=0);
 };
 
 
-#endif  // DVTDIALOG_H
+#endif  // WIDGET_H

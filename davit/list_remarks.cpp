@@ -26,7 +26,7 @@
 #include "list_remarks.h"
 
 ListRemarks::ListRemarks(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(false);
 

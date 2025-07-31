@@ -28,11 +28,11 @@
 #include <QPrinter>
 #include <QPushButton>
 
-#include <dvtdialog.h>
+#include "dialog.h"
 
 #define AFFADAVIT_WIDTH 80
 
-class GenerateAffadavit : public DvtDialog
+class GenerateAffadavit : public Dialog
 {
   Q_OBJECT
  public:

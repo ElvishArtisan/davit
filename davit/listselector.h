@@ -1,8 +1,8 @@
-//   dvtlistselector.h
+//   listselector.h
 //
 //   An listselector widget with word wrap.
 //
-//   (C) Copyright 20022025 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -18,8 +18,8 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef DVTLISTSELECTOR_H
-#define DVTLISTSELECTOR_H
+#ifndef LISTSELECTOR_H
+#define LISTSELECTOR_H
 
 #include <QWidget>
 #include <QLabel>
@@ -29,12 +29,12 @@
 #include <QPushButton>
 
 
-class DvtListSelector : public QHBoxLayout
+class ListSelector : public QHBoxLayout
 {
   Q_OBJECT
 
  public:
-  DvtListSelector(QWidget *parent=0);
+  ListSelector(QWidget *parent=0);
   uint sourceCount() const;
   uint destCount() const;
   void sourceSetLabel(QString label);
@@ -82,4 +82,4 @@ class DvtListSelector : public QHBoxLayout
 };
 
 
-#endif  // DVTLISTSELECTOR_H
+#endif  // LISTSELECTOR_H

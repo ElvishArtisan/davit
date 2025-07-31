@@ -28,7 +28,7 @@
 
 
 EditNetwork::EditNetwork(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(true);
   edit_network_id=-1;

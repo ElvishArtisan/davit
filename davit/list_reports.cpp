@@ -49,7 +49,7 @@
 #include "spread_sheet.h"
 
 ListReports::ListReports(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(true);
   d_busy_cursor_count=0;
@@ -157,7 +157,8 @@ void ListReports::runData()
   SpreadSheet *sheet=new SpreadSheet();
   bool ok=false;
 
-  sheet->setDefaultFont(DvtGetFont("DAVIT_REPORT"));
+  //  sheet->setDefaultFont(DvtGetFont("DAVIT_REPORT"));
+  //  sheet->setDefaultFont(FontEngine::getFont("DAVIT_REPORT"));
 
   QList<QListWidgetItem *> items=list_reports_list->selectedItems();
   if(items.size()!=1) {

@@ -24,12 +24,11 @@
 #include <QTableWidget>
 #include <QPushButton>
 
-#include <dvtwidget.h>
-
 #include "edit_contact.h"
 #include "maildialog.h"
+#include "widget.h"
 
-class ShowAffidavits : public DvtWidget
+class ShowAffidavits : public Widget
 {
  Q_OBJECT
  public:

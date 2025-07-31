@@ -25,8 +25,7 @@
 
 #include <math.h>
 
-#include <dvtdatedialog.h>
-
+#include "datedialog.h"
 #include "pick_fields.h"
 
 PickFields::PickFields(QDate *start_date,QDate *end_date,
@@ -377,7 +376,7 @@ QString PickFields::selectedStateCode() const
 void PickFields::selectStartDateData()
 {
   QDate date=report_start_date_edit->date();
-  DvtDateDialog *d=new DvtDateDialog(2008,QDate::currentDate().year(),this);
+  DateDialog *d=new DateDialog(2008,QDate::currentDate().year(),this);
   if(d->exec(&date)==0) {
     report_start_date_edit->setDate(date);
   }
@@ -388,7 +387,7 @@ void PickFields::selectStartDateData()
 void PickFields::selectEndDateData()
 {
   QDate date=report_end_date_edit->date();
-  DvtDateDialog *d=new DvtDateDialog(2008,QDate::currentDate().year(),this);
+  DateDialog *d=new DateDialog(2008,QDate::currentDate().year(),this);
   if(d->exec(&date)==0) {
     report_end_date_edit->setDate(date);
   }

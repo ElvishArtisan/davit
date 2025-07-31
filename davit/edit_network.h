@@ -27,9 +27,10 @@
 #include <QPushButton>
 
 #include <dvtconf.h>
-#include <dvtdialog.h>
 
-class EditNetwork : public DvtDialog
+#include "dialog.h"
+
+class EditNetwork : public Dialog
 {
  Q_OBJECT
  public:

@@ -24,13 +24,12 @@
 #include <QListView>
 #include <QPushButton>
 
-#include <dvtdialog.h>
-#include <dvttableview.h>
-
 #include "contactlistmodel.h"
+#include "dialog.h"
 #include "edit_contact.h"
+#include "tableview.h"
 
-class ListContacts : public DvtDialog
+class ListContacts : public Dialog
 {
  Q_OBJECT
  public:
@@ -56,7 +55,7 @@ class ListContacts : public DvtDialog
   void closeEvent(QCloseEvent *);
   
  private:
-  DvtTableView *list_contacts_view;
+  TableView *list_contacts_view;
   ContactListModel *list_contacts_model;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;

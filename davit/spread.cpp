@@ -18,8 +18,7 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <dvtfontengine.h>
-
+#include "fontengine.h"
 #include "spread.h"
 
 Spread::Spread()
@@ -33,20 +32,6 @@ Spread::Spread()
 Spread::~Spread()
 {
   delete obj_font_metrics;
-}
-
-
-QFont Spread::defaultFont() const
-{
-  return obj_font;
-}
-
-
-void Spread::setDefaultFont(const QFont &font)
-{
-  obj_font=font;
-  delete obj_font_metrics;
-  obj_font_metrics=new QFontMetrics(obj_font);
 }
 
 

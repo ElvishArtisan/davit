@@ -26,9 +26,10 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <dvtdialog.h>
 
-class AddAffiliate : public DvtDialog
+#include "dialog.h"
+
+class AddAffiliate : public Dialog
 {
  Q_OBJECT
  public:

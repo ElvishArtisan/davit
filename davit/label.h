@@ -1,4 +1,4 @@
-//   dvtlabel.h
+//   label.h
 //
 //   An label widget with word wrap.
 //
@@ -18,8 +18,8 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef DVTLABEL_H
-#define DVTLABEL_H
+#ifndef LABEL_H
+#define LABEL_H
 
 #include <QWidget>
 #include <QLabel>
@@ -32,22 +32,22 @@
  * @short A label widget with word wrap.
  * @author Fred Gleason <fredg@wava.com>
  *
- * DvtLabel is a label widget almost exactly identical to QLabel with one 
+ * Label is a label widget almost exactly identical to QLabel with one 
  * addition: the ability to automatically word-wrap text.
  *
  **/
-class DvtLabel : public QLabel
+class Label : public QLabel
 {
   Q_OBJECT
 
   public:
   /**
-   * Create an DvtLabel with the following parameters:
+   * Create an Label with the following parameters:
    * @param parent The parent widget
    * @param name The name of the widget
    * @param f The widget flags
    **/
-   DvtLabel(QWidget *parent);
+   Label(QWidget *parent);
 
   /**
    * Create an RSlider with the following parameters:
@@ -56,7 +56,7 @@ class DvtLabel : public QLabel
    * @param name The name of the widget
    * @param f The widget flags
    **/
-   DvtLabel(const QString &text,QWidget *parent);
+   Label(const QString &text,QWidget *parent);
 
    /**
     * Returns the label text.
@@ -92,4 +92,4 @@ class DvtLabel : public QLabel
 
 
 
-#endif  // DVTLABEL_H
+#endif  // LABEL_H

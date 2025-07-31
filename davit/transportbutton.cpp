@@ -1,4 +1,4 @@
-//   dvttransportbutton.cpp
+//   transportbutton.cpp
 //
 //   An audio transport button widget.
 //
@@ -26,15 +26,15 @@
 #include <QPushButton>
 #include <QTimer>
 
-#include "dvttransportbutton.h"
+#include "transportbutton.h"
 
-DvtTransportButton::DvtTransportButton(DvtTransportButton::TransType type,
+TransportButton::TransportButton(TransportButton::TransType type,
 				     QWidget *parent)
   :  QPushButton(parent)
 {
   button_type=type;
-  button_state=DvtTransportButton::Off;
-  on_color=QColor(DVTTRANSPORTBUTTON_DEFAULT_ON_COLOR);
+  button_state=TransportButton::Off;
+  on_color=QColor(TRANSPORTBUTTON_DEFAULT_ON_COLOR);
   //  accent_color=QColor(colorGroup().shadow());
   on_cap=new QPixmap();
   drawOnCap();
@@ -49,25 +49,25 @@ DvtTransportButton::DvtTransportButton(DvtTransportButton::TransType type,
 }
 
 
-DvtTransportButton::TransType DvtTransportButton::getType() const
+TransportButton::TransType TransportButton::getType() const
 {
   return button_type;
 }
 
 
-void DvtTransportButton::setType(DvtTransportButton::TransType type)
+void TransportButton::setType(TransportButton::TransType type)
 {
   button_type=type;
 }
 
 
-QColor DvtTransportButton::onColor() const
+QColor TransportButton::onColor() const
 {
   return on_color;
 }
 
 
-void DvtTransportButton::setOnColor(QColor color)
+void TransportButton::setOnColor(QColor color)
 {
   if(color!=on_color) {
     on_color=color;
@@ -77,13 +77,13 @@ void DvtTransportButton::setOnColor(QColor color)
   }
 }
 
-QColor DvtTransportButton::accentColor() const
+QColor TransportButton::accentColor() const
 {
   return accent_color;
 }
 
 
-void DvtTransportButton::setAccentColor(QColor color)
+void TransportButton::setAccentColor(QColor color)
 {
   if(color!=accent_color) {
     accent_color=color;
@@ -93,24 +93,24 @@ void DvtTransportButton::setAccentColor(QColor color)
   }
 }
 
-void DvtTransportButton::setState(DvtTransportButton::TransState state)
+void TransportButton::setState(TransportButton::TransState state)
 {
   //  QKeySequence a=accel();
   button_state=state;
   switch(button_state) {
-      case DvtTransportButton::On:
+      case TransportButton::On:
 	flashOff();
 	if(isEnabled()) {
 	  setIcon(*on_cap);
 	}
 	break;
-      case DvtTransportButton::Off:
+      case TransportButton::Off:
 	flashOff();
 	if(isEnabled()) {
 	  setIcon(*off_cap);
 	}
 	break;
-      case DvtTransportButton::Flashing:
+      case TransportButton::Flashing:
 	if(isEnabled()) {
 	  flashOn();
 	}
@@ -120,34 +120,34 @@ void DvtTransportButton::setState(DvtTransportButton::TransState state)
 }
 
 
-void DvtTransportButton::on()
+void TransportButton::on()
 {
-  setState(DvtTransportButton::On);
+  setState(TransportButton::On);
 }
 
 
-void DvtTransportButton::off()
+void TransportButton::off()
 {
-  setState(DvtTransportButton::Off);
+  setState(TransportButton::Off);
 }
 
 
-void DvtTransportButton::flash()
+void TransportButton::flash()
 {
-  setState(DvtTransportButton::Flashing);
+  setState(TransportButton::Flashing);
 }
 
 
-void DvtTransportButton::resizeEvent(QResizeEvent *event)
+void TransportButton::resizeEvent(QResizeEvent *event)
 {
 //   QKeySequence a=accel();
   drawOnCap();
   drawOffCap();
   switch(button_state) {
-      case DvtTransportButton::Off:
+      case TransportButton::Off:
 	setIcon(*off_cap);
 	break;
-      case DvtTransportButton::On:
+      case TransportButton::On:
 	setIcon(*on_cap);
 	break;
       default:
@@ -158,7 +158,7 @@ void DvtTransportButton::resizeEvent(QResizeEvent *event)
 }
 
 
-void DvtTransportButton::enabledChange(bool oldEnabled)
+void TransportButton::enabledChange(bool oldEnabled)
 {
 //   QKeySequence a=accel();
   if(isEnabled()&&!oldEnabled) {
@@ -173,7 +173,7 @@ void DvtTransportButton::enabledChange(bool oldEnabled)
 }
  
 
-void DvtTransportButton::flashClock()
+void TransportButton::flashClock()
 {
 //   QKeySequence a=accel();
   if(flash_state) {
@@ -188,14 +188,14 @@ void DvtTransportButton::flashClock()
 }
 
 
-void DvtTransportButton::updateCaps()
+void TransportButton::updateCaps()
 {
   switch(button_state) {
-      case DvtTransportButton::On:
+      case TransportButton::On:
 	setIcon(*on_cap);
 	break;
 
-      case DvtTransportButton::Flashing:
+      case TransportButton::Flashing:
 	if(flash_state) {
 	  setIcon(*on_cap);
 	}
@@ -204,14 +204,14 @@ void DvtTransportButton::updateCaps()
 	}
 	break;
 
-      case DvtTransportButton::Off:
+      case TransportButton::Off:
 	setIcon(*off_cap);
 	break;
   }
 }
 
 
-void DvtTransportButton::drawMask(QPixmap *cap)
+void TransportButton::drawMask(QPixmap *cap)
 {
   /*
   //  Q3PointArray triangle=Q3PointArray(3);
@@ -232,24 +232,24 @@ void DvtTransportButton::drawMask(QPixmap *cap)
   b.setBrush(QColor(Qt::color1));
 
   switch(button_type) {
-  case DvtTransportButton::Play:
+  case TransportButton::Play:
     triangle.setPoint(0,capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2+(3*edge)/10,capSize().height()/2);
     triangle.setPoint(2,capSize().width()/2-(3*edge)/10,capSize().height()/2+(3*edge)/10);
     b.drawPolygon(triangle);
     break;
 
-  case DvtTransportButton::Stop:
+  case TransportButton::Stop:
     b.fillRect(capSize().width()/2-edge*3/10,capSize().height()/2-edge*3/10,
 	       edge*3/5,edge*3/5,QColor(Qt::color1));
     break;
 
-  case DvtTransportButton::Record:
+  case TransportButton::Record:
     b.drawEllipse(capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10,
 		  (3*edge)/5,(3*edge)/5);
     break;
 
-  case DvtTransportButton::FastForward:
+  case TransportButton::FastForward:
     triangle.setPoint(0,capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2,capSize().height()/2);
     triangle.setPoint(2,capSize().width()/2-(3*edge)/10,capSize().height()/2+(3*edge)/10);
@@ -260,7 +260,7 @@ void DvtTransportButton::drawMask(QPixmap *cap)
     b.drawPolygon(triangle);
     break;
 
-  case DvtTransportButton::Rewind:
+  case TransportButton::Rewind:
     triangle.setPoint(0,capSize().width()/2+(3*edge)/10,capSize().height()/2-(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2,capSize().height()/2);
     triangle.setPoint(2,capSize().width()/2+(3*edge)/10,capSize().height()/2+(3*edge)/10);
@@ -271,7 +271,7 @@ void DvtTransportButton::drawMask(QPixmap *cap)
     b.drawPolygon(triangle);
     break;
 
-  case DvtTransportButton::Eject:
+  case TransportButton::Eject:
     triangle.setPoint(0,capSize().width()/2,capSize().height()/2-(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2+(3*edge)/10,capSize().height()/2);
     triangle.setPoint(2,capSize().width()/2-(3*edge)/10,capSize().height()/2);
@@ -280,14 +280,14 @@ void DvtTransportButton::drawMask(QPixmap *cap)
 	       (3*edge)/5,edge/5,QColor(Qt::color1));
     break;
 
-  case DvtTransportButton::Pause:
+  case TransportButton::Pause:
     b.fillRect(capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10,
 	       (3*edge)/15,(3*edge)/5,QColor(Qt::color1));
     b.fillRect(capSize().width()/2+(3*edge)/30,capSize().height()/2-(3*edge)/10,
 	       (3*edge)/15,(3*edge)/5,QColor(Qt::color1));
     break;
 
-  case DvtTransportButton::PlayFrom:
+  case TransportButton::PlayFrom:
     b.fillRect(capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10,
 	       3,(3*edge)/5,QBrush(Qt::color1));
     triangle.setPoint(0,capSize().width()/2-(2*edge)/10+1,capSize().height()/2-(3*edge)/10);
@@ -296,7 +296,7 @@ void DvtTransportButton::drawMask(QPixmap *cap)
     b.drawPolygon(triangle);
     break;
 
-  case DvtTransportButton::PlayBetween:
+  case TransportButton::PlayBetween:
     b.fillRect(capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10,
 	       3,(3*edge)/5,QBrush(Qt::color1));
     b.fillRect(capSize().width()/2+(3*edge)/10,capSize().height()/2-(3*edge)/10,
@@ -307,7 +307,7 @@ void DvtTransportButton::drawMask(QPixmap *cap)
     b.drawPolygon(triangle);
     break;
 
-  case DvtTransportButton::Loop:
+  case TransportButton::Loop:
 //      b.moveTo(width()/2-(2*edge)/10+1,height()/2+(edge)/4);
 //      b.moveTo(width()/2+(edge)/10+1,height()/2-edge/10);
 //      b.moveTo(width()/2-(2*edge)/10+1,height()/2+(edge)/4);
@@ -319,21 +319,21 @@ void DvtTransportButton::drawMask(QPixmap *cap)
     b.drawPolygon(triangle);
     break;
 
-  case DvtTransportButton::Up:
+  case TransportButton::Up:
     triangle.setPoint(0,capSize().width()/2,(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2+(3*edge)/10,capSize().height()-(3*edge)/10);
     triangle.setPoint(2,capSize().width()/2-(3*edge)/10,capSize().height()-(3*edge)/10);
     b.drawPolygon(triangle);
     break;
 
-  case DvtTransportButton::Down:
+  case TransportButton::Down:
     triangle.setPoint(0,capSize().width()/2,capSize().height()-(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2+(3*edge)/10,(3*edge)/10);
     triangle.setPoint(2,capSize().width()/2-(3*edge)/10,(3*edge)/10);
     b.drawPolygon(triangle);
     break;
 
-  case DvtTransportButton::PlayTo:
+  case TransportButton::PlayTo:
     b.fillRect(capSize().width()/2+(3*edge)/10,capSize().height()/2-(3*edge)/10,
 	       3,(3*edge)/5,QBrush(Qt::color1));
     triangle.setPoint(0,capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10);
@@ -353,7 +353,7 @@ void DvtTransportButton::drawMask(QPixmap *cap)
 }
 
 
-void DvtTransportButton::drawOnCap()
+void TransportButton::drawOnCap()
 {
   /*
   QPainter p;
@@ -371,7 +371,7 @@ void DvtTransportButton::drawOnCap()
   p.setPen(on_color);
   p.setBrush(on_color);
   switch(button_type) {
-  case DvtTransportButton::Play:
+  case TransportButton::Play:
     triangle.setPoint(0,capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2+(3*edge)/10,capSize().height()/2);
     triangle.setPoint(2,capSize().width()/2-(3*edge)/10,capSize().height()/2+(3*edge)/10);
@@ -387,7 +387,7 @@ void DvtTransportButton::drawOnCap()
 	       capSize().width()/2-(3*edge)/10,capSize().height()/2+(3*edge)/10);
     break;
 
-  case DvtTransportButton::Stop:
+  case TransportButton::Stop:
     p.fillRect(capSize().width()/2-edge*3/10,capSize().height()/2-edge*3/10,
     	       edge*3/5,edge*3/5,QColor(on_color));
     p.setPen(QColor(colorGroup().shadow()));
@@ -402,14 +402,14 @@ void DvtTransportButton::drawOnCap()
 	       capSize().width()/2-edge*3/10,capSize().height()/2+edge*3/10);
     break;
 
-  case DvtTransportButton::Record:
+  case TransportButton::Record:
     p.setPen(QColor(Qt::red));
     p.setBrush(QColor(Qt::red));
     p.drawEllipse(capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10,
 		  (3*edge)/5,(3*edge)/5);
     break;
 
-  case DvtTransportButton::FastForward:
+  case TransportButton::FastForward:
     triangle.setPoint(0,capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2,capSize().height()/2);
     triangle.setPoint(2,capSize().width()/2-(3*edge)/10,capSize().height()/2+(3*edge)/10);
@@ -438,7 +438,7 @@ void DvtTransportButton::drawOnCap()
 	       capSize().width()/2,capSize().height()/2+(3*edge)/10);
     break;
 
-  case DvtTransportButton::Rewind:
+  case TransportButton::Rewind:
     triangle.setPoint(0,capSize().width()/2+(3*edge)/10,capSize().height()/2-(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2,capSize().height()/2);
     triangle.setPoint(2,capSize().width()/2+(3*edge)/10,capSize().height()/2+(3*edge)/10);
@@ -468,7 +468,7 @@ void DvtTransportButton::drawOnCap()
 	       capSize().width()/2,capSize().height()/2-(3*edge)/10);
     break;
 
-  case DvtTransportButton::Eject:
+  case TransportButton::Eject:
     triangle.setPoint(0,capSize().width()/2,capSize().height()/2-(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2+(3*edge)/10,capSize().height()/2);
     triangle.setPoint(2,capSize().width()/2-(3*edge)/10,capSize().height()/2);
@@ -496,7 +496,7 @@ void DvtTransportButton::drawOnCap()
 	       capSize().width()/2-(3*edge)/10,capSize().height()/2+edge/10+edge/5);
     break;
 
-  case DvtTransportButton::Pause:
+  case TransportButton::Pause:
     p.fillRect(capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10,
 	       (3*edge)/15,(3*edge)/5,on_color);
     p.setPen(QColor(colorGroup().shadow()));
@@ -523,7 +523,7 @@ void DvtTransportButton::drawOnCap()
 	       capSize().width()/2+(3*edge)/30,capSize().height()/2+(3*edge)/10);
     break;
 
-  case DvtTransportButton::PlayFrom:
+  case TransportButton::PlayFrom:
     p.fillRect(capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10,
 	       3,(3*edge)/5,QBrush(accent_color));
     triangle.setPoint(0,capSize().width()/2-(2*edge)/10+1,capSize().height()/2-(3*edge)/10);
@@ -541,7 +541,7 @@ void DvtTransportButton::drawOnCap()
 	       capSize().width()/2-(2*edge)/10+1,capSize().height()/2+(3*edge)/10);
     break;
 
-  case DvtTransportButton::PlayBetween:
+  case TransportButton::PlayBetween:
     p.fillRect(capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10,
 	       3,(3*edge)/5,QBrush(accent_color));
     p.fillRect(capSize().width()/2+(3*edge)/10,capSize().height()/2-(3*edge)/10,
@@ -561,7 +561,7 @@ void DvtTransportButton::drawOnCap()
 	       capSize().width()/2-(2*edge)/10+1,capSize().height()/2+(3*edge)/10);
     break;
 
-  case DvtTransportButton::Loop:
+  case TransportButton::Loop:
     p.setPen(QColor(colorGroup().shadow()));
     p.drawLine(capSize().width()/2-(2*edge)/10+1,capSize().height()/2+(edge)/4,
 	       capSize().width()/2+(edge)/10+1,capSize().height()/2-edge/10);
@@ -578,7 +578,7 @@ void DvtTransportButton::drawOnCap()
     p.drawPolygon(triangle);
     break;
 
-  case DvtTransportButton::Up:
+  case TransportButton::Up:
     triangle.setPoint(0,capSize().width()/2,(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2+(3*edge)/10,capSize().height()-(3*edge)/10);
     triangle.setPoint(2,capSize().width()/2-(3*edge)/10,capSize().height()-(3*edge)/10);
@@ -594,7 +594,7 @@ void DvtTransportButton::drawOnCap()
 	       capSize().width()/2-(3*edge)/10,capSize().height()-(3*edge)/10);
     break;
 
-  case DvtTransportButton::Down:
+  case TransportButton::Down:
     triangle.setPoint(0,capSize().width()/2,capSize().height()-(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2+(3*edge)/10,(3*edge)/10);
     triangle.setPoint(2,capSize().width()/2-(3*edge)/10,(3*edge)/10);
@@ -610,7 +610,7 @@ void DvtTransportButton::drawOnCap()
 	       capSize().width()/2-(3*edge)/10,(3*edge)/10);
     break;
 
-  case DvtTransportButton::PlayTo:
+  case TransportButton::PlayTo:
     p.fillRect(capSize().width()/2+(3*edge)/10,capSize().height()/2-(3*edge)/10,
 	       3,(3*edge)/5,QBrush(accent_color));
     triangle.setPoint(0,capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10);
@@ -635,7 +635,7 @@ void DvtTransportButton::drawOnCap()
 }
 
 
-void DvtTransportButton::drawOffCap()
+void TransportButton::drawOffCap()
 {
   /*
   QPainter p;
@@ -653,7 +653,7 @@ void DvtTransportButton::drawOffCap()
   p.setPen(QColor(Qt::black));
   p.setBrush(QColor(Qt::black));
   switch(button_type) {
-  case DvtTransportButton::Play:
+  case TransportButton::Play:
     triangle.setPoint(0,capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2+(3*edge)/10,capSize().height()/2);
     triangle.setPoint(2,capSize().width()/2-(3*edge)/10,capSize().height()/2+(3*edge)/10);
@@ -669,7 +669,7 @@ void DvtTransportButton::drawOffCap()
 	       capSize().width()/2-(3*edge)/10,capSize().height()/2+(3*edge)/10);
     break;
 
-  case DvtTransportButton::Stop:
+  case TransportButton::Stop:
     p.fillRect(capSize().width()/2-edge*3/10,capSize().height()/2-edge*3/10,
 	       edge*3/5,edge*3/5,QColor(Qt::black));
     p.setPen(QColor(colorGroup().shadow()));
@@ -684,14 +684,14 @@ void DvtTransportButton::drawOffCap()
 	       capSize().width()/2-edge*3/10,capSize().height()/2+edge*3/10);
     break;
 
-  case DvtTransportButton::Record:
+  case TransportButton::Record:
     p.setPen(QColor(Qt::darkRed));
     p.setBrush(QColor(Qt::darkRed));
     p.drawEllipse(capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10,
 		  (3*edge)/5,(3*edge)/5);
     break;
 
-  case DvtTransportButton::FastForward:
+  case TransportButton::FastForward:
     triangle.setPoint(0,capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2,capSize().height()/2);
     triangle.setPoint(2,capSize().width()/2-(3*edge)/10,capSize().height()/2+(3*edge)/10);
@@ -721,7 +721,7 @@ void DvtTransportButton::drawOffCap()
 	       capSize().width()/2,capSize().height()/2+(3*edge)/10);
     break;
     
-  case DvtTransportButton::Rewind:
+  case TransportButton::Rewind:
     triangle.setPoint(0,capSize().width()/2+(3*edge)/10,capSize().height()/2-(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2,capSize().height()/2);
     triangle.setPoint(2,capSize().width()/2+(3*edge)/10,capSize().height()/2+(3*edge)/10);
@@ -750,7 +750,7 @@ void DvtTransportButton::drawOffCap()
 	       capSize().width()/2,capSize().height()/2-(3*edge)/10);
     break;
 
-  case DvtTransportButton::Eject:
+  case TransportButton::Eject:
     triangle.setPoint(0,capSize().width()/2,capSize().height()/2-(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2+(3*edge)/10,capSize().height()/2);
     triangle.setPoint(2,capSize().width()/2-(3*edge)/10,capSize().height()/2);
@@ -759,7 +759,7 @@ void DvtTransportButton::drawOffCap()
 	       (3*edge)/5,edge/5,QColor(Qt::black));		   
     break;
     
-  case DvtTransportButton::Pause:
+  case TransportButton::Pause:
     p.fillRect(capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10,
 	       (3*edge)/15,(3*edge)/5,QColor(Qt::black));
     p.setPen(QColor(colorGroup().shadow()));
@@ -786,7 +786,7 @@ void DvtTransportButton::drawOffCap()
 	       capSize().width()/2+(3*edge)/30,capSize().height()/2+(3*edge)/10);
     break;
 
-  case DvtTransportButton::PlayFrom:
+  case TransportButton::PlayFrom:
     p.fillRect(capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10,
 	       3,(3*edge)/5,QBrush(accent_color));
     triangle.setPoint(0,capSize().width()/2-(2*edge)/10+1,capSize().height()/2-(3*edge)/10);
@@ -804,7 +804,7 @@ void DvtTransportButton::drawOffCap()
 	       capSize().width()/2-(2*edge)/10+1,capSize().height()/2+(3*edge)/10);
     break;
 
-  case DvtTransportButton::PlayBetween:
+  case TransportButton::PlayBetween:
     p.fillRect(capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10,
 	       3,(3*edge)/5,QBrush(accent_color));
     p.fillRect(capSize().width()/2+(3*edge)/10,capSize().height()/2-(3*edge)/10,
@@ -824,7 +824,7 @@ void DvtTransportButton::drawOffCap()
 	       capSize().width()/2-(2*edge)/10+1,capSize().height()/2+(3*edge)/10);
     break;
 
-  case DvtTransportButton::Loop:
+  case TransportButton::Loop:
     triangle.setPoint(0,capSize().width()/2-(2*edge)/10+1,capSize().height()/2-(edge)/4);
     triangle.setPoint(1,capSize().width()/2+(edge)/10+1,capSize().height()/2-edge/10);
     triangle.setPoint(2,capSize().width()/2-(2*edge)/10+1,capSize().height()/2+edge/20);
@@ -841,21 +841,21 @@ void DvtTransportButton::drawOffCap()
 	      capSize().height()/3+edge/10,1440,5760);
     break;
 
-  case DvtTransportButton::Up:
+  case TransportButton::Up:
     triangle.setPoint(0,capSize().width()/2,(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2+(3*edge)/10,capSize().height()-(3*edge)/10);
     triangle.setPoint(2,capSize().width()/2-(3*edge)/10,capSize().height()-(3*edge)/10);
     p.drawPolygon(triangle);
     break;
 
-  case DvtTransportButton::Down:
+  case TransportButton::Down:
     triangle.setPoint(0,capSize().width()/2,capSize().height()-(3*edge)/10);
     triangle.setPoint(1,capSize().width()/2+(3*edge)/10,(3*edge)/10);
     triangle.setPoint(2,capSize().width()/2-(3*edge)/10,(3*edge)/10);
     p.drawPolygon(triangle);
     break;
 
-  case DvtTransportButton::PlayTo:
+  case TransportButton::PlayTo:
     p.fillRect(capSize().width()/2+(3*edge)/10,capSize().height()/2-(3*edge)/10,
 	       3,(3*edge)/5,QBrush(accent_color));
     triangle.setPoint(0,capSize().width()/2-(3*edge)/10,capSize().height()/2-(3*edge)/10);
@@ -877,7 +877,7 @@ void DvtTransportButton::drawOffCap()
   */
 }
 
-void DvtTransportButton::flashOn()
+void TransportButton::flashOn()
 {
   if(!flash_timer->isActive()) {
     flash_timer->start(500);
@@ -885,7 +885,7 @@ void DvtTransportButton::flashOn()
 }
 
 
-void DvtTransportButton::flashOff()
+void TransportButton::flashOff()
 {
   if(flash_timer->isActive()) {
     flash_timer->stop();
@@ -893,7 +893,7 @@ void DvtTransportButton::flashOff()
 }
 
 
-QSize DvtTransportButton::capSize() const
+QSize TransportButton::capSize() const
 {
   if(text().isEmpty()) {
     return size();

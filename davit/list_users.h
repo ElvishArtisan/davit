@@ -25,14 +25,13 @@
 #include <QListView>
 #include <QPushButton>
 
-#include <dvtdialog.h>
-#include <dvttableview.h>
-
 #include "add_user.h"
+#include "dialog.h"
 #include "edit_user.h"
+#include "tableview.h"
 #include "userlistmodel.h"
 
-class ListUsers : public DvtDialog
+class ListUsers : public Dialog
 {
  Q_OBJECT
  public:
@@ -52,7 +51,7 @@ class ListUsers : public DvtDialog
   void resizeEvent(QResizeEvent *e);
 
  private:
-  DvtTableView *list_users_view;
+  TableView *list_users_view;
   UserListModel *list_users_model;
   QPushButton *list_add_button;
   QPushButton *list_edit_button;

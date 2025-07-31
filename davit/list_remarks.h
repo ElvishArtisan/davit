@@ -24,11 +24,9 @@
 #include <QPushButton>
 #include <QTextEdit>
 
-#include <dvtdialog.h>
+#include "dialog.h"
 
-//#include <contactlistview.h>
-
-class ListRemarks : public DvtDialog
+class ListRemarks : public Dialog
 {
  Q_OBJECT
  public:

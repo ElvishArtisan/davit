@@ -80,7 +80,7 @@ MigrateAffiliates::MigrateAffiliates(int pgm_id,const QString &pgm_name,
   //
   // Affiliate Selector
   //
-  edit_affiliates_sel=new DvtListSelector(this);
+  edit_affiliates_sel=new ListSelector(this);
   //  edit_affiliates_sel->
   //    setGeometry(10,40,sizeHint().width()-20,sizeHint().height()-110);
   edit_affiliates_sel->destSetLabel(pgm_name);

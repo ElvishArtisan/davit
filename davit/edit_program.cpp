@@ -34,7 +34,7 @@
 #include "migrate_affiliates.h"
 
 EditProgram::EditProgram(DvtConfig *c,QWidget *parent)
-  : DvtDialog(c,parent)
+  : Dialog(c,parent)
 {
   setModal(true);
 
@@ -148,7 +148,7 @@ EditProgram::EditProgram(DvtConfig *c,QWidget *parent)
   //
   // Feeds List
   //
-  edit_feeds_view=new DvtTableView(edit_feeds_group);
+  edit_feeds_view=new TableView(edit_feeds_group);
   edit_feeds_view->setFont(defaultFont());
   edit_feeds_model=new FeedListModel(this);
   edit_feeds_model->setFont(defaultFont());

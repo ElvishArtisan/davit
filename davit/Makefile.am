@@ -49,8 +49,11 @@ dist_davit_SOURCES = activity_report.cpp\
                      contactlistmodel.cpp contactlistmodel.h\
                      contactlistview.cpp contactlistview.h\
                      createdb.cpp createdb.h\
+                     datedialog.cpp datedialog.h\
+                     datepicker.cpp datepicker.h\
                      davit.cpp davit.h\
                      daypicker.cpp daypicker.h\
+                     dialog.cpp dialog.h\
                      edit_affiliate.cpp edit_affiliate.h\
                      edit_airing.cpp edit_airing.h\
                      edit_contact.cpp edit_contact.h\
@@ -61,9 +64,12 @@ dist_davit_SOURCES = activity_report.cpp\
                      edit_system.cpp edit_system.h\
                      edit_user.cpp edit_user.h\
                      feedlistmodel.cpp feedlistmodel.h\
+                     fontengine.cpp fontengine.h\
                      generate_affadavit.cpp generate_affadavit.h\
                      geometry.cpp geometry.h\
                      globals.h\
+                     label.cpp label.h\
+                     listselector.cpp listselector.h\
                      list_airings.cpp list_airings.h\
                      list_affiliates.cpp list_affiliates.h\
                      list_contacts.cpp list_contacts.h\
@@ -73,6 +79,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      list_remarks.cpp list_remarks.h\
                      list_reports.cpp list_reports.h\
                      list_users.cpp list_users.h\
+                     login.cpp login.h\
                      maildialog.cpp maildialog.h\
                      migrate_affiliates.cpp migrate_affiliates.h\
                      missingaffidavit_report.cpp\
@@ -93,13 +100,20 @@ dist_davit_SOURCES = activity_report.cpp\
                      spread_cell.cpp spread_cell.h\
                      spread_sheet.cpp spread_sheet.h\
                      spread_tab.cpp spread_tab.h\
+                     tableview.cpp tableview.h\
+                     tablewidgetitem.cpp tablewidgetitem.h\
+                     textfile.cpp textfile.h\
+                     transportbutton.cpp transportbutton.h\
                      userlistmodel.cpp userlistmodel.h\
                      statecombobox.cpp statecombobox.h\
+                     state_conv.cpp state_conv.h\
                      viewerprocess.cpp viewerprocess.h\
-                     viewerprocesslist.cpp viewerprocesslist.h
+                     viewerprocesslist.cpp viewerprocesslist.h\
+                     widget.cpp widget.h
 
 nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_change_password.cpp\
+                       moc_dialog.cpp\
                        moc_generate_affadavit.cpp\
                        moc_add_program.cpp\
                        moc_add_provider.cpp\
@@ -111,6 +125,8 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_algocombobox.cpp\
                        moc_contactlistmodel.cpp\
                        moc_contactlistview.cpp\
+                       moc_datedialog.cpp\
+                       moc_datepicker.cpp\
                        moc_davit.cpp\
                        moc_daypicker.cpp\
                        moc_edit_affiliate.cpp\
@@ -123,6 +139,8 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_edit_system.cpp\
                        moc_edit_user.cpp\
                        moc_feedlistmodel.cpp\
+                       moc_label.cpp\
+                       moc_listselector.cpp\
                        moc_list_affiliates.cpp\
                        moc_list_airings.cpp\
                        moc_list_contacts.cpp\
@@ -132,6 +150,7 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_list_remarks.cpp\
                        moc_list_reports.cpp\
                        moc_list_users.cpp\
+                       moc_login.cpp\
                        moc_maildialog.cpp\
                        moc_migrate_affiliates.cpp\
                        moc_mysql_login.cpp\
@@ -142,9 +161,12 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_providerlistmodel.cpp\
                        moc_showaffidavits.cpp\
                        moc_statecombobox.cpp\
+                       moc_tableview.cpp\
+                       moc_transportbutton.cpp\
                        moc_userlistmodel.cpp\
                        moc_viewerprocess.cpp\
-                       moc_viewerprocesslist.cpp
+                       moc_viewerprocesslist.cpp\
+                       moc_widget.cpp
 
 davit_LDADD = -ldvt @QT6_LIBS@
 
