@@ -997,3 +997,10 @@
 2025-07-31 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored linking for dvtstamp(8), dvtdbcheck(8) and davit.cgi so
 	as to avoid linking to Qt's GUI components.
+2025-08-01 Fred Gleason <fredg@paravelsystems.com>
+	* Removed vestigal 'Add Program' dialog from davit(1).
+	* Removed vestigal 'Add Provider' dialog from davit(1).
+	* Removed dead code from 'davit/add_affiliate'.
+	* Refactored the 'Add Remark' dialog in davit(1).
+	* Refactored the 'Set Report Parameters' dialog in davit(1).
+	* Added a 'FontEngine::config()' method in davit(1).

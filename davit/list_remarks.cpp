@@ -31,17 +31,16 @@ ListRemarks::ListRemarks(DvtConfig *c,QWidget *parent)
   setModal(false);
 
   //
-  // Create Fonts
+  // Dialogs
   //
-  QFont label_font=QFont("Helvetica",12,QFont::Bold);
-  label_font.setPixelSize(12);
-
+  list_addremark_dialog=new AddRemark(c,this);  //
+  
   list_remarks_edit=new QTextEdit(this);
   list_remarks_edit->setReadOnly(true);
   list_remarks_edit->setAcceptRichText(true);
 
   list_add_button=new QPushButton(this);
-  list_add_button->setFont(label_font);
+  list_add_button->setFont(buttonFont());
   list_add_button->setText(tr("Add"));
   list_add_button->
     setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateRemark));
@@ -101,8 +100,7 @@ void ListRemarks::addData()
   QString remark;
   QString sql;
 
-  AddRemark *d=new AddRemark(&remark,this);
-  if(d->exec()==0) {
+  if(list_addremark_dialog->exec(&remark)) {
     sql=QString("insert into `AFFILIATE_REMARKS` set ")+
       QString::asprintf("`AFFILIATE_ID`=%d,",list_id)+
       QString::asprintf("`EVENT_TYPE`=%d,",Dvt::RemarkNarrative)+
@@ -111,7 +109,6 @@ void ListRemarks::addData()
       "`REMARK`="+DvtSqlQuery::escape(remark);
     DvtSqlQuery::apply(sql);
   }
-  delete d;
   RefreshList();
 }
 

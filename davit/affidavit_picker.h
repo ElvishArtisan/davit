@@ -18,27 +18,30 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef AFFIDAVIT_PCIKER_H
+#ifndef AFFIDAVIT_PICKER_H
 #define AFFIDAVIT_PICKER_H
 
 #include <vector>
 
-#include <QDialog>
 #include <QComboBox>
 #include <QPushButton>
 #include <QLabel>
 
 #include <dvt.h>
 
-class AffidavitPicker : public QDialog
+#include "dialog.h"
+
+class AffidavitPicker : public Dialog
 {
  Q_OBJECT
  public:
-  AffidavitPicker(Dvt::AffidavitStationFilter *stations,
-		  Dvt::AffidavitSortType *sort,
-		  int *pgm_id,QWidget *parent=0);
+  AffidavitPicker(DvtConfig *c,QWidget *parent=0);
   ~AffidavitPicker();
   QSize sizeHint() const;
+
+ public slots:
+  int exec(Dvt::AffidavitStationFilter *stations,Dvt::AffidavitSortType *sort,
+	   int *pgm_id);
 
  private slots:
   void stationsSelectedData(int num);

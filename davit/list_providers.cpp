@@ -26,7 +26,6 @@
 
 #include <dvtdb.h>
 
-#include "add_provider.h"
 #include "edit_provider.h"
 #include "globals.h"
 #include "list_programs.h"
@@ -47,7 +46,7 @@ ListProviders::ListProviders(DvtConfig *c,QWidget *parent)
   //
   // Dialogs
   //
-  list_editprovider_dialog=new EditProvider(config,this);
+  list_editprovider_dialog=new EditProvider(c,this);
 
   //
   // Providers List

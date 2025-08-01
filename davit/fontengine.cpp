@@ -225,6 +225,12 @@ QFontMetrics *FontEngine::printerFontMetrics() const
 }
 
 
+DvtConfig *FontEngine::config() const
+{
+  return font_config;
+}
+
+
 void FontEngine::MakeFonts(const QFont &default_font)
 {
   /*

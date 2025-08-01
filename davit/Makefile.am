@@ -28,8 +28,6 @@ moc_%.cpp:	%.h
 bin_PROGRAMS = davit
 dist_davit_SOURCES = activity_report.cpp\
                      add_affiliate.cpp add_affiliate.h\
-                     add_program.cpp add_program.h\
-                     add_provider.cpp add_provider.h\
                      add_remark.cpp add_remark.h\
                      add_user.cpp add_user.h\
                      addedprograms_report.cpp\
@@ -111,23 +109,20 @@ dist_davit_SOURCES = activity_report.cpp\
                      widget.cpp widget.h
 
 nodist_davit_SOURCES = moc_add_affiliate.cpp\
-                       moc_change_password.cpp\
-                       moc_dialog.cpp\
-                       moc_generate_affadavit.cpp\
-                       moc_add_program.cpp\
-                       moc_add_provider.cpp\
                        moc_add_remark.cpp\
                        moc_add_user.cpp\
                        moc_affidavit_picker.cpp\
                        moc_affiliatelistmodel.cpp\
                        moc_airinglistmodel.cpp\
                        moc_algocombobox.cpp\
+                       moc_change_password.cpp\
                        moc_contactlistmodel.cpp\
                        moc_contactlistview.cpp\
                        moc_datedialog.cpp\
                        moc_datepicker.cpp\
                        moc_davit.cpp\
                        moc_daypicker.cpp\
+                       moc_dialog.cpp\
                        moc_edit_affiliate.cpp\
                        moc_edit_airing.cpp\
                        moc_edit_contact.cpp\
@@ -138,6 +133,7 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_edit_system.cpp\
                        moc_edit_user.cpp\
                        moc_feedlistmodel.cpp\
+                       moc_generate_affadavit.cpp\
                        moc_label.cpp\
                        moc_listselector.cpp\
                        moc_list_affiliates.cpp\

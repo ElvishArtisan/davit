@@ -41,7 +41,7 @@ ListAirings::ListAirings(DvtConfig *c,QWidget *parent)
   //
   // Edit Contact Dialog
   //
-  list_editairing_dialog=new EditAiring(config,this);
+  list_editairing_dialog=new EditAiring(c,this);
 
   //
   // Airings List

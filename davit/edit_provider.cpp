@@ -35,7 +35,7 @@ EditProvider::EditProvider(DvtConfig *c,QWidget *parent)
 {
   setModal(true);
   edit_provider_id=-1;
-  edit_listprograms_dialog=new ListPrograms(config,this);
+  edit_listprograms_dialog=new ListPrograms(c,this);
   
   //
   // Fix the Window Size

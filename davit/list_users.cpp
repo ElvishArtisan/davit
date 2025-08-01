@@ -41,8 +41,8 @@ ListUsers::ListUsers(DvtConfig *c,QWidget *parent)
   //
   // Dialogs
   //
-  list_adduser_dialog=new AddUser(config,this);
-  list_edituser_dialog=new EditUser(config,this);
+  list_adduser_dialog=new AddUser(c,this);
+  list_edituser_dialog=new EditUser(c,this);
 
   //
   // Users List

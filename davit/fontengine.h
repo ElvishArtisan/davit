@@ -67,6 +67,9 @@ class FontEngine
   QFont printerFont() const;
   QFontMetrics *printerFontMetrics() const;
 
+ protected:
+  DvtConfig *config() const;
+
  private:
   void MakeFonts(const QFont &default_font);
   QFont font_button_font;

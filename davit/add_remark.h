@@ -21,19 +21,23 @@
 #ifndef ADD_REMARK_H
 #define ADD_REMARK_H
 
-#include <QDialog>
 #include <QPushButton>
 #include <QTextEdit>
 
-class AddRemark : public QDialog
+#include "dialog.h"
+
+class AddRemark : public Dialog
 {
  Q_OBJECT
  public:
-AddRemark(QString *remark,QWidget *parent=0);
+  AddRemark(DvtConfig *c,QWidget *parent=0);
   ~AddRemark();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
 
+ public slots:
+  int exec(QString *remark);
+  
  protected:
   void resizeEvent(QResizeEvent *e);
 

@@ -1,10 +1,8 @@
 // add_remark.cpp
 //
-// Edit a Davit Remark.
+// Add a Davit Remark.
 //
-//   (C) Copyright 2008 Fred Gleason <fredg@paravelsystems.com>
-//
-//     $Id: add_remark.cpp,v 1.1 2008/12/13 00:44:27 fredg Exp $
+//   (C) Copyright 2008-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,42 +18,31 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <qlabel.h>
-#include <qsqldatabase.h>
-#include <qmessagebox.h>
-
 #include <math.h>
 
-#include <add_remark.h>
+#include <QMessageBox>
 
+#include <dvtdb.h>
 
-AddRemark::AddRemark(QString *remark,QWidget *parent)
-  : QDialog(parent)
+#include "add_remark.h"
+
+AddRemark::AddRemark(DvtConfig *c,QWidget *parent)
+  : Dialog(c,parent)
 {
   setModal(true);
-  add_remark=remark;
+  add_remark=NULL;
 
   //
   // Fix the Window Size
   //
-  setMinimumWidth(sizeHint().width());
-  setMinimumHeight(sizeHint().height());
+  setMinimumSize(sizeHint());
 
-  setWindowTitle("Davit - Add Remark");
-
-  //
-  // Create Fonts
-  //
-  QFont label_font=QFont("Helvetica",12,QFont::Bold);
-  label_font.setPixelSize(12);
-  QFont font=QFont("Helvetica",12,QFont::Normal);
-  font.setPixelSize(12);
+  setWindowTitle("Davit - "+tr("Add Remark"));
 
   //
   // Station Call
   //
   add_remark_edit=new QTextEdit(this);
-  add_remark_edit->setFont(font);
   add_remark_edit->setAcceptRichText(false);
 
   //
@@ -63,7 +50,7 @@ AddRemark::AddRemark(QString *remark,QWidget *parent)
   //
   add_ok_button=new QPushButton(this);
   add_ok_button->setDefault(true);
-  add_ok_button->setFont(label_font);
+  add_ok_button->setFont(buttonFont());
   add_ok_button->setText("&OK");
   connect(add_ok_button,SIGNAL(clicked()),this,SLOT(okData()));
 
@@ -71,7 +58,7 @@ AddRemark::AddRemark(QString *remark,QWidget *parent)
   //  Cancel Button
   //
   add_cancel_button=new QPushButton(this);
-  add_cancel_button->setFont(label_font);
+  add_cancel_button->setFont(buttonFont());
   add_cancel_button->setText("&Cancel");
   connect(add_cancel_button,SIGNAL(clicked()),this,SLOT(cancelData()));
 }
@@ -94,6 +81,15 @@ QSizePolicy AddRemark::sizePolicy() const
 }
 
 
+int AddRemark::exec(QString *remark)
+{
+  add_remark_edit->setText(*remark);
+  add_remark=remark;
+
+  return QDialog::exec();
+}
+
+
 void AddRemark::resizeEvent(QResizeEvent *e)
 {
   add_remark_edit->setGeometry(10,10,size().width()-20,size().height()-80);
@@ -104,12 +100,13 @@ void AddRemark::resizeEvent(QResizeEvent *e)
 
 void AddRemark::okData()
 {
-  *add_remark=add_remark_edit->toPlainText().simplified().trimmed();
-  done(0);
+  *add_remark=add_remark_edit->toPlainText().trimmed();
+
+  done(true);
 }
 
 
 void AddRemark::cancelData()
 {
-  done(-1);
+  done(false);
 }

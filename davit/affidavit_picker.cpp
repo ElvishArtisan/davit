@@ -18,25 +18,19 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <QSqlDatabase>
-#include <QSqlQuery>
+#include <dvtdb.h>
 
 #include "affidavit_picker.h"
 
-AffidavitPicker::AffidavitPicker(Dvt::AffidavitStationFilter *stations,
-				 Dvt::AffidavitSortType *sort,
-				 int *pgm_id,QWidget *parent)
-  : QDialog(parent)
+AffidavitPicker::AffidavitPicker(DvtConfig *c,QWidget *parent)
+  : Dialog(c,parent)
 {
   setModal(true);
-  QString sql;
-  QSqlQuery *q;
+  report_stations=NULL;
+  report_sort_type=NULL;
+  report_program_id=NULL;
 
-  report_stations=stations;
-  report_sort_type=sort;
-  report_program_id=pgm_id;
-
-  setWindowTitle("Davit - "+tr("Set Parameters"));
+  setWindowTitle("Davit - "+tr("Set Report Parameters"));
 
   //
   // Fonts
@@ -62,14 +56,6 @@ AffidavitPicker::AffidavitPicker(Dvt::AffidavitStationFilter *stations,
   // Program Selector
   //
   report_program_box=new QComboBox(this);
-  sql=QString("select ID,PROGRAM_NAME from PROGRAMS order by PROGRAM_NAME");
-  q=new QSqlQuery(sql);
-  int count=0;
-  while(q->next()) {
-    report_program_ids.push_back(q->value(0).toInt());
-    report_program_box->insertItem(count++,q->value(1).toString());
-  }
-  delete q;
   report_program_label=new QLabel(tr("Program")+":",this);
   report_program_label->setFont(label_font);
   report_program_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
@@ -98,13 +84,6 @@ AffidavitPicker::AffidavitPicker(Dvt::AffidavitStationFilter *stations,
   report_cancel_button->setFont(label_font);
   connect(report_cancel_button,SIGNAL(clicked()),this,SLOT(cancelData()));
 
-  //
-  // Load Values
-  //
-  report_sort_box->setCurrentIndex(*sort);
-  report_stations_box->setCurrentIndex(*stations);
-  stationsSelectedData((int)(*sort));
-
   setMinimumSize(sizeHint());
   setMaximumHeight(sizeHint().height());
 }
@@ -121,6 +100,42 @@ QSize AffidavitPicker::sizeHint() const
 }
 
 
+int AffidavitPicker::exec(Dvt::AffidavitStationFilter *stations,
+			  Dvt::AffidavitSortType *sort,int *pgm_id)
+{
+  QString sql;
+  DvtSqlQuery *q;
+
+  report_program_box->clear();
+  sql=QString("select ")+
+    "`ID`,"+            // 00
+    "`PROGRAM_NAME` "+  // 01
+    "from `PROGRAMS` order by `PROGRAM_NAME`";
+  q=new DvtSqlQuery(sql);
+  int count=0;
+  while(q->next()) {
+    report_program_box->insertItem(count++,q->value(1).toString(),
+				   q->value(0).toInt());
+  }
+  delete q;
+
+  report_stations=stations;
+  report_sort_type=sort;
+  report_program_id=pgm_id;
+
+  //
+  // Load Values
+  //
+  report_sort_box->setCurrentIndex(*sort);
+  report_stations_box->setCurrentIndex(*stations);
+  stationsSelectedData((int)(*sort));
+
+
+  
+  return QDialog::exec();
+}
+
+
 void AffidavitPicker::stationsSelectedData(int num)
 {
   report_program_label->setEnabled(num==Dvt::Program);
@@ -134,14 +149,15 @@ void AffidavitPicker::okData()
     (Dvt::AffidavitStationFilter)report_stations_box->currentIndex();
   *report_sort_type=
     (Dvt::AffidavitSortType)report_sort_box->currentIndex();
-  *report_program_id=report_program_ids[report_program_box->currentIndex()];
-  done(0);
+  *report_program_id=report_program_box->itemData(report_program_box->currentIndex()).toInt();
+
+  done(true);
 }
 
 
 void AffidavitPicker::cancelData()
 {
-  done(-1);
+  done(false);
 }
 
 

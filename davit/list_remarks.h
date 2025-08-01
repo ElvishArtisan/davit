@@ -25,6 +25,7 @@
 #include <QTextEdit>
 
 #include "dialog.h"
+#include "add_remark.h"
 
 class ListRemarks : public Dialog
 {
@@ -56,6 +57,7 @@ class ListRemarks : public Dialog
   QTextEdit *list_remarks_edit;
   QPushButton *list_add_button;
   int list_id;
+  AddRemark *list_addremark_dialog;
 };
 
 

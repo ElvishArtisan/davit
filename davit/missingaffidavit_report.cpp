@@ -30,8 +30,6 @@
 #include "affidavit_picker.h"
 #include "list_reports.h"
 #include "spread_sheet.h"
-#include "textfile.h"
-
 
 bool ListReports::MissingAffidavitReport(SpreadSheet *sheet)
 {
@@ -51,12 +49,9 @@ bool ListReports::MissingAffidavitReport(SpreadSheet *sheet)
   QDate end_date=QDate::currentDate();
   end_date.setDate(end_date.year(),end_date.month(),1);
   QDate start_date=end_date.addYears(-1);
-  AffidavitPicker *d=new AffidavitPicker(&filter,&sort_type,&program_id,this);
-  if(d->exec()!=0) {
-    delete d;
+  if(!list_pickaffidavit_dialog->exec(&filter,&sort_type,&program_id)) {
     return false;
   }
-  delete d;
 
   //
   // Generate Report

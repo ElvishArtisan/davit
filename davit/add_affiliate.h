@@ -22,7 +22,6 @@
 #define ADD_AFFILIATE_H
 
 #include <QComboBox>
-#include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>

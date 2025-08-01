@@ -42,7 +42,6 @@
 #include <dvtconf.h>
 #include <dvtdb.h>
 
-#include "add_provider.h"
 #include "edit_provider.h"
 #include "globals.h"
 #include "list_reports.h"
@@ -62,6 +61,11 @@ ListReports::ListReports(DvtConfig *c,QWidget *parent)
 
   setWindowTitle("Davit - Reports");
 
+  //
+  // Dialogs
+  //
+  list_pickaffidavit_dialog=new AffidavitPicker(c,this);
+  
   //
   // Reports List
   //

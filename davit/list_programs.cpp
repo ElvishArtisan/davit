@@ -26,7 +26,6 @@
 
 #include <dvtdb.h>
 
-#include "add_program.h"
 #include "edit_program.h"
 #include "globals.h"
 #include "list_programs.h"
@@ -35,7 +34,6 @@ ListPrograms::ListPrograms(DvtConfig *c,QWidget *parent)
   : Dialog(c,parent)
 {
   setModal(true);
-  //  list_provider_id=provider_id;
 
   //
   // Fix the Window Size
@@ -46,7 +44,7 @@ ListPrograms::ListPrograms(DvtConfig *c,QWidget *parent)
   //
   // Dialogs
   //
-  list_editprogram_dialog=new EditProgram(config,this);
+  list_editprogram_dialog=new EditProgram(c,this);
   list_generateaffadavit_dialog=new GenerateAffadavit(c,this);
 
   //
@@ -222,21 +220,6 @@ void ListPrograms::affidavitData()
   }
   list_generateaffadavit_dialog->
     execProgram(list_programs_model->programId(rows.first()));
-
-
-  /*
-  DvtListViewItem *item=
-    (DvtListViewItem *)list_programs_list->selectedItem();
-  
-  if(item==NULL) {
-    return;
-  }
-  GenerateAffadavit *edit=
-    new GenerateAffadavit(GenerateAffadavit::ReportProgram,item->id(),
-			  this,"edit");
-  edit->exec();
-  delete edit;
-*/
 }
 
 

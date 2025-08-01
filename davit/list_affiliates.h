@@ -31,7 +31,6 @@
 #include <QProgressDialog>
 #include <QPixmap>
 
-
 #include "add_affiliate.h"
 #include "affiliatelistmodel.h"
 #include "dialog.h"

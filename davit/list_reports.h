@@ -32,6 +32,7 @@
 
 #include <dvt.h>
 
+#include "affidavit_picker.h"
 #include "dialog.h"
 #include "pick_fields.h"
 #include "spread_sheet.h"
@@ -131,6 +132,7 @@ private slots:
   QPushButton *list_run_button;
   QPushButton *list_close_button;
   int d_busy_cursor_count;
+  AffidavitPicker *list_pickaffidavit_dialog;
 };
 
 

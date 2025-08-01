@@ -51,7 +51,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   // Dialogs
   //
   // Show Contacts
-  edit_contact_list=new ListContacts(config,this);
+  edit_contact_list=new ListContacts(c,this);
   connect(edit_contact_list,SIGNAL(visibilityChanged(bool)),
 	  this,SLOT(contactsVisibilityChangedData(bool)));
 
@@ -396,7 +396,7 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   edit_web_password_label=new QLabel(tr("Web Password")+":",this);
   edit_web_password_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_web_password_label->setFont(labelFont());
-  edit_affidavits=new ShowAffidavits(config,this);
+  edit_affidavits=new ShowAffidavits(c,this);
   edit_affidavits->show();
 
   //
