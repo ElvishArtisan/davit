@@ -21,6 +21,7 @@ config.status
 config.sub
 configure
 depcomp
+docbook
 dvt-bin.conf
 install-sh
 libtool
