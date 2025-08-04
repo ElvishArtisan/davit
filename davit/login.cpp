@@ -20,22 +20,15 @@
 
 #include <math.h>
 
-//#include <QButtonGroup>
-#include <QDialog>
 #include <QEvent>
 #include <QGuiApplication>
-#include <QLineEdit>
 #include <QMessageBox>
-#include <QPainter>
-#include <QRadioButton>
 #include <QScreen>
-#include <QString>
-#include <QTextEdit>
 
 #include "login.h"
 
-Login::Login(QWidget *parent)
-  : QDialog(parent)
+Login::Login(DvtConfig *c,QWidget *parent)
+  : Dialog(c,parent)
 {
   setModal(true);
 
@@ -48,19 +41,13 @@ Login::Login(QWidget *parent)
   setWindowTitle("Davit - "+tr("Login"));
 
   //
-  // Create Fonts
-  //
-  QFont font=QFont("Helvetica",12,QFont::Bold);
-  font.setPixelSize(12);
-
-  //
   // Login Name
   //
   login_name_edit=new QLineEdit(this);
   login_name_edit->setMaxLength(16);
   login_name_edit->setFocus();
   login_name_label=new QLabel(tr("User Name")+":",this);
-  login_name_label->setFont(font);
+  login_name_label->setFont(labelFont());
   login_name_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   //
@@ -70,14 +57,14 @@ Login::Login(QWidget *parent)
   login_password_edit->setMaxLength(16);
   login_password_edit->setEchoMode(QLineEdit::Password);
   login_password_label=new QLabel(tr("Password")+":",this);
-  login_password_label->setFont(font);
+  login_password_label->setFont(labelFont());
   login_password_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   //
   // OK Button
   //
   login_ok_button=new QPushButton(this);
-  login_ok_button->setFont(font);
+  login_ok_button->setFont(buttonFont());
   login_ok_button->setText(tr("OK"));
   login_ok_button->setDefault(true);
   connect(login_ok_button,SIGNAL(clicked()),this,SLOT(okData()));
@@ -86,7 +73,7 @@ Login::Login(QWidget *parent)
   // Cancel Button
   //
   login_cancel_button=new QPushButton(this);
-  login_cancel_button->setFont(font);
+  login_cancel_button->setFont(buttonFont());
   login_cancel_button->setText(tr("Cancel"));
   connect(login_cancel_button,SIGNAL(clicked()),this,SLOT(cancelData()));
 }

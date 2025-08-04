@@ -118,15 +118,15 @@ MainWidget::MainWidget(QWidget *parent)
   global_geometry->load();
 
   //
-  // Dialogs
-  //
-  d_login_dialog=new Login(this);
-
-  //
   // Load Configs
   //
   config=new DvtConfig();
   config->load();
+
+  //
+  // Dialogs
+  //
+  d_login_dialog=new Login(config,this);
 
   //
   // Open Database

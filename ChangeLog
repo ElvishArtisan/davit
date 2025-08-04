@@ -1008,3 +1008,5 @@
 	* Refactored the 'Select Date' dialog in davit(1).
 2025-08-04 Fred Gleason <fredg@paravelsystems.com>
 	* Removed dead code from davit(1).
+2025-08-04 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored the 'Login' dialog in davit(1).

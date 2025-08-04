@@ -21,20 +21,17 @@
 #ifndef LOGIN_H
 #define LOGIN_H
 
-#include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
-#include <QTextEdit>
-#include <QPixmap>
 #include <QPushButton>
-#include <QRadioButton>
 
+#include "dialog.h"
 
-class Login : public QDialog
+class Login : public Dialog
 {
  Q_OBJECT
  public:
- Login(QWidget *parent=0);
+  Login(DvtConfig *c,QWidget *parent=0);
   ~Login();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
