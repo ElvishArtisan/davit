@@ -24,7 +24,6 @@
 #include <vector>
 
 #include <QDateTime>
-#include <QDialog>
 #include <QFontMetrics>
 #include <QListWidget>
 #include <QPushButton>

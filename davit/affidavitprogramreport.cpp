@@ -37,9 +37,6 @@ void GenerateAffadavit::paintProgramReport(QPrinter *printer)
   QMarginsF margins(20.0,20.0,20.0,20.0);
   printer->setPageMargins(margins);
 
-  QDate start_date=QDate(edit_year_box->currentText().toInt(),
-			 edit_month_box->currentIndex()+1,1);
-  QDate end_date=start_date.addMonths(1).addDays(-1);
   int program_id=
     edit_program_box->itemData(edit_program_box->currentIndex()).toInt();
 
@@ -56,7 +53,6 @@ void GenerateAffadavit::paintProgramReport(QPrinter *printer)
   QString sql;
   DvtSqlQuery *q;
   DvtSqlQuery *q1;
-  DvtSqlQuery *q2;
   QDate date;
   QDateTime signature_datetime;
   QString signame;

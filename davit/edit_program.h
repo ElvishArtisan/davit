@@ -22,7 +22,6 @@
 #define EDIT_PROGRAM_H
 
 #include <QDateTimeEdit>
-#include <QDialog>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>

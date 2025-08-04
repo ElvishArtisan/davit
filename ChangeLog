@@ -1006,3 +1006,5 @@
 	* Added a 'FontEngine::config()' method in davit(1).
 2025-08-04 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored the 'Select Date' dialog in davit(1).
+2025-08-04 Fred Gleason <fredg@paravelsystems.com>
+	* Removed dead code from davit(1).

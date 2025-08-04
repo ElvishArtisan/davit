@@ -21,7 +21,6 @@
 #ifndef LIST_USERS_H
 #define LIST_USERS_H
 
-#include <QDialog>
 #include <QListView>
 #include <QPushButton>
 
