@@ -42,8 +42,8 @@ bool ListReports::AddedProgramsReport(Dvt::RemarkType type,SpreadSheet *sheet)
 
   PickFields *r=new PickFields(&start_date,&end_date,&pgm_id,true,
 			       &affiliate_id,true,NULL,true,NULL,
-			       PickFields::NoMarket,this);
-  if(r->exec()!=0) {
+			       PickFields::NoMarket,config(),this);
+  if(!r->exec()) {
     delete r;
     return false;
   }

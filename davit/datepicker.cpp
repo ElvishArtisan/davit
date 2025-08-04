@@ -18,23 +18,21 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <QLabel>
 #include <QMouseEvent>
-#include <QPalette>
-#include <QString>
-#include <QWidget>
 
 #include "datepicker.h"
 
 //
 // Global Classes
 //
-DatePicker::DatePicker(int low_year,int high_year,QWidget *parent)
-  :QWidget(parent)
+DatePicker::DatePicker(int low_year,int high_year,DvtConfig *c,QWidget *parent)
+  :Widget(c,parent)
 {
   QLocale locale;
   pick_low_year=low_year;
   pick_high_year=high_year;
+  pick_current_day=-1;
+  pick_current_dow_offset=-1;
 
   //
   // Generate Fonts
@@ -77,66 +75,53 @@ DatePicker::DatePicker(int low_year,int high_year,QWidget *parent)
 	    this,SLOT(yearChangedData(int)));
   }
 
-  //
-  // Date Labels
-  //
-  QPalette weekend_palette=palette();
-  weekend_palette.setColor(QPalette::Active,QPalette::Window,
-			   palette().color(QPalette::Active,QPalette::Mid));
-  weekend_palette.setColor(QPalette::Inactive,QPalette::Window,
-			   palette().color(QPalette::Active,
-					   QPalette::Mid));
-
   QLabel *label=new QLabel(tr("Mo"),this);
   label->setGeometry(DATEPICKER_X_ORIGIN,30,30,30);
-  label->setFont(header_font);
-  label->setAlignment(Qt::AlignCenter);
+  label->setFont(labelFont());
+  label->setAlignment(Qt::AlignLeft);
 
   label=new QLabel(tr("Tu"),this);
   label->setGeometry(DATEPICKER_X_ORIGIN+DATEPICKER_X_INTERVAL,
 		     DATEPICKER_Y_ORIGIN,30,30);
-  label->setFont(header_font);
-  label->setAlignment(Qt::AlignCenter);
+  label->setFont(labelFont());
+  label->setAlignment(Qt::AlignLeft);
 
   label=new QLabel(tr("We"),this);
   label->setGeometry(DATEPICKER_X_ORIGIN+DATEPICKER_X_INTERVAL*2,
 		     DATEPICKER_Y_ORIGIN,30,30);
-  label->setFont(header_font);
-  label->setAlignment(Qt::AlignCenter);
+  label->setFont(labelFont());
+  label->setAlignment(Qt::AlignLeft);
 
   label=new QLabel(tr("Th"),this);
   label->setGeometry(DATEPICKER_X_ORIGIN+DATEPICKER_X_INTERVAL*3,
 		     DATEPICKER_Y_ORIGIN,30,30);
-  label->setFont(header_font);
-  label->setAlignment(Qt::AlignCenter);
+  label->setFont(labelFont());
+  label->setAlignment(Qt::AlignLeft);
 
   label=new QLabel(tr("Fr"),this);
   label->setGeometry(DATEPICKER_X_ORIGIN+DATEPICKER_X_INTERVAL*4,
 		     DATEPICKER_Y_ORIGIN,30,30);
-  label->setFont(header_font);
-  label->setAlignment(Qt::AlignCenter);
+  label->setFont(labelFont());
+  label->setAlignment(Qt::AlignLeft);
 
   label=new QLabel(tr("Sa"),this);
   label->setGeometry(DATEPICKER_X_ORIGIN+DATEPICKER_X_INTERVAL*5,
 		     DATEPICKER_Y_ORIGIN,30,30);
-  label->setFont(header_font);
-  label->setAlignment(Qt::AlignCenter);
-  label->setPalette(weekend_palette);
+  label->setFont(labelFont());
+  label->setAlignment(Qt::AlignLeft);
 
   label=new QLabel(tr("Su"),this);
   label->setGeometry(DATEPICKER_X_ORIGIN+DATEPICKER_X_INTERVAL*6,
 		     DATEPICKER_Y_ORIGIN,30,30);
-  label->setFont(header_font);
-  label->setAlignment(Qt::AlignCenter);
-  label->setPalette(weekend_palette);
-
+  label->setFont(labelFont());
+  label->setAlignment(Qt::AlignLeft);
 
   for(int i=0;i<6;i++) {
     for(int j=0;j<7;j++) {
       pick_date_label[i][j]=new QLabel(this);
       pick_date_label[i][j]->
 	setGeometry(DATEPICKER_X_ORIGIN+DATEPICKER_X_INTERVAL*j,
-		    DATEPICKER_Y_ORIGIN+20+DATEPICKER_Y_INTERVAL*i,30,30);
+		    DATEPICKER_Y_ORIGIN+20+DATEPICKER_Y_INTERVAL*i,30-10,30-10);
       pick_date_label[i][j]->setAlignment(Qt::AlignCenter);
     }
   }
@@ -262,23 +247,16 @@ void DatePicker::PrintDays()
   //
   // Clear Days
   //
-  QPalette weekend_palette=palette();
-  weekend_palette.setColor(QPalette::Active,QPalette::Window,
-			   palette().color(QPalette::Active,
-					   QPalette::Mid));
-  weekend_palette.setColor(QPalette::Inactive,QPalette::Window,
-			   palette().color(QPalette::Active,
-					   QPalette::Mid));
   for(int i=0;i<6;i++) {
     for(int j=0;j<5;j++) {
       pick_date_label[i][j]->clear();
-      pick_date_label[i][j]->setPalette(palette());
+      pick_date_label[i][j]->setStyleSheet("");
     }
   }
   for(int i=0;i<6;i++) {
     for(int j=5;j<7;j++) {
       pick_date_label[i][j]->clear();
-      pick_date_label[i][j]->setPalette(weekend_palette);
+      pick_date_label[i][j]->setStyleSheet("");
     }
   }
 
@@ -300,7 +278,12 @@ void DatePicker::PrintDays()
   for(int i=1;i<(top_date.daysInMonth()+1);i++) {
     PrintDay(i,dow_offset);
     if(pick_date.day()==i) {
+      if(pick_current_day>=0) {
+	//	SelectDay(pick_current_day,pick_current_dow_offset,false);
+      }
       SelectDay(i,dow_offset,true);
+      pick_current_day=i;
+      pick_current_dow_offset=dow_offset;
     }
   }
 }
@@ -320,29 +303,17 @@ void DatePicker::SelectDay(int day,int dow_offset,bool state)
   int slot=day+dow_offset-1;
   int week=slot/7;
   int dow=slot-7*week;
-  QPalette pal=palette();
+  QString ss="";
   if(state) {
-    pal.setColor(QPalette::Active,QPalette::WindowText,
-		 palette().
-		 color(QPalette::Active,QPalette::HighlightedText));
-    pal.setColor(QPalette::Active,QPalette::Window,
-		 palette().color(QPalette::Active,QPalette::Highlight));
-    pal.setColor(QPalette::Inactive,QPalette::WindowText,
-		 palette().
-		 color(QPalette::Active,QPalette::HighlightedText));
-    pal.setColor(QPalette::Inactive,QPalette::Window,
-		 palette().color(QPalette::Active,QPalette::Highlight));
+    QPalette pal=palette();
+    ss=QString("color: ")+
+      pal.color(QPalette::Active,QPalette::HighlightedText).name()+";"+
+      "background-color: "+
+      pal.color(QPalette::Active,QPalette::Highlight).name()+";";
+    pick_date_label[week][dow]->setStyleSheet(ss);;
   }
   else {
-    pal.setColor(QPalette::Active,QPalette::WindowText,
-		 palette().color(QPalette::Active,QPalette::Text));
-    pal.setColor(QPalette::Active,QPalette::Window,
-		 palette().color(QPalette::Active,QPalette::Window));
-    pal.setColor(QPalette::Inactive,QPalette::WindowText,
-		 palette().color(QPalette::Active,QPalette::Text));
-    pal.setColor(QPalette::Inactive,QPalette::Window,
-		 palette().color(QPalette::Active,QPalette::Window));
+    pick_date_label[week][dow]->setStyleSheet("");;
   }
-  pick_date_label[week][dow]->setPalette(pal);
 }
 

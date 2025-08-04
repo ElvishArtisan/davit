@@ -1004,3 +1004,5 @@
 	* Refactored the 'Add Remark' dialog in davit(1).
 	* Refactored the 'Set Report Parameters' dialog in davit(1).
 	* Added a 'FontEngine::config()' method in davit(1).
+2025-08-04 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored the 'Select Date' dialog in davit(1).

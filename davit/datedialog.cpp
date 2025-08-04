@@ -1,6 +1,6 @@
 // datedialog.cpp
 //
-// A Dialog Box for using an DvtDatePicker widget.
+// A Dialog Box for using a DatePicker widget.
 //
 //   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,61 +18,39 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-
-#include <QApplication>
-#include <QWidget>
-#include <QPushButton>
-#include <QRect>
-#include <QPoint>
-#include <QPainter>
-#include <QString>
-#include <QMessageBox>
-#include <QLineEdit>
-#include <QLabel>
-#include <QSignalMapper>
-
 #include "dvtconf.h"
 #include "datedialog.h"
 
 //
 // Global Classes
 //
-DateDialog::DateDialog(int low_year,int high_year,QWidget *parent)
-  : QDialog(parent)
+DateDialog::DateDialog(int low_year,int high_year,DvtConfig *c,QWidget *parent)
+  : Dialog(c,parent)
 {
   setModal(true);
-  QFont font;
 
-  font=QFont("Helvetica",12,QFont::Bold);
-  font.setPixelSize(12);
-
-  setWindowTitle(tr("Select Date"));
+  setWindowTitle("Davit - "+tr("Select Date"));
 
   //
   // Datepicker
   //
-  date_picker=new DatePicker(low_year,high_year,this);
-  date_picker->setGeometry(10,10,
-			   date_picker->sizeHint().width(),
-			   date_picker->sizeHint().height());
+  date_picker=new DatePicker(low_year,high_year,config(),this);
 
   //
   // OK Button
   //
-  QPushButton *button=new QPushButton(this);
-  button->setGeometry(sizeHint().width()-130,sizeHint().height()-40,50,30);
-  button->setFont(font);
-  button->setText(tr("&OK"));
-  connect(button,SIGNAL(clicked()),this,SLOT(okData()));
+  date_ok_button=new QPushButton(this);
+  date_ok_button->setFont(buttonFont());
+  date_ok_button->setText(tr("OK"));
+  connect(date_ok_button,SIGNAL(clicked()),this,SLOT(okData()));
 
   //
   // Cancel Button
   //
-  button=new QPushButton(this);
-  button->setGeometry(sizeHint().width()-65,sizeHint().height()-40,55,30);
-  button->setFont(font);
-  button->setText(tr("&Cancel"));
-  connect(button,SIGNAL(clicked()),this,SLOT(cancelData()));
+  date_cancel_button=new QPushButton(this);
+  date_cancel_button->setFont(buttonFont());
+  date_cancel_button->setText(tr("Cancel"));
+  connect(date_cancel_button,SIGNAL(clicked()),this,SLOT(cancelData()));
 }
 
 
@@ -105,11 +83,23 @@ int DateDialog::exec(QDate *date)
 void DateDialog::okData()
 {
   *date_date=date_picker->date();
-  done(0);
+  done(true);
 }
 
 
 void DateDialog::cancelData()
 {
-  done(-1);
+  done(false);
+}
+
+
+void DateDialog::resizeEvent(QResizeEvent *e)
+{
+  int w=size().width();
+  int h=size().height();
+
+  date_picker->setGeometry(10,10,w,h-50);
+
+  date_ok_button->setGeometry(w-130,h-40,55,30);
+  date_cancel_button->setGeometry(w-65,h-40,55,30);
 }

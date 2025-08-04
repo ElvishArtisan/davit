@@ -21,7 +21,6 @@
 #ifndef DATEPICKER_H
 #define DATEPICKER_H
 
-#include <QWidget>
 #include <QSize>
 #include <QSizePolicy>
 #include <QPushButton>
@@ -32,6 +31,8 @@
 #include <QComboBox>
 #include <QSpinBox>
 
+#include "widget.h"
+
 //
 // Display Settings
 //
@@ -40,11 +41,11 @@
 #define DATEPICKER_Y_ORIGIN 30
 #define DATEPICKER_Y_INTERVAL 20
 
-class DatePicker : public QWidget
+class DatePicker : public Widget
 {
   Q_OBJECT
  public:
-  DatePicker(int low_year,int high_year,QWidget *parent=0);
+  DatePicker(int low_year,int high_year,DvtConfig *c,QWidget *parent=0);
   ~DatePicker();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -70,6 +71,8 @@ class DatePicker : public QWidget
   QDate pick_date;
   int pick_low_year;
   int pick_high_year;
+  int pick_current_day;
+  int pick_current_dow_offset;
 };
 
 

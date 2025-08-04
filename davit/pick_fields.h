@@ -25,14 +25,15 @@
 
 #include <QComboBox>
 #include <QDateTimeEdit>
-#include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 
+#include "datedialog.h"
+#include "dialog.h"
 #include "statecombobox.h"
 
-class PickFields : public QDialog
+class PickFields : public Dialog
 {
  Q_OBJECT
  public:
@@ -44,7 +45,7 @@ class PickFields : public QDialog
 	     int *network_id,bool network_all,
 	     PickFields::SortField *sort,
       	     PickFields::MarketType market,
-	     QWidget *parent=0);
+	     DvtConfig *c,QWidget *parent=0);
   ~PickFields();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -74,8 +75,10 @@ class PickFields : public QDialog
   QComboBox *report_network_box;
   QLabel *report_start_date_label;
   QDateEdit *report_start_date_edit;
+  QPushButton *report_start_select_button;
   QLabel *report_end_date_label;
   QDateEdit *report_end_date_edit;
+  QPushButton *report_end_select_button;
   QLabel *report_sort_label;
   QComboBox *report_sort_box;
   QPushButton *report_ok_button;
@@ -90,6 +93,7 @@ class PickFields : public QDialog
   std::vector<int> report_affiliate_ids;
   std::vector<int> report_network_ids;
   int report_ypos;
+  DateDialog *report_pickdate_dialog;
 };
 
 

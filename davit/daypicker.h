@@ -21,15 +21,16 @@
 #ifndef DAYPICKER_H
 #define DAYPICKER_H
 
-#include <QWidget>
 #include <QCheckBox>
 #include <QLabel>
 
-class DayPicker : public QWidget
+#include "widget.h"
+
+class DayPicker : public Widget
 {
  Q_OBJECT
  public:
-  DayPicker(QWidget *parent=0);
+  DayPicker(DvtConfig *c,QWidget *parent=0);
   ~DayPicker();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

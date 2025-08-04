@@ -23,17 +23,19 @@
 
 #include <vector>
 
-#include <QDialog>
 #include <QDateTimeEdit>
 #include <QLabel>
 
 #include <daypicker.h>
 
-class PickDaypart : public QDialog
+#include "dialog.h"
+
+class PickDaypart : public Dialog
 {
  Q_OBJECT
  public:
-  PickDaypart(QTime *start_time,QTime *end_time,bool dows[7],QWidget *parent=0);
+  PickDaypart(QTime *start_time,QTime *end_time,bool dows[7],
+	      DvtConfig *c,QWidget *parent=0);
   ~PickDaypart();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;

@@ -162,7 +162,7 @@ bool ListReports::AffiliatesByNetworkReport(SpreadSheet *sheet)
   QDateTime dt=QDateTime(QDate::currentDate(),QTime::currentTime());
 
   PickFields *r=new PickFields(NULL,NULL,NULL,false,NULL,false,&network_id,
-			       false,0,PickFields::NoMarket,this);
+			       false,0,PickFields::NoMarket,config(),this);
   if(r->exec()!=0) {
     delete r;
     return false;
@@ -203,7 +203,7 @@ bool ListReports::AffiliatesByProgramReport(int contacts,SpreadSheet *sheet)
 						     PickFields::SortMarket);
 
   PickFields *r=new PickFields(NULL,NULL,&pgm_id,false,NULL,false,NULL,false,
-			       &sort,PickFields::NoMarket,this);
+			       &sort,PickFields::NoMarket,config(),this);
   if(r->exec()!=0) {
     delete r;
     return false;
@@ -254,7 +254,7 @@ bool ListReports::AffiliatesByDaypartReport(SpreadSheet *sheet)
   QTime end_time(19,59,59);
   bool dows[7]={true,true,true,true,true,false,false};
 
-  PickDaypart *r=new PickDaypart(&start_time,&end_time,dows);
+  PickDaypart *r=new PickDaypart(&start_time,&end_time,dows,config(),this);
   if(r->exec()!=0) {
     delete r;
     return false;

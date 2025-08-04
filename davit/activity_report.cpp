@@ -42,7 +42,7 @@ bool ListReports::ActivityReport(SpreadSheet *sheet)
 
   PickFields *r=new PickFields(&start_date,&end_date,NULL,true,
 			       &affiliate_id,true,NULL,true,NULL,
-			       PickFields::NoMarket,this);
+			       PickFields::NoMarket,config(),this);
   if(r->exec()!=0) {
     delete r;
     return false;

@@ -38,8 +38,8 @@ bool ListReports::RAAffiliateReport(SpreadSheet *sheet)
 
   PickFields *r=
     new PickFields(NULL,NULL,&pgm_id,true,&affiliate_id,true,NULL,true,
-		   NULL,PickFields::NoMarket,this);
-  if(r->exec()!=0) {
+		   NULL,PickFields::NoMarket,config(),this);
+  if(!r->exec()) {
     delete r;
     return false;
   }

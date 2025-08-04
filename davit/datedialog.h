@@ -21,7 +21,6 @@
 #ifndef DATEDIALOG_H
 #define DATEDIALOG_H
 
-#include <QDialog>
 #include <QSize>
 #include <QSizePolicy>
 #include <QPushButton>
@@ -30,13 +29,14 @@
 #include <QDateTime>
 #include <QLabel>
 
+#include "dialog.h"
 #include "datepicker.h"
 
-class DateDialog : public QDialog
+class DateDialog : public Dialog
 {
  Q_OBJECT
  public:
- DateDialog(int low_year,int high_year,QWidget *parent=0);
+  DateDialog(int low_year,int high_year,DvtConfig *c,QWidget *parent=0);
   ~DateDialog();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -48,8 +48,13 @@ class DateDialog : public QDialog
   void okData();
   void cancelData();
 
+ protected:
+  void resizeEvent(QResizeEvent *e);
+
  private:
   DatePicker *date_picker;
+  QPushButton *date_ok_button;
+  QPushButton *date_cancel_button;
   QDate *date_date;
 };
 

@@ -43,8 +43,8 @@ bool ListReports::ProgramByMarketReport(PickFields::MarketType type,
   //
   // Get Market
   //
-  PickFields *d=new PickFields(NULL,NULL,NULL,false,NULL,false,NULL,false,NULL,type,this);
-  if(d->exec()<0) {
+  PickFields *d=new PickFields(NULL,NULL,NULL,false,NULL,false,NULL,false,NULL,type,config(),this);
+  if(!d->exec()) {
     return false;
   }
   QString market=d->selectedMarket();

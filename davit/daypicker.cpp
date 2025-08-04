@@ -20,8 +20,8 @@
 
 #include "daypicker.h"
 
-DayPicker::DayPicker(QWidget *parent)
-  : QWidget(parent)
+DayPicker::DayPicker(DvtConfig *c,QWidget *parent)
+  : Widget(c,parent)
 {
   for(int i=0;i<7;i++) {
     dow_box[i]=new QCheckBox(this);

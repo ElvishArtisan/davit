@@ -23,8 +23,8 @@
 #include "pick_daypart.h"
 
 PickDaypart::PickDaypart(QTime *start_time,QTime *end_time,bool dows[7],
-			 QWidget *parent)
-  : QDialog(parent)
+			 DvtConfig *c,QWidget *parent)
+  : Dialog(c,parent)
 {
   setModal(true);
   report_start_time=start_time;
@@ -35,16 +35,8 @@ PickDaypart::PickDaypart(QTime *start_time,QTime *end_time,bool dows[7],
   //
   // Fix the Window Size
   //
-  setMinimumWidth(sizeHint().width());
-  setMinimumHeight(sizeHint().height());
-  setMaximumWidth(sizeHint().width());
-  setMaximumHeight(sizeHint().height());
-
-  //
-  // Generate Fonts
-  //
-  QFont label_font("helvetica",12,QFont::Bold);
-  label_font.setPixelSize(12);
+  setMinimumSize(sizeHint());
+  setMaximumSize(sizeHint());
 
   //
   // Start Time
@@ -53,7 +45,7 @@ PickDaypart::PickDaypart(QTime *start_time,QTime *end_time,bool dows[7],
   report_start_edit->setGeometry(115,10,90,20);
   QLabel *label=new QLabel(tr("Start Time:"),this);
   label->setGeometry(10,10,100,20);
-  label->setFont(label_font);
+  label->setFont(labelFont());
   label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   //
@@ -63,20 +55,20 @@ PickDaypart::PickDaypart(QTime *start_time,QTime *end_time,bool dows[7],
   report_end_edit->setGeometry(115,32,90,20);
   label=new QLabel(tr("End Time:"),this);
   label->setGeometry(10,32,100,20);
-  label->setFont(label_font);
+  label->setFont(labelFont());
   label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
   //
   // Day of the Week Picker
   //
-  report_dow_picker=new DayPicker(this);
+  report_dow_picker=new DayPicker(c,this);
   report_dow_picker->setGeometry(20,60,sizeHint().width()-40,60);
 
   //
   // OK Button
   //
   QPushButton *button=new QPushButton(tr("OK"),this);
-  button->setFont(label_font);
+  button->setFont(buttonFont());
   button->setGeometry(sizeHint().width()-180,sizeHint().height()-60,80,50);
   connect(button,SIGNAL(clicked()),this,SLOT(okData()));
 
@@ -84,7 +76,7 @@ PickDaypart::PickDaypart(QTime *start_time,QTime *end_time,bool dows[7],
   // Cancel Button
   //
   button=new QPushButton(tr("Cancel"),this);
-  button->setFont(label_font);
+  button->setFont(buttonFont());
   button->setGeometry(sizeHint().width()-90,sizeHint().height()-60,80,50);
   connect(button,SIGNAL(clicked()),this,SLOT(cancelData()));
 

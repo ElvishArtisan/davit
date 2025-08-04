@@ -39,7 +39,7 @@ bool ListReports::ArbitronReport(SpreadSheet *sheet)
 
   PickFields *r=
     new PickFields(NULL,NULL,&pgm_id,false,NULL,false,NULL,false,NULL,
-		   PickFields::NoMarket,this);
+		   PickFields::NoMarket,config(),this);
   if(r->exec()!=0) {
     delete r;
     return false;
