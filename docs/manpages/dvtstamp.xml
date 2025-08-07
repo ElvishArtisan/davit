@@ -35,7 +35,7 @@
       <arg choice='req'><replaceable>command</replaceable></arg>
       <arg choice='opt'>--date-offset=<replaceable>days</replaceable></arg>
       <arg choice='opt'>--for-date=<replaceable>date</replaceable></arg>
-      <arg choice='opt'>--affiliate-id=<replaceable>id</replaceable></arg>
+      <arg choice='opt'>--for-affiliate-id=<replaceable>id</replaceable></arg>
       <sbr/>
     </cmdsynopsis>
   </refsynopsisdiv>

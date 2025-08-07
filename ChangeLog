@@ -1010,3 +1010,6 @@
 	* Removed dead code from davit(1).
 2025-08-04 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored the 'Login' dialog in davit(1).
+2025-08-07 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a typo in the dvtstamp(8) man page where the
+	'--for-affiliate-id' option was given as '--affiliate-id'.
