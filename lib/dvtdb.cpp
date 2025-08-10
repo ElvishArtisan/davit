@@ -194,6 +194,12 @@ QString DvtSqlQuery::escape(const QString &str)
 }
 
 
+QString DvtSqlQuery::escape(const char *str)
+{
+  return DvtSqlQuery::escape(QString::fromUtf8(str));
+}
+
+
 QString DvtSqlQuery::escape(bool state)
 {
   if(state) {

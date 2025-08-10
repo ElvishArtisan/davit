@@ -48,7 +48,7 @@ bool OpenDb(QString dbname,QString login,QString pwd,QString host)
   //
   // Open Database
   //
-  QSqlDatabase db=QSqlDatabase::addDatabase(config->mysqlDbtype());
+  QSqlDatabase db=QSqlDatabase::addDatabase(config->mysqlServertype());
   db.setDatabaseName(dbname);
   db.setUserName(login);
   db.setPassword(pwd);
@@ -68,10 +68,10 @@ and we will try to get this straightened out.";
     db.setUserName(admin_name);
     db.setPassword(admin_pwd);
     if(db.open()) {      // Fixup DB Access Permsissions
-	QMessageBox::warning(NULL,"Can't Connect",
+       QMessageBox::warning(NULL,"Can't Connect",
 			     "Wrong access permissions for accessing mySQL!");
-	db.removeDatabase("mysql");
-	return false;
+       db.removeDatabase("mysql");
+       return false;
     }
     else {
       db.setDatabaseName("mysql");

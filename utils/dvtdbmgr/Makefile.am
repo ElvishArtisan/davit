@@ -1,13 +1,12 @@
 ## Makefile.am
 ##
-## Makefile.am for davit/utils
+## Makefile.am for davit/utils/dvtdbmgr
 ##
-##   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
+##   (C) Copyright 2011-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
-##   it under the terms of the GNU General Public License as
-##   published by the Free Software Foundation; either version 2 of
-##   the License, or (at your option) any later version.
+##   it under the terms of the GNU General Public License version 2 as
+##   published by the Free Software Foundation.
 ##
 ##   This program is distributed in the hope that it will be useful,
 ##   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,24 +19,27 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-SUBDIRS = dvtdbcheck\
-          dvtdbmgr\
-          dvtstamp\
-          vnc
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -std=c++17 -fPIC -I$(top_srcdir)/lib @QT6CLI_CFLAGS@
+LIBS = -L$(top_srcdir)/lib
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -DQTDIR=\"@QT_DIR@\" @QT_CXXFLAGS@ -I$(top_srcdir)/lib
-LIBS = @QT_LIBS@ -L$(top_srcdir)/lib
-MOC = @QT_MOC@
-
-# The dependency for qt's Meta Object Compiler (moc)
+# QT's Meta Object Compiler (moc)
 moc_%.cpp:	%.h
-	$(MOC) $< -o $@
+	@QT6CLI_MOC@ $< -o $@
 
-EXTRA_DIST = utils.pro
+sbin_PROGRAMS = dvtdbmgr
+
+dist_dvtdbmgr_SOURCES = check.cpp\
+                        create.cpp\
+                        dvtdbmgr.cpp dvtdbmgr.h\
+                        modify.cpp
+
+nodist_dvtdbmgr_SOURCES = moc_dvtdbmgr.cpp
+
+dvtdbmgr_LDADD =  -ldvt @QT6CLI_LIBS@
 
 CLEANFILES = *~\
              *.idb\
-             *ilk\
+             *.ilk\
              *.obj\
              *.pdb\
              *.qm\

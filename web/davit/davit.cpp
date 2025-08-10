@@ -59,7 +59,7 @@ MainObject::MainObject(QObject *parent)
   //
   // Open Database
   //
-  QSqlDatabase db=QSqlDatabase::addDatabase(cast_config->mysqlDbtype());
+  QSqlDatabase db=QSqlDatabase::addDatabase(cast_config->mysqlServertype());
   db.setDatabaseName(cast_config->mysqlDbname());
   db.setUserName(cast_config->mysqlUsername());
   db.setPassword(cast_config->mysqlPassword());

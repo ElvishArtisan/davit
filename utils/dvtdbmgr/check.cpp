@@ -1,6 +1,6 @@
-// dvtdbcheck.cpp
+// check.cpp
 //
-// Database Management Tool for Davit
+// A Check/Repair methods for dvtdbmgr(8)
 //
 //   (C) Copyright 2011-2025 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -33,66 +33,15 @@
 #include <dvtconf.h>
 #include <dvtdb.h>
 
-#include "dvtdbcheck.h"
+#include "dvtdbmgr.h"
 
-MainObject::MainObject()
-  : QObject()
+void MainObject::Check() const
 {
-  check_yes=false;
-  check_no=false;
-
-  //
-  // Read Command Options
-  //
-  DvtCmdSwitch *cmd=
-    new DvtCmdSwitch("dvtdbcheck",DVTDBCHECK_USAGE);
-  for(int i=0;i<cmd->keys();i++) {
-    if(cmd->key(i)=="--yes") {
-      check_yes=true;
-    }
-    if(cmd->key(i)=="--no") {
-      check_no=true;
-    }
-  }
-  if(check_yes&&check_no) {
-    fprintf(stderr,"dvtdbcheck: '--yes' and '--no' are mutually exclusive\n");
-    exit(256);
-  }
-
-  //
-  // Check for Root Perms
-  //
-  if(geteuid()!=0) {
-    fprintf(stderr,"dvtdbcheck: must be user \"root\"\n");
-    exit(256);
-  }
-
-  //
-  // Read Configuration
-  //
-  dvtconfig=new DvtConfig();
-  dvtconfig->load();
-
-  //
-  // Open Database
-  //
-  QSqlDatabase db=QSqlDatabase::addDatabase(dvtconfig->mysqlServertype());
-  db.setDatabaseName(dvtconfig->mysqlDbname());
-  db.setUserName(dvtconfig->mysqlUsername());
-  db.setPassword(dvtconfig->mysqlPassword());
-  db.setHostName(dvtconfig->mysqlHostname());
-  if(!db.open()) {
-    fprintf(stderr,"dvtstamp: unable to connect to database\n");
-    db.removeDatabase(dvtconfig->mysqlDbname());
-    exit(256);
-  }
   CheckDuplicateAffiliates();
-
-  exit(0);
 }
 
 
-void MainObject::CheckDuplicateAffiliates()
+void MainObject::CheckDuplicateAffiliates() const
 {
   QString sql;
   DvtSqlQuery *q;
@@ -214,7 +163,7 @@ void MainObject::CheckDuplicateAffiliates()
 }
 
 
-void MainObject::MergeAffiliates(int dest_id,int src_id)
+void MainObject::MergeAffiliates(int dest_id,int src_id) const
 {
   QString sql;
   DvtSqlQuery *q;
@@ -353,39 +302,4 @@ void MainObject::MergeAffiliates(int dest_id,int src_id)
     "where "+
     QString::asprintf("`ID`=%d",src_id);
   DvtSqlQuery::apply(sql);
-}
-
-
-bool MainObject::UserResponse() const
-{
-  char c=0;
-
-  if(check_yes) {
-    printf("y\n");
-    return true;
-  }
-  if(check_no) {
-    printf("n\n");
-    return false;
-  }
-  while((c!='y')&&(c!='Y')&&(c!='n')&&(c!='N')) {
-    DvtCheckReturnCode("UserResponse()",scanf("%c",&c),1);
-    if((c=='y')||(c=='Y')) {
-      DvtCheckReturnCode("UserResponse()",scanf("%c",&c),1);
-      return true;
-    }
-    if(c=='\n') {
-      return false;
-    }
-  }
-  DvtCheckReturnCode("UserResponse()",scanf("%c",&c),1);
-  return false;
-}
-
-
-int main(int argc,char *argv[])
-{
-  QCoreApplication a(argc,argv);
-  new MainObject();
-  return a.exec();
 }

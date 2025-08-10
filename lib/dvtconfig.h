@@ -38,7 +38,7 @@ class DvtConfig
   QString mysqlUsername() const;
   QString mysqlPassword() const;
   QString mysqlDbname() const;
-  QString mysqlDbtype() const;
+  QString mysqlServertype() const;
   QString fontFamily() const;
   int fontButtonSize() const;
   int fontLabelSize() const;
@@ -54,7 +54,7 @@ class DvtConfig
   QString conf_mysql_username;
   QString conf_mysql_password;
   QString conf_mysql_dbname;
-  QString conf_mysql_dbtype;
+  QString conf_mysql_server_type;
   QString conf_font_family;
   int conf_font_button_size;
   int conf_font_label_size;

@@ -133,7 +133,7 @@ MainObject::MainObject(QObject *parent)
   //
   // Open Database
   //
-  QSqlDatabase db=QSqlDatabase::addDatabase(import_config->mysqlDbtype());
+  QSqlDatabase db=QSqlDatabase::addDatabase(import_config->mysqlServertype());
   db.setDatabaseName(import_config->mysqlDbname());
   db.setUserName(import_config->mysqlUsername());
   db.setPassword(import_config->mysqlPassword());

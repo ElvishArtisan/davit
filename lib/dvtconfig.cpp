@@ -76,9 +76,9 @@ QString DvtConfig::mysqlDbname() const
 }
 
 
-QString DvtConfig::mysqlDbtype() const
+QString DvtConfig::mysqlServertype() const
 {
-  return conf_mysql_dbtype;
+  return conf_mysql_server_type;
 }
 
 
@@ -151,7 +151,7 @@ bool DvtConfig::load()
   conf_mysql_password=profile->stringValue("mySQL","Password","");
   conf_mysql_dbname=
     profile->stringValue("mySQL","Database",DVT_DEFAULT_MYSQL_DATABASE);
-  conf_mysql_dbtype=
+  conf_mysql_server_type=
     profile->stringValue("mySQL","ServerType",DVT_DEFAULT_MYSQL_DBTYPE);
 
   //
@@ -190,7 +190,7 @@ void DvtConfig::clear()
   conf_mysql_username="";
   conf_mysql_password="";
   conf_mysql_dbname="";
-  conf_mysql_dbtype="";
+  conf_mysql_server_type="";
   conf_font_family="";
   conf_font_button_size=-1;
   conf_font_label_size=-1;

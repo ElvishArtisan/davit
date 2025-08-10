@@ -1013,3 +1013,7 @@
 2025-08-07 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a typo in the dvtstamp(8) man page where the
 	'--for-affiliate-id' option was given as '--affiliate-id'.
+2025-08-10 Fred Gleason <fredg@paravelsystems.com>
+	* Stubbed out dvtdbmgr(8).
+	* Modified the parameters names in the '[mySQL]' section of
+	davit.conf(5) to be consistent with those used in rd.conf(5).
