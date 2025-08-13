@@ -1017,3 +1017,7 @@
 	* Stubbed out dvtdbmgr(8).
 	* Modified the parameters names in the '[mySQL]' section of
 	davit.conf(5) to be consistent with those used in rd.conf(5).
+2025-08-13 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'Duplicate Affiliates' report in davit(1).
+	* Added a database management utility in dvtdbmgr(8).
+	* Added a davit.conf(5) man page.

@@ -51,6 +51,7 @@ dist_davit_SOURCES = activity_report.cpp\
                      davit.cpp davit.h\
                      daypicker.cpp daypicker.h\
                      dialog.cpp dialog.h\
+                     duplicateaffiliate_report.cpp\
                      edit_affiliate.cpp edit_affiliate.h\
                      edit_airing.cpp edit_airing.h\
                      edit_contact.cpp edit_contact.h\

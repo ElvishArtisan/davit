@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<refentry id="stdin" xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!--
+      Header
+  -->
+  <refmeta>
+    <refentrytitle>davit.conf</refentrytitle>
+    <manvolnum>5</manvolnum>
+    <refmiscinfo class='source'>August 2025</refmiscinfo>
+    <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
+  </refmeta>
+  <refnamediv>
+    <refname>davit.conf</refname>
+    <refpurpose>
+      Configuration file for the Davit Affiliate Management  System
+    </refpurpose>
+  </refnamediv>
+  <info>
+    <author>
+      <personname>
+	<firstname>Fred</firstname>
+	<surname>Gleason</surname>
+	<email>fredg@paravelsystems.com</email>
+      </personname>
+      <contrib>Application Author</contrib>
+    </author>
+  </info>
+
+  <!--
+      Body
+  -->
+  <refsynopsisdiv id='synopsis'>
+    <para>
+      The <command>/etc/davit.conf</command> file is the primary
+      configuration file for the Davit Affiliate Menagement System.
+    </para>
+  </refsynopsisdiv>
+
+  <refsect1 id='description'><title>Description</title>
+  <para>
+    The file format consists of sections, each of which contain configuration
+    information in the form of keyword/value pairs. Each section begins with
+    with the name of the section in <userinput>[]</userinput> brackets,
+    followed by zero or more keyword/value pairs, with the keyword and value
+    separated by an <userinput>=</userinput> sign. Lines starting with
+    <userinput>;</userinput> are ignored, as are blank lines.
+  </para>
+  <para>
+    For example:
+  </para>
+  <literallayout>
+    [Section1]
+    ; This is a comment.
+    Keyword1=value1
+    Keyword2=value2
+    Keyword3=value3
+  </literallayout>
+  </refsect1>
+
+  <refsect1 id='sections_keywords'><title>Sections/Keywords</title>
+  <para>
+    Following are the sections and keywords for <command>davit.conf</command>
+  </para>
+  <variablelist>
+    <varlistentry>
+      <term>
+	<userinput>[mySQL]</userinput>
+      </term>
+      <listitem>
+	<para>
+	  This section contains access credentials and attributes for the
+	  MySQL/MariaDB RDBMS server.
+	</para>
+	<variablelist>
+	  <varlistentry>
+	    <term>
+	      <userinput>Hostname = <replaceable>addr</replaceable></userinput>
+	    </term>
+	    <listitem>
+	      <para>
+		The hostname or IP address of the database server. Default
+	       value is <userinput>localhost</userinput>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>
+	      <userinput>Loginname = <replaceable>name</replaceable></userinput>
+	    </term>
+	    <listitem>
+	      <para>
+		The user name to use when connecting to the database server.
+		This parameter has no default value.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>
+	      <userinput>Password = <replaceable>passwd</replaceable></userinput>
+	    </term>
+	    <listitem>
+	      <para>
+		The password to use when connecting to the database server.
+		This parameter has no default value.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>
+	      <userinput>Database = <replaceable>name</replaceable></userinput>
+	    </term>
+	    <listitem>
+	      <para>
+		The name of the database to use when connecting to the database
+		server. Default value is <userinput>Davit</userinput>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>
+	      <userinput>ServerType = <replaceable>plugin-name</replaceable></userinput>
+	    </term>
+	    <listitem>
+	      <para>
+		The name of the Qt SQL driver plug-in to use when connecting to
+		the database server. Consult the Qt documentation for the list
+		of available values. Default value is
+		<userinput>QMYSQL</userinput>. It should seldom be necessary
+		to change this.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist>
+    <varlistentry>
+      <term>
+	<userinput>[Fonts]</userinput>
+      </term>
+      <listitem>
+	<para>
+	  This section contains hints concerning the fonts to be used when
+	  drawing the various widgets in Davit. The font engine uses these
+	  values to calculate various related fonts.
+	</para>
+	<variablelist>
+	  <varlistentry>
+	    <term>
+	      <userinput>Family = <replaceable>name</replaceable></userinput>
+	    </term>
+	    <listitem>
+	      <para>
+		The name of the font family to be used for dialogs. Default
+		value is <userinput>System</userinput>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>
+	      <userinput>ButtonSize = <replaceable>pixels</replaceable></userinput>
+	    </term>
+	    <listitem>
+	      <para>
+		The height, in pixels, of the font used for most pushbuttons.
+		Default value is <userinput>12</userinput>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>
+	      <userinput>LabelSize = <replaceable>pixels</replaceable></userinput>
+	    </term>
+	    <listitem>
+	      <para>
+		The height, in pixels, of the font used for most labels.
+		Default value is <userinput>11</userinput>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>
+	      <userinput>DefaultSize = <replaceable>pixels</replaceable></userinput>
+	    </term>
+	    <listitem>
+	      <para>
+		The height, in pixels, of the font used for most data elements.
+		Default value is <userinput>11</userinput>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+  </refsect1>
+  
+<refsect1 id='see_also'><title>See Also</title>
+<para>
+  <citerefentry>
+    <refentrytitle>davit</refentrytitle><manvolnum>1</manvolnum>
+  </citerefentry>,
+  <citerefentry>
+    <refentrytitle>dvtdbmgr</refentrytitle><manvolnum>8</manvolnum>
+  </citerefentry>,
+  <citerefentry>
+    <refentrytitle>dvtstamp</refentrytitle><manvolnum>8</manvolnum>
+  </citerefentry>
+</para>
+</refsect1>
+
+</refentry>
+

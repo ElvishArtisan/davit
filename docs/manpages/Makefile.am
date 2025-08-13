@@ -35,13 +35,29 @@
 %.8:	%.xml
 	xsltproc $(DOCBOOK_STYLESHEETS)/manpages/docbook.xsl $<
 
-all-local:	dvtstamp.8\
+all-local:	davit.conf.5\
+                davit.conf.html\
+                davit.conf.pdf\
+                dvtdbmgr.8\
+                dvtdbmgr.html\
+                dvtdbmgr.pdf\
+                dvtstamp.8\
                 dvtstamp.html\
                 dvtstamp.pdf
 
-man_MANS = dvtstamp.8
+man_MANS = davit.conf.5\
+           dvtdbmgr.8\
+           dvtstamp.8
 
-EXTRA_DIST = dvtstamp.8\
+EXTRA_DIST = davit.conf.5\
+             davit.conf.html\
+             davit.conf.pdf\
+             davit.conf.xml\
+             dvtdbmgr.8\
+             dvtdbmgr.html\
+             dvtdbmgr.pdf\
+             dvtdbmgr.xml\
+             dvtstamp.8\
              dvtstamp.html\
              dvtstamp.pdf\
              dvtstamp.xml
@@ -52,6 +68,7 @@ MAINTAINERCLEANFILES = *~\
                        *.5\
                        *.5\
                        *.7\
+                       *.8\
                        *.html\
                        *.pdf\
                        aclocal.m4\

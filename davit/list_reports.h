@@ -82,6 +82,11 @@ private slots:
   bool AffidavitReport(SpreadSheet *sheet);
 
   //
+  // duplicateaffiliate_report.cpp
+  //
+  bool DuplicateAffiliateReport(SpreadSheet *sheet);
+  
+  //
   // missingaffidavit_report.cpp
   //
   bool MissingAffidavitReport(SpreadSheet *sheet);

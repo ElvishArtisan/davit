@@ -20,8 +20,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-SUBDIRS = dvtdbcheck\
-          dvtdbmgr\
+SUBDIRS = dvtdbmgr\
           dvtstamp\
           vnc
 

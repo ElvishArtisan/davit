@@ -45,8 +45,6 @@ class MainObject : public QObject
   bool CreateDb() const;                                 // create.cpp
   bool InitDb() const;                                   // create.cpp
   void Modify() const;                                   // modify.cpp
-  void CheckDuplicateAffiliates() const;                 // check.cpp
-  void MergeAffiliates(int dest_id,int src_id) const;    // check.cpp
   int GetCurrentSchema() const;                          // dvtdbmgr.cpp
   void PrintStatus() const;                              // dvtdbmgr.cpp
   bool DbIsEmpty() const;                                // dvtdbmgr.cpp

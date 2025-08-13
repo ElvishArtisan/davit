@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<refentry id="stdin" xmlns="http://docbook.org/ns/docbook" version="5.0">
+  <!--
+      Header
+  -->
+  <refmeta>
+    <refentrytitle>dvtdbmgr</refentrytitle>
+    <manvolnum>8</manvolnum>
+    <refmiscinfo class='source'>July 2025</refmiscinfo>
+    <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
+  </refmeta>
+  <refnamediv>
+    <refname>dvtdbmgr</refname>
+    <refpurpose>
+      Tool for managing Davit databases.
+    </refpurpose>
+  </refnamediv>
+  <info>
+    <author>
+      <personname>
+	<firstname>Fred</firstname>
+	<surname>Gleason</surname>
+	<email>fredg@paravelsystems.com</email>
+      </personname>
+      <contrib>Application Author</contrib>
+    </author>
+  </info>
+
+  <!--
+      Body
+  -->
+  <refsynopsisdiv id='synopsis'>
+    <cmdsynopsis>
+      <command>dvtdbmgr</command>
+      <arg choice='req'><replaceable>command</replaceable></arg>
+      <arg choice='opt'>--date-offset=<replaceable>days</replaceable></arg>
+      <arg choice='opt'>--for-date=<replaceable>date</replaceable></arg>
+      <arg choice='opt'>--for-affiliate-id=<replaceable>id</replaceable></arg>
+      <sbr/>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1 id='description'><title>Description</title>
+  <para>
+    <command>dvtdbmgr</command><manvolnum>8</manvolnum> is a command-line
+    tool used for creating Davit databases. When invoked without any options,
+    <command>dvtdbmgr</command><manvolnum>8</manvolnum> will attempt to connect
+    to the database specified in
+    <command>davit.conf</command><manvolnum>5</manvolnum>, print a single
+    line summary of its status to standard output and then exit.
+  </para>
+  <para>
+    <command>dvtdbmgr</command><manvolnum>8</manvolnum> can be invoked with
+    one of three primary modes, as follows:
+  </para>
+  <variablelist>
+    <!--
+    <varlistentry>
+      <term><option>- -check</option></term>
+      <listitem>
+	<para>
+	  Check an existing Davit database for errors and inconsistencies.
+	</para>
+      </listitem>
+    </varlistentry>
+    -->
+    <varlistentry>
+      <term><option>--create</option></term>
+      <listitem>
+	<para>
+	  Initialize a new Davit database in an empty database container.
+	</para>
+      </listitem>
+    </varlistentry>
+    <!--
+    <varlistentry>
+      <term><option>- -modify</option></term>
+      <listitem>
+	<para>
+	  Modify the schema of an existing Davit database.
+	</para>
+      </listitem>
+    </varlistentry>
+    -->
+  </variablelist>
+  </refsect1>
+
+  <refsect1 id='general_options'><title>General Options</title>
+  <para>
+    The following options can be used with any of the commands:
+  </para>
+  <variablelist>
+    <varlistentry>
+      <term><option>--mysql-hostname=</option><replaceable>hostname</replaceable></term>
+      <listitem>
+	<para>
+	  Connect to the database on <replaceable>hostname</replaceable>.
+	  Default is to use the corresponding value found in the 
+	  <userinput>[mySQL]</userinput> section of
+	  <command>davit.conf</command><manvolnum>5</manvolnum>.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--mysql-loginname=</option><replaceable>username</replaceable></term>
+      <listitem>
+	<para>
+	  Connect to the database as user <replaceable>username</replaceable>.
+	  Default is to use the corresponding value found in the 
+	  <userinput>[mySQL]</userinput> section of
+	  <command>davit.conf</command><manvolnum>5</manvolnum>.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--mysql-password=</option><replaceable>password</replaceable></term>
+      <listitem>
+	<para>
+	  Connect to the database using password
+	  <replaceable>hostname</replaceable>.
+	  Default is to use the corresponding value found in the 
+	  <userinput>[mySQL]</userinput> section of
+	  <command>davit.conf</command><manvolnum>5</manvolnum>.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--mysql-database=</option><replaceable>dbname</replaceable></term>
+      <listitem>
+	<para>
+	  Connect to the database named <replaceable>dbname</replaceable>.
+	  Default is to use the corresponding value found in the 
+	  <userinput>[mySQL]</userinput> section of
+	  <command>davit.conf</command><manvolnum>5</manvolnum>.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--mysql-servertype=</option><replaceable>driver</replaceable></term>
+      <listitem>
+	<para>
+	  Connect to the database using the <replaceable>driver</replaceable>
+	  Qt driver.
+	  Default is to use the corresponding value found in the 
+	  <userinput>[mySQL]</userinput> section of
+	  <command>davit.conf</command><manvolnum>5</manvolnum>.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+  </refsect1>
+
+  <refsect1 id='commands'><title>Commands</title>
+  <para>
+    The following commands can be given:
+  </para>
+  <variablelist>
+    <varlistentry>
+      <term><command>--create</command></term>
+      <listitem>
+	<para>
+	  Create a new Davit database in an empty database container.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+  </refsect1>
+
+  <refsect1 id='see_also'><title>See Also</title>
+  <para>
+    <citerefentry>
+      <refentrytitle>davit</refentrytitle><manvolnum>1</manvolnum>
+    </citerefentry>,
+    <citerefentry>
+      <refentrytitle>dvtstamp</refentrytitle><manvolnum>8</manvolnum>
+    </citerefentry>
+  </para>
+  </refsect1>
+</refentry>
+

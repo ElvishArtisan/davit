@@ -95,6 +95,8 @@ ListReports::ListReports(DvtConfig *c,QWidget *parent)
   item=new QListWidgetItem(list_reports_list);
   item->setText(tr("Deleted Programs"));
   item=new QListWidgetItem(list_reports_list);
+  item->setText(tr("Duplicate Affiliates"));
+  item=new QListWidgetItem(list_reports_list);
   item->setText(tr("RadioAmerica Affiliate"));
   item=new QListWidgetItem(list_reports_list);
   item->setText(tr("Arbitron"));
@@ -173,6 +175,9 @@ void ListReports::runData()
   }
   if(items.first()->text()==tr("Deleted Programs")) {
     ok=AddedProgramsReport(Dvt::RemarkProgramDelete,sheet);
+  }
+  if(items.first()->text()==tr("Duplicate Affiliates")) {
+    ok=DuplicateAffiliateReport(sheet);
   }
   if(items.first()->text()==tr("All Affiliates")) {
     ok=AllAffiliatesReport(sheet);
