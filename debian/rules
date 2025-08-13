@@ -1,0 +1,61 @@
+#!/usr/bin/make -f
+
+build:	
+	dh_update_autotools_config
+	dh_autoreconf
+	./configure --prefix=/usr --libexecdir=/var/www/dvt-bin sysconfdir=/etc/apache2/conf-available
+	make $(DEBUILD_MAKE_ARGS)
+
+binary:	
+	dh_testroot
+	dh_prep
+	dh_auto_install
+	dh_installchangelogs ChangeLog
+
+#
+# davit-core
+#
+	mkdir -p debian/davit-core/usr/lib
+	mv debian/tmp/usr/lib/libdvt-2.2.4.so debian/davit-core/usr/lib/
+	mv debian/tmp/usr/lib/libdvt.so debian/davit-core/usr/lib/
+	rm -f debian/tmp/usr/lib/*
+	mkdir -p debian/davit-core/usr/sbin
+	mv debian/tmp/usr/sbin/dvtdbmgr debian/davit-core/usr/sbin/
+	mv debian/tmp/usr/sbin/dvtstamp debian/davit-core/usr/sbin/
+	mkdir -p debian/davit-core/usr/share/man/man5
+	mv debian/tmp/usr/share/man/man5/davit.conf.5 debian/davit-core/usr/share/man/man5/
+	mkdir -p debian/davit-core/usr/share/man/man8
+	mv debian/tmp/usr/share/man/man8/dvtdbmgr.8 debian/davit-core/usr/share/man/man8
+	mv debian/tmp/usr/share/man/man8/dvtstamp.8 debian/davit-core/usr/share/man/man8
+	mkdir -p debian/davit-core/usr/share/davit
+	mv debian/tmp/usr/share/davit/* debian/davit-core/usr/share/davit/
+
+#
+# davit-gui
+#
+	mkdir -p debian/davit-gui/usr/bin
+	mv debian/tmp/usr/bin/davit debian/davit-gui/usr/bin/
+
+#
+# davit-web
+#
+	mkdir -p debian/davit-web/etc/apache2/conf-available
+	mv debian/tmp/etc/apache2/conf-available/* debian/davit-web/etc/apache2/conf-available
+	mkdir -p debian/davit-web/var/www/dvt-bin/
+	mv debian/tmp/var/www/dvt-bin/* debian/davit-web/var/www/dvt-bin/
+
+	dh_strip_nondeterminism
+	dh_compress
+	dh_fixperms
+	dh_missing
+	dh_dwz
+	dh_strip
+	dh_makeshlibs
+	dh_shlibdeps
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+%:	
+	dh $@

@@ -18,11 +18,13 @@
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
 
-EXTRA_DIST = davit-22x22.xpm\
+EXTRA_DIST = admin.xpm\
+             davit-22x22.xpm\
              davit.res\
              davit.ico\
              greenball.xpm\
              redball.xpm\
+             user.xpm\
              whiteball.xpm
 
 CLEANFILES = *~

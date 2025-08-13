@@ -19,6 +19,7 @@
 ##
 
 SUBDIRS = helpers\
+          debian\
           lib\
           scripts\
           conf\
@@ -32,6 +33,9 @@ ACLOCAL_AMFLAGS = -I m4
 
 maintainer-clean-local:	
 	rm -rf m4
+
+deb:	dist
+	./build_debs.sh
 
 rpm:	dist
 	cp davit-$(VERSION).tar.gz $(HOME)/rpmbuild/SOURCES/
@@ -49,8 +53,7 @@ EXTRA_DIST = autogen.sh\
              davit.pro\
              davit.spec.in\
              get_target.sh\
-             get_target.pl\
-             get_distro.sh\
+             get_distro.pl\
              PACKAGE_VERSION
 
 zip:	dist
@@ -59,6 +62,9 @@ zip:	dist
 	rm -rf davit-@VERSION@
 
 CLEANFILES = *~\
+             *.deb\
+             *.ddeb\
+             *.dsc\
              *.mo\
              *.rpm\
              *.tgz\
@@ -66,8 +72,12 @@ CLEANFILES = *~\
              moc_*
 
 DISTCLEANFILES = *~\
+                 *.buildinfo\
+                 *.changes\
                  *.spec\
                  *.tar.gz\
+                 *.tar.xz\
+                 build_debs.sh\
                  dvt-bin.conf\
                  moc_*
 

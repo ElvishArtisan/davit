@@ -182,7 +182,6 @@ void GenerateAffadavit::paintProgramReport(QPrinter *printer)
       "on `AIRINGS`.`AFFILIATE_ID`=`AFFILIATES`.`ID` where "+
       QString::asprintf("`AIRINGS`.`PROGRAM_ID`=%d ",program_id)+
       "order by `AFFILIATES`.`STATION_CALL`,`AIRINGS`.`AIR_TIME`";
-    printf("SQL1: %s\n",sql.toUtf8().constData());
     painter->setFont(printerFont());
     q1=new DvtSqlQuery(sql);
     while(q1->next()) {

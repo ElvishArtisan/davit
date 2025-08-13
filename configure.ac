@@ -108,6 +108,8 @@ AC_CONFIG_FILES(Makefile \
   scripts/Makefile \
   lib/Makefile \
   davit/Makefile \
+  debian/source/Makefile \
+  debian/Makefile \
   web/Makefile \
   web/davit/Makefile \
   utils/Makefile \
@@ -121,9 +123,10 @@ AC_CONFIG_FILES(Makefile \
   docs/Makefile \
   icons/Makefile \
   davit.spec \
+  build_debs.sh \
   conf/dvt-bin.conf
 ) 
 AC_OUTPUT()
 chmod 755 utils/vnc/davit.xinitrc
 chmod 755 utils/vnc/start_davit.sh
-
+chmod 755 build_debs.sh

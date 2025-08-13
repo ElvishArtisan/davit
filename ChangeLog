@@ -1021,3 +1021,5 @@
 	* Added a 'Duplicate Affiliates' report in davit(1).
 	* Added a database management utility in dvtdbmgr(8).
 	* Added a davit.conf(5) man page.
+2025-08-13 Fred Gleason <fredg@paravelsystems.com>
+	* Debianized the project.
