@@ -1044,3 +1044,6 @@
 	* Incremented the package version to v3.0.0rc0a.
 2025-08-14 Fred Gleason <fredg@paravelsystems.com>
 	* Added an 'apache2' dependency to the 'davit-web' DEB package.
+2025-08-14 Fred Gleason <fredg@paravelsystems.com>
+	* Tweaked the login code in davit(1) so any error dialogs appear atop
+	the login widget.

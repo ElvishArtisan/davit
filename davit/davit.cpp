@@ -151,7 +151,7 @@ MainWidget::MainWidget(QWidget *parent)
     "`USER_PASSWORD`=password("+DvtSqlQuery::escape(password)+")";
   q=new DvtSqlQuery(sql);
   if(q->size()<=0) {
-    QMessageBox::information(this,"Login Failed","Invalid Login!");
+    QMessageBox::information(d_login_dialog,"Login Failed","Invalid Login!");
     exiting=true;
     delete q;
   }
