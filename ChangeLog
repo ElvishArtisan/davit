@@ -1036,3 +1036,5 @@
 	correctly.
 2025-08-14 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed bugs in 'configure.ac' that caused spurious error messages.
+2025-08-14 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to v3.0.0rc0.
