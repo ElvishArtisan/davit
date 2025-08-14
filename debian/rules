@@ -16,8 +16,7 @@ binary:
 # davit-core
 #
 	mkdir -p debian/davit-core/usr/lib
-	mv debian/tmp/usr/lib/libdvt-2.2.4.so debian/davit-core/usr/lib/
-	mv debian/tmp/usr/lib/libdvt.so debian/davit-core/usr/lib/
+	mv debian/tmp/usr/lib/*.so debian/davit-core/usr/lib/
 	rm -f debian/tmp/usr/lib/*
 	mkdir -p debian/davit-core/usr/sbin
 	mv debian/tmp/usr/sbin/dvtdbmgr debian/davit-core/usr/sbin/
