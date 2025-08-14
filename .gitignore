@@ -42,7 +42,7 @@ missing
 davit/davit
 debian/changelog
 debian/control
-utils/dvtdbcheck/dvtdbcheck
+utils/dvtdbmgr/dvtdbmgr
 utils/dvtstamp/dvtstamp
 utils/vnc/davit.xinitrc
 utils/vnc/start_davit.sh
