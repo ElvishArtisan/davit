@@ -45,7 +45,6 @@ dist_davit_SOURCES = activity_report.cpp\
                      contact.cpp contact.h\
                      contactlistmodel.cpp contactlistmodel.h\
                      contactlistview.cpp contactlistview.h\
-                     createdb.cpp createdb.h\
                      datedialog.cpp datedialog.h\
                      datepicker.cpp datepicker.h\
                      davit.cpp davit.h\
@@ -84,7 +83,6 @@ dist_davit_SOURCES = activity_report.cpp\
                      missingaffidavitcontact_report.cpp\
                      mysql_login.cpp mysql_login.h\
                      networklistmodel.cpp networklistmodel.h\
-                     opendb.cpp opendb.h\
                      pick_daypart.cpp pick_daypart.h\
                      pick_fields.cpp pick_fields.h\
                      precisiontrak.cpp\

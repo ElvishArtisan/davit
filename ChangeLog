@@ -1023,3 +1023,5 @@
 	* Added a davit.conf(5) man page.
 2025-08-13 Fred Gleason <fredg@paravelsystems.com>
 	* Debianized the project.
+2025-08-14 Fred Gleason <fredg@paravelsystems.com>
+	* Removed database creation and modification code from davit(1).
