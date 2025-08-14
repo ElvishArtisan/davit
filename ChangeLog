@@ -1040,3 +1040,5 @@
 	* Incremented the package version to v3.0.0rc0.
 2025-08-14 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug that broke the 'make deb' target.
+2025-08-14 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to v3.0.0rc0a.
