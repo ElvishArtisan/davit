@@ -115,9 +115,6 @@ AC_CONFIG_FILES(Makefile \
   utils/Makefile \
   utils/dvtdbmgr/Makefile \
   utils/dvtstamp/Makefile \
-  utils/vnc/Makefile \
-  utils/vnc/davit.xinitrc \
-  utils/vnc/start_davit.sh \
   conf/Makefile \
   docs/manpages/Makefile \
   docs/Makefile \
