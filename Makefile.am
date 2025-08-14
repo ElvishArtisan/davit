@@ -46,10 +46,7 @@ rpm:	dist
 	rm -rf $(HOME)/rpmbuild/BUILD/davit-$(VERSION)
 
 EXTRA_DIST = autogen.sh\
-             build_win32.bat\
              davit-sample.ini\
-             davit.ini kdmrc-example\
-             davit.ism\
              davit.pro\
              davit.spec.in\
              get_target.sh\

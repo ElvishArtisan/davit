@@ -1025,3 +1025,6 @@
 	* Debianized the project.
 2025-08-14 Fred Gleason <fredg@paravelsystems.com>
 	* Removed database creation and modification code from davit(1).
+2025-08-14 Fred Gleason <fredg@paravelsystems.com>
+	* Removed 'build_win32.bat', 'davit.ini', 'davit.ism' and
+	'kdmrc-example'.
