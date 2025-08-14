@@ -1047,3 +1047,6 @@
 2025-08-14 Fred Gleason <fredg@paravelsystems.com>
 	* Tweaked the login code in davit(1) so any error dialogs appear atop
 	the login widget.
+2025-08-14 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the 'SMTP Server Settings' section from the 'Edit System
+	E-Mail Settings' dialog in davit(1).

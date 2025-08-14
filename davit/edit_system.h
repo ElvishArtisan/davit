@@ -54,11 +54,11 @@ class EditSystem : public Dialog
   void closeEvent(QCloseEvent *e);
 
  private:
-  QGroupBox *edit_smtp_group;
-  QLabel *edit_smtp_hostname_label;
-  QLineEdit *edit_smtp_hostname_edit;
-  QLabel *edit_smtp_port_label;
-  QSpinBox *edit_smtp_port_spin;
+  //  QGroupBox *edit_smtp_group;
+  //  QLabel *edit_smtp_hostname_label;
+  //  QLineEdit *edit_smtp_hostname_edit;
+  //  QLabel *edit_smtp_port_label;
+  //  QSpinBox *edit_smtp_port_spin;
   QLabel *edit_origin_email_label;
   QLineEdit *edit_origin_email_edit;
   QLabel *edit_alert_email_label;

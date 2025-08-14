@@ -38,6 +38,7 @@ EditSystem::EditSystem(DvtConfig *c,QWidget *parent)
   //
   setMinimumSize(sizeHint());
 
+  /*
   //
   // SMTP Settings
   //
@@ -56,7 +57,7 @@ EditSystem::EditSystem(DvtConfig *c,QWidget *parent)
   edit_smtp_port_label=new QLabel("Port:",edit_smtp_group);
   edit_smtp_port_label->setFont(labelFont());
   edit_smtp_port_label->setAlignment(Qt::AlignLeft);
-
+  */
   //
   // Originating Email Address
   //
@@ -131,7 +132,7 @@ EditSystem::~EditSystem()
 
 QSize EditSystem::sizeHint() const
 {
-  return QSize(500,487);
+  return QSize(500,487-55);
 }
 
 
@@ -157,8 +158,8 @@ int EditSystem::exec()
     edit_alert_email_edit->setText(q->value(1).toString());
     edit_affidavit_subject_edit->setText(q->value(2).toString());
     edit_affidavit_template_edit->setText(q->value(3).toString());
-    edit_smtp_hostname_edit->setText(q->value(4).toString());
-    edit_smtp_port_spin->setValue(q->value(5).toInt());
+    //    edit_smtp_hostname_edit->setText(q->value(4).toString());
+    //    edit_smtp_port_spin->setValue(q->value(5).toInt());
   }
   delete q;  
 
@@ -191,9 +192,9 @@ void EditSystem::okData()
     "`AFFIDAVIT_EMAIL_SUBJECT`="+
     DvtSqlQuery::escape(edit_affidavit_subject_edit->text())+","+
     "`AFFIDAVIT_EMAIL_TEMPLATE`="+
-    DvtSqlQuery::escape(edit_affidavit_template_edit->toPlainText())+","+
-    "`SMTP_HOSTNAME`="+DvtSqlQuery::escape(edit_smtp_hostname_edit->text())+","+
-    QString::asprintf("`SMTP_PORT`=%d ",edit_smtp_port_spin->value());
+    DvtSqlQuery::escape(edit_affidavit_template_edit->toPlainText())+" ";
+    //    "`SMTP_HOSTNAME`="+DvtSqlQuery::escape(edit_smtp_hostname_edit->text())+","+
+    //    QString::asprintf("`SMTP_PORT`=%d ",edit_smtp_port_spin->value());
   DvtSqlQuery::apply(sql);
 
   done(true);
@@ -210,21 +211,21 @@ void EditSystem::resizeEvent(QResizeEvent *e)
 {
   int w=size().width();
   int h=size().height();
-
+  /*
   edit_smtp_group->setGeometry(15,5,w-30,46);
   edit_smtp_hostname_label->setGeometry(10,27,65,20);
   edit_smtp_hostname_edit->setGeometry(80,22,w-250,20);
   edit_smtp_port_label->setGeometry(w-135,27,30,20);
   edit_smtp_port_spin->setGeometry(w-100,22,60,20);
-
-  edit_origin_email_label->setGeometry(15,60,w-25,18);
-  edit_origin_email_edit->setGeometry(10,75,w-20,20);
-  edit_alert_email_label->setGeometry(15,107,w-25,18);
-  edit_alert_email_edit->setGeometry(10,122,w-20,20);
-  edit_affidavit_subject_label->setGeometry(15,154,w-25,18);
-  edit_affidavit_subject_edit->setGeometry(10,169,w-20,20);
-  edit_affidavit_template_label->setGeometry(15,202,w-25,18);
-  edit_affidavit_template_edit->setGeometry(10,215,w-20,h-282);
+  */
+  edit_origin_email_label->setGeometry(15,5,w-25,18);
+  edit_origin_email_edit->setGeometry(10,20,w-20,20);
+  edit_alert_email_label->setGeometry(15,52,w-25,18);
+  edit_alert_email_edit->setGeometry(10,67,w-20,20);
+  edit_affidavit_subject_label->setGeometry(15,99,w-25,18);
+  edit_affidavit_subject_edit->setGeometry(10,114,w-20,20);
+  edit_affidavit_template_label->setGeometry(15,145,w-25,18);
+  edit_affidavit_template_edit->setGeometry(10,160,w-20,h-227);
 
   edit_key_label->setGeometry(25,h-60,w-145,60);
   edit_test_button->setGeometry(w-310,h-40,150,30);
