@@ -124,6 +124,4 @@ AC_CONFIG_FILES(Makefile \
   conf/dvt-bin.conf
 ) 
 AC_OUTPUT()
-chmod 755 utils/vnc/davit.xinitrc
-chmod 755 utils/vnc/start_davit.sh
 chmod 755 build_debs.sh
