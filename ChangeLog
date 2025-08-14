@@ -1030,3 +1030,7 @@
 	'kdmrc-example'.
 2025-08-14 Fred Gleason <fredg@paravelsystems.com>
 	* Removed 'utils/vnc/'.
+2025-08-14 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in the 'davit-core' DEB package that caused the
+	davit.conf(5) configuration file to fail to be initialized
+	correctly.

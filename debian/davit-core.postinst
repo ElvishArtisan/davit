@@ -4,8 +4,8 @@
 case "$1" in
     configure)
 	if [ ! -f /etc/davit.conf ] ; then
-	    if [ -f /var/share/davit/davit-sample.conf ] ; then
-		cp /var/share/davit/davit-sample.conf /etc/davit.conf
+	    if [ -f /usr/share/davit/davit-sample.conf ] ; then
+		cp /usr/share/davit/davit-sample.conf /etc/davit.conf
 	    fi
 	fi
 	ldconfig
