@@ -14,7 +14,7 @@ Description: Davit Affiliate Relations System
 
 Package: davit-web
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, davit-core (= @VERSION@-1)
+Depends: ${shlibs:Depends}, ${misc:Depends}, davit-core (= @VERSION@-1), apache2
 Description: Davit Affiliate Relations System
  Davit is a system for managing commercial radio affiliate relations. This
  package provides the web server components.
