@@ -19,7 +19,6 @@
 //
 
 #include <QMessageBox>
-#include <QSqlDatabase>
 
 #include <dvtconf.h>
 
@@ -274,8 +273,12 @@ void ListAirings::selectionChangedData(const QItemSelection &now,
 {
   QModelIndexList rows=list_airings_view->selectionModel()->selectedRows();
 
-  list_edit_button->setEnabled(rows.size()==1);
-  list_delete_button->setEnabled(rows.size()==1);
+  list_edit_button->
+    setEnabled((rows.size()==1)&&
+	       (global_dvtuser->privilege(DvtUser::PrivAffiliateSchedule)));
+  list_delete_button->
+    setEnabled((rows.size()==1)&&
+	       (global_dvtuser->privilege(DvtUser::PrivAffiliateSchedule)));
 }
 
 
