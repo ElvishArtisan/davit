@@ -234,7 +234,7 @@ MainWidget::MainWidget(QWidget *parent)
   QPushButton *button=new QPushButton(this);
   button->setGeometry(10,50,120,60);
   button->setFont(font);
-  button->setText(tr("Manage\n&Users"));
+  button->setText(tr("Manage")+"\n"+tr("Users"));
   button->setEnabled(global_dvtuser->privilege(DvtUser::PrivAdmin));
   connect(button,SIGNAL(clicked()),this,SLOT(manageUsersData()));
 
@@ -244,7 +244,7 @@ MainWidget::MainWidget(QWidget *parent)
   button=new QPushButton(this);
   button->setGeometry(150,50,120,60);
   button->setFont(font);
-  button->setText(tr("Generate\n&Reports"));
+  button->setText(tr("Generate")+"\n"+tr("Reports"));
   connect(button,SIGNAL(clicked()),this,SLOT(generateReportsData()));
 #ifdef WIN32
   button->setEnabled((!openoffice_path.isEmpty())&&
@@ -259,7 +259,7 @@ MainWidget::MainWidget(QWidget *parent)
   button=new QPushButton(this);
   button->setGeometry(150,120,120,60);
   button->setFont(font);
-  button->setText(tr("Manage\nProviders"));
+  button->setText(tr("Manage")+"\n"+tr("Providers"));
   button->setEnabled(global_dvtuser->privilege(DvtUser::PrivProviderView));
   connect(button,SIGNAL(clicked()),this,SLOT(manageProvidersData()));
 
@@ -269,7 +269,7 @@ MainWidget::MainWidget(QWidget *parent)
   button=new QPushButton(this);
   button->setGeometry(10,120,120,60);
   button->setFont(font);
-  button->setText(tr("Manage\nAffiliates"));
+  button->setText(tr("Manage")+"\n"+tr("Affiliates"));
   button->setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateView));
   connect(button,SIGNAL(clicked()),this,SLOT(manageAffiliateData()));
 
@@ -279,8 +279,8 @@ MainWidget::MainWidget(QWidget *parent)
   button=new QPushButton(this);
   button->setGeometry(10,190,120,60);
   button->setFont(font);
-  button->setText(tr("Manage\nNetworks"));
-  button->setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateView));
+  button->setText(tr("Manage")+"\n"+tr("Networks"));
+  button->setEnabled(global_dvtuser->privilege(DvtUser::PrivProviderView));
   connect(button,SIGNAL(clicked()),this,SLOT(manageNetworksData()));
 
   //

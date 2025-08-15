@@ -1050,3 +1050,6 @@
 2025-08-14 Fred Gleason <fredg@paravelsystems.com>
 	* Removed the 'SMTP Server Settings' section from the 'Edit System
 	E-Mail Settings' dialog in davit(1).
+2025-08-15 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in davit(1) that caused the 'Edit Affiliate Data'
+	permission to fail to be enforced.

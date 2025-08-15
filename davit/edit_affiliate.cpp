@@ -76,6 +76,8 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   // Station Call
   //
   edit_station_call_edit=new QLineEdit(this);
+  edit_station_call_edit->
+    setReadOnly(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
   edit_station_call_label=new QLabel(tr("Call")+":",this);
   edit_station_call_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_station_call_label->setFont(labelFont());
@@ -168,6 +170,14 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   // MSA Market Name
   //
   edit_market_box=new QComboBox(this);
+  edit_market_edit=new QLineEdit(this);
+  edit_market_edit->setReadOnly(true);
+  if(global_dvtuser->privilege(DvtUser::PrivAffiliateEdit)) {
+    edit_market_edit->hide();
+  }
+  else {
+    edit_market_box->hide();
+  }
   edit_market_label=new QLabel(tr("MSA Market")+":",this);
   edit_market_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_market_label->setFont(labelFont());
@@ -198,6 +208,14 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   // DMA Name
   //
   edit_dma_box=new QComboBox(this);
+  edit_dma_edit=new QLineEdit(this);
+  edit_dma_edit->setReadOnly(true);
+  if(global_dvtuser->privilege(DvtUser::PrivAffiliateEdit)) {
+    edit_dma_edit->hide();
+  }
+  else {
+    edit_dma_box->hide();
+  }
   edit_dma_label=new QLabel(tr("DMA Market")+":",this);
   edit_dma_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_dma_label->setFont(labelFont());
@@ -383,12 +401,12 @@ EditAffiliate::EditAffiliate(DvtConfig *c,QWidget *parent)
   //
   // Affidavit Histogram
   //
-  edit_track_affidavit_box=new QCheckBox(this);
+  edit_track_affidavit_check=new QCheckBox(this);
   edit_track_affidavit_label=
     new QLabel(tr("Enable Affidavit History Tracking"),this);
   edit_track_affidavit_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
   edit_track_affidavit_label->setFont(labelFont());
-  connect(edit_track_affidavit_box,SIGNAL(toggled(bool)),
+  connect(edit_track_affidavit_check,SIGNAL(toggled(bool)),
 	  this,SLOT(affidavitToggledData(bool)));
 
   edit_web_password_edit=new QLineEdit(this);
@@ -552,6 +570,7 @@ int EditAffiliate::exec(int affiliate_id,bool new_instance)
     for(int i=0;i<edit_market_box->count();i++) {
       if(edit_market_box->itemText(i)==q->value(11).toString()) {
 	edit_market_box->setCurrentIndex(i);
+	edit_market_edit->setText(q->value(11).toString());
 	edit_market_rank_edit->
 	  setText(QString::asprintf("%d",edit_market_box->itemData(i).toInt()));
       }
@@ -561,6 +580,7 @@ int EditAffiliate::exec(int affiliate_id,bool new_instance)
     for(int i=0;i<edit_dma_box->count();i++) {
       if(edit_dma_box->itemText(i)==q->value(13).toString()) {
 	edit_dma_box->setCurrentIndex(i);
+	edit_dma_edit->setText(q->value(13).toString());
 	edit_dma_rank_edit->
 	  setText(QString::asprintf("%d",edit_dma_box->itemData(i).toInt()));
       }
@@ -607,19 +627,15 @@ int EditAffiliate::exec(int affiliate_id,bool new_instance)
   delete q1;
   edit_web_url_edit->setText(q->value(22).toString());
   edit_web_password_edit->setText(q->value(24).toString());
-  edit_track_affidavit_box->setChecked(q->value(25).toString()=="Y");
+  edit_track_affidavit_check->setChecked(q->value(25).toString()=="Y");
+  edit_track_affidavit_check->
+    setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
   affidavitToggledData(q->value(25).toString()=="Y");
   edit_affidavits->setAffiliateStatus(q->value(26).toString()=="Y");
   edit_active_affiliate_check->setChecked(q->value(26).toString()=="Y");
+  edit_active_affiliate_check->
+    setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
   delete q;
-  /*
-  if(!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit)) {
-    edit_market_rank_spin->
-      setRange(edit_market_rank_spin->value(),edit_market_rank_spin->value());
-    edit_dma_rank_spin->
-      setRange(edit_dma_rank_spin->value(),edit_dma_rank_spin->value());
-  }
-  */
   if(new_instance) {
     edit_station_call_edit->selectAll();
   }
@@ -815,7 +831,7 @@ void EditAffiliate::okData()
 		      second_network_ids[edit_second_network_box->currentIndex()])+
     "`USER_PASSWORD`="+DvtSqlQuery::escape(edit_web_password_edit->text())+","+
     "`AFFIDAVIT_ACTIVE`="+
-    DvtSqlQuery::escape(DvtYesNo(edit_track_affidavit_box->isChecked()))+","+
+    DvtSqlQuery::escape(DvtYesNo(edit_track_affidavit_check->isChecked()))+","+
     "`IS_AFFILIATE`="+
     DvtSqlQuery::escape(DvtYesNo(edit_active_affiliate_check->isChecked()))+" "+
     QString::asprintf("where `ID`=%d",edit_affiliate_id);
@@ -867,12 +883,14 @@ void EditAffiliate::resizeEvent(QResizeEvent *e)
 
   edit_market_label->setGeometry(30,76,90,20);
   edit_market_box->setGeometry(125,76,260,20);
+  edit_market_edit->setGeometry(125,76,260,20);
 
   edit_market_rank_label->setGeometry(400,76,130,20);
   edit_market_rank_edit->setGeometry(535,76,40,20);
 
   edit_dma_label->setGeometry(30,98,90,20);
   edit_dma_box->setGeometry(125,98,260,20);
+  edit_dma_edit->setGeometry(125,98,260,20);
 
   edit_dma_rank_label->setGeometry(400,98,130,20);
   edit_dma_rank_edit->setGeometry(535,98,40,20);
@@ -917,7 +935,7 @@ void EditAffiliate::resizeEvent(QResizeEvent *e)
   edit_web_url_edit->setGeometry(125,274,200,20);
 
   edit_track_affidavit_label->setGeometry(40,306,w-20,20);
-  edit_track_affidavit_box->setGeometry(20,309,15,15);
+  edit_track_affidavit_check->setGeometry(20,309,15,15);
   edit_affidavits->setGeometry(10,304+22,w-20,55);
 
   edit_web_password_edit->setGeometry(w/2+107,305,70,20);

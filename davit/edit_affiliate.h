@@ -81,8 +81,10 @@ class EditAffiliate : public Dialog
   StateComboBox *edit_license_state_box;
   QLineEdit *edit_license_state_edit;
   QComboBox *edit_market_box;
+  QLineEdit *edit_market_edit;
   QLineEdit *edit_market_rank_edit;
   QComboBox *edit_dma_box;
+  QLineEdit *edit_dma_edit;
   QLineEdit *edit_dma_rank_edit;
   QComboBox *edit_second_network_box;
   QLineEdit *edit_second_network_edit;
@@ -107,7 +109,7 @@ class EditAffiliate : public Dialog
   QLineEdit *edit_fax_edit;
   QLineEdit *edit_email_addr_edit;
   QLineEdit *edit_web_url_edit;
-  QCheckBox *edit_track_affidavit_box;
+  QCheckBox *edit_track_affidavit_check;
   ShowAffidavits *edit_affidavits;
   ListContacts *edit_contact_list;
   ListAirings *edit_airings_list;
