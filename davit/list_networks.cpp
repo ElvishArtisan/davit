@@ -55,13 +55,17 @@ ListNetworks::ListNetworks(DvtConfig *c,QWidget *parent)
   list_networks_model->setFont(defaultFont());
   list_networks_model->setPalette(palette());
   list_networks_view->setModel(list_networks_model);
-  connect(list_networks_view,SIGNAL(doubleClicked(const QModelIndex &)),
-	  this,SLOT(doubleClickedData(const QModelIndex &)));
+  if(global_dvtuser->privilege(DvtUser::PrivProviderEdit)) {
+    connect(list_networks_view,SIGNAL(doubleClicked(const QModelIndex &)),
+	    this,SLOT(doubleClickedData(const QModelIndex &)));
+  }
 
   //
   //  Add Button
   //
   list_add_button=new QPushButton(this);
+  list_add_button->
+    setEnabled(global_dvtuser->privilege(DvtUser::PrivProviderEdit));
   list_add_button->setFont(buttonFont());
   list_add_button->setText("&Add");
   connect(list_add_button,SIGNAL(clicked()),this,SLOT(addData()));
@@ -70,6 +74,8 @@ ListNetworks::ListNetworks(DvtConfig *c,QWidget *parent)
   //  Edit Button
   //
   list_edit_button=new QPushButton(this);
+  list_edit_button->
+    setEnabled(global_dvtuser->privilege(DvtUser::PrivProviderEdit));
   list_edit_button->setFont(buttonFont());
   list_edit_button->setText("&Edit");
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
@@ -78,6 +84,8 @@ ListNetworks::ListNetworks(DvtConfig *c,QWidget *parent)
   //  Delete Button
   //
   list_delete_button=new QPushButton(this);
+  list_delete_button->
+    setEnabled(global_dvtuser->privilege(DvtUser::PrivProviderEdit));
   list_delete_button->setFont(buttonFont());
   list_delete_button->setText("&Delete");
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));

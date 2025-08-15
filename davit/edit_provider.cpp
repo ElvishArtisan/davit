@@ -48,6 +48,8 @@ EditProvider::EditProvider(DvtConfig *c,QWidget *parent)
   //
   edit_business_name_edit=new QLineEdit(this);
   edit_business_name_edit->setMaxLength(64);
+  edit_business_name_edit->
+    setReadOnly(!global_dvtuser->privilege(DvtUser::PrivProviderEdit));
   edit_business_name_label=new QLabel(tr("Business Name")+":",this);
   edit_business_name_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_business_name_label->setFont(labelFont());
