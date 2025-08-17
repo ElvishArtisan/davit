@@ -21,59 +21,68 @@
 #ifndef LISTSELECTOR_H
 #define LISTSELECTOR_H
 
-#include <QWidget>
 #include <QLabel>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-//#include <QListBox>
+#include <QListWidget>
 #include <QPushButton>
 
+#include "widget.h"
 
-class ListSelector : public QHBoxLayout
+class ListSelectorItem : public QListWidgetItem
+{
+ public:
+  ListSelectorItem(QListWidget *owner,int airing_id,const QString &text);
+  int airingId() const;
+
+ private:
+  int d_airing_id;
+};
+
+
+
+
+class ListSelector : public Widget
 {
   Q_OBJECT
-
  public:
-  ListSelector(QWidget *parent=0);
+  ListSelector(DvtConfig *c,QWidget *parent=0);
   uint sourceCount() const;
   uint destCount() const;
   void sourceSetLabel(QString label);
   void destSetLabel(QString label);
-  void sourceInsertItem(const QString &text,int index=-1);
-  void destInsertItem(const QString &text,int index=-1);
+  void sourceInsertItem(int id,const QString &text);
+  void destInsertItem(int id,const QString &text);
   void sourceRemoveItem(int index);
   void destRemoveItem(int index);
   QString sourceText(int index) const;
+  int sourceAiringId(int index) const;
   QString destText(int index) const;
-  void sourceChangeItem(const QString &text,int index);
-  void destChangeItem(const QString &text,int index);
-  int sourceNumItemsVisible() const;
-  int destNumItemsVisible() const;
+  int destAiringId(int index) const;
   int sourceCurrentItem() const;
   int destCurrentItem() const;
   QString sourceCurrentText() const;
   QString destCurrentText() const;
   void sourceSetCurrentItem(int item);
   void destSetCurrentItem(int item);
-  /*
-  QListBoxItem *sourceFindItem(const QString &text,
-			       ComparisonFlags compare=ExactMatch) const;
-  QListBoxItem *destFindItem(const QString &text,
-			     ComparisonFlags compare=ExactMatch) const;
-  */
   void clear();
-  
+
+ signals:
+  void destItemsQuantityChanged(int quan);
+
  private slots:
   void addData();
   void addAllData();
   void removeData();
   void removeAllData();
 
+ protected:
+  void resizeEvent(QResizeEvent *e);
+
  private:
   void CheckButtons();
-  //QListBox *list_source_box;
+  QListWidget *list_source_box;
   QLabel *list_source_label;
-  //QListBox *list_dest_box;
+  QListWidget *list_dest_box;
+  int list_dest_items_quantity;
   QLabel *list_dest_label;
   QPushButton *list_add_button;
   QPushButton *list_addall_button;

@@ -1059,3 +1059,5 @@
 2025-08-15 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression in davit(1) that caused the 'Edit Provider Data''
 	permission to fail to be enforced.
+2025-08-17 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored the 'Migrate Affiliates' dialog in davit(1).

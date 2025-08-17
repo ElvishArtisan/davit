@@ -43,6 +43,8 @@ class ProgramListModel : public QAbstractTableModel
   QVariant headerData(int section,Qt::Orientation orient,
 		      int role=Qt::DisplayRole) const;
   QVariant data(const QModelIndex &index,int role=Qt::DisplayRole) const;
+  bool showActiveOnly() const;
+  void setShowActiveOnly(bool state);
   int programId(const QModelIndex &row) const;
   QString programName(const QModelIndex &row) const;
   QModelIndex addProgram(int program_id);
@@ -61,6 +63,7 @@ class ProgramListModel : public QAbstractTableModel
   QPalette d_palette;
   QFont d_font;
   QStringList d_service_names;
+  bool d_show_active_only;
   QList<QVariant> d_headers;
   QList<QVariant> d_alignments;
   QList<int> d_ids;

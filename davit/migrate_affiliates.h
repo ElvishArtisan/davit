@@ -24,29 +24,43 @@
 #include <vector>
 
 #include <QComboBox>
-#include <QDialog>
+#include <QLabel>
 
+#include <dvtdb.h>
+
+#include "dialog.h"
 #include "listselector.h"
 
-class MigrateAffiliates : public QDialog
+class MigrateAffiliates : public Dialog
 {
  Q_OBJECT
  public:
- MigrateAffiliates(int pgm_id,const QString &pgm_name,QWidget *parent=0);
+ MigrateAffiliates(DvtConfig *c,QWidget *parent=0);
   ~MigrateAffiliates();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
 
+ public slots:
+  int exec(int pgm_id,const QString &pgm_name);
+
  private slots:
   void programActivatedData(const QString &str);
+  void destItemsQuantityChangedData(int quan);
   void okData();
   void cancelData();
 
+ protected:
+  void resizeEvent(QResizeEvent *e);
+  
  private:
+  QString GetDowSummary(DvtSqlQuery *q) const;
   int GetProgramId(const QString &str) const;
   int GetAffiliateId(const QString &str) const;
-  int edit_id;
+  QPushButton *list_ok_button;
+  QPushButton *list_cancel_button;
+  int edit_program_id;
   QString edit_program_name;
+  QLabel *edit_program_label;
   QComboBox *edit_program_box;
   ListSelector *edit_affiliates_sel;
 };

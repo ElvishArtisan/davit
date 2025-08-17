@@ -603,8 +603,8 @@ int EditProgram::exec(int program_id,bool new_entry)
 void EditProgram::migrateData()
 {
   MigrateAffiliates *d=
-    new MigrateAffiliates(edit_program_id,edit_program_name_edit->text(),this);
-  d->exec();
+    new MigrateAffiliates(config(),this);
+  d->exec(edit_program_id,edit_program_name_edit->text());
   delete d;
 }
 

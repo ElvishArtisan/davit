@@ -140,6 +140,21 @@ QVariant ProgramListModel::data(const QModelIndex &index,int role) const
 }
 
 
+bool ProgramListModel::showActiveOnly() const
+{
+  return d_show_active_only;
+}
+
+
+void ProgramListModel::setShowActiveOnly(bool state)
+{
+  if(state!=d_show_active_only) {
+    d_show_active_only=state;
+    refresh();
+  }
+}
+
+
 int ProgramListModel::programId(const QModelIndex &row) const
 {
   return d_ids.at(row.row());
@@ -298,6 +313,19 @@ QString ProgramListModel::sqlFields() const
     "`PROGRAMS`.`CONTACT_EMAIL` "+   // 06
     "from `PROGRAMS` left join `PROVIDERS` "+
     "on `PROGRAMS`.`PROVIDER_ID`=`PROVIDERS`.`ID` ";
+  /*
+  QString sql=QString("select ")+
+    "`PROGRAMS`.`ID`,"+              // 00
+    "`PROGRAMS`.`PROVIDER_ID`,"+     // 01
+    "`PROGRAMS`.`PROGRAM_NAME`,"+    // 02
+    "`PROVIDERS`.`BUSINESS_NAME`,"+  // 03
+    "`PROGRAMS`.`CONTACT_NAME`,"+    // 04
+    "`PROGRAMS`.`CONTACT_PHONE`,"+   // 05
+    "`PROGRAMS`.`CONTACT_EMAIL` "+   // 06
+    "from `PROGRAMS` left join `PROVIDERS` "+
+    "on `PROGRAMS`.`PROVIDER_ID`=`PROVIDERS`.`ID` left join `AIRINGS` "+
+    "on `PROGRAMS`.`ID`=`AIRINGS`.`PROGRAM_ID` ";
+  */
 
     return sql;
 }
