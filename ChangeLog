@@ -1066,3 +1066,6 @@
 	fail to be included when generating an affidavit for an affiliate
 	with the 'Include Airings List' checkbox unticked in the
 	'Generate Affiliate Affidavit' dialog.
+2025-08-18 Fred Gleason <fredg@paravelsystems.com>
+	* Tweaked layout of the 'Exception' section of affiliate affidavits
+	in davit(1).

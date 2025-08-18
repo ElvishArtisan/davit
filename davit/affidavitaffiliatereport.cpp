@@ -314,12 +314,13 @@ void GenerateAffadavit::paintAffiliateReport(QPrinter *printer)
     sql+=" order by `PROGRAMS`.`PROGRAM_NAME`,`AIRED`.`AIR_DATETIME`";
     q=new DvtSqlQuery(sql);
     if(q->first()) {
-      p->setFont(labelFont());
+      p->setFont(bigLabelFont());
       p->drawText(QRect(0,ypos,w,p->fontMetrics().height()),
 		  Qt::AlignTop|Qt::AlignHCenter,
 		  "Exceptions");
-      NewLine(printer,p,&ypos);
       p->setFont(defaultFont());
+      NewLine(printer,p,&ypos);
+      NewLine(printer,p,&ypos);
       p->drawText(QRect(0,ypos,w,p->fontMetrics().height()),
 		  Qt::AlignTop|Qt::AlignHCenter,
 		  "The following program instances were NOT aired:");
