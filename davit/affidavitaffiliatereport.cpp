@@ -305,13 +305,13 @@ void GenerateAffadavit::paintAffiliateReport(QPrinter *printer)
       DvtSqlQuery::escape(date.addMonths(1).toString("yyyy-MM")+
 			  "-01 00:00:00")+")&&"+
       QString::asprintf("(`AIRED`.`STATE`=%d)",Dvt::AiredStateDenied);
-    if(program_id<0) {
+    if(program_id<=0) {
       sql+="&&(`PROGRAMS`.`ID`>=0)";
     }
     else {
-      sql+=QString::asprintf("&&(PROGRAMS.ID=%d)",program_id);
+      sql+=QString::asprintf("&&(`PROGRAMS`.`ID`=%d)",program_id);
     }
-    sql+=" order by PROGRAMS.PROGRAM_NAME,AIRED.AIR_DATETIME";
+    sql+=" order by `PROGRAMS`.`PROGRAM_NAME`,`AIRED`.`AIR_DATETIME`";
     q=new DvtSqlQuery(sql);
     if(q->first()) {
       p->setFont(labelFont());

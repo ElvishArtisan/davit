@@ -1061,3 +1061,8 @@
 	permission to fail to be enforced.
 2025-08-17 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored the 'Migrate Affiliates' dialog in davit(1).
+2025-08-18 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in davit(1) that caused the 'Exception' section to
+	fail to be included when generating an affidavit for an affiliate
+	with the 'Include Airings List' checkbox unticked in the
+	'Generate Affiliate Affidavit' dialog.
