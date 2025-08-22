@@ -62,6 +62,7 @@ class MailDialog : public Dialog
   QLabel *edit_subject_label;
   QLineEdit *edit_subject_edit;
   QTextEdit *edit_body_edit;
+  QLabel *edit_dry_run_label;
   QPushButton *edit_send_button;
   QPushButton *edit_cancel_button;
   QString edit_from_address;

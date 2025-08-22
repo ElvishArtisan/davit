@@ -154,6 +154,12 @@ int AffiliateListModel::affiliateId(const QModelIndex &row) const
 }
 
 
+int AffiliateListModel::affiliateId(int rownum) const
+{
+  return d_ids.at(rownum);
+}
+
+
 QModelIndex AffiliateListModel::addAffiliate(int affiliate_id)
 {
   //

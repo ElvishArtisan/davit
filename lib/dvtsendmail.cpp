@@ -2,7 +2,7 @@
 //
 // Send an e-mail message using sendmail(1)
 //
-//   (C) Copyright 2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -22,11 +22,10 @@
 
 #include <QFile>
 #include <QObject>
+#include <QProcess>
 
 #include "dvtconf.h"
 #include "dvtsendmail.h"
-
-#include <QProcess>
 
 bool __DvtSendMail_IsAscii(const QString &str)
 {
@@ -151,8 +150,8 @@ QByteArray __DvtSendMail_EncodeAddress(const QString &str,bool *ok)
 //
 bool DvtSendMail(QString *err_msg,const QString &subject,const QString &body,
 		const QString &from_addr,const QStringList &to_addrs,
-		const QStringList &cc_addrs,const QStringList &bcc_addrs,
-		bool dry_run)
+		 const QStringList &cc_addrs,const QStringList &bcc_addrs,
+		 bool dry_run)
 {
   QStringList args;
   QProcess *proc=NULL;
@@ -292,16 +291,4 @@ bool DvtSendMail(QString *err_msg,const QString &subject,const QString &body,
   *err_msg=QObject::tr("ok");
 
   return true;
-}
-
-
-bool DvtSendMail(QString *err_msg,const QString &subject,const QString &body,
-		const QString &from_addr,const QString &to_addrs,
-		const QString &cc_addrs,const QString &bcc_addrs,bool dry_run)
-{
-  return DvtSendMail(err_msg,subject,body,from_addr,
-		     to_addrs.split(",",Qt::SkipEmptyParts),
-		     cc_addrs.split(",",Qt::SkipEmptyParts),
-		     bcc_addrs.split(",",Qt::SkipEmptyParts),
-		     dry_run);
 }

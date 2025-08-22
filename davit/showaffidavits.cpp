@@ -107,7 +107,7 @@ void ShowAffidavits::setAffiliateId(int id)
     col++;
     month=month.addMonths(1);
   }
-  show_mail_button->setDisabled(ok||(!email_enabled));
+  show_mail_button->setDisabled(ok);
 }
 
 

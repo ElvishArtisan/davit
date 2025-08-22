@@ -32,6 +32,7 @@
 #include <QStringList>
 
 #include <dvt.h>
+#include <dvtcmdswitch.h>
 #include <dvtconfig.h>
 #include <dvtdb.h>
 #include <dvtimport.h>
@@ -50,10 +51,10 @@ DvtSystem *global_dvtsystem;
 QString openoffice_path;
 bool exiting=false;
 QStringList temp_files;
-bool email_enabled=false;
 Geometry *global_geometry=NULL;
 MailDialog *mail_dialog=NULL;
 ViewerProcessList *global_viewer_list=NULL;
+bool global_email_dry_run=false;
 
 //
 // Icons
@@ -123,6 +124,22 @@ MainWidget::MainWidget(QWidget *parent)
   config->load();
 
   //
+  // Command-Line Switches
+  //
+  DvtCmdSwitch *cmd=new DvtCmdSwitch("davit",DAVIT_USAGE);
+  for(int i=0;i<cmd->keys();i++) {
+    if(cmd->key(i)=="--email-dry-run") {
+      global_email_dry_run=true;
+      cmd->setProcessed(i,true);
+    }
+    if(!cmd->processed(i)) {
+      fprintf(stderr,"davit: unrecognized option \"%s\"\n",
+	      cmd->key(i).toUtf8().constData());
+      exit(1);
+    }
+  }
+
+  //
   // Dialogs
   //
   d_login_dialog=new Login(config,this);
@@ -160,15 +177,6 @@ MainWidget::MainWidget(QWidget *parent)
   global_dvtsystem->load();
   setWindowTitle(QString::asprintf("Davit - User: %s",
 			       loginname.toUtf8().constData()));
-
-  //
-  // Check for E-Mail Capability
-  //
-  email_enabled=QFile::exists(DVT_SENDMAIL_PATH);
-  if(!email_enabled) {
-    QMessageBox::information(this,"Davit - E-Mail Status",
-			     tr("The Sendmail utility is not installed on this system.\nE-Mail functionality will be disabled!"));
-  }
 
   //
   // Find OpenOffice (Win32 only)

@@ -67,7 +67,6 @@ class ListAffiliates : public Dialog
   void resizeEvent(QResizeEvent *e);
 
  private:
-  void SendAffidavitReminder();
   QDate MissingAffiliatesDate() const;
   QLabel *list_show_affiliates_label;
   QCheckBox *list_show_affiliates_check;

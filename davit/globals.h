@@ -40,9 +40,9 @@ extern DvtUser *global_dvtuser;
 extern DvtSystem *global_dvtsystem;
 extern QString openoffice_path;
 extern QStringList temp_files;
-extern bool email_enabled;
 extern Geometry *global_geometry;
 extern MailDialog *mail_dialog;
 extern ViewerProcessList *global_viewer_list;
+extern bool global_email_dry_run;
 
 #endif  // GLOBALS_H

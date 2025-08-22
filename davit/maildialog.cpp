@@ -70,6 +70,12 @@ MailDialog::MailDialog(DvtConfig *c,QWidget *parent)
   edit_body_edit=new QTextEdit(this);
   connect(edit_body_edit,SIGNAL(textChanged()),this,SLOT(addressChangedData()));
 
+  edit_dry_run_label=new QLabel(tr("--email-dry-run is active!"),this);
+  edit_dry_run_label->setStyleSheet("color:#FF0000");
+  edit_dry_run_label->setFont(labelFont());
+  edit_dry_run_label->setAlignment(Qt::AlignRight);
+  edit_dry_run_label->setVisible(global_email_dry_run);
+
   edit_send_button=new QPushButton(tr("Send"),this);
   edit_send_button->setFont(buttonFont());
   connect(edit_send_button,SIGNAL(clicked()),this,SLOT(sendData()));
@@ -195,7 +201,7 @@ void MailDialog::sendData()
 		  to_addrs,
 		  cc_addrs,
 		  bcc_addrs,
-		  false)) {
+		  global_email_dry_run)) {
     QMessageBox::warning(this,"Davit - "+tr("Compose Mail"),
 			 tr("Mailer system returned an error.")+"\n"+
 			 err_msg);
@@ -213,20 +219,25 @@ void MailDialog::cancelData()
 
 void MailDialog::resizeEvent(QResizeEvent *e)
 {
+  int w=size().width();
+  int h=size().height();
+
   edit_to_label->setGeometry(10,10,30,20);
-  edit_to_edit->setGeometry(45,10,size().width()-55,50);
+  edit_to_edit->setGeometry(45,10,w-55,50);
 
   edit_cc_label->setGeometry(10,65,30,20);
-  edit_cc_edit->setGeometry(45,65,size().width()-55,50);
+  edit_cc_edit->setGeometry(45,65,w-55,50);
 
   edit_bcc_label->setGeometry(10,120,30,20);
-  edit_bcc_edit->setGeometry(45,120,size().width()-55,50);
+  edit_bcc_edit->setGeometry(45,120,w-55,50);
 
   edit_subject_label->setGeometry(10,180,50,20);
-  edit_subject_edit->setGeometry(65,180,size().width()-75,20);
+  edit_subject_edit->setGeometry(65,180,w-75,20);
 
-  edit_body_edit->setGeometry(10,210,size().width()-20,size().height()-270);
+  edit_body_edit->setGeometry(10,210,w-20,h-270);
 
-  edit_send_button->setGeometry(size().width()-130,size().height()-35,60,25);
-  edit_cancel_button->setGeometry(size().width()-65,size().height()-35,60,25);
+  edit_dry_run_label->setGeometry(10,h-55,w-20,20);
+
+  edit_send_button->setGeometry(w-130,h-35,60,25);
+  edit_cancel_button->setGeometry(w-65,h-35,60,25);
 }

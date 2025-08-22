@@ -29,7 +29,7 @@
 
 #include <dvtconf.h>
 #include <dvtconfig.h>
-//#include <dvtmail.h>
+#include <dvtsendmail.h>
 
 #include "globals.h"
 #include "list_affiliates.h"
@@ -67,12 +67,12 @@ ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
   list_addaffiliate_dialog=new AddAffiliate(c,this);
   list_editaffiliate_dialog=new EditAffiliate(c,this);
   list_generateaffadavit_dialog=new GenerateAffadavit(c,this);
-  /*
   list_email_progress=
     new QProgressDialog(tr("Generating e-mail, please wait..."),
-			tr("Cancel"),100,this);
+			tr("Cancel"),0,100,this);
+  list_email_progress->setValue(100);
   list_email_progress->setWindowTitle("Davit");
-  */
+
   //
   // Show Affiliates Checkbox
   //
@@ -259,7 +259,7 @@ void ListAffiliates::filterTextChangedData(const QString &str)
 
 void ListAffiliates::missingAffiliateChangedData(int state)
 {
-  list_affidavit_reminder_button->setEnabled(state&&email_enabled);
+  list_affidavit_reminder_button->setEnabled(state);
   list_affiliates_model->refresh(true,MissingAffiliatesDate(),
 				 list_callfilter_edit->text());
   list_affiliates_view->resizeColumnsToContents();
@@ -408,14 +408,76 @@ void ListAffiliates::affadavitData()
 
 void ListAffiliates::affidavitReminderData()
 {
-  /*
-  if(QMessageBox::question(this,"Davit - List Affiliates",
-			   tr("This will send an affidavit reminder e-mail to")+
-			   QString::asprintf(" %d ",list_affiliates_list->childCount())+tr("affiliates.\nProceed?"),QMessageBox::Yes,QMessageBox::No)!=QMessageBox::Yes) {
+  //
+  // Get Selected Affiliates from the Model
+  //
+  QString sql=QString("select ")+
+    "`AFFILIATES`.`ID`,"+             // 00
+    "`CONTACTS`.`NAME`,"+             // 01
+    "`CONTACTS`.`EMAIL`,"+            // 02
+    "`AFFILIATES`.`STATION_CALL`,"+   // 03
+    "`AFFILIATES`.`STATION_TYPE`,"+   // 04
+    "`AFFILIATES`.`USER_PASSWORD` "+  // 05
+    "from `AFFILIATES` left join `CONTACTS` "+
+    "on `AFFILIATES`.`ID`=`CONTACTS`.`AFFILIATE_ID` where "+
+    "(`CONTACTS`.`AFFIDAVIT`='Y')&&(";
+  for(int i=0;i<list_affiliates_model->rowCount();i++) {
+    sql+=QString::asprintf("(`AFFILIATES`.`ID`=%d)||",
+			   list_affiliates_model->affiliateId(i));
+  }
+  sql=sql.left(sql.length()-2);
+  sql+=")";
+  DvtSqlQuery *q=new DvtSqlQuery(sql);
+
+  //
+  // Prompt for Confirmation
+  //
+  QString msg=tr("This will send an affidavit reminder e-mail to")+
+			   QString::asprintf(" %d ",q->size())+
+    tr("affiliates")+".\n";
+  if(global_email_dry_run) {
+    msg+=tr("--email-dry-run is active!")+"\n";
+  }
+  msg+=tr("Proceed?");
+  if(QMessageBox::question(this,"Davit - List Affiliates",msg,
+			   QMessageBox::Yes,QMessageBox::No)!=QMessageBox::Yes) {
+    delete q;
     return;
   }
-  SendAffidavitReminder();
-  */
+
+  //
+  // Generate and Send Messages
+  //
+  while(q->next()) {
+    QString subject;
+    QString msg;
+    subject=global_dvtsystem->affidavitEmailSubject();
+    subject.replace("%S",DvtStationCallString(q->value(3).toString(),
+					      q->value(4).toString()));
+    subject.replace("%P",q->value(5).toString());
+    subject.replace("%U",q->value(1).toString().toLower()+"-"+
+		    q->value(2).toString().toLower()+"m");
+    msg=global_dvtsystem->affidavitEmailTemplate();
+    msg.replace("%S",DvtStationCallString(q->value(3).toString(),
+					  q->value(4).toString()));
+    msg.replace("%P",q->value(5).toString());
+    msg.replace("%U",q->value(1).toString().toLower()+"-"+
+		q->value(2).toString().toLower()+"m");
+    QString err_msg;
+    if(!DvtSendMail(&err_msg,subject,msg,global_dvtsystem->originEmail(),
+		    QStringList(DvtFormatEmailAddress(q->value(1).toString(),
+				    q->value(2).toString())),QStringList(),
+		    QStringList(global_dvtuser->email()),
+		    global_email_dry_run)) {
+      QMessageBox::warning(this,"Davit - "+tr("Mailer Error"),
+			   tr("An error occurred when sending mail to")+"\n"+
+			   DvtFormatEmailAddress(q->value(1).toString(),
+						 q->value(2).toString())+
+			   ".\n\n"+
+			   tr("The error message was")+": \""+err_msg+"\".");
+    }
+  }
+  delete q;
 }
 
 void ListAffiliates::doubleClickedData(const QModelIndex &index)
@@ -458,146 +520,6 @@ void ListAffiliates::resizeEvent(QResizeEvent *e)
   list_affadavit_button->setGeometry(330,h-60,80,50);
   list_affidavit_reminder_button->setGeometry(430,h-60,80,50);
   list_close_button->setGeometry(w-90,h-60,80,50);
-}
-
-
-void ListAffiliates::SendAffidavitReminder()
-{
-  /*
-#ifndef WIN32
-  QString sql;
-  QSqlQuery *q;
-  QString subject;
-  QString msg;
-  QStringList to_addrs;
-  QStringList empty;
-  QStringList subaddrs;
-  unsigned errs=0;
-  int count=0;
-  int step=0;
-  //  int step_size=list_affiliates_list->childCount()/100;
-  QString invalid_addrs;
-
-  //
-  // Create Mail Transport
-  //
-  vmime::ref<vmime::net::session> sess=NULL;
-  vmime::ref<vmime::net::transport> trans=NULL;
-  try {
-    sql="select SMTP_HOSTNAME,SMTP_PORT from SYSTEM";
-    q=new QSqlQuery(sql);
-    if(!q->first()) {
-      QMessageBox::warning(NULL,"Davit - Davit Error",
-			   "Unable to load SMTP server configuration!");
-      delete q;
-      return;
-    }
-    if(q->value(0).toString().isEmpty()) {
-      QMessageBox::warning(NULL,"Davit - Davit Error",
-			   "Missing SMTP server configuration!");
-      delete q;
-      return;
-    }
-    sess=vmime::create<vmime::net::session>();
-    sess->getProperties()["transport.smtp.server.port"]=q->value(1).toInt();
-    vmime::utility::url url((const char *)QString::asprintf("smtp://%s",
-				   (const char *)q->value(0).toString()));
-    trans=sess->getTransport(url); 
-    trans->connect();
-    delete q;
-  }
-  catch(vmime::exception &e) {
-    QMessageBox::warning(NULL,"Davit - Mailer Error",e.what());
-    return;
-  }
-  catch(std::exception &e) {
-    QMessageBox::warning(NULL,"Davit - Davit Error",e.what());
-    return;
-  }
-
-  //
-  // Generate messages
-  //
-  list_email_progress->setProgress(0);
-  DvtListViewItem *item=(DvtListViewItem *)list_affiliates_list->firstChild();
-  while((item!=NULL)&&(!list_email_progress->wasCancelled())) {
-    sql=QString::asprintf("select STATION_CALL,STATION_TYPE,USER_PASSWORD \
-                           from AFFILIATES where ID=%d",item->id());
-    q=new QSqlQuery(sql);
-    while(q->next()) {
-      subject=global_dvtsystem->affidavitEmailSubject();
-      subject.
-	replace("%S",q->value(0).toString()+"-"+q->value(1).toString()+"M");
-      subject.replace("%P",q->value(2).toString());
-      subject.replace("%U",q->value(0).toString().lower()+"-"+
-		      q->value(1).toString().lower()+"m");
-      msg=global_dvtsystem->affidavitEmailTemplate();
-      msg.replace("%S",q->value(0).toString()+"-"+q->value(1).toString()+"M");
-      msg.replace("%P",q->value(2).toString());
-      msg.replace("%U",q->value(0).toString().lower()+"-"+
-		  q->value(1).toString().lower()+"m");
-    }
-    delete q;
-    sql=QString::asprintf("select NAME,EMAIL from CONTACTS where \
-                           (AFFILIATE_ID=%d)&&(AFFIDAVIT=\"Y\")",item->id());
-    q=new QSqlQuery(sql);
-    to_addrs.clear();
-    empty.clear();
-    while(q->next()) {
-      subaddrs=subaddrs.split(";",q->value(1).toString());
-      for(unsigned i=0;i<subaddrs.size();i++) {
-	if(!subaddrs[i].isEmpty()) {
-	  to_addrs.push_back(QString());
-	}
-	if(!q->value(0).toString().isEmpty()) {
-	  to_addrs.back()=q->value(0).toString()+" <";
-	}
-	to_addrs.back()+=subaddrs[i].stripWhiteSpace();
-	if(!q->value(0).toString().isEmpty()) {
-	  to_addrs.back()+=">";
-	}
-      }
-    }
-    delete q;
-    for(unsigned i=0;i<to_addrs.size();i++) {
-      if(DvtIsFullEmailAddress(to_addrs[i])) {
-	//printf("addr: |%s|\n",(const char *)to_addrs[i]);
-      }
-      else {
-	invalid_addrs+=item->text(0)+": "+to_addrs[i]+"\n";
-	errs++;
-	//printf("BAD ADDR: |%s|\n",(const char *)to_addrs[i]);
-      }
-    }
-    if(to_addrs.size()>0) {
-      DvtSendMail(to_addrs,empty,empty,global_dvtsystem->originEmail(),
-		  global_dvtuser->email(),subject,msg,this,trans);
-      //usleep(50000);
-    }
-    item=(DvtListViewItem *)item->nextSibling();
-    if(++count/step_size>step) {
-      list_email_progress->setProgress(++step);
-      qApp->processEvents();
-    }
-  }
-  list_email_progress->reset();
-  try {
-    trans->disconnect();
-  }
-  catch(vmime::exception &e) {
-  }
-  if(errs==0) {
-    QMessageBox::information(this,"Davit",QString::asprintf("%d ",count-errs)+
-			     tr("messages sent!"));
-  }
-  else {
-    QMessageBox::information(this,"Davit",
-			     QString::asprintf("%d ",errs)+
-			     tr("e-mail addresses were invalid:")+"\n\n"+
-			     invalid_addrs);
-  }
-#endif  // WIN32
-  */
 }
 
 

@@ -36,6 +36,8 @@
 #include "list_users.h"
 #include "login.h"
 
+#define DAVIT_USAGE "[--email-dry-run]\n     Don't actually send e-mail, but print it to STDOUT\n\n"
+
 class MainWidget : public QWidget
 {
   Q_OBJECT

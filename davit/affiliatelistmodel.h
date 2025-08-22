@@ -44,6 +44,7 @@ class AffiliateListModel : public QAbstractTableModel
 		      int role=Qt::DisplayRole) const;
   QVariant data(const QModelIndex &index,int role=Qt::DisplayRole) const;
   int affiliateId(const QModelIndex &row) const;
+  int affiliateId(int rownum) const;
   QModelIndex addAffiliate(int affiliate_id);
   void removeAffiliate(const QModelIndex &row);
   void removeAffiliate(int affiliate_id);
