@@ -67,11 +67,6 @@ ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
   list_addaffiliate_dialog=new AddAffiliate(c,this);
   list_editaffiliate_dialog=new EditAffiliate(c,this);
   list_generateaffadavit_dialog=new GenerateAffadavit(c,this);
-  list_email_progress=
-    new QProgressDialog(tr("Generating e-mail, please wait..."),
-			tr("Cancel"),0,100,this);
-  list_email_progress->setValue(100);
-  list_email_progress->setWindowTitle("Davit");
 
   //
   // Show Affiliates Checkbox

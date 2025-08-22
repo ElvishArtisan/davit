@@ -1073,3 +1073,5 @@
 	* Added a '--email-dry-run' switch to davit(1).
 	* Refactored the code for generating affidavit reminder messages in
 	davit(1).
+2025-08-21 Fred Gleason <fredg@paravelsystems.com>
+	* Removed vestigal code for generating progress dialogs in davit(1).

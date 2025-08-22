@@ -28,7 +28,6 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QSqlDatabase>
-#include <QProgressDialog>
 #include <QPixmap>
 
 #include "add_affiliate.h"
@@ -84,7 +83,6 @@ class ListAffiliates : public Dialog
   QPushButton *list_affadavit_button;
   QPushButton *list_affidavit_reminder_button;
   QPushButton *list_close_button;
-  QProgressDialog *list_email_progress;
   AddAffiliate *list_addaffiliate_dialog;
   EditAffiliate *list_editaffiliate_dialog;
   GenerateAffadavit *list_generateaffadavit_dialog;
