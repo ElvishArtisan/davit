@@ -97,7 +97,7 @@ void ShowAffidavits::setAffiliateId(int id)
 
   month=now.addMonths(-11);
   while(month<now) {
-    if(DvtAffidavitNeeded(id,month)) {
+    if(DvtAffidavitNeededForMonth(id,month)) {
       show_view->item(0,col)->setText("");
       ok=false;
     }

@@ -1075,3 +1075,6 @@
 	davit(1).
 2025-08-21 Fred Gleason <fredg@paravelsystems.com>
 	* Removed vestigal code for generating progress dialogs in davit(1).
+2025-08-30 Fred Gleason <fredg@paravelsystems.com>
+	* Modified status icons in the 'List Affiliates' dialog to show
+	affidavit state in davit(1).

@@ -59,7 +59,7 @@ class AffiliateListModel : public QAbstractTableModel
  protected:
   void updateModel();
   void updateRowLine(int line);
-  void updateRow(int row,DvtSqlQuery *q);
+  void updateRow(int row,DvtSqlQuery *q,bool missing_affidavit);
   QString sqlFields() const;
 
  private:
@@ -72,7 +72,7 @@ class AffiliateListModel : public QAbstractTableModel
   QList<QVariant> d_icons;
   QList<int> d_ids;
   bool d_affiliates_only;
-  QDate d_affiliates_missing;
+  QDate d_affiliates_missing_date;
   QString d_call_filter;
 };
 

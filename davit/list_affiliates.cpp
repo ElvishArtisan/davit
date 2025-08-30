@@ -37,6 +37,7 @@
 //
 // Icons
 //
+#include "../icons/blueball.xpm"
 #include "../icons/greenball.xpm"
 #include "../icons/redball.xpm"
 #include "../icons/whiteball.xpm"
@@ -197,6 +198,30 @@ ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
 #ifdef WIN32
   list_affidavit_reminder_button->hide();
 #endif  // WIN32
+
+  //
+  // Icon Legend
+  //
+  list_greenball_labels[0]=new QLabel(this);
+  list_greenball_labels[0]->setPixmap(QPixmap(greenball_xpm));
+  list_greenball_labels[1]=
+    new QLabel("- "+tr("All Affidavits Up-To-Date"),this);
+  list_greenball_labels[1]->setFont(defaultFont());
+  
+  list_redball_labels[0]=new QLabel(this);
+  list_redball_labels[0]->setPixmap(QPixmap(redball_xpm));
+  list_redball_labels[1]=new QLabel("- "+tr("Missing Affidavit(s)"),this);
+  list_redball_labels[1]->setFont(defaultFont());
+
+  list_blueball_labels[0]=new QLabel(this);
+  list_blueball_labels[0]->setPixmap(QPixmap(blueball_xpm));
+  list_blueball_labels[1]=new QLabel("- "+tr("Affidavits Not Tracked"),this);
+  list_blueball_labels[1]->setFont(defaultFont());
+
+  list_whiteball_labels[0]=new QLabel(this);
+  list_whiteball_labels[0]->setPixmap(QPixmap(whiteball_xpm));
+  list_whiteball_labels[1]=new QLabel("- "+tr("Not An Active Affiliate"),this);
+  list_whiteball_labels[1]->setFont(defaultFont());
 
   //
   //  Close Button
@@ -514,6 +539,19 @@ void ListAffiliates::resizeEvent(QResizeEvent *e)
   list_delete_button->setGeometry(190,h-60,80,50);
   list_affadavit_button->setGeometry(330,h-60,80,50);
   list_affidavit_reminder_button->setGeometry(430,h-60,80,50);
+
+  list_greenball_labels[0]->setGeometry(550,h-68,20,20);
+  list_greenball_labels[1]->setGeometry(570,h-68,w-200,20);
+    
+  list_redball_labels[0]->setGeometry(550,h-52,20,20);
+  list_redball_labels[1]->setGeometry(570,h-52,w-200,20);
+    
+  list_blueball_labels[0]->setGeometry(550,h-36,20,20);
+  list_blueball_labels[1]->setGeometry(570,h-36,w-200,20);
+    
+  list_whiteball_labels[0]->setGeometry(550,h-20,20,20);
+  list_whiteball_labels[1]->setGeometry(570,h-20,w-200,20);
+    
   list_close_button->setGeometry(w-90,h-60,80,50);
 }
 

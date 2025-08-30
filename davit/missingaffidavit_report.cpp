@@ -37,8 +37,8 @@ bool ListReports::MissingAffidavitReport(SpreadSheet *sheet)
   QString sql;
   DvtSqlQuery *q=NULL;
   QString where;
-  std::vector<int> affiliate_ids;
-  std::map<int,int> affiliate_counts;
+  QList<int> affiliate_ids;
+  QMap<int,int> affiliate_counts;
   Dvt::AffidavitStationFilter filter=Dvt::All;
   Dvt::AffidavitSortType sort_type=Dvt::ByCount;
   int program_id=-1;
@@ -48,7 +48,7 @@ bool ListReports::MissingAffidavitReport(SpreadSheet *sheet)
   //
   QDate end_date=QDate::currentDate();
   end_date.setDate(end_date.year(),end_date.month(),1);
-  QDate start_date=end_date.addYears(-1);
+  QDate start_date=end_date.addMonths(-11);
   if(!list_pickaffidavit_dialog->exec(&filter,&sort_type,&program_id)) {
     return false;
   }

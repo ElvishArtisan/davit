@@ -22,6 +22,7 @@
 
 #include "affiliatelistmodel.h"
 
+#include "../icons/blueball.xpm"
 #include "../icons/greenball.xpm"
 #include "../icons/redball.xpm"
 #include "../icons/whiteball.xpm"
@@ -219,7 +220,9 @@ void AffiliateListModel::refresh(const QModelIndex &row)
       "where `AFFILIATES`.`ID`="+QString::asprintf("%d",d_ids.at(row.row()));
     DvtSqlQuery *q=new DvtSqlQuery(sql);
     if(q->first()) {
-      updateRow(row.row(),q);
+      updateRow(row.row(),q,
+		DvtAffidavitNeededForMonth(d_ids.at(row.row()),
+					   QDate::currentDate().addMonths(-1)));
       emit dataChanged(createIndex(row.row(),0),
 		       createIndex(row.row(),columnCount()));
     }
@@ -243,7 +246,7 @@ void AffiliateListModel::refresh(bool affl_only,const QDate &affl_missing,
 				 const QString &call_filter)
 {
   d_affiliates_only=affl_only;
-  d_affiliates_missing=affl_missing;
+  d_affiliates_missing_date=affl_missing;
   d_call_filter=call_filter;
 
   updateModel();
@@ -256,32 +259,44 @@ void AffiliateListModel::updateModel()
   QList<QVariant> icons;
   QString sql;
   QString where;
+  QList<int> affidavit_affiliate_ids;
+  QMap<int,int> affidavit_affiliate_counts;
+
+  //
+  // Get List of Affiliates Missing Affidavits
+  //
+  QDate end_date=QDate::currentDate().addMonths(-1);
+  QDate start_date=end_date.addMonths(-10);
+  DvtAffidavitNeeded(&affidavit_affiliate_ids,&affidavit_affiliate_counts,
+		     start_date,end_date,Dvt::All,-1);
+
+  //
+  // Show only Affiliates Missing Affidavits
+  //
+  if(!d_affiliates_missing_date.isNull()&&(affidavit_affiliate_ids.size()>0)) {
+    where+="(";
+    for(int i=0;i<affidavit_affiliate_ids.size();i++) {
+      where+=QString::asprintf("(`AFFILIATES`.`ID`=%d)||",
+			       affidavit_affiliate_ids.at(i));
+    }
+    where=where.left(where.length()-2)+")&&";
+  }
 
   int prev_rows=rowCount();
+
+  
   if(d_affiliates_only) {
     where+=QString("(`AFFILIATES`.`IS_AFFILIATE`='Y')&&");
-  }
-  if(!d_affiliates_missing.isNull()) {
-    sql=QString("select ")+
-      "`AFFILIATES`.`ID` "+  // 00
-      "from `AFFILIATES` where `AFFILIATES`.`AFFIDAVIT_ACTIVE`='Y'";
-    DvtSqlQuery *q=new DvtSqlQuery(sql);
-    while(q->next()) {
-      if(!DvtAffidavitNeeded(q->value(0).toInt(),d_affiliates_missing)) {
-	where+=QString::asprintf("(ID!=%d)&&",q->value(0).toInt());
-      }
-    }
-    delete q;
   }
   if(!d_call_filter.isEmpty()) {
     where+="(`AFFILIATES`.`STATION_CALL` like "+
       DvtSqlQuery::escape(d_call_filter+"%")+")&&";
   }
-  where=where.left(where.length()-2);
+  where=where.left(where.length()-2)+" ";
   DvtSqlQuery *q=NULL;
   sql=sqlFields();
   sql+="from `AFFILIATES` ";
-  if(!where.isEmpty()) {
+  if(!where.trimmed().isEmpty()) {
     sql+="where "+where;
   }
   sql+="order by `AFFILIATES`.`STATION_CALL` ";
@@ -294,7 +309,8 @@ void AffiliateListModel::updateModel()
     d_ids.push_back(q->value(0).toInt());
     d_texts.push_back(texts);
     d_icons.push_back(icons);
-    updateRow(d_texts.size()-1,q);
+    updateRow(d_texts.size()-1,q,
+	      affidavit_affiliate_ids.contains(q->value(0).toInt()));
   }
   delete q;
   endResetModel();
@@ -312,14 +328,16 @@ void AffiliateListModel::updateRowLine(int line)
       QString::asprintf("where `AFFILIATES`.`ID`=%d ",d_ids.at(line)); 
       DvtSqlQuery *q=new DvtSqlQuery(sql);
     if(q->first()) {
-      updateRow(line,q);
+      updateRow(line,q,
+		DvtAffidavitNeededForMonth(d_ids.at(line),
+					   QDate::currentDate().addMonths(-1)));
     }
     delete q;
   }
 }
 
 
-void AffiliateListModel::updateRow(int row,DvtSqlQuery *q)
+void AffiliateListModel::updateRow(int row,DvtSqlQuery *q,bool affidavit_needed)
 {
   QList<QVariant> texts;
 
@@ -332,10 +350,15 @@ void AffiliateListModel::updateRow(int row,DvtSqlQuery *q)
   }
   if(q->value(8).toString()=="Y") {
     if(q->value(9).toString()=="Y") {
-      d_icons[row]=QPixmap(greenball_xpm);
+      if(affidavit_needed) {
+	d_icons[row]=QPixmap(redball_xpm);
+      }
+      else {
+	d_icons[row]=QPixmap(greenball_xpm);
+      }
     }
     else {
-      d_icons[row]=QPixmap(redball_xpm);
+      d_icons[row]=QPixmap(blueball_xpm);
     }
   }
   else {

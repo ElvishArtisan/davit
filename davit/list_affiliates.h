@@ -91,6 +91,10 @@ class ListAffiliates : public Dialog
   QPixmap *list_whiteball_map;
   QLabel *list_showing_label;
   QLineEdit *list_showing_edit;
+  QLabel *list_greenball_labels[2];
+  QLabel *list_redball_labels[2];
+  QLabel *list_blueball_labels[2];
+  QLabel *list_whiteball_labels[2];
 };
 
 

@@ -19,6 +19,7 @@
 ##
 
 EXTRA_DIST = admin.xpm\
+             blueball.xpm\
              davit-22x22.xpm\
              davit.res\
              davit.ico\

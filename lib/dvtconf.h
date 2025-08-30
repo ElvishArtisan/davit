@@ -29,9 +29,10 @@
 #include <map>
 #include <vector>
 
-#include <QString>
 #include <QDateTime>
 #include <QHostAddress>
+#include <QList>
+#include <QMap>
 #include <QSqlDatabase>
 #include <QStringList>
 #include <QVariant>
@@ -103,8 +104,8 @@ QString DvtStationTypeString(const QString &type);
 QString DvtStationCallString(const QString &call,const QString &type);
 QString DvtStationCallString(int affiliate_id);
 QString DvtMarketRankString(int rank);
-bool DvtAffidavitNeeded(int affiliate_id,const QDate &date);
-bool DvtAffidavitNeeded(std::vector<int> *ids,std::map<int,int> *counts,
+bool DvtAffidavitNeededForMonth(int affiliate_id,const QDate &month);
+bool DvtAffidavitNeeded(QList<int> *ids,QMap<int,int> *counts,
 			const QDate &start_date,const QDate &end_date,
 			Dvt::AffidavitStationFilter filter,int program_id);
 unsigned DvtAffidavitNeededDates(std::vector<QDate> *dates,int affiliate_id,

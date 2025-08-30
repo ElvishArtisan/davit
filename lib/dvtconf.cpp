@@ -39,10 +39,9 @@
 #include <QDir>
 #include <QHostAddress>
 #include <QObject>
-#include <QVariant>
-#include <QSqlQuery>
 
 #include "dvtconf.h"
+#include "dvtdb.h"
 #include "dvt.h"
 
 #define BUFFER_SIZE 1024
@@ -418,7 +417,7 @@ QString DvtGetDisplay(bool strip_point)
 
 bool DvtDoesRowExist(QString table,QString name,QString test,QSqlDatabase *db)
 {
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   QString sql;
 
   sql=QString::asprintf("SELECT %s FROM %s WHERE %s=\"%s\"",
@@ -426,7 +425,7 @@ bool DvtDoesRowExist(QString table,QString name,QString test,QSqlDatabase *db)
 			table.toUtf8().constData(),
 			name.toUtf8().constData(),
 			test.toUtf8().constData());
-  q=new QSqlQuery(sql);
+  q=new DvtSqlQuery(sql);
   if(q->size()>0) {
     delete q;
     return true;
@@ -438,7 +437,7 @@ bool DvtDoesRowExist(QString table,QString name,QString test,QSqlDatabase *db)
 
 bool DvtDoesRowExist(QString table,QString name,unsigned test,QSqlDatabase *db)
 {
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   QString sql;
 
   sql=QString::asprintf("SELECT %s FROM %s WHERE %s=%d",
@@ -446,7 +445,7 @@ bool DvtDoesRowExist(QString table,QString name,unsigned test,QSqlDatabase *db)
 			table.toUtf8().constData(),
 			name.toUtf8().constData(),
 			test);
-  q=new QSqlQuery(sql);
+  q=new DvtSqlQuery(sql);
   if(q->size()>0) {
     delete q;
     return true;
@@ -459,7 +458,7 @@ bool DvtDoesRowExist(QString table,QString name,unsigned test,QSqlDatabase *db)
 QVariant DvtGetSqlValue(QString table,QString name,QString test,
 		      QString param,QSqlDatabase *db,bool *valid)
 {
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   QString sql;
   QVariant v;
 
@@ -468,7 +467,7 @@ QVariant DvtGetSqlValue(QString table,QString name,QString test,
 			table.toUtf8().constData(),
 			name.toUtf8().constData(),
 			test.toUtf8().constData());
-  q=new QSqlQuery(sql);
+  q=new DvtSqlQuery(sql);
   if(q->isActive()) {
     q->first();
     v=q->value(0);
@@ -486,7 +485,7 @@ QVariant DvtGetSqlValue(QString table,QString name,QString test,
 bool DvtIsSqlNull(QString table,QString name,QString test,
 		QString param,QSqlDatabase *db)
 {
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   QString sql;
 
   sql=QString::asprintf("SELECT %s FROM %s WHERE %s=\"%s\"",
@@ -494,7 +493,7 @@ bool DvtIsSqlNull(QString table,QString name,QString test,
 			table.toUtf8().constData(),
 			name.toUtf8().constData(),
 			test.toUtf8().constData());
-  q=new QSqlQuery(sql);
+  q=new DvtSqlQuery(sql);
   if(q->isActive()) {
     q->first();
     if(q->isNull(0)) {
@@ -514,7 +513,7 @@ bool DvtIsSqlNull(QString table,QString name,QString test,
 bool DvtIsSqlNull(QString table,QString name,unsigned test,
 		QString param,QSqlDatabase *db)
 {
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   QString sql;
 
   sql=QString::asprintf("SELECT %s FROM %s WHERE %s=%d",
@@ -522,7 +521,7 @@ bool DvtIsSqlNull(QString table,QString name,unsigned test,
 			table.toUtf8().constData(),
 			name.toUtf8().constData(),
 			test);
-  q=new QSqlQuery(sql);
+  q=new DvtSqlQuery(sql);
   if(q->isActive()) {
     q->first();
     if(q->isNull(0)) {
@@ -542,7 +541,7 @@ bool DvtIsSqlNull(QString table,QString name,unsigned test,
 QVariant DvtGetSqlValue(QString table,QString name,unsigned test,
 		      QString param,QSqlDatabase *db,bool *valid)
 {
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   QString sql;
   QVariant v;
 
@@ -551,7 +550,7 @@ QVariant DvtGetSqlValue(QString table,QString name,unsigned test,
 			table.toUtf8().constData(),
 			name.toUtf8().constData(),
 			test);
-  q=new QSqlQuery(sql);
+  q=new DvtSqlQuery(sql);
   if(q->first()) {
     v=q->value(0);
     if(valid!=NULL) {
@@ -1020,15 +1019,15 @@ QString DvtNormalizePhoneNumber(const QString &str,bool *ok)
 int DvtCreateNewAffiliateRecord()
 {
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   int id=-1;
 
   sql="insert into AFFILIATES set STATION_CALL=\"NEW\"";
-  q=new QSqlQuery(sql);
+  q=new DvtSqlQuery(sql);
   delete q;
   
   sql="select LAST_INSERT_ID() from AFFILIATES";
-  q=new QSqlQuery(sql);
+  q=new DvtSqlQuery(sql);
   if(q->first()) {
     id=q->value(0).toInt();
   }
@@ -1057,7 +1056,7 @@ QString DvtStationCallString(const QString &call,const QString &type)
 QString DvtStationCallString(int affiliate_id)
 {
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   QString ret;
 
   sql=QString("select ")+
@@ -1065,7 +1064,7 @@ QString DvtStationCallString(int affiliate_id)
     "`STATION_TYPE` "+
     "from `AFFILIATES` where "+
     QString::asprintf("`ID`=%d",affiliate_id);
-  q=new QSqlQuery(sql);
+  q=new DvtSqlQuery(sql);
   if(q->first()) {
     ret=DvtStationCallString(q->value(0).toString(),q->value(1).toString());
   }
@@ -1086,65 +1085,69 @@ QString DvtMarketRankString(int rank)
 }
 
 
-bool DvtAffidavitNeeded(int affiliate_id,const QDate &date)
+bool DvtAffidavitNeededForMonth(int affiliate_id,const QDate &month)
 {
+  //
+  // Returns 'true' if any affidavits for the specified *month* are yet
+  // to be affirmed --i.e. are in the 'scheduled' state.
+  //
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   bool ret=false;
 
-  sql=QString::asprintf("select ID from AFFILIATES \
-                         where (ID=%d)&&(IS_AFFILIATE=\"Y\")",
-			affiliate_id);
-  q=new QSqlQuery(sql);
-  if(!q->first()) {
-    delete q;
-    return false;
-  }
-  delete q;
-  sql=QString::asprintf("select ID from AIRED \
-                         where (AFFILIATE_ID=%d)&&\
-                         (STATE=%d)&&\
-                         (AIR_DATETIME>=\"%s-01 00:00:00\")&&\
-                         (AIR_DATETIME<=\"%s-%02d 23:59:59\")",
-			affiliate_id,
-			Dvt::AiredStateScheduled,
-			date.toString("yyyy-MM").toUtf8().constData(),
-			date.toString("yyyy-MM").toUtf8().constData(),
-			date.daysInMonth());
-  q=new QSqlQuery(sql);
-  if(q->first()) {
-    ret=true;
-  }
-  else {
-    ret=false;
-  }
+  sql=QString("select ")+
+    "`AFFILIATES`.`ID` "+  // 00
+    "from `AFFILIATES` left join `AIRED` on "+
+    "`AFFILIATES`.`ID`=`AIRED`.`AFFILIATE_ID` where "+
+    QString::asprintf("(`AFFILIATES`.`ID`=%d)&&",affiliate_id)+
+    QString::asprintf("(`AIRED`.`STATE`=%u)&&",Dvt::AiredStateScheduled)+
+    "(`AIRED`.`AIR_DATETIME`>="+
+    DvtSqlQuery::escape(month.toString("yyyy-MM")+"-01 00:00:00")+")&&"+
+    "(`AIRED`.`AIR_DATETIME`<="+
+    DvtSqlQuery::escape(month.toString("yyyy-MM")+
+	     "-"+QString::asprintf("%02d",month.daysInMonth())+" 23:59:59")+")";
+  q=new DvtSqlQuery(sql);
+  ret=q->first();
   delete q;
 
   return ret;
 }
 
 
-bool DvtAffidavitNeeded(std::vector<int> *ids,std::map<int,int> *counts,
-			const QDate &start_date,const QDate &end_date,
+bool DvtAffidavitNeeded(QList<int> *ids,QMap<int,int> *counts,
+			const QDate &start_month,const QDate &end_month,
 			Dvt::AffidavitStationFilter filter,int program_id)
 {
+  //
+  // Returns 'true' if one or more affiliates has one or more affidavits
+  // for the specified month range that are yet to be affirmed --i.e. are in
+  // the 'scheduled' state.
+  //
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   int current_id=-1;
 
   ids->clear();
   counts->clear();
-  sql=QString("select AFFILIATE_ID,AIR_DATETIME from AIRED where ")+
-    QString::asprintf("(STATE=%d)&&",Dvt::AiredStateScheduled)+
-    "(AIR_DATETIME>=\""+start_date.toString("yyyy-MM")+"-01 00:00:00\")&&"+
-    "(AIR_DATETIME<\""+end_date.addDays(1).
-    toString("yyyy-MM")+"-01 00:00:00\")&&";
+  sql=QString("select ")+
+    "`AFFILIATES`.`ID`,"+
+    "`AIRED`.`AIR_DATETIME` "+
+    "from `AFFILIATES` left join `AIRED` "+
+    "on `AFFILIATES`.`ID`=`AIRED`.`AFFILIATE_ID` where "+
+    "(`AFFILIATES`.`IS_AFFILIATE`='Y')&&"+
+    "(`AFFILIATES`.`AFFIDAVIT_ACTIVE`='Y')&&"+
+    QString::asprintf("(`AIRED`.`STATE`=%d)&&",Dvt::AiredStateScheduled)+
+    "(`AIRED`.`AIR_DATETIME`>="+
+    DvtSqlQuery::escape(start_month.toString("yyyy-MM")+"-01 00:00:00")+")&&"+
+    "(`AIRED`.`AIR_DATETIME`<"+
+    DvtSqlQuery::escape(end_month.addMonths(1).toString("yyyy-MM")+
+			"-01 00:00:00")+")&&";
   if(filter==Dvt::Program) {
-    sql+=QString::asprintf("(PROGRAM_ID=%d)&&",program_id);
+    sql+=QString::asprintf("(`AIRED`.`PROGRAM_ID`=%d)&&",program_id);
   }
   sql=sql.left(sql.length()-2);
-  sql+=" order by AFFILIATE_ID";
-  q=new QSqlQuery(sql);
+  sql+=" order by `AFFILIATES`.`ID`";
+  q=new DvtSqlQuery(sql);
   while(q->next()) {
     int dow=q->value(1).toDateTime().date().dayOfWeek();
     if(((filter==Dvt::All)||
@@ -1168,7 +1171,7 @@ unsigned DvtAffidavitNeededDates(std::vector<QDate> *dates,int affiliate_id,
 				 const QDate &start_date,const QDate &end_date)
 {
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   int current_month=-1;
   int current_year=-1;
 
@@ -1180,7 +1183,7 @@ unsigned DvtAffidavitNeededDates(std::vector<QDate> *dates,int affiliate_id,
     "(AIR_DATETIME<\""+end_date.addDays(1).
     toString("yyyy-MM")+"-01 00:00:00\") "+
     "order by AIR_DATETIME";
-  q=new QSqlQuery(sql);
+  q=new DvtSqlQuery(sql);
   while(q->next()) {
     if((q->value(0).toDateTime().date().month()!=current_month)&&
        (q->value(0).toDateTime().date().year()!=current_year)) {
@@ -1198,21 +1201,21 @@ unsigned DvtAffidavitNeededDates(std::vector<QDate> *dates,int affiliate_id,
 void DvtUpdateIsAffiliateField()
 {
   QString sql;
-  QSqlQuery *q;
-  QSqlQuery *q1;
-  QSqlQuery *q2;
+  DvtSqlQuery *q;
+  DvtSqlQuery *q1;
+  DvtSqlQuery *q2;
 
   sql="select ID from AFFILIATES";
-  q=new QSqlQuery(sql);
+  q=new DvtSqlQuery(sql);
   while(q->next()) {
     sql=QString::asprintf("select ID from AIRINGS where AFFILIATE_ID=%d",
 			  q->value(0).toInt());
-    q1=new QSqlQuery(sql);
+    q1=new DvtSqlQuery(sql);
     if(q1->first()) {
       sql=QString::asprintf("update AFFILIATES set IS_AFFILIATE=\"Y\",\
                              AFFIDAVIT_ACTIVE=\"Y\"			\
                              where ID=%d",q->value(0).toInt());
-      q2=new QSqlQuery(sql);
+      q2=new DvtSqlQuery(sql);
       delete q2;
     }
     delete q1;
@@ -1226,7 +1229,7 @@ unsigned DvtContactInfo(QString *name,QString *title,QString *email,
 			int affiliate_id,Dvt::ContactType type)
 {
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   unsigned ret=0;
 
   if(name!=NULL) {
@@ -1256,7 +1259,7 @@ unsigned DvtContactInfo(QString *name,QString *title,QString *email,
     sql+="(GENERAL_MANAGER=\"Y\")";
     break;
   }
-  q=new QSqlQuery(sql);
+  q=new DvtSqlQuery(sql);
   while(q->next()) {
     if(name!=NULL) {
       if(!q->value(0).toString().isEmpty()) {
