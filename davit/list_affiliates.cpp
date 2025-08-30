@@ -233,6 +233,7 @@ ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
   connect(list_close_button,SIGNAL(clicked()),this,SLOT(closeData()));
 
   showAffiliatesChangedData(true);
+  missingAffiliateChangedData(false);
 }
 
 
@@ -279,6 +280,8 @@ void ListAffiliates::filterTextChangedData(const QString &str)
 
 void ListAffiliates::missingAffiliateChangedData(int state)
 {
+  list_month_box->setEnabled(state);
+  list_year_box->setEnabled(state);
   list_affidavit_reminder_button->setEnabled(state);
   list_affiliates_model->refresh(true,MissingAffiliatesDate(),
 				 list_callfilter_edit->text());

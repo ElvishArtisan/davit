@@ -1078,3 +1078,7 @@
 2025-08-30 Fred Gleason <fredg@paravelsystems.com>
 	* Modified status icons in the 'List Affiliates' dialog to show
 	affidavit state in davit(1).
+2025-08-30 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in the 'List Affiliates' dialog in davit(1) that
+	'Show Affiliates Missing' month and year dropdowns to fail to be
+	disabled when the check box was unticked.
