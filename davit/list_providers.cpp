@@ -58,6 +58,10 @@ ListProviders::ListProviders(DvtConfig *c,QWidget *parent)
   list_providers_view->setModel(list_providers_model);
   connect(list_providers_view,SIGNAL(doubleClicked(const QModelIndex &)),
 	  this,SLOT(doubleClickedData(const QModelIndex &)));
+  connect(list_providers_view->selectionModel(),
+     SIGNAL(selectionChanged(const QItemSelection &,const QItemSelection &)),
+     this,
+     SLOT(selectionChangedData(const QItemSelection &,const QItemSelection &)));
 
   //
   //  Add Button
@@ -75,6 +79,7 @@ ListProviders::ListProviders(DvtConfig *c,QWidget *parent)
   list_edit_button=new QPushButton(this);
   list_edit_button->setFont(buttonFont());
   list_edit_button->setText("Edit");
+  list_edit_button->setDisabled(true);
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
 
   //
@@ -83,8 +88,7 @@ ListProviders::ListProviders(DvtConfig *c,QWidget *parent)
   list_delete_button=new QPushButton(this);
   list_delete_button->setFont(buttonFont());
   list_delete_button->setText("Delete");
-  list_delete_button->
-    setEnabled(global_dvtuser->privilege(DvtUser::PrivProviderEdit));
+  list_delete_button->setDisabled(true);
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
 
   //
@@ -201,6 +205,27 @@ void ListProviders::deleteData()
 void ListProviders::doubleClickedData(const QModelIndex &index)
 {
   editData();
+}
+
+
+void ListProviders::selectionChangedData(const QItemSelection &before,
+					  const QItemSelection &after)
+{
+  QModelIndexList rows=list_providers_view->selectionModel()->selectedRows();
+
+  if(rows.size()!=1) {
+    list_add_button->
+      setEnabled(global_dvtuser->privilege(DvtUser::PrivProviderEdit));
+    list_edit_button->setDisabled(true);
+    list_delete_button->setDisabled(true);
+    return;
+  }  
+  list_add_button->
+    setEnabled(global_dvtuser->privilege(DvtUser::PrivProviderEdit));
+  list_edit_button->
+    setEnabled(global_dvtuser->privilege(DvtUser::PrivProviderView));
+  list_delete_button->
+    setEnabled(global_dvtuser->privilege(DvtUser::PrivProviderEdit));
 }
 
 

@@ -1088,3 +1088,6 @@
 2025-09-02 Fred Gleason <fredg@paravelsystems.com>
 	* Tweaked the 'List Users' dialog to disable the 'Edit' and 'Delete'
 	buttons when no user entry was selected in davit(1).
+2025-09-02 Fred Gleason <fredg@paravelsystems.com>
+	* Tweaked the 'List Providers' dialog to disable the 'Edit' and
+	'Delete' buttons when no user entry was selected in davit(1).
