@@ -173,7 +173,8 @@ void ListAirings::editData()
 {
   QModelIndexList rows=list_airings_view->selectionModel()->selectedRows();
 
-  if(rows.size()!=1) {
+  if((rows.size()!=1)||
+     (!global_dvtuser->privilege(DvtUser::PrivAffiliateSchedule))) {
     return;
   }
   int airing_id=list_airings_model->airingId(rows.first());

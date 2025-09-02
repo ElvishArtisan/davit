@@ -147,6 +147,10 @@ ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
 	  this,SLOT(doubleClickedData(const QModelIndex &)));
   connect(list_affiliates_model,SIGNAL(rowCountChanged(int)),
 	  this,SLOT(rowCountChangedData(int)));
+  connect(list_affiliates_view->selectionModel(),
+     SIGNAL(selectionChanged(const QItemSelection &,const QItemSelection &)),
+     this,
+     SLOT(selectionChangedData(const QItemSelection &,const QItemSelection &)));
 
   //
   //  Add Button
@@ -164,6 +168,7 @@ ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
   list_edit_button=new QPushButton(this);
   list_edit_button->setFont(buttonFont());
   list_edit_button->setText("&Edit");
+  list_edit_button->setDisabled(true);
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
 
   //
@@ -172,8 +177,7 @@ ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
   list_delete_button=new QPushButton(this);
   list_delete_button->setFont(buttonFont());
   list_delete_button->setText("&Delete");
-  list_delete_button->
-    setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
+  list_delete_button->setDisabled(true);
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
 
   //
@@ -182,8 +186,7 @@ ListAffiliates::ListAffiliates(DvtConfig *c,QWidget *parent)
   list_affadavit_button=new QPushButton(this);
   list_affadavit_button->setFont(buttonFont());
   list_affadavit_button->setText("&Generate\nAffidavit");
-  list_affadavit_button->
-    setEnabled(global_dvtuser->privilege(DvtUser::PrivReportView));
+  list_affadavit_button->setDisabled(true);
   connect(list_affadavit_button,SIGNAL(clicked()),this,SLOT(affadavitData()));
 
   //
@@ -506,6 +509,26 @@ void ListAffiliates::affidavitReminderData()
 void ListAffiliates::doubleClickedData(const QModelIndex &index)
 {
   editData();
+}
+
+
+void ListAffiliates::selectionChangedData(const QItemSelection &before,
+					  const QItemSelection &after)
+{
+  QModelIndexList rows=list_affiliates_view->selectionModel()->selectedRows();
+
+  if(rows.size()!=1) {
+    list_edit_button->setDisabled(true);
+    list_delete_button->setDisabled(true);
+    list_affadavit_button->setDisabled(true);
+    return;
+  }  
+  list_edit_button->setEnabled(true);
+  list_delete_button->
+    setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
+  list_affadavit_button->
+    setEnabled(global_dvtuser->privilege(DvtUser::PrivReportView)&&
+	       list_affiliates_model->affidavitsEnabled(rows.at(0).row()));
 }
 
 

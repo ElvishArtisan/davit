@@ -161,6 +161,12 @@ int AffiliateListModel::affiliateId(int rownum) const
 }
 
 
+bool AffiliateListModel::affidavitsEnabled(int rownum) const
+{
+  return d_affidavits_enableds.at(rownum);
+}
+
+
 QModelIndex AffiliateListModel::addAffiliate(int affiliate_id)
 {
   //
@@ -180,6 +186,7 @@ QModelIndex AffiliateListModel::addAffiliate(int affiliate_id)
     list.push_back(QVariant());
   }
   d_ids.push_back(affiliate_id);
+  d_affidavits_enableds.push_back(false);
   d_texts.insert(offset,list);
   d_icons.insert(offset,QVariant());
   updateRowLine(offset);
@@ -194,6 +201,7 @@ void AffiliateListModel::removeAffiliate(const QModelIndex &row)
   beginRemoveRows(QModelIndex(),row.row(),row.row());
 
   d_ids.removeAt(row.row());
+  d_affidavits_enableds.removeAt(row.row());
   d_texts.removeAt(row.row());
   d_icons.removeAt(row.row());
 
@@ -302,11 +310,13 @@ void AffiliateListModel::updateModel()
   sql+="order by `AFFILIATES`.`STATION_CALL` ";
   beginResetModel();
   d_ids.clear();
+  d_affidavits_enableds.clear();
   d_texts.clear();
   d_icons.clear();
   q=new DvtSqlQuery(sql);
   while(q->next()) {
     d_ids.push_back(q->value(0).toInt());
+    d_affidavits_enableds.push_back(false);
     d_texts.push_back(texts);
     d_icons.push_back(icons);
     updateRow(d_texts.size()-1,q,
@@ -352,17 +362,21 @@ void AffiliateListModel::updateRow(int row,DvtSqlQuery *q,bool affidavit_needed)
     if(q->value(9).toString()=="Y") {
       if(affidavit_needed) {
 	d_icons[row]=QPixmap(redball_xpm);
+	d_affidavits_enableds[row]=true;
       }
       else {
 	d_icons[row]=QPixmap(greenball_xpm);
+	d_affidavits_enableds[row]=true;
       }
     }
     else {
       d_icons[row]=QPixmap(blueball_xpm);
+      d_affidavits_enableds[row]=false;
     }
   }
   else {
     d_icons[row]=QPixmap(whiteball_xpm);
+    d_affidavits_enableds[row]=false;
   }
 
   // City of License

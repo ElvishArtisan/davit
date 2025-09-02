@@ -22,6 +22,7 @@
 
 #include <dvtconf.h>
 
+#include "globals.h"
 #include "list_contacts.h"
 
 ListContacts::ListContacts(DvtConfig *c,QWidget *parent)
@@ -51,20 +52,28 @@ ListContacts::ListContacts(DvtConfig *c,QWidget *parent)
   list_contacts_view->setModel(list_contacts_model);
   connect(list_contacts_view,SIGNAL(doubleClicked(const QModelIndex &)),
 	  this,SLOT(doubleClickedData(const QModelIndex &)));
+  connect(list_contacts_view->selectionModel(),
+     SIGNAL(selectionChanged(const QItemSelection &,const QItemSelection &)),
+     this,
+     SLOT(selectionChangedData(const QItemSelection &,const QItemSelection &)));
 
   list_add_button=new QPushButton(this);
   list_add_button->setFont(label_font);
   list_add_button->setText(tr("Add"));
+  list_add_button->
+    setEnabled(global_dvtuser->privilege(DvtUser::PrivAffiliateEdit));
   connect(list_add_button,SIGNAL(clicked()),this,SLOT(addData()));
 
   list_edit_button=new QPushButton(this);
   list_edit_button->setFont(label_font);
   list_edit_button->setText(tr("Edit"));
+  list_edit_button->setDisabled(true);
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
 
   list_delete_button=new QPushButton(this);
   list_delete_button->setFont(label_font);
   list_delete_button->setText(tr("Delete"));
+  list_delete_button->setDisabled(true);
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
 
   list_contacts_model->refresh();
@@ -138,7 +147,8 @@ void ListContacts::editData()
 {
   QModelIndexList rows=list_contacts_view->selectionModel()->selectedRows();
 
-  if(rows.size()!=1) {
+  if((rows.size()!=1)||
+     (!global_dvtuser->privilege(DvtUser::PrivAffiliateEdit))) {
     return;
   }
   if(list_editcontact_dialog->
@@ -174,6 +184,20 @@ void ListContacts::deleteData()
 void ListContacts::doubleClickedData(const QModelIndex &index)
 {
   editData();
+}
+
+
+void ListContacts::selectionChangedData(const QItemSelection &now,
+				       const QItemSelection &prev)
+{
+  QModelIndexList rows=list_contacts_view->selectionModel()->selectedRows();
+
+  list_edit_button->
+    setEnabled((rows.size()==1)&&
+	       (global_dvtuser->privilege(DvtUser::PrivAffiliateEdit)));
+  list_delete_button->
+    setEnabled((rows.size()==1)&&
+	       (global_dvtuser->privilege(DvtUser::PrivAffiliateEdit)));
 }
 
 

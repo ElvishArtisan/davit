@@ -59,6 +59,8 @@ class ListAffiliates : public Dialog
   void affadavitData();
   void affidavitReminderData();
   void doubleClickedData(const QModelIndex &index);
+  void selectionChangedData(const QItemSelection &before,
+			    const QItemSelection &after);
   void rowCountChangedData(int matches);
   void closeData();
 

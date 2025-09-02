@@ -45,6 +45,7 @@ class AffiliateListModel : public QAbstractTableModel
   QVariant data(const QModelIndex &index,int role=Qt::DisplayRole) const;
   int affiliateId(const QModelIndex &row) const;
   int affiliateId(int rownum) const;
+  bool affidavitsEnabled(int rownum) const;
   QModelIndex addAffiliate(int affiliate_id);
   void removeAffiliate(const QModelIndex &row);
   void removeAffiliate(int affiliate_id);
@@ -71,6 +72,7 @@ class AffiliateListModel : public QAbstractTableModel
   QList<QList<QVariant> > d_texts;
   QList<QVariant> d_icons;
   QList<int> d_ids;
+  QList<bool> d_affidavits_enableds;
   bool d_affiliates_only;
   QDate d_affiliates_missing_date;
   QString d_call_filter;

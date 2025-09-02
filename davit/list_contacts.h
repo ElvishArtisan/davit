@@ -49,6 +49,8 @@ class ListContacts : public Dialog
   void editData();
   void deleteData();
   void doubleClickedData(const QModelIndex &index);
+  void selectionChangedData(const QItemSelection &now,
+			    const QItemSelection &prev);
 
  protected:
   void resizeEvent(QResizeEvent *e);
