@@ -44,6 +44,8 @@ class ListUsers : public Dialog
   void editData();
   void deleteData();
   void doubleClickedData(const QModelIndex &index);
+  void selectionChangedData(const QItemSelection &before,
+			    const QItemSelection &after);
   void closeData();
 
  protected:

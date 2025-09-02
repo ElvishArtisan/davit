@@ -54,6 +54,10 @@ ListUsers::ListUsers(DvtConfig *c,QWidget *parent)
   list_users_view->setModel(list_users_model);
   connect(list_users_view,SIGNAL(doubleClicked(const QModelIndex &)),
 	  this,SLOT(doubleClickedData(const QModelIndex &)));
+  connect(list_users_view->selectionModel(),
+     SIGNAL(selectionChanged(const QItemSelection &,const QItemSelection &)),
+     this,
+     SLOT(selectionChangedData(const QItemSelection &,const QItemSelection &)));
 
   //
   //  Add Button
@@ -69,6 +73,7 @@ ListUsers::ListUsers(DvtConfig *c,QWidget *parent)
   list_edit_button=new QPushButton(this);
   list_edit_button->setFont(buttonFont());
   list_edit_button->setText(tr("Edit"));
+  list_edit_button->setDisabled(true);
   connect(list_edit_button,SIGNAL(clicked()),this,SLOT(editData()));
 
   //
@@ -77,6 +82,7 @@ ListUsers::ListUsers(DvtConfig *c,QWidget *parent)
   list_delete_button=new QPushButton(this);
   list_delete_button->setFont(buttonFont());
   list_delete_button->setText(tr("Delete"));
+  list_delete_button->setDisabled(true);
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
 
   //
@@ -181,6 +187,16 @@ void ListUsers::deleteData()
 void ListUsers::doubleClickedData(const QModelIndex &index)
 {
   editData();
+}
+
+
+void ListUsers::selectionChangedData(const QItemSelection &before,
+					  const QItemSelection &after)
+{
+  QModelIndexList rows=list_users_view->selectionModel()->selectedRows();
+
+  list_edit_button->setDisabled(rows.size()!=1);
+  list_delete_button->setDisabled(rows.size()!=1);
 }
 
 
