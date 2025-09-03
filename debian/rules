@@ -34,6 +34,10 @@ binary:
 #
 	mkdir -p debian/davit-gui/usr/bin
 	mv debian/tmp/usr/bin/davit debian/davit-gui/usr/bin/
+	mkdir -p debian/davit-gui/usr/share/icons
+	mv debian/tmp/usr/share/icons/hicolor debian/davit-gui/usr/share/icons/
+	mkdir -p debian/davit-gui/usr/share/applications
+	mv debian/tmp/usr/share/applications/* debian/davit-gui/usr/share/applications/
 
 #
 # davit-web

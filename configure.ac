@@ -119,6 +119,7 @@ AC_CONFIG_FILES(Makefile \
   docs/manpages/Makefile \
   docs/Makefile \
   icons/Makefile \
+  xdg/Makefile \
   davit.spec \
   build_debs.sh \
   conf/dvt-bin.conf

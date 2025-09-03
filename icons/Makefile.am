@@ -18,9 +18,29 @@
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
 
+install-exec-am:	
+	mkdir -p $(DESTDIR)@prefix@/share/icons/hicolor/16x16/apps
+	cp davit-16x16.png $(DESTDIR)@prefix@/share/icons/hicolor/16x16/apps/davit.png
+	mkdir -p $(DESTDIR)@prefix@/share/icons/hicolor/22x22/apps
+	cp davit-22x22.png $(DESTDIR)@prefix@/share/icons/hicolor/22x22/apps/davit.png
+	mkdir -p $(DESTDIR)@prefix@/share/icons/hicolor/32x32/apps
+	cp davit-32x32.png $(DESTDIR)@prefix@/share/icons/hicolor/32x32/apps/davit.png
+	mkdir -p $(DESTDIR)@prefix@/share/icons/hicolor/48x48/apps
+	cp davit-48x48.png $(DESTDIR)@prefix@/share/icons/hicolor/48x48/apps/davit.png
+
+uninstall-local:	
+	rm -f $(DESTDIR)@prefix@/share/icons/hicolor/16x16/apps/davit.png
+	rm -f $(DESTDIR)@prefix@/share/icons/hicolor/22x22/apps/davit.png
+	rm -f $(DESTDIR)@prefix@/share/icons/hicolor/32x32/apps/davit.png
+	rm -f $(DESTDIR)@prefix@/share/icons/hicolor/48x48/apps/davit.png
+
 EXTRA_DIST = admin.xpm\
              blueball.xpm\
+             davit-16x16.png\
+             davit-22x22.png\
              davit-22x22.xpm\
+             davit-32x32.png\
+             davit-48x48.png\
              davit.res\
              davit.ico\
              greenball.xpm\

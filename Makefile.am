@@ -27,7 +27,8 @@ SUBDIRS = helpers\
           icons\
           davit\
           web\
-          utils
+          utils\
+          xdg
 
 ACLOCAL_AMFLAGS = -I m4
 

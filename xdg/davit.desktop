@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Terminal=false
+Categories=Office;
+Name=Davit
+GenericName=Affiliate Relations Manager
+Exec=davit
+Icon=davit
+Type=Application
+Terminal=false
+
