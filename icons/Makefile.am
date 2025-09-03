@@ -28,6 +28,7 @@ EXTRA_DIST = admin.xpm\
              program.xpm\
              provider.xpm\
              redball.xpm\
+             report.xpm\
              user.xpm\
              whiteball.xpm
 

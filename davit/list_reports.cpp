@@ -47,6 +47,8 @@
 #include "list_reports.h"
 #include "spread_sheet.h"
 
+#include "../icons/report.xpm"
+
 ListReports::ListReports(DvtConfig *c,QWidget *parent)
   : Dialog(c,parent)
 {
@@ -72,45 +74,106 @@ ListReports::ListReports(DvtConfig *c,QWidget *parent)
   list_reports_list=new QListWidget(this);
   connect(list_reports_list,SIGNAL(doubleClicked(const QModelIndex &)),
 	  this,SLOT(doubleClickedData(const QModelIndex &)));
-  QListWidgetItem *item=new QListWidgetItem(list_reports_list);
-  item->setText(tr("Affidavit Contacts"));
+  QListWidgetItem *item=NULL;
+
   item=new QListWidgetItem(list_reports_list);
-  item->setText(tr("Missing Affidavit Data Contacts"));
-  item=new QListWidgetItem(list_reports_list);
-  item->setText(tr("Missing Affidavit Submissions"));
-  item=new QListWidgetItem(list_reports_list);
-  item->setText(tr("All Affiliates"));
-  item=new QListWidgetItem(list_reports_list);
-  item->setText(tr("All Affiliate Contacts"));
-  item=new QListWidgetItem(list_reports_list);
-  item->setText(tr("Affiliates by Daypart"));
-  item=new QListWidgetItem(list_reports_list);
-  item->setText(tr("Affiliates by Network"));
-  item=new QListWidgetItem(list_reports_list);
-  item->setText(tr("Affiliates by Program"));
-  item=new QListWidgetItem(list_reports_list);
-  item->setText(tr("Affiliates/Admin Contacts by Program"));
-  item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
   item->setText(tr("Added Programs"));
+  
   item=new QListWidgetItem(list_reports_list);
-  item->setText(tr("Deleted Programs"));
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
+  item->setText(tr("Affidavit Contacts"));
+
   item=new QListWidgetItem(list_reports_list);
-  item->setText(tr("Duplicate Affiliates"));
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
+  item->setText(tr("Affiliates/Admin Contacts by Program"));
+
   item=new QListWidgetItem(list_reports_list);
-  item->setText(tr("RadioAmerica Affiliate"));
-  item=new QListWidgetItem(list_reports_list);
-  item->setText(tr("Arbitron"));
-  item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
   item->setText(tr("Affiliate Activity"));
+
   item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
+  item->setText(tr("Affiliates by Daypart"));
+
+  item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
+  item->setText(tr("Affiliates by Network"));
+
+  item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
+  item->setText(tr("Affiliates by Program"));
+
+  item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
   item->setText(tr("Affiliates by Program/DMA Market"));
+
   item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
   item->setText(tr("Affiliates by Program/MSA Market"));
+
   item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
+  item->setText(tr("All Affiliates"));
+
+  item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
+  item->setText(tr("All Affiliate Contacts"));
+
+  item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
+  item->setText(tr("Arbitron"));
+
+  item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
+  item->setText(tr("Deleted Programs"));
+
+  item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
+  item->setText(tr("Duplicate Affiliates"));
+
+  item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
+  item->setText(tr("Missing Affidavit Data Contacts"));
+
+  item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
+  item->setText(tr("Missing Affidavit Submissions"));
+
+  item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
+  item->setText(tr("RadioAmerica Affiliate"));
+
+  item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
   item->setText(tr("Programs by DMA Market"));
+
   item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
   item->setText(tr("Programs by MSA Market"));
+
   item=new QListWidgetItem(list_reports_list);
+  item->setIcon(QPixmap(report_xpm));
+  item->setSizeHint(QSize(sizeHint().width(),30));
   item->setText(tr("Programs by City/State"));
 
   //
@@ -139,7 +202,7 @@ ListReports::~ListReports()
 
 QSize ListReports::sizeHint() const
 {
-  return QSize(320,300);
+  return QSize(320,600);
 } 
 
 
