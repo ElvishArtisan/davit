@@ -22,7 +22,7 @@
 
 #include "providerlistmodel.h"
 
-#include "../icons/user.xpm"
+#include "../icons/provider.xpm"
 
 ProviderListModel::ProviderListModel(QObject *parent)
   : QAbstractTableModel(parent)
@@ -271,7 +271,7 @@ void ProviderListModel::updateRow(int row,DvtSqlQuery *q)
 {
   QList<QVariant> texts;
 
-  d_icons[row]=QPixmap(user_xpm);
+  d_icons[row]=QPixmap(provider_xpm);
 
   // Business Name
   texts.push_back(q->value(1));

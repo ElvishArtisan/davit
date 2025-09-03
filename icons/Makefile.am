@@ -24,6 +24,9 @@ EXTRA_DIST = admin.xpm\
              davit.res\
              davit.ico\
              greenball.xpm\
+             network.xpm\
+             program.xpm\
+             provider.xpm\
              redball.xpm\
              user.xpm\
              whiteball.xpm

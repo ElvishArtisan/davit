@@ -22,7 +22,7 @@
 
 #include "networklistmodel.h"
 
-#include "../icons/user.xpm"
+#include "../icons/network.xpm"
 
 NetworkListModel::NetworkListModel(QObject *parent)
   : QAbstractTableModel(parent)
@@ -271,7 +271,7 @@ void NetworkListModel::updateRow(int row,DvtSqlQuery *q)
 
   // Network Name
   texts.push_back(q->value(1));
-  d_icons[row]=QPixmap(user_xpm);
+  d_icons[row]=QPixmap(network_xpm);
 
   d_texts[row]=texts;
 }

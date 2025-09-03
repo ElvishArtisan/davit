@@ -1096,3 +1096,7 @@
 	package.
 2025-09-03 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed generation errors for various reports in davit(1).
+2025-09-03 Fred Gleason <fredg@paravelsystems.com>
+	* Added an icons for Networks in 'icons/network.xpm'.
+	* Added an icons for Providers in 'icons/provider.xpm'.
+	* Added an icons for Programs in 'icons/program.xpm'.

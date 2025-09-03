@@ -22,7 +22,7 @@
 
 #include "programlistmodel.h"
 
-#include "../icons/user.xpm"
+#include "../icons/program.xpm"
 
 ProgramListModel::ProgramListModel(QObject *parent)
   : QAbstractTableModel(parent)
@@ -283,7 +283,7 @@ void ProgramListModel::updateRow(int row,DvtSqlQuery *q)
 
   // Program Name
   texts.push_back(q->value(2));
-  d_icons[row]=QPixmap(user_xpm);
+  d_icons[row]=QPixmap(program_xpm);
 
   // Provider Name
   texts.push_back(q->value(3));
