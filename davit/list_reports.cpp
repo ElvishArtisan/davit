@@ -299,6 +299,7 @@ void ListReports::ForkViewer(const QString &filename,const QString &data)
   }
   */
   QStringList args=DvtReportViewerCommand(filename,openoffice_path);
+  printf("CMD: %s\n",DvtReportViewerCommand(filename,openoffice_path).join(" ").toUtf8().constData());
   global_viewer_list->start(args);
   
 }

@@ -113,7 +113,7 @@ bool ListReports::AddedProgramsReport(Dvt::RemarkType type,SpreadSheet *sheet)
       "`PROGRAMS`.`PROGRAM_NAME`,"+
       "`AFFILIATE_REMARKS`.`REMARK_DATETIME` "+
       "from `AFFILIATE_REMARKS` right join `PROGRAMS` "+
-      "on (`AFFILIATE_REMARKS`.`PROGRAM_ID`=`PROGRAMS.ID`) where "+
+      "on (`AFFILIATE_REMARKS`.`PROGRAM_ID`=`PROGRAMS`.`ID`) where "+
       QString::asprintf("(`AFFILIATE_REMARKS`.`EVENT_TYPE`=%d)&&",type)+
       QString::asprintf("(`AFFILIATE_REMARKS`.`AFFILIATE_ID`=%d)&&",
 			q->value(0).toInt())+

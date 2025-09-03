@@ -116,11 +116,11 @@ void PickDaypart::okData()
     report_dows[i]=report_dow_picker->state(i+1);
   }
 
-  done(0);
+  done(true);
 }
 
 
 void PickDaypart::cancelData()
 {
-  done(-1);
+  done(false);
 }

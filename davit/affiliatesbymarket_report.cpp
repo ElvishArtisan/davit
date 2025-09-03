@@ -40,7 +40,7 @@ bool ListReports::AffiliatesByMarketReport(PickFields::MarketType type,
   //
   PickFields *r=new PickFields(NULL,NULL,&pgm_id,false,NULL,false,NULL,false,
 			       NULL,type,config(),this);
-  if(r->exec()!=0) {
+  if(!r->exec()) {
     delete r;
     return false;
   }

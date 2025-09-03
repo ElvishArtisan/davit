@@ -19,10 +19,9 @@
 //
 
 #include <QDateTime>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
 #include <dvtconf.h>
+#include <dvtdb.h>
 
 #include "list_reports.h"
 #include "pick_fields.h"
@@ -32,7 +31,7 @@ bool ListReports::ArbitronReport(SpreadSheet *sheet)
   int pgm_id=0;
   QDate date;
   QString sql;
-  QSqlQuery *q;
+  DvtSqlQuery *q;
   QString dow;
   int row=1;
   QDateTime dt=QDateTime(QDate::currentDate(),QTime::currentTime());
@@ -40,7 +39,7 @@ bool ListReports::ArbitronReport(SpreadSheet *sheet)
   PickFields *r=
     new PickFields(NULL,NULL,&pgm_id,false,NULL,false,NULL,false,NULL,
 		   PickFields::NoMarket,config(),this);
-  if(r->exec()!=0) {
+  if(!r->exec()) {
     delete r;
     return false;
   }
@@ -49,24 +48,34 @@ bool ListReports::ArbitronReport(SpreadSheet *sheet)
   setBusyCursor();
   SpreadTab *tab=sheet->addTab(sheet->tabs()+1);
   tab->setName(tr("Arbitron"));
-  sql=QString::asprintf("select PROGRAM_NAME from PROGRAMS where ID=%d",pgm_id);
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`PROGRAM_NAME` "+  // 00
+    "from `PROGRAMS` where "+
+    QString::asprintf("`ID`=%d",pgm_id);
+  q=new DvtSqlQuery(sql);
   if(q->first()) {
     tab->addCell(1,row++)->setText(q->value(0).toString());
   }
   delete q;
   tab->addCell(1,row++)->setText(tr("Arbitron Listing")+" - "+
 				 dt.toString("MM/dd/yyyy hh:mm:ss"));
-  sql=QString::asprintf("select AFFILIATES.STATION_CALL,\
-                         AFFILIATES.STATION_TYPE,AIRINGS.AIR_TIME,\
-                         AIRINGS.AIR_LENGTH,AIRINGS.AIR_SUN,AIRINGS.AIR_MON,\
-                         AIRINGS.AIR_TUE,AIRINGS.AIR_WED,AIRINGS.AIR_THU,\
-                         AIRINGS.AIR_FRI,AIRINGS.AIR_SAT \
-                         from AFFILIATES left join AIRINGS \
-                         on (AFFILIATES.ID=AIRINGS.AFFILIATE_ID) \
-                         left join PROGRAMS on (AIRINGS.PROGRAM_ID=PROGRAMS.ID)\
-                         where PROGRAMS.ID=%d",pgm_id);
-  q=new QSqlQuery(sql);
+  sql=QString("select ")+
+    "`AFFILIATES`.`STATION_CALL`,"+  // 00
+    "`AFFILIATES`.`STATION_TYPE`,"+  // 01
+    "`AIRINGS`.`AIR_TIME`,"+         // 02
+    "`AIRINGS`.`AIR_LENGTH`,"+       // 03
+    "`AIRINGS`.`AIR_SUN`,"+          // 04
+    "`AIRINGS`.`AIR_MON`,"+          // 05
+    "`AIRINGS`.`AIR_TUE`,"+          // 06
+    "`AIRINGS`.`AIR_WED`,"+          // 07
+    "`AIRINGS`.`AIR_THU`,"+          // 08
+    "`AIRINGS`.`AIR_FRI`,"+          // 09
+    "`AIRINGS`.`AIR_SAT` "+          // 10
+    "from `AFFILIATES` left join `AIRINGS` "+
+    "on (`AFFILIATES`.`ID`=`AIRINGS`.`AFFILIATE_ID`) "+
+    "left join `PROGRAMS` on (`AIRINGS`.`PROGRAM_ID`=`PROGRAMS`.`ID`) where "+
+    QString::asprintf("`PROGRAMS`.`ID`=%d",pgm_id);
+  q=new DvtSqlQuery(sql);
   tab->addCell(1,row++)->setText(tr("Listings Generated")+": "+
 				 QString::asprintf("%d",q->size()));
   while(q->next()) {

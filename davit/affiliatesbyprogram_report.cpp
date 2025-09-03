@@ -163,7 +163,7 @@ bool ListReports::AffiliatesByNetworkReport(SpreadSheet *sheet)
 
   PickFields *r=new PickFields(NULL,NULL,NULL,false,NULL,false,&network_id,
 			       false,0,PickFields::NoMarket,config(),this);
-  if(r->exec()!=0) {
+  if(!r->exec()) {
     delete r;
     return false;
   }
@@ -183,6 +183,7 @@ bool ListReports::AffiliatesByNetworkReport(SpreadSheet *sheet)
   delete q;
   where=QString::asprintf("where (`NETWORKS`.`ID`=%d) ",network_id);
   where+=" order by `AFFILIATES`.`STATION_CALL`,`AFFILIATES`.`STATION_TYPE`";
+  printf("WHERE: %s\n",where.toUtf8().constData());
   return RenderAffiliateReport(tab,where,tr("Affiliates by Network Report"),
 			       QString::asprintf("Network: %s",
 					   network_name.toUtf8().constData()),true,0);
@@ -204,7 +205,7 @@ bool ListReports::AffiliatesByProgramReport(int contacts,SpreadSheet *sheet)
 
   PickFields *r=new PickFields(NULL,NULL,&pgm_id,false,NULL,false,NULL,false,
 			       &sort,PickFields::NoMarket,config(),this);
-  if(r->exec()!=0) {
+  if(!r->exec()) {
     delete r;
     return false;
   }
@@ -255,7 +256,7 @@ bool ListReports::AffiliatesByDaypartReport(SpreadSheet *sheet)
   bool dows[7]={true,true,true,true,true,false,false};
 
   PickDaypart *r=new PickDaypart(&start_time,&end_time,dows,config(),this);
-  if(r->exec()!=0) {
+  if(!r->exec()) {
     delete r;
     return false;
   }
@@ -383,7 +384,7 @@ bool ListReports::RenderAffiliateReport(SpreadTab *tab,const QString &where,
     "left join `PROGRAMS` on `AIRINGS`.`PROGRAM_ID`=`PROGRAMS`.`ID` "+
     "left join `NETWORKS` on `AFFILIATES`.`SECOND_NETWORK_ID`=`NETWORKS`.`ID` "+
     where;
-  //  printf("SQL: %s\n",(const char *)sql);
+  //  printf("AFFILIATE REPORT SQL: %s\n",sql.toUtf8().constData());
   q=new DvtSqlQuery(sql);
   while(q->next()) {
     col=1;

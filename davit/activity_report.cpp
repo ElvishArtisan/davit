@@ -43,7 +43,7 @@ bool ListReports::ActivityReport(SpreadSheet *sheet)
   PickFields *r=new PickFields(&start_date,&end_date,NULL,true,
 			       &affiliate_id,true,NULL,true,NULL,
 			       PickFields::NoMarket,config(),this);
-  if(r->exec()!=0) {
+  if(!r->exec()) {
     delete r;
     return false;
   }
@@ -82,7 +82,7 @@ bool ListReports::ActivityReport(SpreadSheet *sheet)
       "`AFFILIATE_REMARKS`.`REMARK` "+
       "from `AFFILIATE_REMARKS` "+
       "where "+
-      QString::asprintf("`AFFILIATE_REMARKS.AFFILIATE_ID`=%d)&&",
+      QString::asprintf("(`AFFILIATE_REMARKS`.`AFFILIATE_ID`=%d)&&",
 			q->value(0).toInt());
     sql+="(`AFFILIATE_REMARKS`.`REMARK_DATETIME`>="+
       DvtSqlQuery::escape(start_date.toString("yyyy-MM-dd")+" 00:00:00")+")&&";

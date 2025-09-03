@@ -114,6 +114,8 @@ int AffidavitPicker::exec(Dvt::AffidavitStationFilter *stations,
   q=new DvtSqlQuery(sql);
   int count=0;
   while(q->next()) {
+    printf("inserting %d: %s\n",q->value(0).toInt(),
+	   q->value(1).toString().toUtf8().constData());
     report_program_box->insertItem(count++,q->value(1).toString(),
 				   q->value(0).toInt());
   }
