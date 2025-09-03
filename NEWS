@@ -1,6 +1,11 @@
 The NEWS file for the Davit package.
 
 -------------------------------------------------------------------------------
+v3.0.0rc1 -- 3 September 2025
+
+Changes:
+   Various bugfixes. See the ChangeLog.
+-------------------------------------------------------------------------------
 v3.0.0rc0a -- 14 August 2025
 
 Changes:
