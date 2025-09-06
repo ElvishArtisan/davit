@@ -21,11 +21,14 @@
 #ifndef DAVIT_H
 #define DAVIT_H
 
+#include <QProcess>
 #include <QSize>
 #include <QSizePolicy>
 #include <QSqlDatabase>
 #include <QStringList>
 #include <QWidget>
+
+#include <dvtinstancemonitor.h>
 
 #include "edit_system.h"
 #include "list_affiliates.h"
@@ -70,6 +73,8 @@ class MainWidget : public QWidget
   bool OpenDb(QString *err_msg,const QString &dbname,const QString &login,
 	      const QString &pwd,const QString &host,
 	      const QString &srv_type) const;
+  void WireguardTunnels(bool start_up);
+  void CleanExit(int exit_code);
   Login *d_login_dialog;
   ListUsers *d_users_dialog;
   ListAffiliates *d_affiliates_dialog;
@@ -77,6 +82,8 @@ class MainWidget : public QWidget
   ListProviders *d_providers_dialog;
   ListReports *d_reports_dialog;
   EditSystem *d_system_dialog;
+  DvtInstanceMonitor *d_instance_monitor;
+  QProcess *d_wireguard_process;
 };
 
 

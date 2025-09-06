@@ -1111,3 +1111,5 @@
 2025-09-05 Fred Gleason <fredg@paravelsystems.com>
 	* Updated 'DvtProfile' to use Exemplar v2.0.2.
 	* Added a 'dvtwgmgr' helper app in 'utils/dvtwgmgr/'.
+2025-09-05 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored the 'dvtwgmgr' help to use '--up' and '--down' switches.

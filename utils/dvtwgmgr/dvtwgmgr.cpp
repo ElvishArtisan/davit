@@ -18,7 +18,6 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -31,62 +30,35 @@
 
 #include "dvtwgmgr.h"
 
-//
-// Globals
-//
-QStringList global_wireguard_configurations;
-
-void __StopTunnels()
-{
-  for(int i=0;i<global_wireguard_configurations.size();i++) {
-    QStringList args;
-
-    args.push_back("down");
-    args.push_back(global_wireguard_configurations.at(i));
-    QProcess *proc=new QProcess();
-    proc->start("wg-quick",args);
-    proc->waitForFinished();
-    if(proc->exitStatus()!=QProcess::NormalExit) {
-      fprintf(stderr,
-	      "dvtwgmgr: wireguard configuration \"%s\" shutdown crashed\n",
-	      global_wireguard_configurations.at(i).toUtf8().constData());
-    }
-    else {
-      if(proc->exitCode()!=0) {
-	fprintf(stderr,
-		"dvtwgmgr: wireguard configuration \"%s\" startup returned error %d [%s]\n",
-		global_wireguard_configurations.at(i).toUtf8().constData(),
-		proc->exitCode(),
-		proc->readAllStandardError().constData());
-    }
-  }
-  delete proc;
-  }
-}
-
-
-void __SigHandler(int signo)
-{
-  switch(signo) {
-  case SIGINT:
-  case SIGTERM:
-    __StopTunnels();
-    break;
-  }
-  exit(0);
-}
-
-
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
+  d_up=false;
+  d_down=false;
+
   DvtCmdSwitch *cmd=new DvtCmdSwitch("dvtwgmgr",DVTWGMGR_USAGE);
   for(int i=0;i<cmd->keys();i++) {
+    if(cmd->key(i)=="--down") {
+      d_down=true;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--up") {
+      d_up=true;
+      cmd->setProcessed(i,true);
+    }
     if(!cmd->processed(i)) {
       fprintf(stderr,"dvtwgmgr: unrecognized option \"%s\"\n",
 	      cmd->key(i).toUtf8().constData());
       exit(1);
     }
+  }
+  if((!d_down)&&(!d_up)) {
+    fprintf(stderr,"\"--down\" or \"--up\" must be specified\n");
+    exit(1);
+  }
+  if(d_down&&d_up) {
+    fprintf(stderr,"\"--down\" or \"--up\" are mutually exclusive\n");
+    exit(1);
   }
 
   //
@@ -95,19 +67,19 @@ MainObject::MainObject(QObject *parent)
   d_config=new DvtConfig();
   d_config->load();
 
-  //
-  // Register Shutdown Handler
-  //
-  signal(SIGINT,__SigHandler);
-  signal(SIGTERM,__SigHandler);
-
-  //
-  // Start Tunnels
-  //
-  global_wireguard_configurations=d_config->wireguardConfigurations();
-  for(int i=0;i<global_wireguard_configurations.size();i++) {
-    StartTunnel(global_wireguard_configurations.at(i));
+  if(d_up) {
+    d_wireguard_configurations=d_config->wireguardConfigurations();
+    for(int i=0;i<d_wireguard_configurations.size();i++) {
+      StartTunnel(d_wireguard_configurations.at(i));
+    }
   }
+  if(d_down) {
+    d_wireguard_configurations=d_config->wireguardConfigurations();
+    for(int i=0;i<d_wireguard_configurations.size();i++) {
+      StopTunnel(d_wireguard_configurations.at(i));
+    }
+  }
+  exit(0);
 }
 
 
@@ -130,6 +102,33 @@ void MainObject::StartTunnel(const QString &config)
 	      "dvtwgmgr: wireguard configuration \"%s\" startup returned error %d [%s]\n",
 	      config.toUtf8().constData(),proc->exitCode(),
 	      proc->readAllStandardError().constData());
+    }
+  }
+  delete proc;
+}
+
+
+void MainObject::StopTunnel(const QString &config)
+{
+    QStringList args;
+
+    args.push_back("down");
+    args.push_back(config);
+    QProcess *proc=new QProcess();
+    proc->start("wg-quick",args);
+    proc->waitForFinished();
+    if(proc->exitStatus()!=QProcess::NormalExit) {
+      fprintf(stderr,
+	      "dvtwgmgr: wireguard configuration \"%s\" shutdown crashed\n",
+	      config.toUtf8().constData());
+    }
+    else {
+      if(proc->exitCode()!=0) {
+	fprintf(stderr,
+		"dvtwgmgr: wireguard configuration \"%s\" startup returned error %d [%s]\n",
+		config.toUtf8().constData(),
+		proc->exitCode(),
+		proc->readAllStandardError().constData());
     }
   }
   delete proc;

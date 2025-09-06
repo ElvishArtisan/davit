@@ -81,6 +81,8 @@ MainWidget::MainWidget(QWidget *parent)
   QString loginname;
   QString err_msg;
 
+  d_wireguard_process=NULL;
+
   //
   // Fix the Window Size
   //
@@ -135,7 +137,7 @@ MainWidget::MainWidget(QWidget *parent)
     if(!cmd->processed(i)) {
       fprintf(stderr,"davit: unrecognized option \"%s\"\n",
 	      cmd->key(i).toUtf8().constData());
-      exit(1);
+      CleanExit(1);
     }
   }
 
@@ -145,13 +147,28 @@ MainWidget::MainWidget(QWidget *parent)
   d_login_dialog=new Login(config,this);
 
   //
+  // Davit Process Monitor
+  //
+  d_instance_monitor=new DvtInstanceMonitor();
+  QStringList wg_configs=config->wireguardConfigurations();
+  if((wg_configs.size()>0)&&(d_instance_monitor->processIds().size()==0)) {
+    d_wireguard_process=new QProcess(this);
+    sleep(1);
+  }
+
+  //
+  // Start VPN Tunnels
+  //
+  WireguardTunnels(true);
+  
+  //
   // Open Database
   //
   if(!OpenDb(&err_msg,config->mysqlDbname(),config->mysqlUsername(),
 	     config->mysqlPassword(),config->mysqlHostname(),
 	     config->mysqlServertype())) {
     QMessageBox::critical(this,"Davit - "+tr("Database Error"),err_msg);
-    exit(1);
+    CleanExit(1);
   }
 
   //
@@ -159,7 +176,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   QString password;
   if(!d_login_dialog->exec(&loginname,&password)) {
-    exit(0);
+    CleanExit(0);
   }
   sql=QString("select ")+
     "`USER_NAME` "+  // 00
@@ -178,36 +195,6 @@ MainWidget::MainWidget(QWidget *parent)
   setWindowTitle(QString::asprintf("Davit - User: %s",
 			       loginname.toUtf8().constData()));
 
-  //
-  // Find OpenOffice (Win32 only)
-  //
-  /*
-#ifdef WIN32
-  bool ok=false;
-  QSettings s;
-  s.insertSearchPath(QSettings::Windows,"/OpenOffice.org");
-  QStringList keys=s.subkeyList("/OpenOffice.org");
-  QString key;
-  float value=0.0;
-  for(unsigned i=0;i<keys.size();i++) {
-    keys[i].toFloat(&ok);
-    if(ok&&(keys[i].toFloat()>value)) {
-      value=keys[i].toFloat();
-      key=keys[i];
-    }
-  }
-  if(key.isEmpty()) {
-    QMessageBox::information(this,"Davit",
-			 tr("OpenOffice.org Calc is not installed on this system.\nReports will not be available!"));
-  }
-  else {
-    openoffice_path=s.readEntry("/OpenOffice.org/"+key+"/Path");
-  }
-  openoffice_path="C:/Program Files/OpenOffice 4/program/soffice";
-#else
-  openoffice_path="soffice";
-#endif  // WIN32
-  */
   openoffice_path=global_geometry->openofficePath();
 
   //
@@ -377,8 +364,17 @@ void MainWidget::generateReportsData()
 
 void MainWidget::quitMainWidget()
 {
+  /*
   global_geometry->save();
 
+  //
+  // Close Wireguard Tunnels
+  //
+  if(d_wireguard_process!=NULL) {
+    d_wireguard_process->disconnect();
+    d_wireguard_process->terminate();
+  }
+  
   //
   // Delete Temporary Files
   //
@@ -386,8 +382,8 @@ void MainWidget::quitMainWidget()
     QFile::remove(temp_files[i]);
   }
   delete global_viewer_list;
-
-  exit(0);
+  */
+  CleanExit(0);
 }
 
 
@@ -443,6 +439,57 @@ bool MainWidget::OpenDb(QString *err_msg,
   }
   delete q;
   return true;
+}
+
+
+void MainWidget::CleanExit(int exit_code)
+{
+  global_geometry->save();
+
+  //
+  // Delete Temporary Files
+  //
+  for(unsigned i=0;i<temp_files.size();i++) {
+    QFile::remove(temp_files[i]);
+  }
+  delete global_viewer_list;
+
+  //
+  // Stop VPN Tunnels
+  //
+  WireguardTunnels(false);
+  
+  exit(exit_code);
+}
+
+
+void MainWidget::WireguardTunnels(bool start_up)
+{
+  QStringList args;
+
+  if(start_up) {
+    args.push_back("--up");
+  }
+  else {
+    args.push_back("--down");
+  }
+  QProcess *proc=new QProcess();
+  proc->start("/usr/lib/davit/dvtwgmgr",args);
+  proc->waitForFinished();
+  if(proc->exitStatus()!=QProcess::NormalExit) {
+    QMessageBox::critical(this,"Davit - "+tr("Helper Error"),
+			  tr("The wireguard helper application crashed!"));
+    exit(1);
+  }
+  if(proc->exitCode()!=0) {
+    QMessageBox::critical(this,"Davit - "+tr("Helper Error"),
+		 tr("The wireguard helper application returned an error.")+
+		 "\n\n"+QString::fromUtf8(proc->readAllStandardError()));
+    exit(1);
+  }
+  if(start_up) {
+    // sleep(1);
+  }
 }
 
 

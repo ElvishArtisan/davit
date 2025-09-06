@@ -29,7 +29,7 @@
 #include <dvtconfig.h>
 #include <dvtcmdswitch.h>
 
-#define DVTWGMGR_USAGE "\n\n"
+#define DVTWGMGR_USAGE "--up\n     Start up wireguard tunnel(s)\n\n--down\n     Shut down wireguard tunnel(s)\n\n"
 
 class MainObject : public QObject
 {
@@ -39,6 +39,10 @@ class MainObject : public QObject
 
  private:
   void StartTunnel(const QString &config);
+  void StopTunnel(const QString &config);
+  bool d_up;
+  bool d_down;
+  QStringList d_wireguard_configurations;
   DvtConfig *d_config;
 };
 

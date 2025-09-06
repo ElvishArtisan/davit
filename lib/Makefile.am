@@ -34,6 +34,7 @@ dist_libdvt_la_SOURCES = dvt.h dvt.cpp\
                          dvtconfig.cpp dvtconfig.h\
                          dvtdb.cpp dvtdb.h\
                          dvtimport.cpp dvtimport.h\
+                         dvtinstancemonitor.cpp dvtinstancemonitor.h\
                          dvtprofile.cpp dvtprofile.h\
                          dvtprofileline.cpp dvtprofileline.h\
                          dvtprofilesection.cpp dvtprofilesection.h\
