@@ -20,6 +20,7 @@
 
 #include <stdio.h>
 
+#include <QCoreApplication>
 #include <QSettings>
 
 #include "dvt.h"
@@ -112,6 +113,12 @@ QString DvtConfig::contactAddress() const
 }
 
 
+QStringList DvtConfig::wireguardConfigurations() const
+{
+  return conf_wireguard_configurations;
+}
+
+
 void DvtConfig::dumpConfig(FILE *stream)
 {
   if(!mysqlHostname().isEmpty()) {
@@ -134,12 +141,18 @@ bool DvtConfig::load()
 {
   QString group;
   QString str;
-
+  QString err_msg;
+  
   //
   // Host Name
   //
   DvtProfile *profile=new DvtProfile();
-  profile->setSource(conf_filename);
+  if(!profile->loadFile(conf_filename,&err_msg)) {
+    fprintf(stderr,"%s: failed to load configuration file [%s]\n",
+	    QCoreApplication::applicationName().toUtf8().constData(),
+	    err_msg.toUtf8().constData());
+    exit(1);
+  }
 
   //
   // [mySQL] Section
@@ -166,6 +179,12 @@ bool DvtConfig::load()
   // [Site] Section
   //
   conf_contact_address=profile->stringValue("Site","ContactAddress","");
+
+  //
+  // [Wireguard] Section
+  //
+  conf_wireguard_configurations=
+    profile->stringValues("Wireguard","ConfigurationPath");
 
   delete profile;
 

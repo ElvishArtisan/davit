@@ -3,6 +3,7 @@
 
 case "$1" in
     configure)
+      chmod 4755 /usr/lib/davit/dvtwgmgr
       if test -x /usr/bin/gtk-update-icon-cache ; then
 	  /usr/bin/gtk-update-icon-cache -f --quiet /usr/share/icons/hicolor
       fi

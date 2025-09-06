@@ -29,6 +29,7 @@ EXTRA_DIST = changelog\
              copyright\
              davit-core.postinst\
              davit-core.postrm\
+             davit-gui.postinst\
              davit-web.postinst\
              davit-web.prerm\
              rules

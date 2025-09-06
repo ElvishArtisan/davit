@@ -1,30 +1,47 @@
 // dvtprofile.cpp
 //
-// A class to read an ini formatted configuration file.
+// A container class for profile lines.
 //
-// (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2013-2025 Fred Gleason <fredg@paravelsystems.com>
 //
-//   This program is free software; you can redistribute it and/or modify
-//   it under the terms of the GNU Library General Public License 
-//   version 2 as published by the Free Software Foundation.
+//    This program is free software; you can redistribute it and/or modify
+//    it under the terms of version 2.1 of the GNU Lesser General Public
+//    License as published by the Free Software Foundation;
 //
-//   This program is distributed in the hope that it will be useful,
-//   but WITHOUT ANY WARRANTY; without even the implied warranty of
-//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//   GNU General Public License for more details.
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU Lesser General Public License for more details.
 //
-//   You should have received a copy of the GNU General Public
-//   License along with this program; if not, write to the Free Software
-//   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//    You should have received a copy of the GNU General Public License
+//    along with this program; if not, write to the Free Software
+//    Foundation, Inc., 59 Temple Place, Suite 330, 
+//    Boston, MA  02111-1307  USA
+//
+// EXEMPLAR_VERSION: 2.0.2
 //
 
+#include <stdio.h>
+
+#include <QDir>
 #include <QFile>
+#include <QStringList>
 #include <QTextStream>
 
 #include "dvtprofile.h"
 
-DvtProfile::DvtProfile()
+#define __DVTPROFILE_SECTION_ID_DELIMITER "|"
+#define __DVTPROFILE_DEFAULT_SECTION_ID "Default"
+
+DvtProfile::DvtProfile(bool use_section_ids)
 {
+  d_use_section_ids=use_section_ids;
+}
+
+
+QStringList DvtProfile::sectionNames() const
+{
+  return d_blocks.keys();
 }
 
 
@@ -34,184 +51,603 @@ QString DvtProfile::source() const
 }
 
 
-bool DvtProfile::setSource(QString filename)
+bool DvtProfile::addSource(const QStringList &values)
 {
-  QString section;
-  int offset;
+  QString block_name;
+  QMap<QString,QStringList> block_lines;
 
-  profile_source=filename;
-  profile_section.resize(0);
-  profile_section.push_back(DvtProfileSection());
-  profile_section.back().setName("");
-  QFile *file=new QFile(filename);
-  //  if(!file->open(IO_ReadOnly)) {
-  if(!file->open(QIODevice::ReadOnly)) {
-    delete file;
-    return false;
-  }
-  QTextStream *text=new QTextStream(file);
-  QString line=text->readLine().trimmed();
-  while(!line.isNull()) {
-    if((line.left(1)!=";")&&(line.left(1)!="#")) {
-      if((line.left(1)=="[")&&(line.right(1)=="]")) {
-	section=line.mid(1,line.length()-2);
-	profile_section.push_back(DvtProfileSection());
-	profile_section.back().setName(section);
+  for(int i=0;i<values.size();i++) {
+    QString line=values.at(i);
+    if((line.left(1)=="[")&&(line.right(1)=="]")) {  // Block Starts
+      if(!block_name.isEmpty()) {
+	ProcessBlock(block_name,block_lines);
       }
-      else if(((offset=line.indexOf('='))!=-1)) {
-//      else if(((offset=line.find('='))!=-1)&&(!section.isEmpty())) {
-	profile_section.back().
-	  addValue(line.left(offset),
-		   line.right(line.length()-offset-1).trimmed());
+      block_name=line.mid(1,line.size()-2);
+      block_lines.clear();
+    }
+    else {
+      if((!line.isEmpty())&&(line.left(1)!=";")&&(line.left(1)!="#")) {
+	QStringList f0=line.split("=",Qt::KeepEmptyParts);
+	QString tag=f0.at(0);
+	f0.removeFirst();
+	QStringList f1=block_lines.value(tag,QStringList());
+	f1.push_back(f0.join("="));
+	block_lines[tag]=f1;
       }
     }
-    line=text->readLine().trimmed();
   }
-  delete text;
-  delete file;
+  if(!block_name.isEmpty()) {
+    ProcessBlock(block_name,block_lines);
+  }
+  
   return true;
 }
 
 
-QString DvtProfile::stringValue(QString section,QString tag,
-			      QString default_str,bool *ok) const
+bool DvtProfile::loadFile(const QString &filename,QString *err_msg)
 {
-  QString result;
-
-  for(unsigned i=0;i<profile_section.size();i++) {
-    if(profile_section[i].name()==section) {
-      if(profile_section[i].getValue(tag,&result)) {
-	if(ok!=NULL) {
-	  *ok=true;
-	}
-	return result;
-      }
-      if(ok!=NULL) {
-	*ok=false;
-      }
-      return default_str;
-    }
-  }
-  if(ok!=NULL) {
-    *ok=false;
-  }
-  return default_str;
-}
-
-
-int DvtProfile::intValue(QString section,QString tag,
-		       int default_value,bool *ok) const
-{
-  bool valid;
-
-  int result=stringValue(section,tag).toInt(&valid,10);
-  if(!valid) {
-    if(ok!=NULL) {
-      *ok=false;
-    }
-    return default_value;
-  }
-  if(ok!=NULL) {
-    *ok=true;
-  }
-  return result;
-}
-
-
-int DvtProfile::hexValue(QString section,QString tag,
-		       int default_value,bool *ok) const
-{
-  bool valid;
-
-  QString str=stringValue(section,tag);
-  if(str.left(2).toLower()=="0x") {
-    str=str.right(str.length()-2);
-  }
-  int result=str.toInt(&valid,16);
-  if(!valid) {
-    if(ok!=NULL) {
-      *ok=false;
-    }
-    return default_value;
-  }
-  if(ok!=NULL) {
-    *ok=true;
-  }
-  return result;
-}
-
-
-float DvtProfile::floatValue(QString section,QString tag,
-			   float default_value,bool *ok) const
-{
-  bool valid;
-
-  float result=stringValue(section,tag).toDouble(&valid);
-  if(!valid) {
-    if(ok!=NULL) {
-      *ok=false;
-    }
-    return default_value;
-  }
-  if(ok!=NULL) {
-    *ok=true;
-  }
-  return result;
-}
-
-
-double DvtProfile::doubleValue(QString section,QString tag,
-			    double default_value,bool *ok) const
-{
-  bool valid;
-
-  double result=stringValue(section,tag).toDouble(&valid);
-  if(!valid) {
-    if(ok!=NULL) {
-      *ok=false;
-    }
-    return default_value;
-  }
-  if(ok!=NULL) {
-    *ok=true;
-  }
-  return result;
-}
-
-
-bool DvtProfile::boolValue(QString section,QString tag,
-			 bool default_value,bool *ok) const
-{
-  bool valid;
-
-  QString str=stringValue(section,tag,"",&valid).toLower();
-  if(!valid) {
-    if(ok!=NULL) {
-      *ok=false;
-    }
-    return default_value;
-  }
-  if((str=="yes")||(str=="true")||(str=="on")) {
-    if(ok!=NULL) {
-      *ok=true;
-    }
-    return true;
-  }
-  if((str=="no")||(str=="false")||(str=="off")) {
-    if(ok!=NULL) {
-      *ok=true;
+  QFile data(filename);
+  if(!data.open(QFile::ReadOnly)) {
+    if(err_msg!=NULL) {
+      *err_msg="unable to open file";
     }
     return false;
   }
-  if(ok!=NULL) {
-    *ok=false;
+  QTextStream in(&data);
+  QString line;
+  QStringList values;
+  while(in.readLineInto(&line)) {
+    values.push_back(line.trimmed());
   }
-  return default_value;
+  addSource(values);
+  if(err_msg!=NULL) {
+    *err_msg=
+      QString::asprintf("loaded file \"%s\"",filename.toUtf8().constData());
+  }
+
+  return true;
+}
+
+
+int DvtProfile::loadDirectory(const QString &dirpath,const QString &glob_template,
+			   QStringList *err_msgs)
+{
+  QString err_msg;
+  QDir dir(dirpath);
+  int ret=0;
+
+  if(!dir.exists()) {
+    if(err_msgs!=NULL) {
+      err_msgs->push_back(QObject::tr("no such directory"));
+      return -1;
+    }
+  }
+  if(!dir.isReadable()) {
+    if(err_msgs!=NULL) {
+      err_msgs->push_back(QObject::tr("directory is not readable"));
+      return -1;
+    }
+  }
+  QStringList name_filters;
+  name_filters.push_back(glob_template);
+  QStringList filenames=dir.entryList(name_filters,QDir::Files,QDir::Name);
+  for(int i=0;i<filenames.size();i++) {
+    if(loadFile(dir.path()+"/"+filenames.at(i),&err_msg)) {
+      if(err_msgs!=NULL) {
+	err_msgs->push_back(QString::asprintf("loaded file \"%s/%s\"",
+				     dir.path().toUtf8().constData(),
+				     filenames.at(i).toUtf8().constData()));
+      }
+      ret++;
+    }
+    else {
+      if(err_msgs!=NULL) {
+	err_msgs->
+	  push_back(QString::asprintf("failed to load file \"%s\": %s",
+				      filenames.at(i).toUtf8().constData(),
+				      err_msg.toUtf8().constData()));
+      }
+    }
+  }
+
+  return ret;
+}
+
+
+int DvtProfile::load(const QString &glob_path,QStringList *err_msgs)
+{
+  QString err_msg;
+  QFileInfo finfo(glob_path);
+  if(finfo.isFile()) {
+    int ret=loadFile(glob_path,&err_msg);
+    if(err_msgs!=NULL) {
+      err_msgs->push_back(err_msg);
+    }
+    return ret;
+  }
+
+  QStringList f0=glob_path.split("/",Qt::KeepEmptyParts);
+  QString glob_template=f0.last();
+  f0.removeLast();
+  QString dir_path=f0.join("/");
+  
+  return loadDirectory(dir_path,glob_template,err_msgs);
+}
+
+
+QStringList DvtProfile::sections() const
+{
+  QStringList ret;
+
+  for(QMap<QString,QMap<QString,QStringList> >::const_iterator it=
+	d_blocks.begin();it!=d_blocks.end();it++) {
+    QStringList f0=it.key().split(__DVTPROFILE_SECTION_ID_DELIMITER);
+    if(!ret.contains(f0.first())) {
+      ret.push_front(f0.first());
+    }
+  }
+
+  return ret;
+}
+
+
+QStringList DvtProfile::sectionIds(const QString &section) const
+{
+  QStringList ret;
+
+  for(QMap<QString,QMap<QString,QStringList> >::const_iterator it=
+	d_blocks.begin();it!=d_blocks.end();it++) {
+    QStringList f0=it.key().split(__DVTPROFILE_SECTION_ID_DELIMITER);
+    if((f0.size()==2)&&(f0.first()==section)) {
+      ret.push_back(f0.last());
+    }
+  }
+
+  return ret;
+}
+
+
+QString DvtProfile::stringValue(const QString &section,const QString &tag,
+			     const QString &default_str,bool *found)
+{
+  QStringList values=stringValues(section,tag);
+  if(found!=NULL) {
+    *found=values.size()>0;
+  }
+  if(values.size()==0) {
+    return default_str;
+  }
+  return values.first();
+}
+
+
+QStringList DvtProfile::stringValues(const QString &section,const QString &tag)
+{
+  QMap<QString,QStringList> block=d_blocks.value(section);
+  if(block.size()==0) {
+    return QStringList();
+  }
+  return block.value(tag);
+}
+
+
+QStringList DvtProfile::stringValues(const QString &section,
+				  const QString &section_id,
+				  const QString &tag) const
+{
+  QMap<QString,QStringList> block=
+    d_blocks.value(section+__DVTPROFILE_SECTION_ID_DELIMITER+section_id);
+  if(block.size()==0) {
+    return QStringList();
+  }
+  
+  return block.value(tag);
+}
+
+
+int DvtProfile::intValue(const QString &section,const QString &tag,
+		      int default_value,bool *found)
+{
+  QList<int> values=intValues(section,tag);
+  if(found!=NULL) {
+    *found=values.size()>0;
+  }
+  if(values.size()==0) {
+    return default_value;
+  }
+  return values.first();
+}
+
+
+QList<int> DvtProfile::intValues(const QString &section,const QString &tag)
+{
+  QMap<QString,QStringList> block=d_blocks.value(section);
+  if(block.size()==0) {
+    return QList<int>();
+  }
+  QList<int> ret;
+  QStringList values=block.value(tag);
+  for(int i=0;i<values.size();i++) {
+    ret.push_back(values.at(i).toInt());
+  }
+  return ret;
+}
+
+
+QList<int> DvtProfile::intValues(const QString &section,const QString &section_id,
+			      const QString &tag)
+{
+  QList<int> ret;
+  
+  QMap<QString,QStringList> block=
+    d_blocks.value(section+__DVTPROFILE_SECTION_ID_DELIMITER+section_id);
+  if(block.size()==0) {
+    return ret;
+  }
+  QStringList values=block.value(tag);
+  for(int i=0;i<values.size();i++) {
+    ret.push_back(values.at(i).toInt());
+  }
+  
+  return ret;
+}
+
+
+int DvtProfile::hexValue(const QString &section,const QString &tag,
+		       int default_value,bool *found)
+{
+  QList<int> values=hexValues(section,tag);
+  if(found!=NULL) {
+    *found=values.size()>0;
+  }
+  if(values.size()==0) {
+    return default_value;
+  }
+  return values.first();
+}
+
+
+QList<int> DvtProfile::hexValues(const QString &section,const QString &tag)
+{
+  QMap<QString,QStringList> block=d_blocks.value(section);
+  if(block.size()==0) {
+    return QList<int>();
+  }
+  QList<int> ret;
+  QStringList values=block.value(tag);
+  for(int i=0;i<values.size();i++) {
+    ret.push_back(values.at(i).toInt(NULL,16));
+  }
+  return ret;
+}
+
+
+QList<int> DvtProfile::hexValues(const QString &section,const QString &section_id,
+			      const QString &tag)
+{
+  QList<int> ret;
+  
+  QMap<QString,QStringList> block=
+    d_blocks.value(section+__DVTPROFILE_SECTION_ID_DELIMITER+section_id);
+  if(block.size()==0) {
+    return ret;
+  }
+  QStringList values=block.value(tag);
+  for(int i=0;i<values.size();i++) {
+    ret.push_back(values.at(i).toInt(NULL,16));
+  }
+  
+  return ret;
+}
+
+
+double DvtProfile::doubleValue(const QString &section,const QString &tag,
+			    double default_value,bool *found)
+{
+  QList<double> values=doubleValues(section,tag);
+  if(found!=NULL) {
+    *found=values.size()>0;
+  }
+  if(values.size()==0) {
+    return default_value;
+  }
+  return values.first();
+}
+
+
+QList<double> DvtProfile::doubleValues(const QString &section,const QString &tag)
+{
+  QMap<QString,QStringList> block=d_blocks.value(section);
+  if(block.size()==0) {
+    return QList<double>();
+  }
+  QList<double> ret;
+  QStringList values=block.value(tag);
+  for(int i=0;i<values.size();i++) {
+    ret.push_back(values.at(i).toDouble());
+  }
+  return ret;
+}
+
+
+QList<double> DvtProfile::doubleValues(const QString &section,
+				    const QString &section_id,
+				    const QString &tag)
+{
+  QList<double> ret;
+  
+  QMap<QString,QStringList> block=
+    d_blocks.value(section+__DVTPROFILE_SECTION_ID_DELIMITER+section_id);
+  if(block.size()==0) {
+    return ret;
+  }
+  QStringList values=block.value(tag);
+  for(int i=0;i<values.size();i++) {
+    ret.push_back(values.at(i).toDouble());
+  }
+  
+  return ret;
+}
+
+
+bool DvtProfile::boolValue(const QString &section,const QString &tag,
+			 bool default_value,bool *found)
+{
+  QList<bool> values=boolValues(section,tag);
+  if(found!=NULL) {
+    *found=values.size()>0;
+  }
+  if(values.size()==0) {
+    return default_value;
+  }
+  return values.first();
+}
+
+
+QList<bool> DvtProfile::boolValues(const QString &section,const QString &tag)
+{
+  QMap<QString,QStringList> block=d_blocks.value(section);
+  if(block.size()==0) {
+    return QList<bool>();
+  }
+  QList<bool> ret;
+  QStringList values=block.value(tag);
+  for(int i=0;i<values.size();i++) {
+    ret.push_back((values.at(i).toLower()=="yes")||
+		  (values.at(i).toLower()=="true")||
+		  (values.at(i).toLower()=="on")||
+		  (values.at(i).toLower()=="1"));
+  }
+  return ret;
+}
+
+
+QList<bool> DvtProfile::boolValues(const QString &section,
+				const QString &section_id,
+				const QString &tag)
+{
+  QList<bool> ret;
+  
+  QMap<QString,QStringList> block=
+    d_blocks.value(section+__DVTPROFILE_SECTION_ID_DELIMITER+section_id);
+  if(block.size()==0) {
+    return ret;
+  }
+  QStringList values=block.value(tag);
+  for(int i=0;i<values.size();i++) {
+    ret.push_back((values.at(i).toLower()=="yes")||
+		  (values.at(i).toLower()=="true")||
+		  (values.at(i).toLower()=="on")||
+		  (values.at(i).toLower()=="1"));
+  }
+  
+  return ret;
+}
+
+
+QTime DvtProfile::timeValue(const QString &section,const QString &tag,
+			   const QTime &default_value,bool *found)
+{
+  QList<QTime> values=timeValues(section,tag);
+  if(found!=NULL) {
+    *found=values.size()>0;
+  }
+  if(values.size()==0) {
+    return default_value;
+  }
+  return values.first();
+}
+
+
+QList<QTime> DvtProfile::timeValues(const QString &section,const QString &tag)
+{
+  QMap<QString,QStringList> block=d_blocks.value(section);
+  if(block.size()==0) {
+    return QList<QTime>();
+  }
+  QList<QTime> ret;
+  QStringList values=block.value(tag);
+  for(int i=0;i<values.size();i++) {
+    QStringList fields=values.at(i).split(":");
+    if(fields.size()==2) {
+      ret.push_back(QTime(fields.at(0).toInt(),fields.at(1).toInt(),0));
+    }
+    else {
+      if(fields.size()==3) {
+	ret.push_back(QTime(fields.at(0).toInt(),fields.at(1).toInt(),
+			    fields.at(2).toInt()));
+      }
+      else {
+	ret.push_back(QTime());
+      }
+    }
+  }
+  return ret;
+}
+
+
+QList<QTime> DvtProfile::timeValues(const QString &section,
+				 const QString &section_id,
+				 const QString &tag)
+{
+  QList<QTime> ret;
+
+  QMap<QString,QStringList> block=
+    d_blocks.value(section+__DVTPROFILE_SECTION_ID_DELIMITER+section_id);
+  if(block.size()==0) {
+    return ret;
+  }
+  QStringList values=block.value(tag);
+  for(int i=0;i<values.size();i++) {
+    QStringList fields=values.at(i).split(":");
+    if(fields.size()==2) {
+      ret.push_back(QTime(fields.at(0).toInt(),fields.at(1).toInt(),0));
+    }
+    else {
+      if(fields.size()==3) {
+	ret.push_back(QTime(fields.at(0).toInt(),fields.at(1).toInt(),
+			    fields.at(2).toInt()));
+      }
+      else {
+	ret.push_back(QTime());
+      }
+    }
+  }
+  
+  return ret;
+}
+
+
+QHostAddress DvtProfile::addressValue(const QString &section,const QString &tag,
+				  const QHostAddress &default_value,bool *found)
+{
+  return QHostAddress(stringValue(section,tag,default_value.toString(),found));
+}
+
+
+QHostAddress DvtProfile::addressValue(const QString &section,const QString &tag,
+				     const QString &default_value,bool *found)
+{
+  return addressValue(section,tag,QHostAddress(default_value),found);
+}
+
+
+QList<QHostAddress> DvtProfile::addressValues(const QString &section,
+					   const QString &tag)
+{
+  QMap<QString,QStringList> block=d_blocks.value(section);
+  if(block.size()==0) {
+    return QList<QHostAddress>();
+  }
+  QList<QHostAddress> ret;
+  QStringList values=block.value(tag);
+  for(int i=0;i<values.size();i++) {
+    ret.push_back(QHostAddress(values.at(i)));
+  }
+  return ret;
+}
+
+
+QList<QHostAddress> DvtProfile::addressValues(const QString &section,
+					   const QString &section_id,
+					   const QString &tag)
+{
+  QList<QHostAddress> ret;
+  
+  QMap<QString,QStringList> block=
+    d_blocks.value(section+__DVTPROFILE_SECTION_ID_DELIMITER+section_id);
+  if(block.size()==0) {
+    return ret;
+  }
+  QStringList values=block.value(tag);
+  for(int i=0;i<values.size();i++) {
+    ret.push_back(QHostAddress(values.at(i)));
+  }
+  
+  return ret;
 }
 
 
 void DvtProfile::clear()
 {
   profile_source="";
-  profile_section.resize(0);
+  d_blocks.clear();
+}
+
+
+QString DvtProfile::dump() const
+{
+  QString ret;
+  
+  for(QMap<QString,QMap<QString,QStringList> >::const_iterator it0=
+	d_blocks.begin();it0!=d_blocks.end();it0++) {
+    QStringList section=it0.key().split("|");
+    ret+=QString::asprintf("[%s]\n",section.first().toUtf8().constData());
+    if(d_use_section_ids) {
+      ret+=QString::asprintf("Id=%s\n",section.last().toUtf8().constData());
+    }
+    for(QMap<QString,QStringList>::const_iterator it1=it0.value().begin();
+	it1!=it0.value().end();it1++) {
+      for(int i=0;i<it1.value().size();i++) {
+	if((!d_use_section_ids)||(it1.key()!="Id")) {
+	  ret+=QString::asprintf("%s=%s\n",it1.key().toUtf8().constData(),
+				 it1.value().at(i).toUtf8().constData());
+	}
+      }
+    }
+  }
+
+  return ret;
+}
+
+
+void DvtProfile::ProcessBlock(const QString &name,
+			   const QMap<QString,QStringList> &lines)
+{
+  QString block_name=name;
+  if(d_use_section_ids) {
+    QStringList ids=lines.value("Id");
+    QString id=__DVTPROFILE_DEFAULT_SECTION_ID;
+    if(ids.size()>0) {
+      id=ids.first();
+    }
+    block_name=name+__DVTPROFILE_SECTION_ID_DELIMITER+id;
+  }
+
+  if(!lines.isEmpty()) {
+    QMap<QString,QStringList> block=
+      d_blocks.value(block_name,QMap<QString,QStringList>());
+
+    for(QMap<QString,QStringList>::const_iterator it=lines.begin();
+	it!=lines.end();it++) {
+      block[it.key()].append(it.value());
+    }
+    if(d_use_section_ids) {
+      d_blocks[block_name]=block;
+    }
+    else {
+      d_blocks[name]=block;
+    }
+  }
+}
+
+
+QStringList DvtProfile::InvertList(const QStringList &list) const
+{
+  QStringList ret;
+
+  for(int i=0;i<list.size();i++) {
+    ret.push_back(list.at(list.size()-i-1));
+  }
+  
+  return ret;
+}
+
+
+void DvtProfile::DumpList(const QString &title,const QStringList &list) const
+{
+  printf("%s\n",title.toUtf8().constData());
+  for(int i=0;i<list.size();i++) {
+    printf("[%d]: %s\n",i,list.at(i).toUtf8().constData());
+  }
 }

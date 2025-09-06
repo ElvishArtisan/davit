@@ -115,6 +115,7 @@ AC_CONFIG_FILES(Makefile \
   utils/Makefile \
   utils/dvtdbmgr/Makefile \
   utils/dvtstamp/Makefile \
+  utils/dvtwgmgr/Makefile \
   conf/Makefile \
   docs/manpages/Makefile \
   docs/Makefile \

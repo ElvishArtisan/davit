@@ -1108,3 +1108,6 @@
 	* Incremented the package version to 3.0.0rc1.
 2025-09-04 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'postfix' dependency to the 'davit-gui' DEB package.
+2025-09-05 Fred Gleason <fredg@paravelsystems.com>
+	* Updated 'DvtProfile' to use Exemplar v2.0.2.
+	* Added a 'dvtwgmgr' helper app in 'utils/dvtwgmgr/'.

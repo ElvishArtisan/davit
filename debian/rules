@@ -17,7 +17,6 @@ binary:
 #
 	mkdir -p debian/davit-core/usr/lib
 	mv debian/tmp/usr/lib/*.so debian/davit-core/usr/lib/
-	rm -f debian/tmp/usr/lib/*
 	mkdir -p debian/davit-core/usr/sbin
 	mv debian/tmp/usr/sbin/dvtdbmgr debian/davit-core/usr/sbin/
 	mv debian/tmp/usr/sbin/dvtstamp debian/davit-core/usr/sbin/
@@ -38,6 +37,8 @@ binary:
 	mv debian/tmp/usr/share/icons/hicolor debian/davit-gui/usr/share/icons/
 	mkdir -p debian/davit-gui/usr/share/applications
 	mv debian/tmp/usr/share/applications/* debian/davit-gui/usr/share/applications/
+	mkdir -p debian/davit-gui/usr/lib/davit
+	mv debian/tmp/usr/lib/davit/dvtwgmgr debian/davit-gui/usr/lib/davit/
 
 #
 # davit-web
@@ -46,6 +47,11 @@ binary:
 	mv debian/tmp/etc/apache2/conf-available/* debian/davit-web/etc/apache2/conf-available
 	mkdir -p debian/davit-web/var/www/dvt-bin/
 	mv debian/tmp/var/www/dvt-bin/* debian/davit-web/var/www/dvt-bin/
+
+#
+# Clean out useless libtool cruft
+#
+	rm -rf debian/tmp/usr/lib/*
 
 	dh_strip_nondeterminism
 	dh_compress

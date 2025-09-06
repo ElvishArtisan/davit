@@ -23,7 +23,7 @@
 
 #include <vector>
 
-#include <QString>
+#include <QStringList>
 
 #include "dvt.h"
 
@@ -44,6 +44,7 @@ class DvtConfig
   int fontLabelSize() const;
   int fontDefaultSize() const;
   QString contactAddress() const;
+  QStringList wireguardConfigurations() const;
   void dumpConfig(FILE *stream);
   bool load();
   void clear();
@@ -60,6 +61,7 @@ class DvtConfig
   int conf_font_label_size;
   int conf_font_default_size;
   QString conf_contact_address;
+  QStringList conf_wireguard_configurations;
 };
 
 

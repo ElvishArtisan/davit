@@ -110,7 +110,7 @@ void Geometry::load()
 	              "C:/Program Files/OpenOffice 4/program/soffice");
 #else
   DvtProfile *p=new DvtProfile();
-  p->setSource(ConfigPath());
+  p->loadFile(ConfigPath());
   for(unsigned i=0;i<Geometry::LastWidget;i++) {
     geo_visible[i]=
       p->boolValue("DavitGeometry",
