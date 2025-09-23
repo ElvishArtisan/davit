@@ -49,7 +49,6 @@ DvtConfig *config;
 DvtUser *global_dvtuser;
 DvtSystem *global_dvtsystem;
 QString openoffice_path;
-bool exiting=false;
 QStringList temp_files;
 Geometry *global_geometry=NULL;
 MailDialog *mail_dialog=NULL;
@@ -186,7 +185,7 @@ MainWidget::MainWidget(QWidget *parent)
   q=new DvtSqlQuery(sql);
   if(q->size()<=0) {
     QMessageBox::information(d_login_dialog,"Login Failed","Invalid Login!");
-    exiting=true;
+    CleanExit(0);
     delete q;
   }
   global_dvtuser=new DvtUser(loginname);
@@ -364,25 +363,6 @@ void MainWidget::generateReportsData()
 
 void MainWidget::quitMainWidget()
 {
-  /*
-  global_geometry->save();
-
-  //
-  // Close Wireguard Tunnels
-  //
-  if(d_wireguard_process!=NULL) {
-    d_wireguard_process->disconnect();
-    d_wireguard_process->terminate();
-  }
-  
-  //
-  // Delete Temporary Files
-  //
-  for(unsigned i=0;i<temp_files.size();i++) {
-    QFile::remove(temp_files[i]);
-  }
-  delete global_viewer_list;
-  */
   CleanExit(0);
 }
 
@@ -476,19 +456,18 @@ void MainWidget::WireguardTunnels(bool start_up)
   QProcess *proc=new QProcess();
   proc->start("/usr/lib/davit/dvtwgmgr",args);
   proc->waitForFinished();
-  if(proc->exitStatus()!=QProcess::NormalExit) {
-    QMessageBox::critical(this,"Davit - "+tr("Helper Error"),
-			  tr("The wireguard helper application crashed!"));
-    exit(1);
-  }
-  if(proc->exitCode()!=0) {
-    QMessageBox::critical(this,"Davit - "+tr("Helper Error"),
-		 tr("The wireguard helper application returned an error.")+
-		 "\n\n"+QString::fromUtf8(proc->readAllStandardError()));
-    exit(1);
-  }
-  if(start_up) {
-    // sleep(1);
+  if(start_up) {  // FIXME: QProcess falsely returns 'crashed' when stopping
+    if(proc->exitStatus()!=QProcess::NormalExit) {
+      QMessageBox::critical(this,"Davit - "+tr("Helper Error"),
+			    tr("The wireguard helper application crashed!"));
+      exit(1);
+    }
+    if(proc->exitCode()!=0) {
+      QMessageBox::critical(this,"Davit - "+tr("Helper Error"),
+			    tr("The wireguard helper application returned an error.")+
+			    "\n\n"+QString::fromUtf8(proc->readAllStandardError()));
+      exit(1);
+    }
   }
 }
 
@@ -498,9 +477,6 @@ int main(int argc,char *argv[])
   QApplication a(argc,argv);
   
   MainWidget *w=new MainWidget(NULL);
-  if(exiting) {
-      exit(0);
-  }
   w->setGeometry(w->geometry().x(),w->geometry().y(),
 		 w->sizeHint().width(),w->sizeHint().height());
   w->show();

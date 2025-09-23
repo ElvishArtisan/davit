@@ -44,5 +44,6 @@ debian/changelog
 debian/control
 utils/dvtdbmgr/dvtdbmgr
 utils/dvtstamp/dvtstamp
+utils/dvtwgmgr/dvtwgmgr
 utils/vnc/davit.xinitrc
 utils/vnc/start_davit.sh

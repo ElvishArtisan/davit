@@ -84,6 +84,7 @@ class MainWidget : public QWidget
   EditSystem *d_system_dialog;
   DvtInstanceMonitor *d_instance_monitor;
   QProcess *d_wireguard_process;
+  int d_exit_code;
 };
 
 

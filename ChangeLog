@@ -1113,3 +1113,6 @@
 	* Added a 'dvtwgmgr' helper app in 'utils/dvtwgmgr/'.
 2025-09-05 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored the 'dvtwgmgr' help to use '--up' and '--down' switches.
+2025-09-23 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in davit(1) that falsely reported a crash of
+	dvtwgmgr(1) at shutdown.
