@@ -30,7 +30,6 @@
 
 #include "datedialog.h"
 #include "generate_affadavit.h"
-#include "textfile.h"
 
 void GenerateAffadavit::paintAffiliateReport(QPrinter *printer)
 {

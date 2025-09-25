@@ -1,8 +1,8 @@
-// textfile.h
+// signalmonitor.h
 //
-// Spawn an external text file viewer.
+// Catch UNIX-style signals in a thread-safe manner
 //
-//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -18,12 +18,33 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef TEXTFILE_H
-#define TEXTFILE_H
+#ifndef SIGNALMONITOR_H
+#define SIGNALMONITOR_H
 
-#include <QString>
+#include <QList>
+#include <QLocalSocket>
+#include <QObject>
 
-bool TextFile(const QString &data);
+class SignalMonitor : public QObject
+{
+ Q_OBJECT
+ public:
+ SignalMonitor(QObject *parent=0);
+  ~SignalMonitor();
+  QList<int> monitoredSignals() const;
+  void addSignal(int signum);
+  void removeSignal(int signum);
+
+ signals:
+  void receivedSignal(int signo);
+
+ private slots:
+  void readyReadData();
+   
+ private:
+  QList<int> d_signals;
+  QLocalSocket *d_notify_socket;
+};
 
 
-#endif  // TEXTFILE_H
+#endif  // SIGNALMONITOR_H

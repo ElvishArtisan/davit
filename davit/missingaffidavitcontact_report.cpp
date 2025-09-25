@@ -29,7 +29,6 @@
 
 #include "list_reports.h"
 #include "pick_fields.h"
-#include "textfile.h"
 
 bool ListReports::MissingAffidavitContactReport(SpreadSheet *sheet)
 {

@@ -86,19 +86,18 @@ dist_davit_SOURCES = activity_report.cpp\
                      pick_daypart.cpp pick_daypart.h\
                      pick_fields.cpp pick_fields.h\
                      precisiontrak.cpp\
-                     program_report.cpp\
                      programlistmodel.cpp programlistmodel.h\
                      programbymarket_report.cpp\
                      providerlistmodel.cpp providerlistmodel.h\
                      raaffiliate_report.cpp\
                      showaffidavits.cpp showaffidavits.h\
+                     signalmonitor.cpp signalmonitor.h\
                      spread.cpp spread.h\
                      spread_cell.cpp spread_cell.h\
                      spread_sheet.cpp spread_sheet.h\
                      spread_tab.cpp spread_tab.h\
                      tableview.cpp tableview.h\
                      tablewidgetitem.cpp tablewidgetitem.h\
-                     textfile.cpp textfile.h\
                      transportbutton.cpp transportbutton.h\
                      userlistmodel.cpp userlistmodel.h\
                      statecombobox.cpp statecombobox.h\
@@ -154,6 +153,7 @@ nodist_davit_SOURCES = moc_add_affiliate.cpp\
                        moc_programlistmodel.cpp\
                        moc_providerlistmodel.cpp\
                        moc_showaffidavits.cpp\
+                       moc_signalmonitor.cpp\
                        moc_statecombobox.cpp\
                        moc_tableview.cpp\
                        moc_transportbutton.cpp\

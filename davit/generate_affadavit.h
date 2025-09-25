@@ -57,12 +57,8 @@ class GenerateAffadavit : public Dialog
   void closeEvent(QCloseEvent *e);
 
  private:
-  //  void RenderAffidavit(QPainter*p);
-  //  void PrintAffidavit();
   void AffiliateReport(int id,const QDate &start_date,
 		       const QDate &end_date,bool pgms);
-  void ProgramReport(int id,const QDate &start_date,
-  		     const QDate &end_date,bool affiliates);
   bool HasAffidavits() const;
   QDate SelectedDate() const;
   QString Center(const QString &s);

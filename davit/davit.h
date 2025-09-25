@@ -38,6 +38,7 @@
 #include "list_reports.h"
 #include "list_users.h"
 #include "login.h"
+#include "signalmonitor.h"
 
 #define DAVIT_USAGE "[--email-dry-run]\n     Don't actually send e-mail, but print it to STDOUT\n\n"
 
@@ -58,6 +59,7 @@ class MainWidget : public QWidget
   void importExternalData();  // precisiontrak.cpp
   void manageNetworksData();
   void generateReportsData();
+  void receivedSignalData(int signum);
   void quitMainWidget();
 
  protected:
@@ -83,6 +85,7 @@ class MainWidget : public QWidget
   ListReports *d_reports_dialog;
   EditSystem *d_system_dialog;
   DvtInstanceMonitor *d_instance_monitor;
+  SignalMonitor *d_signal_monitor;
   QProcess *d_wireguard_process;
   int d_exit_code;
 };

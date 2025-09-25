@@ -60,18 +60,6 @@ bool global_email_dry_run=false;
 //
 #include "../icons/davit-22x22.xpm"
 
-#ifndef WIN32
-void SigHandler(int signo)
-{
-  switch(signo) {
-  case SIGCHLD:
-    while(waitpid(-1,NULL,WNOHANG)>0);
-    signal(SIGCHLD,SigHandler);
-    break;
-  }
-}
-#endif  // WIN32
-
 MainWidget::MainWidget(QWidget *parent)
   :QWidget(parent)
 {
@@ -139,6 +127,15 @@ MainWidget::MainWidget(QWidget *parent)
       CleanExit(1);
     }
   }
+
+  //
+  // Configure Signals
+  //
+  d_signal_monitor=new SignalMonitor(this);
+  connect(d_signal_monitor,SIGNAL(receivedSignal(int)),
+	  this,SLOT(receivedSignalData(int)));
+  d_signal_monitor->addSignal(SIGINT);
+  d_signal_monitor->addSignal(SIGTERM);
 
   //
   // Dialogs
@@ -295,13 +292,6 @@ MainWidget::MainWidget(QWidget *parent)
   button->setFont(font);
   button->setText(tr("Quit"));
   connect(button,SIGNAL(clicked()),global_viewer_list,SLOT(cleanup()));
-
-  //
-  // Configure Signals
-  //
-#ifndef WIN32
-  signal(SIGCHLD,SigHandler);
-#endif  // WIN32
 }
 
 
@@ -358,6 +348,17 @@ void MainWidget::manageNetworksData()
 void MainWidget::generateReportsData()
 {
   d_reports_dialog->exec();
+}
+
+
+void MainWidget::receivedSignalData(int signum)
+{
+  switch(signum) {
+  case SIGINT:
+  case SIGTERM:
+    CleanExit(0);
+    break;
+  }
 }
 
 

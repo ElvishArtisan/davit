@@ -29,7 +29,6 @@
 #include <spread_sheet.h>
 
 #include "list_reports.h"
-#include "textfile.h"
 
 bool ListReports::AffidavitReport(SpreadSheet *sheet)
 {

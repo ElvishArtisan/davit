@@ -30,7 +30,6 @@
 
 #include "datedialog.h"
 #include "generate_affadavit.h"
-#include "textfile.h"
 
 GenerateAffadavit::GenerateAffadavit(DvtConfig *c,QWidget *parent)
   : Dialog(c,parent)
