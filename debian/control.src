@@ -7,7 +7,7 @@ Standards-Version: 4.4.1
 
 Package: davit-gui
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, qt6-qpa-plugins, libreoffice-calc, davit-core, postfix, openresolv
+Depends: ${shlibs:Depends}, ${misc:Depends}, qt6-qpa-plugins, libreoffice-calc, davit-core, postfix
 Description: Davit Affiliate Relations System
  Davit is a system for managing commercial radio affiliate relations. This
  package provides the GUI client.
