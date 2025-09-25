@@ -1125,3 +1125,5 @@
 	tunnels active if stopped by means of SIGINT or SIGTERM signals.
 2025-09-25 Fred Gleason <fredg@paravelsystems.com>
 	* Removed the 'openresolv' dependency to the 'davit-gui' DEB package.
+2025-09-25 Fred Gleason <fredg@paravelsystems.com>
+	* Documented in '[Wireguard]' section in the davit.conf(5) man page.

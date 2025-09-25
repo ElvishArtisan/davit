@@ -194,11 +194,53 @@
 	</variablelist>
       </listitem>
     </varlistentry>
+
+    <varlistentry>
+      <term>
+	<userinput>[Wireguard]</userinput>
+      </term>
+      <listitem>
+	<para>
+	  This section contains pointers to zero or more Wireguard VPN
+	  configurations, defining VPN tunnels to be brought up
+	  automatically when the davit(1) application is started and
+	  shutdown at its termination.
+	</para>
+	<variablelist>
+	  <varlistentry>
+	    <term>
+	      <userinput>ConfigurationPath = <replaceable>path-name</replaceable></userinput>
+	    </term>
+	    <listitem>
+	      <para>
+		The full path to a Wireguard configuration to be brought up
+		when davit(1) is started.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </listitem>
+    </varlistentry>
   </variablelist>
   </refsect1>
+
+  <refsect1 id='wireguard_notes'><title>Wireguard Notes</title>
+  <para>
+    <command>davit</command><manvolnum>1</manvolnum> depends upon the proper
+    functioning of Wireguard's
+    <command>wg-quick</command><manvolnum>8</manvolnum>
+    scripting interface for proper operation of automatic VPN tunnel control.
+    Some versions of this interface have known issues working with recent
+    SystemD setups. These problems can often be resolved by creating a
+    symlink in the '/usr/local/bin' directory as follows:
+  </para>
+  <para>
+    <userinput>sudo ln -s ln -s /usr/bin/resolvectl resolvconf</userinput>
+  </para>
+  </refsect1>
   
-<refsect1 id='see_also'><title>See Also</title>
-<para>
+  <refsect1 id='see_also'><title>See Also</title>
+  <para>
   <citerefentry>
     <refentrytitle>davit</refentrytitle><manvolnum>1</manvolnum>
   </citerefentry>,
@@ -207,9 +249,14 @@
   </citerefentry>,
   <citerefentry>
     <refentrytitle>dvtstamp</refentrytitle><manvolnum>8</manvolnum>
+  </citerefentry>,
+  <citerefentry>
+    <refentrytitle>wg</refentrytitle><manvolnum>8</manvolnum>
+  </citerefentry>,
+  <citerefentry>
+    <refentrytitle>wg-quick</refentrytitle><manvolnum>8</manvolnum>
   </citerefentry>
-</para>
-</refsect1>
+  </para>
+  </refsect1>
 
 </refentry>
-
