@@ -1,6 +1,12 @@
 The NEWS file for the Davit package.
 
 -------------------------------------------------------------------------------
+v3.0.0rc2 -- 25 September 2025
+
+Changes:
+   Wireguard VPN Support. Davit(1) can now be configured to automatically
+   bring up Wireguard VPN tunnels at startup and take them down at exit.
+-------------------------------------------------------------------------------
 v3.0.0rc1 -- 3 September 2025
 
 Changes:

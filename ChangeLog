@@ -1127,3 +1127,5 @@
 	* Removed the 'openresolv' dependency to the 'davit-gui' DEB package.
 2025-09-25 Fred Gleason <fredg@paravelsystems.com>
 	* Documented in '[Wireguard]' section in the davit.conf(5) man page.
+2025-09-25 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 3.0.0rc2.
