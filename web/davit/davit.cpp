@@ -28,6 +28,7 @@
 #include <QCoreApplication>
 #include <QDateTime>
 
+#include <dvtcmdswitch.h>
 #include <dvtconfig.h>
 #include <dvtconf.h>
 #include <dvtdb.h>
@@ -45,6 +46,8 @@
 MainObject::MainObject(QObject *parent)
   :QObject(parent)
 {
+  QString err_msg;
+
   //
   // Initialize Variables
   //
@@ -53,21 +56,17 @@ MainObject::MainObject(QObject *parent)
   //
   // Read Configuration
   //
+  DvtCmdSwitch *cmd=new DvtCmdSwitch("davit.cgi","");
   cast_config=new DvtConfig();
-  cast_config->load();
+  cast_config->load(cmd);
 
   //
   // Open Database
   //
-  QSqlDatabase db=QSqlDatabase::addDatabase(cast_config->mysqlServertype());
-  db.setDatabaseName(cast_config->mysqlDbname());
-  db.setUserName(cast_config->mysqlUsername());
-  db.setPassword(cast_config->mysqlPassword());
-  db.setHostName(cast_config->mysqlHostname());
-  if(!db.open()) {
+  if(!DvtOpenDb(&err_msg,cast_config)) {
     printf("Content-type: text/html\n\n");
-    printf("davit: unable to connect to database\n");
-    db.removeDatabase(cast_config->mysqlDbname());
+    printf("davit: unable to connect to database [%s]\n",
+	   err_msg.toUtf8().constData());
     exit(0);
   }
 

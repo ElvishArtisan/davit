@@ -38,7 +38,7 @@
 MainObject::MainObject()
   : QObject()
 {
-  bool mysql_params_changed=false;
+  QString err_msg;
 
   d_command=MainObject::NoCommand;
   d_yes=false;
@@ -47,19 +47,14 @@ MainObject::MainObject()
   //
   // Read Configuration
   //
+  DvtCmdSwitch *cmd=
+    new DvtCmdSwitch("dvtdbmgr",DVTDBMGR_USAGE);
   dvtconfig=new DvtConfig();
-  dvtconfig->load();
-  db_mysql_hostname=dvtconfig->mysqlHostname();
-  db_mysql_loginname=dvtconfig->mysqlUsername();
-  db_mysql_password=dvtconfig->mysqlPassword();
-  db_mysql_database=dvtconfig->mysqlDbname();
-  db_mysql_servertype=dvtconfig->mysqlServertype();
+  dvtconfig->load(cmd);
 
   //
   // Read Command Options
   //
-  DvtCmdSwitch *cmd=
-    new DvtCmdSwitch("dvtdbmgr",DVTDBMGR_USAGE);
   for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--check") {
       if(d_command!=MainObject::NoCommand) {
@@ -83,31 +78,6 @@ MainObject::MainObject()
 	exit(1);
       }
       d_command=MainObject::ModifyCommand;
-      cmd->setProcessed(i,true);
-    }
-    if(cmd->key(i)=="--mysql-hostname") {
-      db_mysql_hostname=cmd->value(i);
-      mysql_params_changed=true;
-      cmd->setProcessed(i,true);
-    }
-    if(cmd->key(i)=="--mysql-loginname") {
-      db_mysql_loginname=cmd->value(i);
-      mysql_params_changed=true;
-      cmd->setProcessed(i,true);
-    }
-    if(cmd->key(i)=="--mysql-password") {
-      db_mysql_password=cmd->value(i);
-      mysql_params_changed=true;
-      cmd->setProcessed(i,true);
-    }
-    if(cmd->key(i)=="--mysql-database") {
-      db_mysql_database=cmd->value(i);
-      mysql_params_changed=true;
-      cmd->setProcessed(i,true);
-    }
-    if(cmd->key(i)=="--mysql-servertype") {
-      db_mysql_servertype=cmd->value(i);
-      mysql_params_changed=true;
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--yes") {
@@ -140,21 +110,23 @@ MainObject::MainObject()
   //
   // Open Database
   //
-  QSqlDatabase db=QSqlDatabase::addDatabase(db_mysql_servertype);
-  db.setDatabaseName(db_mysql_database);
-  db.setUserName(db_mysql_loginname);
-  db.setPassword(db_mysql_password);
-  db.setHostName(db_mysql_hostname);
-  if(mysql_params_changed) {
+  if(dvtconfig->mysqlParamsOveridden()) {
     printf("Overriding configured database parameters!\n");
-    printf("  ServerType = %s\n",db_mysql_database.toUtf8().constData());
-    printf("  Hostname = %s\n",db_mysql_hostname.toUtf8().constData());
-    printf("  Loginname = %s\n",db_mysql_loginname.toUtf8().constData());
-    printf("  Password = %s\n",db_mysql_password.toUtf8().constData());
+    printf("  ServerType = %s\n",dvtconfig->mysqlDbname().toUtf8().constData());
+    printf("  Hostname = %s\n",dvtconfig->mysqlHostname().toUtf8().constData());
+    printf("  Loginname = %s\n",
+	   dvtconfig->mysqlUsername().toUtf8().constData());
+    printf("  Password = %s\n",dvtconfig->mysqlPassword().toUtf8().constData());
+    if(dvtconfig->mysqlConnectionTimeout()<0) {
+      printf("  ConnectionTimeout = [default]\n");
+    }
+    else {
+      printf("  ConnectionTimeout = %d\n",dvtconfig->mysqlConnectionTimeout());
+    }
   }
-  if(!db.open()) {
-    fprintf(stderr,"dvtdbmgr: unable to connect to database\n");
-    db.removeDatabase(dvtconfig->mysqlDbname());
+  if(!DvtOpenDb(&err_msg,dvtconfig)) {
+    fprintf(stderr,"dvtdbmgr: unable to connect to database [%s]\n",
+	    err_msg.toUtf8().constData());
     exit(256);
   }
 

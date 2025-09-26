@@ -50,11 +50,18 @@ MainObject::MainObject(QObject *parent)
   d_use_numeric_ids=false;
   QStringList fields;
   bool ok=false;
+  QString err_msg;
+
+  //
+  // Read Configuration
+  //
+  import_config=new DvtConfig();
+  import_cmd=new DvtCmdSwitch("dvtstamp",DVTSTAMP_USAGE);
+  import_config->load(import_cmd);
 
   //
   // Read Command Options
   //
-  import_cmd=new DvtCmdSwitch("dvtstamp",DVTSTAMP_USAGE);
   for(int i=0;i<import_cmd->keys();i++) {
     for(int j=0;j<MainObject::LastCommand;j++) {
       MainObject::Command command=(MainObject::Command)j;
@@ -125,22 +132,11 @@ MainObject::MainObject(QObject *parent)
   }
   
   //
-  // Read Configuration
-  //
-  import_config=new DvtConfig();
-  import_config->load();
-
-  //
   // Open Database
   //
-  QSqlDatabase db=QSqlDatabase::addDatabase(import_config->mysqlServertype());
-  db.setDatabaseName(import_config->mysqlDbname());
-  db.setUserName(import_config->mysqlUsername());
-  db.setPassword(import_config->mysqlPassword());
-  db.setHostName(import_config->mysqlHostname());
-  if(!db.open()) {
-    fprintf(stderr,"dvtstamp: unable to connect to database\n");
-    db.removeDatabase(import_config->mysqlDbname());
+  if(!DvtOpenDb(&err_msg,import_config)) {
+    fprintf(stderr,"dvtstamp: unable to connect to database [%s]\n",
+	    err_msg.toUtf8().constData());
     exit(256);
   }
 

@@ -98,6 +98,63 @@
 	</para>
       </listitem>
     </varlistentry>
+    <varlistentry>
+      <term><option>--mysql-hostname=</option><replaceable>hostname</replaceable></term>
+      <listitem>
+	<para>
+	  Connect to the database on <replaceable>hostname</replaceable>.
+	  Default is to use the corresponding value found in the 
+	  <userinput>[mySQL]</userinput> section of
+	  <command>davit.conf</command><manvolnum>5</manvolnum>.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--mysql-loginname=</option><replaceable>username</replaceable></term>
+      <listitem>
+	<para>
+	  Connect to the database as user <replaceable>username</replaceable>.
+	  Default is to use the corresponding value found in the 
+	  <userinput>[mySQL]</userinput> section of
+	  <command>davit.conf</command><manvolnum>5</manvolnum>.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--mysql-password=</option><replaceable>password</replaceable></term>
+      <listitem>
+	<para>
+	  Connect to the database using password
+	  <replaceable>hostname</replaceable>.
+	  Default is to use the corresponding value found in the 
+	  <userinput>[mySQL]</userinput> section of
+	  <command>davit.conf</command><manvolnum>5</manvolnum>.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--mysql-database=</option><replaceable>dbname</replaceable></term>
+      <listitem>
+	<para>
+	  Connect to the database named <replaceable>dbname</replaceable>.
+	  Default is to use the corresponding value found in the 
+	  <userinput>[mySQL]</userinput> section of
+	  <command>davit.conf</command><manvolnum>5</manvolnum>.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--mysql-servertype=</option><replaceable>driver</replaceable></term>
+      <listitem>
+	<para>
+	  Connect to the database using the <replaceable>driver</replaceable>
+	  Qt driver.
+	  Default is to use the corresponding value found in the 
+	  <userinput>[mySQL]</userinput> section of
+	  <command>davit.conf</command><manvolnum>5</manvolnum>.
+	</para>
+      </listitem>
+    </varlistentry>
   </variablelist>
   </refsect1>
 

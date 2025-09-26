@@ -26,6 +26,8 @@
 #include <QSqlQuery>
 #include <QVariant>
 
+#include "dvtconfig.h"
+
 class DvtSqlQuery : public QSqlQuery
 {
  public:
@@ -42,6 +44,8 @@ class DvtSqlQuery : public QSqlQuery
  private:
   int sql_columns;
 };
+
+bool DvtOpenDb(QString *err_msg,DvtConfig *c);
 
 
 #endif  // RDDB_H

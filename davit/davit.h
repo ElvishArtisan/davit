@@ -72,9 +72,6 @@ class MainWidget : public QWidget
   void VerifyPrecisionTrakRecord(const QString &str1,const QString &str2,
 				 QStringList &errs);
   QString GetNextLine(FILE *f);
-  bool OpenDb(QString *err_msg,const QString &dbname,const QString &login,
-	      const QString &pwd,const QString &host,
-	      const QString &srv_type) const;
   void WireguardTunnels(bool start_up);
   void CleanExit(int exit_code);
   Login *d_login_dialog;

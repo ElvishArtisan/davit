@@ -36,7 +36,16 @@ MainObject::MainObject(QObject *parent)
   d_up=false;
   d_down=false;
 
+  //
+  // Load Configuration
+  //
   DvtCmdSwitch *cmd=new DvtCmdSwitch("dvtwgmgr",DVTWGMGR_USAGE);
+  d_config=new DvtConfig();
+  d_config->load(cmd);
+
+  //
+  // Read Command-line Arguments
+  //
   for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--down") {
       d_down=true;
@@ -60,12 +69,6 @@ MainObject::MainObject(QObject *parent)
     fprintf(stderr,"\"--down\" or \"--up\" are mutually exclusive\n");
     exit(1);
   }
-
-  //
-  // Load Configuration
-  //
-  d_config=new DvtConfig();
-  d_config->load();
 
   if(d_up) {
     d_wireguard_configurations=d_config->wireguardConfigurations();

@@ -25,7 +25,8 @@
 
 #include <QStringList>
 
-#include "dvt.h"
+#include <dvt.h>
+#include <dvtcmdswitch.h>
 
 class DvtConfig
 {
@@ -39,6 +40,8 @@ class DvtConfig
   QString mysqlPassword() const;
   QString mysqlDbname() const;
   QString mysqlServertype() const;
+  bool mysqlParamsOveridden() const;
+  int mysqlConnectionTimeout() const;
   QString fontFamily() const;
   int fontButtonSize() const;
   int fontLabelSize() const;
@@ -46,7 +49,7 @@ class DvtConfig
   QString contactAddress() const;
   QStringList wireguardConfigurations() const;
   void dumpConfig(FILE *stream);
-  bool load();
+  bool load(DvtCmdSwitch *cmd);
   void clear();
 
  private:
@@ -56,6 +59,8 @@ class DvtConfig
   QString conf_mysql_password;
   QString conf_mysql_dbname;
   QString conf_mysql_server_type;
+  bool conf_mysql_params_overidden;
+  int conf_mysql_connection_timeout;
   QString conf_font_family;
   int conf_font_button_size;
   int conf_font_label_size;

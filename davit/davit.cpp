@@ -109,13 +109,13 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Load Configs
   //
+  DvtCmdSwitch *cmd=new DvtCmdSwitch("davit",DAVIT_USAGE);
   config=new DvtConfig();
-  config->load();
+  config->load(cmd);
 
   //
   // Command-Line Switches
   //
-  DvtCmdSwitch *cmd=new DvtCmdSwitch("davit",DAVIT_USAGE);
   for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--email-dry-run") {
       global_email_dry_run=true;
@@ -160,13 +160,11 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Open Database
   //
-  if(!OpenDb(&err_msg,config->mysqlDbname(),config->mysqlUsername(),
-	     config->mysqlPassword(),config->mysqlHostname(),
-	     config->mysqlServertype())) {
+  if(!DvtOpenDb(&err_msg,config)) {
     QMessageBox::critical(this,"Davit - "+tr("Database Error"),err_msg);
     CleanExit(1);
   }
-
+  
   //
   // Log In
   //
@@ -371,55 +369,6 @@ void MainWidget::quitMainWidget()
 void MainWidget::closeEvent(QCloseEvent *e)
 {
   global_viewer_list->cleanup();
-}
-
-
-bool MainWidget::OpenDb(QString *err_msg,
-			const QString &dbname,const QString &login,
-			const QString &pwd,const QString &host,
-			const QString &srv_type) const
-{
-  QString msg;
-
-  //
-  // Open Database
-  //
-  QSqlDatabase db=QSqlDatabase::addDatabase(srv_type);
-  db.setDatabaseName(dbname);
-  db.setUserName(login);
-  db.setPassword(pwd);
-  db.setHostName(host);
-  if(!db.open()) {
-    *err_msg=QObject::tr("Unable to access database")+
-      "'"+dbname+"'@'"+host+"'.";
-    return false;
-  }
-
-  //
-  // Verify Schema Version
-  //
-  QString sql=QString("select ")+
-    "`DB` "+  // 00
-    "from `VERSION`";
-  QSqlQuery *q=new DvtSqlQuery(sql);
-  if(!q->first()) {
-    *err_msg=QObject::tr("Database")+
-      " '"+dbname+"'@'"+host+"' "+
-      QObject::tr("does not appear to be a Davit database.");
-    delete q;
-    return false;
-  }
-  if(q->value(0).toInt()!=DVT_VERSION_DATABASE) {
-    *err_msg=QObject::tr("Database")+
-      " '"+dbname+"'@'"+host+"' "+
-      QObject::tr("is at schema version")+
-      QString::asprintf(" %d, ",q->value(0).toInt())+
-      tr("expecting")+QString::asprintf(" %d.",DVT_VERSION_DATABASE);
-    delete q;
-    return false;
-  }
-  delete q;
-  return true;
 }
 
 

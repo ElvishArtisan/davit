@@ -83,6 +83,18 @@ QString DvtConfig::mysqlServertype() const
 }
 
 
+int DvtConfig::mysqlConnectionTimeout() const
+{
+  return conf_mysql_connection_timeout;
+}
+
+
+bool DvtConfig::mysqlParamsOveridden() const
+{
+  return conf_mysql_params_overidden;
+}
+
+
 QString DvtConfig::fontFamily() const
 {
   return conf_font_family;
@@ -137,12 +149,13 @@ void DvtConfig::dumpConfig(FILE *stream)
 }
 
 
-bool DvtConfig::load()
+bool DvtConfig::load(DvtCmdSwitch *cmd)
 {
   QString group;
   QString str;
   QString err_msg;
-  
+  bool ok=false;
+
   //
   // Host Name
   //
@@ -166,6 +179,44 @@ bool DvtConfig::load()
     profile->stringValue("mySQL","Database",DVT_DEFAULT_MYSQL_DATABASE);
   conf_mysql_server_type=
     profile->stringValue("mySQL","ServerType",DVT_DEFAULT_MYSQL_DBTYPE);
+  conf_mysql_connection_timeout=profile->intValue("mySQL","ConnectionTime",-1);
+  conf_mysql_params_overidden=false;
+  for(int i=0;i<cmd->keys();i++) {
+    if(cmd->key(i)=="--mysql-hostname") {
+      conf_mysql_hostname=cmd->value(i);
+      conf_mysql_params_overidden=true;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--mysql-loginname") {
+      conf_mysql_username=cmd->value(i);
+      conf_mysql_params_overidden=true;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--mysql-password") {
+      conf_mysql_password=cmd->value(i);
+      conf_mysql_params_overidden=true;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--mysql-database") {
+      conf_mysql_dbname=cmd->value(i);
+      conf_mysql_params_overidden=true;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--mysql-servertype") {
+      conf_mysql_server_type=cmd->value(i);
+      conf_mysql_params_overidden=true;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--mysql-connection-timeout") {
+      conf_mysql_connection_timeout=cmd->value(i).toInt(&ok);
+      if(!ok) {
+	fprintf(stderr,"--mysql-connection-timeout value must be an integer\n");
+	exit(1);
+      }
+      conf_mysql_params_overidden=true;
+      cmd->setProcessed(i,true);
+    }
+  }
 
   //
   // [Fonts] Section
@@ -210,6 +261,8 @@ void DvtConfig::clear()
   conf_mysql_password="";
   conf_mysql_dbname="";
   conf_mysql_server_type="";
+  conf_mysql_params_overidden=false;
+  conf_mysql_connection_timeout=-1;
   conf_font_family="";
   conf_font_button_size=-1;
   conf_font_label_size=-1;

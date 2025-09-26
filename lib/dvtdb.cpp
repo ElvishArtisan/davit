@@ -209,57 +209,47 @@ QString DvtSqlQuery::escape(bool state)
 }
 
 
-/*
-bool RDOpenDb (int *schema,QString *err_str,RDConfig *config)
+bool DvtOpenDb(QString *err_msg,DvtConfig *c)
 {
-  QSqlDatabase db;
-  QString sql;
-  QSqlQuery *q;
+  QString msg;
 
-  if (!db.isOpen()){
-    db=QSqlDatabase::addDatabase(config->mysqlDriver());
-    if(!db.isValid()) {
-      *err_str+= QString(QObject::tr("Couldn't initialize MySql driver!"));
-      return false;
-    }
-    db.setHostName(config->mysqlHostname());
-    db.setDatabaseName(config->mysqlDbname());
-    db.setUserName(config->mysqlUsername());
-    db.setPassword(config->mysqlPassword());
-    if(!db.open()) {
-      *err_str+=QString(QObject::tr("Couldn't open MySQL connection on"))+
-	" \""+config->mysqlHostname()+"\".";
-      db.removeDatabase(config->mysqlDbname());
-      db.close();
-      return false;
-    }
+  //
+  // Open Database
+  //
+  QSqlDatabase db=QSqlDatabase::addDatabase(c->mysqlServertype());
+  db.setDatabaseName(c->mysqlDbname());
+  db.setUserName(c->mysqlUsername());
+  db.setPassword(c->mysqlPassword());
+  db.setHostName(c->mysqlHostname());
+  if(!db.open()) {
+    *err_msg=QObject::tr("Unable to access database")+
+      " '"+c->mysqlDbname()+"'@'"+c->mysqlHostname()+"'.";
+    return false;
   }
-  new RDDbHeartbeat(config->mysqlHeartbeatInterval());
-  sql=QString("set NAMES utf8mb4 collate utf8mb4_general_ci");
-  q=new QSqlQuery(sql);
-  delete q;
 
-  *schema=-1;
-  sql=QString("show tables where ")+
-    "Tables_in_"+config->mysqlDbname()+"=\"VERSION\"";
-  q=new QSqlQuery(sql);
-  if(q->first()) {
+  //
+  // Verify Schema Version
+  //
+  QString sql=QString("select ")+
+    "`DB` "+  // 00
+    "from `VERSION`";
+  QSqlQuery *q=new DvtSqlQuery(sql);
+  if(!q->first()) {
+    *err_msg=QObject::tr("Database")+
+      " '"+c->mysqlDbname()+"'@'"+c->mysqlHostname()+"' "+
+      QObject::tr("does not appear to be a Davit database.");
     delete q;
-    q=new QSqlQuery("select `DB` from `VERSION`");
-    if(q->first()) {
-      *schema=q->value(0).toUInt();
-    }
+    return false;
   }
-  else {
+  if(q->value(0).toInt()!=DVT_VERSION_DATABASE) {
+    *err_msg=QObject::tr("Database")+
+      " '"+c->mysqlDbname()+"'@'"+c->mysqlHostname()+"' "+
+      QObject::tr("is at schema version")+
+      QString::asprintf(" %d, ",q->value(0).toInt())+
+      QObject::tr("expecting")+QString::asprintf(" %d.",DVT_VERSION_DATABASE);
     delete q;
-    sql=QString("show tables");
-    q=new QSqlQuery(sql);
-    if(!q->first()) {
-      *schema=0;
-    }
+    return false;
   }
   delete q;
-
   return true;
 }
-*/
