@@ -74,6 +74,30 @@
 	<variablelist>
 	  <varlistentry>
 	    <term>
+	      <userinput>ConnectionTimeout = <replaceable>timeout</replaceable></userinput>
+	    </term>
+	    <listitem>
+	      <para>
+		Attempt to establish a database connection for
+		<replaceable>timeout</replaceable> seconds before treating
+		the attempt as failed. The default value is
+		<userinput>10</userinput>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>
+	      <userinput>Database = <replaceable>name</replaceable></userinput>
+	    </term>
+	    <listitem>
+	      <para>
+		The name of the database to use when connecting to the database
+		server. Default value is <userinput>Davit</userinput>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>
 	      <userinput>Hostname = <replaceable>addr</replaceable></userinput>
 	    </term>
 	    <listitem>
@@ -102,17 +126,6 @@
 	      <para>
 		The password to use when connecting to the database server.
 		This parameter has no default value.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term>
-	      <userinput>Database = <replaceable>name</replaceable></userinput>
-	    </term>
-	    <listitem>
-	      <para>
-		The name of the database to use when connecting to the database
-		server. Default value is <userinput>Davit</userinput>.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -201,10 +214,9 @@
       </term>
       <listitem>
 	<para>
-	  This section contains pointers to zero or more Wireguard VPN
-	  configurations, defining VPN tunnels to be brought up
-	  automatically when the davit(1) application is started and
-	  shutdown at its termination.
+	  This section contains directives for configuring an optional
+	  Wireguard VPN tunnel for use when connecting to the Davit
+	  database.
 	</para>
 	<variablelist>
 	  <varlistentry>
@@ -213,9 +225,53 @@
 	    </term>
 	    <listitem>
 	      <para>
-		The full path to a Wireguard configuration to be brought up
-		when davit(1) is started.
+		The full path to a Wireguard configuration,
 	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>
+	      <userinput>PathPriority = <replaceable>path-order</replaceable></userinput>
+	    </term>
+	    <listitem>
+	      <para>
+		Configure how Davit
+		will attempt to use Wireguard when connecting to the database
+		The following <replaceable>path-order</replaceable>
+		keywords are recognized:
+	      </para>
+	      <variablelist>
+		<varlistentry>
+		  <term><userinput>LocalOnly</userinput></term>
+		  <listitem>
+		    <para>
+		      Use local network interfaces only --i.e. never attempt
+		      to use a Wireguard tunnel. This is the default.
+		    </para>
+		  </listitem>
+		</varlistentry>
+		<varlistentry>
+		  <term><userinput>LocalFirst</userinput></term>
+		  <listitem>
+		    <para>
+		      Attempt to use local network interface(s) only when
+		      connecting to the database. If that fails, then put up
+		      the Wireguard tunnel and try again.
+		    </para>
+		  </listitem>
+		</varlistentry>
+		<varlistentry>
+		  <term><userinput>VpnFirst</userinput></term>
+		  <listitem>
+		    <para>
+		      The opposite of <userinput>LocalFirst</userinput> --i.e.
+		      put up the Wireguard tunnel when attempting to connect
+		      to the database. If that fails, take down the tunnel
+		      and try again.
+		    </para>
+		  </listitem>
+		</varlistentry>
+	      </variablelist>
 	    </listitem>
 	  </varlistentry>
 	</variablelist>

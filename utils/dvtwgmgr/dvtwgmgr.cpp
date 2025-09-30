@@ -71,15 +71,13 @@ MainObject::MainObject(QObject *parent)
   }
 
   if(d_up) {
-    d_wireguard_configurations=d_config->wireguardConfigurations();
-    for(int i=0;i<d_wireguard_configurations.size();i++) {
-      StartTunnel(d_wireguard_configurations.at(i));
+    if(!d_config->wireguardConfiguration().isEmpty()) {
+      StartTunnel(d_config->wireguardConfiguration());
     }
   }
   if(d_down) {
-    d_wireguard_configurations=d_config->wireguardConfigurations();
-    for(int i=0;i<d_wireguard_configurations.size();i++) {
-      StopTunnel(d_wireguard_configurations.at(i));
+    if(!d_config->wireguardConfiguration().isEmpty()) {
+      StopTunnel(d_config->wireguardConfiguration());
     }
   }
   exit(0);

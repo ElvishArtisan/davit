@@ -45,7 +45,6 @@
 //
 // Global Classes
 //
-DvtConfig *config;
 DvtUser *global_dvtuser;
 DvtSystem *global_dvtsystem;
 QString openoffice_path;
@@ -110,8 +109,8 @@ MainWidget::MainWidget(QWidget *parent)
   // Load Configs
   //
   DvtCmdSwitch *cmd=new DvtCmdSwitch("davit",DAVIT_USAGE);
-  config=new DvtConfig();
-  config->load(cmd);
+  d_config=new DvtConfig();
+  d_config->load(cmd);
 
   //
   // Command-Line Switches
@@ -140,29 +139,49 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Dialogs
   //
-  d_login_dialog=new Login(config,this);
+  d_login_dialog=new Login(d_config,this);
 
   //
   // Davit Process Monitor
   //
   d_instance_monitor=new DvtInstanceMonitor();
-  QStringList wg_configs=config->wireguardConfigurations();
-  if((wg_configs.size()>0)&&(d_instance_monitor->processIds().size()==0)) {
+  if((!d_config->wireguardConfiguration().isEmpty())&&
+     (d_instance_monitor->processIds().size()==0)) {
     d_wireguard_process=new QProcess(this);
     sleep(1);
   }
 
   //
-  // Start VPN Tunnels
+  // Start VPN Tunnel
   //
-  WireguardTunnels(true);
-  
+  if(!d_config->wireguardConfiguration().isEmpty()) {
+    if(d_config->wireguardConnectionPriority()==DvtConfig::VpnFirst) {
+      WireguardTunnel(true);
+    }
+  }
+
   //
   // Open Database
   //
-  if(!DvtOpenDb(&err_msg,config)) {
-    QMessageBox::critical(this,"Davit - "+tr("Database Error"),err_msg);
-    CleanExit(1);
+  if(!DvtOpenDb(&err_msg,d_config)) {
+    if((d_config->wireguardConnectionPriority()==DvtConfig::LocalOnly)||
+       d_config->wireguardConfiguration().isEmpty()) {
+      QMessageBox::critical(this,"Davit - "+tr("Database Error"),err_msg);
+      CleanExit(1);
+    }
+    //
+    // Flip the tunnel state
+    //
+    WireguardTunnel(d_config->wireguardConnectionPriority()==
+		    DvtConfig::LocalFirst);
+
+    //
+    // Try Again
+    //
+    if(!DvtOpenDb(&err_msg,d_config)) {
+      QMessageBox::critical(this,"Davit - "+tr("Database Error"),err_msg);
+      CleanExit(1);
+    }
   }
   
   //
@@ -194,15 +213,15 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Create Dialogs
   //
-  mail_dialog=new MailDialog(config,this);
-  d_reports_dialog=new ListReports(config,this);
+  mail_dialog=new MailDialog(d_config,this);
+  d_reports_dialog=new ListReports(d_config,this);
   connect(global_viewer_list,SIGNAL(reportStartupComplete()),
 	  d_reports_dialog,SLOT(clearBusyCursor()));
-  d_users_dialog=new ListUsers(config,this);
-  d_affiliates_dialog=new ListAffiliates(config,this);
-  d_networks_dialog=new ListNetworks(config,this);
-  d_providers_dialog=new ListProviders(config,this);
-  d_system_dialog=new EditSystem(config,this);
+  d_users_dialog=new ListUsers(d_config,this);
+  d_affiliates_dialog=new ListAffiliates(d_config,this);
+  d_networks_dialog=new ListNetworks(d_config,this);
+  d_providers_dialog=new ListProviders(d_config,this);
+  d_system_dialog=new EditSystem(d_config,this);
 
   //
   // Title
@@ -387,15 +406,19 @@ void MainWidget::CleanExit(int exit_code)
   //
   // Stop VPN Tunnels
   //
-  WireguardTunnels(false);
+  WireguardTunnel(false);
   
   exit(exit_code);
 }
 
 
-void MainWidget::WireguardTunnels(bool start_up)
+bool MainWidget::WireguardTunnel(bool start_up)
 {
   QStringList args;
+
+  if(d_config->wireguardConfiguration().isEmpty()) {
+    return false;
+  }
 
   if(start_up) {
     args.push_back("--up");
@@ -419,6 +442,7 @@ void MainWidget::WireguardTunnels(bool start_up)
       exit(1);
     }
   }
+  return true;
 }
 
 

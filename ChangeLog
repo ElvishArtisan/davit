@@ -1135,3 +1135,14 @@
 	* Added universal support for '--mysql-hostname=',
 	'--mysql-loginname=', '-mysql-password=', '--mysql-database=' and
 	'--mysql-servertype=' switches in all modules.
+2025-09-30 Fred Gleason <fredg@paravelsystems.com>
+	* Removed support for the 'ConfigurationPaths=' directive in the
+	'[Wireguard]' section of davit.conf(5).
+	* Added support for a 'ConfigurationPath=' directive in the
+	'[Wireguard]' section of davit.conf(5).
+	* Added support for a 'ConnectionPriority=' directive in the
+	'[Wireguard]' section of davit.conf(5).
+	* Changed the default connection timeout for MySQL/MariaDB
+	database connections to ten seconds.
+	* Added support for a 'ConnectionTime=' directive in the '[mySQL]'
+	section of davit.conf(5).

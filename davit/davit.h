@@ -72,7 +72,7 @@ class MainWidget : public QWidget
   void VerifyPrecisionTrakRecord(const QString &str1,const QString &str2,
 				 QStringList &errs);
   QString GetNextLine(FILE *f);
-  void WireguardTunnels(bool start_up);
+  bool WireguardTunnel(bool start_up);
   void CleanExit(int exit_code);
   Login *d_login_dialog;
   ListUsers *d_users_dialog;
@@ -84,6 +84,7 @@ class MainWidget : public QWidget
   DvtInstanceMonitor *d_instance_monitor;
   SignalMonitor *d_signal_monitor;
   QProcess *d_wireguard_process;
+  DvtConfig *d_config;
   int d_exit_code;
 };
 

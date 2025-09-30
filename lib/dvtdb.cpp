@@ -221,9 +221,12 @@ bool DvtOpenDb(QString *err_msg,DvtConfig *c)
   db.setUserName(c->mysqlUsername());
   db.setPassword(c->mysqlPassword());
   db.setHostName(c->mysqlHostname());
+  if(c->mysqlConnectionTimeout()>0) {
+    db.setConnectOptions(QString::asprintf("MYSQL_OPT_CONNECT_TIMEOUT=%d",
+					   c->mysqlConnectionTimeout()));
+  }
   if(!db.open()) {
-    *err_msg=QObject::tr("Unable to access database")+
-      " '"+c->mysqlDbname()+"'@'"+c->mysqlHostname()+"'.";
+    *err_msg=db.lastError().databaseText();
     return false;
   }
 

@@ -125,9 +125,15 @@ QString DvtConfig::contactAddress() const
 }
 
 
-QStringList DvtConfig::wireguardConfigurations() const
+QString DvtConfig::wireguardConfiguration() const
 {
-  return conf_wireguard_configurations;
+  return conf_wireguard_configuration;
+}
+
+
+DvtConfig::ConnectionPriority DvtConfig::wireguardConnectionPriority() const
+{
+  return conf_wireguard_connection_priority;
 }
 
 
@@ -145,6 +151,10 @@ void DvtConfig::dumpConfig(FILE *stream)
 	    "  Password = %s\n",mysqlPassword().toUtf8().constData());
     fprintf(stream,"\n");
   }
+  fprintf(stream,"[Wireguard]\n");
+  fprintf(stream,"  ConnectionPriority=%s\n",
+	  DvtConfig::connectionPriorityText(wireguardConnectionPriority()).
+	  toUtf8().constData());
   fprintf(stream,"\n");
 }
 
@@ -179,7 +189,9 @@ bool DvtConfig::load(DvtCmdSwitch *cmd)
     profile->stringValue("mySQL","Database",DVT_DEFAULT_MYSQL_DATABASE);
   conf_mysql_server_type=
     profile->stringValue("mySQL","ServerType",DVT_DEFAULT_MYSQL_DBTYPE);
-  conf_mysql_connection_timeout=profile->intValue("mySQL","ConnectionTime",-1);
+  conf_mysql_connection_timeout=
+    profile->intValue("mySQL","ConnectionTimeout",
+		      DVT_DEFAULT_MYSQL_CONNECTION_TIMEOUT);
   conf_mysql_params_overidden=false;
   for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--mysql-hostname") {
@@ -234,8 +246,17 @@ bool DvtConfig::load(DvtCmdSwitch *cmd)
   //
   // [Wireguard] Section
   //
-  conf_wireguard_configurations=
-    profile->stringValues("Wireguard","ConfigurationPath");
+  conf_wireguard_configuration=
+    profile->stringValue("Wireguard","ConfigurationPath");
+  str=profile->stringValue("Wireguard","ConnectionPriority",
+			   DVT_DEFAULT_WIREGUARD_CONNECTION_PRIORITY).toLower();
+  for(int i=0;i<DvtConfig::ConnectionLast;i++) {
+    ConnectionPriority prio=(DvtConfig::ConnectionPriority)i;
+    if(str==DvtConfig::connectionPriorityText(prio).toLower()) {
+      conf_wireguard_connection_priority=prio;
+      break;
+    }
+  }
 
   delete profile;
 
@@ -268,4 +289,31 @@ void DvtConfig::clear()
   conf_font_label_size=-1;
   conf_font_default_size=-1;
   conf_contact_address="";
+  conf_wireguard_connection_priority=DvtConfig::LocalFirst;;
+}
+
+
+QString DvtConfig::connectionPriorityText(DvtConfig::ConnectionPriority prio)
+{
+  QString ret="unknown";
+
+  switch(prio) {
+  case DvtConfig::LocalOnly:
+    ret="LocalOnly";
+    break;
+
+  case DvtConfig::LocalFirst:
+    ret="LocalFirst";
+    break;
+
+  case DvtConfig::VpnFirst:
+    ret="VpnFirst";
+    break;
+
+  case DvtConfig::ConnectionLast:
+    break;
+
+  }
+  
+  return ret;
 }
