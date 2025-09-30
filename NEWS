@@ -1,6 +1,13 @@
 The NEWS file for the Davit package.
 
 -------------------------------------------------------------------------------
+v3.0.0rc3 -- 30 September 2025
+
+Changes:
+   Wireguard VPN Support. Added a 'ConnectionPriority=' directive to
+   davit.conf(5) to allow for various VPN failover scenarios. See the
+   '[Wireguard]' section of the davit.conf(5) man page for details.
+-------------------------------------------------------------------------------
 v3.0.0rc2 -- 25 September 2025
 
 Changes:
