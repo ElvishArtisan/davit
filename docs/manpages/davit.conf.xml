@@ -231,7 +231,7 @@
 	  </varlistentry>
 	  <varlistentry>
 	    <term>
-	      <userinput>PathPriority = <replaceable>path-order</replaceable></userinput>
+	      <userinput>ConnectionPriority = <replaceable>path-order</replaceable></userinput>
 	    </term>
 	    <listitem>
 	      <para>

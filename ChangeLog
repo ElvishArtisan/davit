@@ -1148,3 +1148,6 @@
 	section of davit.conf(5).
 2025-09-30 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 3.0.0rc3.
+2025-10-16 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a type in the '[Wireguard]' section of the davit.conf(5)
+	man page.
