@@ -1158,3 +1158,5 @@
 	package.
 2025-12-03 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed typos in the sample davit.conf(5) file.
+2025-12-03 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 3.0.0rc5.
