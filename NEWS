@@ -1,6 +1,11 @@
 The NEWS file for the Davit package.
 
 -------------------------------------------------------------------------------
+v3.0.0rc4 -- 3 December 2025
+
+Changes:
+   Documentation. Fixed a typo in the davit.conf(5) man page.
+-------------------------------------------------------------------------------
 v3.0.0rc3 -- 30 September 2025
 
 Changes:
