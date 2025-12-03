@@ -1153,3 +1153,6 @@
 	man page.
 2025-12-03 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 3.0.0rc4.
+2025-12-03 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'wireguard-tools' dependency to the 'davit-gui' DEB
+	package.
