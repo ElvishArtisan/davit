@@ -1156,3 +1156,5 @@
 2025-12-03 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'wireguard-tools' dependency to the 'davit-gui' DEB
 	package.
+2025-12-03 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed typos in the sample davit.conf(5) file.
