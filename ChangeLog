@@ -1160,3 +1160,8 @@
 	* Fixed typos in the sample davit.conf(5) file.
 2025-12-03 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 3.0.0rc5.
+2026-03-10 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in davit(1) where the 'List Contacts', 'List Program
+	List' and 'Show Affiliate History' dialogs would display in a
+	collapsed state if no previous geometry information had been saved
+	in '~/.davit/geometry'.

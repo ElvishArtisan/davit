@@ -121,10 +121,10 @@ void Geometry::load()
       setY(p->intValue("DavitGeometry",QString::asprintf("Widget%dY",i+1),0));
     geo_rects[i].
       setWidth(p->intValue("DavitGeometry",
-			   QString::asprintf("Widget%dWidth",i+1),0));
+	      QString::asprintf("Widget%dWidth",i+1),DVT_DEFAULT_LIST_WIDTH));
     geo_rects[i].
       setHeight(p->intValue("DavitGeometry",
-			   QString::asprintf("Widget%dHeight",i+1),0));
+	      QString::asprintf("Widget%dHeight",i+1),DVT_DEFAULT_LIST_HEIGHT));
     openoffice_path=p->stringValue("DavitGeometry","OpenofficePath","soffice");
   }
   delete p;
