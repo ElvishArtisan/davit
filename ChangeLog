@@ -1170,3 +1170,6 @@
 	are not blind-copied to the Archive e-mail address.
 2026-03-27 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 3.0.1.
+2026-03-27 Fred Gleason <fredg@paravelsystems.com>
+	* Modified davit(1) to set the Archive e-mail address as the
+	envelope sender when originating e-mail.

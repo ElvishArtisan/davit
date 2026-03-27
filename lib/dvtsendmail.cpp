@@ -257,6 +257,8 @@ bool DvtSendMail(QString *err_msg,const QString &subject,const QString &body,
   args.clear();
   args.push_back("-bm");
   args.push_back("-t");
+  args.push_back("-f");
+  args.push_back(from_addr_enc);
   proc=new QProcess();
   proc->start("sendmail",args);
   if(!proc->waitForStarted()) {
