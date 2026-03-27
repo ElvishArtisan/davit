@@ -492,8 +492,8 @@ void ListAffiliates::affidavitReminderData()
     QString err_msg;
     if(!DvtSendMail(&err_msg,subject,msg,global_dvtsystem->originEmail(),
 		    QStringList(DvtFormatEmailAddress(q->value(1).toString(),
-				    q->value(2).toString())),QStringList(),
-		    QStringList(global_dvtuser->email()),
+				q->value(2).toString())),QStringList(),
+		    QStringList(),
 		    global_email_dry_run)) {
       QMessageBox::warning(this,"Davit - "+tr("Mailer Error"),
 			   tr("An error occurred when sending mail to")+"\n"+

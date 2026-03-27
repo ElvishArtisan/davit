@@ -131,10 +131,9 @@ void ShowAffidavits::mailClickedData()
   // Load System Values
   //
   sql=QString("select ")+
-    "`ORIGIN_EMAIL`,"+             // 00
-    "`ALERT_EMAIL`,"+              // 01
-    "`AFFIDAVIT_EMAIL_SUBJECT`,"+  // 02
-    "`AFFIDAVIT_EMAIL_TEMPLATE` "+  // 03
+    "`ORIGIN_EMAIL`,"+              // 00
+    "`AFFIDAVIT_EMAIL_SUBJECT`,"+   // 01
+    "`AFFIDAVIT_EMAIL_TEMPLATE` "+  // 02
     "from `SYSTEM`";
   q=new DvtSqlQuery(sql);
   if(!q->first()) {
@@ -145,11 +144,8 @@ void ShowAffidavits::mailClickedData()
   }
   QString origin_email=q->value(0).toString();
   QStringList bcc_addrs;
-  if(!q->value(1).toString().isEmpty()) {
-    bcc_addrs.push_back(q->value(1).toString());
-  }
-  QString affidavit_email_subject=q->value(2).toString();
-  QString affidavit_email_template=q->value(3).toString();
+  QString affidavit_email_subject=q->value(1).toString();
+  QString affidavit_email_template=q->value(2).toString();
   delete q;
 
   //
