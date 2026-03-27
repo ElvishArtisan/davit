@@ -1,6 +1,12 @@
 The NEWS file for the Davit package.
 
 -------------------------------------------------------------------------------
+v3.0.2 -- 27 March 2026
+
+Changes:
+  Modified davit(1) to set the Archive e-mail address as the envelope sender
+  when originating e-mail.
+-------------------------------------------------------------------------------
 v3.0.1 -- 27 March 2026
 
 Changes:
