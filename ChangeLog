@@ -1168,3 +1168,5 @@
 2026-03-27 Fred Gleason <fredg@paravelsystems.com>
 	* Modified policy in davit(1) so that affidavit reminder e-mails
 	are not blind-copied to the Archive e-mail address.
+2026-03-27 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 3.0.1.

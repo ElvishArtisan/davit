@@ -1,6 +1,15 @@
 The NEWS file for the Davit package.
 
 -------------------------------------------------------------------------------
+v3.0.1 -- 27 March 2026
+
+Changes:
+   Modified policy in davit(1) so that Affidavit Reminder e-mails will no
+   longer to blind-copied to the Archive e-mail address.
+
+   Fixed a bug in davit(1) where the 'List Contacts', 'List Program List'
+   and 'Show Affiliate History' dialogs could display in a collapsed state.
+-------------------------------------------------------------------------------
 v3.0.0rc5 -- 3 December 2025
 
 Changes:
