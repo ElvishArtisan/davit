@@ -205,8 +205,9 @@ MainWidget::MainWidget(QWidget *parent)
   global_dvtuser=new DvtUser(loginname);
   global_dvtsystem=new DvtSystem();
   global_dvtsystem->load();
-  setWindowTitle(QString::asprintf("Davit - User: %s",
-			       loginname.toUtf8().constData()));
+  setWindowTitle(QString::asprintf("Davit [v%s] - User: %s",
+				   VERSION,
+				   loginname.toUtf8().constData()));
 
   openoffice_path=global_geometry->openofficePath();
 

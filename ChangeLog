@@ -1175,3 +1175,6 @@
 	envelope sender when originating e-mail.
 2026-03-27 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 3.0.2.
+2026-03-27 Fred Gleason <fredg@paravelsystems.com>
+	* Added the version number to the titlebar of the main window in
+	davit(1).
