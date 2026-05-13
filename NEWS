@@ -1,6 +1,15 @@
 The NEWS file for the Davit package.
 
 -------------------------------------------------------------------------------
+v3.0.3 -- 13 May 2026
+
+Changes:
+  Fixed a regression in davit(1) that made it impossible to set the name of
+  a newly added program.
+
+  Fixed a regression in davit(1) that made it impossible to set a program
+  length to '00:00' in the 'Edit Program' dialog.
+-------------------------------------------------------------------------------
 v3.0.2 -- 27 March 2026
 
 Changes:

@@ -1184,3 +1184,5 @@
 2026-05-13 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression in davit(1) that made it impossible to set
 	a program length to '00:00' in the 'Edit Program' dialog.
+2026-05-13 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 3.0.3.
