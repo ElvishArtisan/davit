@@ -1178,3 +1178,6 @@
 2026-03-27 Fred Gleason <fredg@paravelsystems.com>
 	* Added the version number to the titlebar of the main window in
 	davit(1).
+2026-05-13 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in davit(1) that made it impossible to set the
+	name of a newly added program.

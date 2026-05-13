@@ -2,7 +2,7 @@
 //
 // List Davit Programs.
 //
-//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2007-2026 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -139,9 +139,33 @@ int ListPrograms::exec(int provider_id)
 
 void ListPrograms::addData()
 {
-  QString sql=QString("insert into `PROGRAMS` set ")+
+  QString sql;
+  DvtSqlQuery *q=NULL;
+  bool found=false;
+
+  //
+  // Get unique placeholder name
+  //
+  int count=0;
+  QString name;
+  do {
+    name=QString::asprintf("[new program %d]",1+count);
+    sql=QString("select ")+
+      "`PROGRAM_NAME` "+  // 00
+      "from `PROGRAMS` where "+
+      "`PROGRAM_NAME`="+DvtSqlQuery::escape(name);
+    q=new DvtSqlQuery(sql);
+    found=q->first();
+    delete q;
+    count++;
+  } while(found);
+
+  //
+  // Create new record
+  //
+  sql=QString("insert into `PROGRAMS` set ")+
     QString::asprintf("`PROVIDER_ID`=%d,",list_provider_id)+
-    "`PROGRAM_NAME`="+DvtSqlQuery::escape(tr("[new program]"));
+    "`PROGRAM_NAME`="+DvtSqlQuery::escape(name);
   int program_id=DvtSqlQuery::run(sql).toInt();
   if(list_editprogram_dialog->exec(program_id,true)) {
     QModelIndex index=list_programs_model->addProgram(program_id);

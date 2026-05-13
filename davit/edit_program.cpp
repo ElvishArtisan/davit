@@ -2,7 +2,7 @@
 //
 // Edit a Davit Program.
 //
-//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2007-2026 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -61,6 +61,8 @@ EditProgram::EditProgram(DvtConfig *c,QWidget *parent)
   edit_program_name_edit=new QLineEdit(edit_program_group);
   edit_program_name_edit->setReadOnly(true);
   edit_program_name_edit->setFont(defaultFont());
+  connect(edit_program_name_edit,SIGNAL(textChanged(const QString &)),
+	  this,SLOT(programNameChangedData(const QString &)));
   edit_program_name_label=new QLabel(tr("Name")+":",edit_program_group);
   edit_program_name_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   edit_program_name_label->setFont(labelFont());
@@ -534,8 +536,14 @@ int EditProgram::exec(int program_id,bool new_entry)
   QSqlQuery *q=new QSqlQuery(sql);
   if(q->first()) {
     edit_program_id=q->value(0).toInt();
+    edit_program_name_edit->setReadOnly(!new_entry);
     edit_program_name_edit->setText(q->value(19).toString());
-    edit_program_length_edit->setTime(QTime().addMSecs(q->value(18).toInt()));
+    if(new_entry) {
+      edit_program_name_edit->selectAll();
+      edit_ok_button->setDisabled(true);
+    }
+    edit_program_length_edit->setTime(QTime(0,0,0).
+				      addMSecs(q->value(18).toInt()));
     edit_program_length_lineedit->
       setText(QTime().addMSecs(q->value(18).toInt()).toString("mm:ss"));
     edit_contact_name_edit->setText(q->value(1).toString());
@@ -597,6 +605,18 @@ int EditProgram::exec(int program_id,bool new_entry)
   delete q;
 
   return QDialog::exec();
+}
+
+
+void EditProgram::programNameChangedData(const QString &str)
+{
+  QString sql=QString("select ")+
+    "`ID` "+  // 00
+    "from `PROGRAMS` where "+
+    "`PROGRAM_NAME`="+DvtSqlQuery::escape(str);
+  DvtSqlQuery *q=new DvtSqlQuery(sql);
+  edit_ok_button->setDisabled(q->first());
+  delete q;
 }
 
 
@@ -753,6 +773,7 @@ void EditProgram::okData()
   QString sql;
 
   sql=QString("update `PROGRAMS` set ")+
+    "`PROGRAM_NAME`="+DvtSqlQuery::escape(edit_program_name_edit->text())+","+
     "`CONTACT_NAME`="+DvtSqlQuery::escape(edit_contact_name_edit->text())+","+
     "`CONTACT_PHONE`="+DvtSqlQuery::escape(edit_contact_phone_edit->text())+","+
     "`CONTACT_FAX`="+DvtSqlQuery::escape(edit_contact_fax_edit->text())+","+

@@ -2,7 +2,7 @@
 //
 // Edit a Davit Program.
 //
-//   (C) Copyright 2007-2025 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2007-2026 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -50,6 +50,7 @@ class EditProgram : public Dialog
   int exec(int program_id,bool new_entry=false);
 
  private slots:
+  void programNameChangedData(const QString &str);
   void migrateData();
   void addFeedData();
   void editFeedData();
