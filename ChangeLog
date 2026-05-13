@@ -1181,3 +1181,6 @@
 2026-05-13 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression in davit(1) that made it impossible to set the
 	name of a newly added program.
+2026-05-13 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in davit(1) that made it impossible to set
+	a program length to '00:00' in the 'Edit Program' dialog.

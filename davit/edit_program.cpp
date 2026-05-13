@@ -545,7 +545,7 @@ int EditProgram::exec(int program_id,bool new_entry)
     edit_program_length_edit->setTime(QTime(0,0,0).
 				      addMSecs(q->value(18).toInt()));
     edit_program_length_lineedit->
-      setText(QTime().addMSecs(q->value(18).toInt()).toString("mm:ss"));
+      setText(QTime(0,0,0).addMSecs(q->value(18).toInt()).toString("mm:ss"));
     edit_contact_name_edit->setText(q->value(1).toString());
     edit_contact_phone_edit->setText(q->value(2).toString());
     edit_contact_fax_edit->setText(q->value(3).toString());
